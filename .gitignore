@@ -8,6 +8,7 @@
 # python package
 *.egg-info/
 dist/
+build/
 */__pycache__
 
 # sphinx
