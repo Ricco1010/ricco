@@ -1,2 +1,13 @@
-numpy==1.18.1
-pandas==1.0.1
+Fiona==1.8.13
+GDAL==3.0.4
+geojson==2.5.0
+geopandas==0.8.0
+nb-conda==2.2.1
+numpy==1.18.5
+pandas==1.0.5
+pypinyin==0.38.0
+pyproj==2.6.1.post1
+pytest==5.4.3
+pytz==2020.1
+Rtree==0.9.4
+Shapely==1.7.0
