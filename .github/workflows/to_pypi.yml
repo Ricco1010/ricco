@@ -7,11 +7,11 @@ on:
   #push:
   #  branches:
   #    - master
-#  pull_request:
-#    branches:
-#      - master
-    release:
-      types: [created]
+  pull_request:
+    branches:
+      - master
+#    release:
+#      types: [created]
 
 jobs:
   deploy:
