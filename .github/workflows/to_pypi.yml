@@ -7,7 +7,10 @@ on:
   #push:
   #  branches:
   #    - master
-  pull_request:
+#  pull_request:
+#    branches:
+#      - master
+  merge:
     branches:
       - master
   #  release:
