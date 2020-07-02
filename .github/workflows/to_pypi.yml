@@ -10,7 +10,7 @@ on:
 #  pull_request:
 #    branches:
 #      - master
-  merge:
+  merge_pull_request:
     branches:
       - master
   #  release:
