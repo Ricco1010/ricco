@@ -9,7 +9,9 @@ from shapely.wkb import loads
 
 import pypinyin
 import warnings
-warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS', UserWarning)
+
+warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS',
+                        UserWarning)
 # 防止单个单元格文件过大而报错
 maxInt = sys.maxsize
 decrement = True
@@ -40,8 +42,20 @@ def rdf(filepath):
     return df
 
 
+def tofile(filename, encoding='GBK'):
+    return filename
+
+
+def to_csv_by_line(filename, data):
+    file = open(filename, 'a', newline='')
+    csv_write = csv.writer(file, dialect='excel')
+    csv_write.writerow(data)
+    file.close()
+
+
 def read_and_rename(file):
-    col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng', 'lat_WGS': 'lat', 'lon_WGS': 'lng',
+    col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng',
+                'lat_WGS': 'lat', 'lon_WGS': 'lng',
                 'longitude': 'lng', 'latitude': 'lat', "geom": "geometry"}
     df = rdf(file)
     df = df.rename(columns=col_dict)
@@ -60,6 +74,18 @@ def pinyin(word):
     for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
         s += ''.join(i)
     return s
+
+
+def valid_check(df):
+    df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
+    df = gpd.GeoDataFrame(df)
+    df.crs = 'epsg:4326'
+
+    df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
+    if len(df[df['flag'] < 0]) == 0:
+        return ('success')
+    else:
+        raise Exception('有效性检验失败，请检查面的有效性')
 
 
 def shp2csv(shpfile_name):
