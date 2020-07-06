@@ -1,5 +1,8 @@
 __version__ = '0.0.6'
 
+
+import numpy as np
+
 from ricco.util import add
 
 from ricco.util import csv2shp
