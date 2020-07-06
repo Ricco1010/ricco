@@ -202,8 +202,8 @@ def circum_pio_num_geo_aoilist(target, AOI, shp=0, num_per_part=150, R=0):
         print("请注意：数据集为空")
         joined_mt.to_csv(save_file, encoding='utf-8-sig')
         return save_file
-    buffer_result = pd.merge(df_poi, joined_mt, left_on="order", right_on="order", how='right')  # 字段匹配
-    buffer_result = pd.merge(buffer_result, df_poi_grid, on="order", how='left').drop('order', axis=1)  # 字段匹配
+    buffer_result = df_poi.merge(joined_mt, on="order", how='right')
+    buffer_result = buffer_result.merge(df_poi_grid, on="order", how='left').drop('order', axis=1)
     buffer_result = buffer_result.set_index('grid_id').rename(columns={'counts': poi_name + '_num'})
     buffer_result = outformat(buffer_result, save_file, shp)
     buffer_result = buffer_result.reset_index()
@@ -343,8 +343,8 @@ def circum_pio_num_geo_aoi(target, POI, shp=0, mode=[], var=[], num_per_part=150
         return save_file
 
     df_target = df_target[['key', 'geometry']]
-    buffer_result = pd.merge(df_target, joined_mt, left_on='key', right_on='key', how='left')
-    buffer_result = pd.merge(buffer_result, df_target_grid, on='key', how='left').drop('key', axis=1)
+    buffer_result = df_target.merge(joined_mt, on='key', how='left')
+    buffer_result = buffer_result.merge(df_target_grid, on='key', how='left').drop('key', axis=1)
     buffer_result["counts"] = buffer_result["counts"].fillna(0)
     buffer_result = buffer_result.set_index('grid_id').rename(columns={'counts': poi_name + '_num'})
     buffer_result = outformat(buffer_result, save_file, shp)
