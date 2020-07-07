@@ -65,6 +65,11 @@ def read_and_rename(file):
     return df
 
 
+def reset2name(df):
+    df = df.reset_index().rename(columns={'index': 'name'})
+    return df
+
+
 def pinyin(word):
     '''
     :param word:  中文字符串

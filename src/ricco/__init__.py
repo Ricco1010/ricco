@@ -13,3 +13,4 @@ from ricco.util import pinyin
 from ricco.util import rdf
 from ricco.util import shp2csv
 from ricco.util import valid_check
+from ricco.util import reset2name

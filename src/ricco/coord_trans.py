@@ -339,6 +339,8 @@ def lnglat_check(df):
 
 def BD2WGS(df_org):
   lnglat_check(df_org)
+  df_org['lng'] = df_org['lng'].astype(float)
+  df_org['lat'] = df_org['lat'].astype(float)
   def fn(row):
     return coord_transform(row['lng'], row['lat'], SRS.bd09, SRS.wgs84)
   df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
@@ -348,6 +350,8 @@ def BD2WGS(df_org):
 
 def GD2WGS(df_org):
   lnglat_check(df_org)
+  df_org['lng'] = df_org['lng'].astype(float)
+  df_org['lat'] = df_org['lat'].astype(float)
   def fn(row):
     return coord_transform(row['lng'], row['lat'], SRS.gcj02, SRS.wgs84)
   df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
