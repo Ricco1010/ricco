@@ -13,15 +13,18 @@ from shapely.wkb import loads
 from ricco.util import pinyin
 from ricco.util import read_and_rename
 import warnings
+
 warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS', UserWarning)
+
 
 def point_to_geo(df, lng, lat, delt=1):
     df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lng], df[lat]))
-    df.crs =  'epsg:4326'
+    df.crs = 'epsg:4326'
     if delt == 1:
         del df[lng]
         del df[lat]
     return df
+
 
 # def point_to_geo(df, lng, lat, delt=1):
 #     # 转为地理坐标
@@ -397,7 +400,7 @@ def nearest_neighbor_csv_geo(target, POI, shp=0):
 
     df_poi['geometry'] = df_poi['geometry'].apply(lambda x: loads(x, hex=True))
     gdf_poi = gpd.GeoDataFrame(df_poi)
-    gdf_poi.crs =  'epsg:4326'
+    gdf_poi.crs = 'epsg:4326'
 
     print('step3：投影..........')
     gdf_target = projection(gdf_target, tcode)
@@ -434,6 +437,12 @@ def mark_tags(point_csv, polygon_csv, col_list=[], save=1):
 
 
 def mark_tags_df(point_df, polygon_df, col_list=[]):
+    '''
+    :param point_df: dataframe 点文件，需要有经纬度或geometry
+    :param polygon_df: dataframe 面文件，需要有geometry
+    :param col_list: 面文件中的列名，需要连接到点文件后面的
+    :return:
+    '''
     col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lon_WGS': 'lng', 'lat_WGS': 'lat', 'longitude': 'lng',
                 'latitude': 'lat'}
     ppp = point_df.rename(columns=col_dict)
