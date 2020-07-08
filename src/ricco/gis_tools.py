@@ -13,15 +13,18 @@ from shapely.wkb import loads
 from ricco.util import pinyin
 from ricco.util import read_and_rename
 import warnings
+
 warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS', UserWarning)
+
 
 def point_to_geo(df, lng, lat, delt=1):
     df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lng], df[lat]))
-    df.crs =  'epsg:4326'
+    df.crs = 'epsg:4326'
     if delt == 1:
         del df[lng]
         del df[lat]
     return df
+
 
 # def point_to_geo(df, lng, lat, delt=1):
 #     # 转为地理坐标
@@ -202,8 +205,8 @@ def circum_pio_num_geo_aoilist(target, AOI, shp=0, num_per_part=150, R=0):
         print("请注意：数据集为空")
         joined_mt.to_csv(save_file, encoding='utf-8-sig')
         return save_file
-    buffer_result = pd.merge(df_poi, joined_mt, left_on="order", right_on="order", how='right')  # 字段匹配
-    buffer_result = pd.merge(buffer_result, df_poi_grid, on="order", how='left').drop('order', axis=1)  # 字段匹配
+    buffer_result = df_poi.merge(joined_mt, on="order", how='right')
+    buffer_result = buffer_result.merge(df_poi_grid, on="order", how='left').drop('order', axis=1)
     buffer_result = buffer_result.set_index('grid_id').rename(columns={'counts': poi_name + '_num'})
     buffer_result = outformat(buffer_result, save_file, shp)
     buffer_result = buffer_result.reset_index()
@@ -343,8 +346,8 @@ def circum_pio_num_geo_aoi(target, POI, shp=0, mode=[], var=[], num_per_part=150
         return save_file
 
     df_target = df_target[['key', 'geometry']]
-    buffer_result = pd.merge(df_target, joined_mt, left_on='key', right_on='key', how='left')
-    buffer_result = pd.merge(buffer_result, df_target_grid, on='key', how='left').drop('key', axis=1)
+    buffer_result = df_target.merge(joined_mt, on='key', how='left')
+    buffer_result = buffer_result.merge(df_target_grid, on='key', how='left').drop('key', axis=1)
     buffer_result["counts"] = buffer_result["counts"].fillna(0)
     buffer_result = buffer_result.set_index('grid_id').rename(columns={'counts': poi_name + '_num'})
     buffer_result = outformat(buffer_result, save_file, shp)
@@ -397,7 +400,7 @@ def nearest_neighbor_csv_geo(target, POI, shp=0):
 
     df_poi['geometry'] = df_poi['geometry'].apply(lambda x: loads(x, hex=True))
     gdf_poi = gpd.GeoDataFrame(df_poi)
-    gdf_poi.crs =  'epsg:4326'
+    gdf_poi.crs = 'epsg:4326'
 
     print('step3：投影..........')
     gdf_target = projection(gdf_target, tcode)
@@ -434,6 +437,12 @@ def mark_tags(point_csv, polygon_csv, col_list=[], save=1):
 
 
 def mark_tags_df(point_df, polygon_df, col_list=[]):
+    '''
+    :param point_df: dataframe 点文件，需要有经纬度或geometry
+    :param polygon_df: dataframe 面文件，需要有geometry
+    :param col_list: 面文件中的列名，需要连接到点文件后面的
+    :return:
+    '''
     col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lon_WGS': 'lng', 'lat_WGS': 'lat', 'longitude': 'lng',
                 'latitude': 'lat'}
     ppp = point_df.rename(columns=col_dict)

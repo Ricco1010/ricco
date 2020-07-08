@@ -3,6 +3,7 @@
 *.log
 /*.pkl*
 
+test.py
 .idea/
 
 # python package
