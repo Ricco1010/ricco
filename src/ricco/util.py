@@ -1,14 +1,14 @@
 import csv
+import os
 import sys
+import warnings
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+import pypinyin
 from shapely.wkb import dumps
 from shapely.wkb import loads
-
-import pypinyin
-import warnings
 
 warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS',
                         UserWarning)
@@ -79,6 +79,37 @@ def pinyin(word):
     for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
         s += ''.join(i)
     return s
+
+
+def mkdir_2(path):
+    if not os.path.isdir(path):
+        print('新建目录：', path)
+        os.makedirs(path)
+    else:
+        print('文件夹已存在')
+
+
+def split_csv(filename, n=5):
+    s = 0
+    dir_name = os.path.splitext(os.path.basename(filename))[0]
+    abs_path = os.getcwd()
+    df = rdf(filename)
+    t = len(df)
+    p = int(t / n)
+    for i in range(0, n):
+        low = i * p
+        high = (i + 1) * p
+        dir_name2 = 'Part_' + str(i)
+        save_path = os.path.join(abs_path, dir_name, dir_name2)
+        savefile = os.path.join(save_path, filename)
+        mkdir_2(save_path)
+        if i == n - 1:
+            add = df.iloc[low:, :]
+        else:
+            add = df.iloc[low: high, :]
+        add.to_csv(savefile, index=0, encoding='utf-8')
+        s += len(add)
+    print(s)
 
 
 def valid_check(df):
