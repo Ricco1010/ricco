@@ -34,7 +34,7 @@ setup(name='ricco',
           'numpy>=0.17',
           'pandas>=0.24',
           'geojson>=2.5.0',
-          'pypinyin>=0.38.0'
+          'pypinyin>=0.35.0'
 
       ],
       classifiers=[
