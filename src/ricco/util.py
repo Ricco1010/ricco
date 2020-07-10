@@ -1,27 +1,25 @@
 import csv
 import os
 import sys
-import warnings
 
+import fiona
 import geopandas as gpd
-import numpy as np
 import pandas as pd
-import pypinyin
 from shapely.wkb import dumps
 from shapely.wkb import loads
 
-warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS',
-                        UserWarning)
-# 防止单个单元格文件过大而报错
-maxInt = sys.maxsize
-decrement = True
-while decrement:
-    decrement = False
-    try:
-        csv.field_size_limit(maxInt)
-    except OverflowError:
-        maxInt = int(maxInt / 10)
-        decrement = True
+
+def max_grid():
+    '''防止单个单元格文件过大而报错'''
+    maxInt = sys.maxsize
+    decrement = True
+    while decrement:
+        decrement = False
+        try:
+            csv.field_size_limit(maxInt)
+        except OverflowError:
+            maxInt = int(maxInt / 10)
+            decrement = True
 
 
 def rdf(filepath):
@@ -30,13 +28,21 @@ def rdf(filepath):
     :param filepath: 文件路徑
     :return: dataframe
     '''
-    if '.csv' in filepath:
+    max_grid()
+    if os.path.splitext(filepath)[1] == '.csv':
         try:
             df = pd.read_csv(filepath, engine='python', encoding='utf-8-sig')
         except:
             df = pd.read_csv(filepath, engine='python')
-    elif '.xls' in filepath:
+    elif os.path.splitext(filepath)[1] == '.xls':
         df = pd.read_excel(filepath)
+    elif os.path.splitext(filepath)[1] == '.xlsx':
+        df = pd.read_excel(filepath)
+    elif os.path.splitext(filepath)[1] == '.shp':
+        try:
+            df = gpd.GeoDataFrame.from_file(filepath, encoding='utf-8-sig')
+        except UnicodeEncodeError:
+            df = gpd.GeoDataFrame.from_file(filepath, encoding='GBK')
     else:
         raise Exception('未知文件格式')
     return df
@@ -47,10 +53,9 @@ def tofile(filename, encoding='GBK'):
 
 
 def to_csv_by_line(filename, data):
-    file = open(filename, 'a', newline='')
-    csv_write = csv.writer(file, dialect='excel')
-    csv_write.writerow(data)
-    file.close()
+    with open(filename, 'a') as f:
+        csv_write = csv.writer(f, dialect='excel')
+        csv_write.writerow(data)
 
 
 def read_and_rename(file):
@@ -71,10 +76,8 @@ def reset2name(df):
 
 
 def pinyin(word):
-    '''
-    :param word:  中文字符串
-    :return: 汉语拼音
-    '''
+    '''将中文转换为汉语拼音'''
+    import pypinyin
     s = ''
     for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
         s += ''.join(i)
@@ -82,15 +85,13 @@ def pinyin(word):
 
 
 def mkdir_2(path):
+    '''新建文件夹，忽略存在的文件夹'''
     if not os.path.isdir(path):
-        print('新建目录：', path)
         os.makedirs(path)
-    else:
-        print('文件夹已存在')
 
 
 def split_csv(filename, n=5):
-    s = 0
+    '''将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中'''
     dir_name = os.path.splitext(os.path.basename(filename))[0]
     abs_path = os.getcwd()
     df = rdf(filename)
@@ -108,57 +109,43 @@ def split_csv(filename, n=5):
         else:
             add = df.iloc[low: high, :]
         add.to_csv(savefile, index=0, encoding='utf-8')
-        s += len(add)
-    print(s)
 
 
 def valid_check(df):
+    '''检验面的有效性'''
     df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
     df = gpd.GeoDataFrame(df)
     df.crs = 'epsg:4326'
-
     df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
     if len(df[df['flag'] < 0]) == 0:
         return ('success')
     else:
-        raise Exception('有效性检验失败，请检查面的有效性')
+        raise Exception('有效性检验失败，请检查并修复面')
 
 
 def shp2csv(shpfile_name):
-    '''
-    shapefile to csv
-    :param shpfile_name: 文件路径
-    :return: csv文件
-    '''
-    try:
-        df = gpd.GeoDataFrame.from_file(shpfile_name, encoding='utf-8-sig')
-    except:
-        df = gpd.GeoDataFrame.from_file(shpfile_name, encoding='GBK')
-    df['geometry'] = df['geometry'].apply(
-        lambda x: dumps(x, hex=True, srid=4326))
+    '''shapefile 转 csv 文件'''
+    df = rdf(shpfile_name)
+    df['geometry'] = df['geometry'].apply(lambda x: dumps(x, hex=True, srid=4326))
     df.crs = 'epsg:4326'
-    df.to_csv(shpfile_name.replace('.shp', '.csv'), encoding='utf-8-sig', index=0)
+    save_path = os.path.splitext(shpfile_name)[0] + '.csv'
+    df.to_csv(save_path, encoding='utf-8-sig', index=0)
 
 
 def csv2shp(filename):
-    '''
-    csv to shpfile
-    :param filename: csv file path
-    :return: shpfile
-    '''
+    '''csv文件 转 shapefile'''
     df = rdf(filename)
-    print(df.columns)
-    print(df.head())
-    df = df.rename(columns={'名称': 'name'})
+    df = df.rename(columns={'名称': 'name',
+                            'geom': 'geometry'})
     df = gpd.GeoDataFrame(df)
-    df = df.rename(columns={'geom': 'geometry'})
     df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
     df.crs = 'epsg:4326'
+    save_path = os.path.splitext(filename)[0] + '.shp'
     try:
-        df.to_file(filename.replace('.csv', '.shp'))
-    except:
+        df.to_file(save_path, encoding='utf-8')
+    except fiona.errors.SchemaError:
         df.columns = [pinyin(i) for i in df.columns]
-        df.to_file(filename.replace('.csv', '.shp'), encoding='utf-8')
+        df.to_file(save_path, encoding='utf-8')
         print('已将列名转为汉语拼音进行转换')
 
 
