@@ -48,8 +48,8 @@ def rdf(filepath):
     return df
 
 
-def tofile(filename, encoding='GBK'):
-    return filename
+def save2csv(df,filename, encoding='GBK'):
+    df.to_csv(filename, index=0, encoding=encoding)
 
 
 def to_csv_by_line(filename, data):
@@ -118,7 +118,7 @@ def valid_check(df):
     df.crs = 'epsg:4326'
     df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
     if len(df[df['flag'] < 0]) == 0:
-        return ('success')
+        print('Validity test passed.')
     else:
         raise Exception('有效性检验失败，请检查并修复面')
 
@@ -149,11 +149,19 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
-def to_float(string):
+def to_float(string, rex=False, rex_method='mean', rex_warning=True):
+    '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
     import numpy as np
+    if rex:
+        if rex_warning:
+            import warnings
+            message = '''Using 'rex=True' will ignore a value with a percent sign '%', try 'rex_warning=False' to avoid this warning.
+                        You are using default "rex_method='mean'". Besides, There are alternatives of 'max' and 'min' to chose.'''
+            warnings.warn(message)
+        string = str(extract_num(string, rex_method))
     if '%' in string:
         string = string.replace('%', '')
-        string = to_float(string) / 100
+        string = str(to_float(string) / 100)
     if string != None:
         try:
             f = float(string)
@@ -165,7 +173,35 @@ def to_float(string):
 
 
 def serise_to_float(serise):
+    '''pandas.Series: str --> float'''
     return serise.apply(lambda x: to_float(x))
+
+
+def extract_num(string, method=''):
+    '''
+    提取字符串中的数值，默认返回所有数值组成的列表
+
+    :param method: 可选max/min/mean，返回为数值
+
+    :return: list or float
+    '''
+    import re
+    import numpy as np
+    string = str(string)
+    lis = re.findall(r"\d+\.?\d*", string)
+    lis2 = [float(i) for i in lis]
+    if method != '':
+        if method == 'max':
+            res = max(lis2)
+        elif method == 'min':
+            res = min(lis2)
+        elif method == 'mean':
+            res = np.mean(lis2)
+        else:
+            raise Exception('method方法错误，请选择max、min 或 mean')
+        return res
+    else:
+        return lis2
 
 
 def ensure_list(val):
