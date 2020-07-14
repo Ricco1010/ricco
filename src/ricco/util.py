@@ -48,8 +48,8 @@ def rdf(filepath):
     return df
 
 
-def tofile(filename, encoding='GBK'):
-    return filename
+def save2csv(df,filename, encoding='GBK'):
+    df.to_csv(filename, index=0, encoding=encoding)
 
 
 def to_csv_by_line(filename, data):
@@ -118,7 +118,7 @@ def valid_check(df):
     df.crs = 'epsg:4326'
     df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
     if len(df[df['flag'] < 0]) == 0:
-        return ('success')
+        print('Validity test passed.')
     else:
         raise Exception('有效性检验失败，请检查并修复面')
 
@@ -150,6 +150,7 @@ def csv2shp(filename):
 
 
 def to_float(string, rex=False, rex_method='mean', rex_warning=True):
+    '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
     import numpy as np
     if rex:
         if rex_warning:
@@ -172,10 +173,18 @@ def to_float(string, rex=False, rex_method='mean', rex_warning=True):
 
 
 def serise_to_float(serise):
+    '''pandas.Series: str --> float'''
     return serise.apply(lambda x: to_float(x))
 
 
 def extract_num(string, method=''):
+    '''
+    提取字符串中的数值，默认返回所有数值组成的列表
+
+    :param method: 可选max/min/mean，返回为数值
+
+    :return: list or float
+    '''
     import re
     import numpy as np
     string = str(string)
