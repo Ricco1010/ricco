@@ -168,6 +168,26 @@ def serise_to_float(serise):
     return serise.apply(lambda x: to_float(x))
 
 
+def extract_num(string, method=''):
+    import re
+    import numpy as np
+    string = str(string)
+    lis = re.findall(r"\d+\.?\d*", string)
+    lis2 = [float(i) for i in lis]
+    if method != '':
+        if method == 'max':
+            res = max(lis2)
+        elif method == 'min':
+            res = min(lis2)
+        elif method == 'mean':
+            res = np.mean(lis2)
+        else:
+            raise Exception('method方法错误，请选择max、min 或 mean')
+        return res
+    else:
+        return lis2
+
+
 def ensure_list(val):
     """将标量值和Collection类型都统一转换为LIST类型"""
     if val is None:
