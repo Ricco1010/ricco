@@ -1,16 +1,16 @@
 import csv
 import os
-import sys
 
-import fiona
 import geopandas as gpd
 import pandas as pd
 from shapely.wkb import dumps
 from shapely.wkb import loads
+from tqdm import tqdm
 
 
 def max_grid():
     '''防止单个单元格文件过大而报错'''
+    import sys
     maxInt = sys.maxsize
     decrement = True
     while decrement:
@@ -48,7 +48,7 @@ def rdf(filepath):
     return df
 
 
-def save2csv(df,filename, encoding='GBK'):
+def save2csv(df, filename, encoding='GBK'):
     df.to_csv(filename, index=0, encoding=encoding)
 
 
@@ -97,7 +97,7 @@ def split_csv(filename, n=5):
     df = rdf(filename)
     t = len(df)
     p = int(t / n)
-    for i in range(0, n):
+    for i in tqdm(range(n)):
         low = i * p
         high = (i + 1) * p
         dir_name2 = 'Part_' + str(i)
@@ -134,6 +134,7 @@ def shp2csv(shpfile_name):
 
 def csv2shp(filename):
     '''csv文件 转 shapefile'''
+    import fiona
     df = rdf(filename)
     df = df.rename(columns={'名称': 'name',
                             'geom': 'geometry'})
@@ -198,7 +199,7 @@ def extract_num(string, method=''):
         elif method == 'mean':
             res = np.mean(lis2)
         else:
-            raise Exception('method方法错误，请选择max、min 或 mean')
+            raise Exception("method方法错误，请选择'max', 'min' or 'mean'")
         return res
     else:
         return lis2
