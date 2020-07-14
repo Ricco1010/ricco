@@ -14,3 +14,5 @@ from ricco.util import reset2name
 from ricco.util import shp2csv
 from ricco.util import split_csv
 from ricco.util import valid_check
+from ricco.util import to_float
+from ricco.util import serise_to_float

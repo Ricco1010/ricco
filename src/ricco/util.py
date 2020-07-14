@@ -149,6 +149,25 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
+def to_float(string):
+    import numpy as np
+    if '%' in string:
+        string = string.replace('%', '')
+        string = to_float(string) / 100
+    if string != None:
+        try:
+            f = float(string)
+        except ValueError:
+            f = np.nan
+    else:
+        f = np.nan
+    return f
+
+
+def serise_to_float(serise):
+    return serise.apply(lambda x: to_float(x))
+
+
 def ensure_list(val):
     """将标量值和Collection类型都统一转换为LIST类型"""
     if val is None:
