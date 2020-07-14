@@ -149,11 +149,18 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
-def to_float(string):
+def to_float(string, rex=False, rex_method='mean', rex_warning=True):
     import numpy as np
+    if rex:
+        if rex_warning:
+            import warnings
+            message = '''Using 'rex=True' will ignore a value with a percent sign '%', try 'rex_warning=False' to avoid this warning.
+                        You are using default "rex_method='mean'". Besides, There are alternatives of 'max' and 'min' to chose.'''
+            warnings.warn(message)
+        string = str(extract_num(string, rex_method))
     if '%' in string:
         string = string.replace('%', '')
-        string = to_float(string) / 100
+        string = str(to_float(string) / 100)
     if string != None:
         try:
             f = float(string)
