@@ -178,7 +178,7 @@ def serise_to_float(serise):
     return serise.apply(lambda x: to_float(x))
 
 
-def extract_num(string, method=''):
+def extract_num(string, method='', num_type='str', join_list=False):
     '''
     提取字符串中的数值，默认返回所有数值组成的列表
 
@@ -188,21 +188,34 @@ def extract_num(string, method=''):
     '''
     import re
     import numpy as np
+    from warnings import warn
     string = str(string)
     lis = re.findall(r"\d+\.?\d*", string)
-    lis2 = [float(i) for i in lis]
-    if method != '':
-        if method == 'max':
-            res = max(lis2)
-        elif method == 'min':
-            res = min(lis2)
-        elif method == 'mean':
-            res = np.mean(lis2)
+    if (num_type == 'float') or (num_type == 'int'):
+        if num_type == 'float':
+            lis2 = [float(i) for i in lis]
         else:
-            raise Exception("method方法错误，请选择'max', 'min' or 'mean'")
-        return res
+            lis2 = [int(i) for i in lis]
+        if method != '':
+            if method == 'max':
+                res = max(lis2)
+            elif method == 'min':
+                res = min(lis2)
+            elif method == 'mean':
+                res = np.mean(lis2)
+            else:
+                raise Exception("method方法错误，请选择'max', 'min' or 'mean'")
+        else:
+            res = lis2
+        if join_list:
+            warn('计算结果无法join')
+    elif num_type == 'str':
+        res = lis
+        if join_list:
+            res = ''.join([str(j) for j in res])
     else:
-        return lis2
+        raise Exception('num_type指定错误，可选项为str, float, int')
+    return res
 
 
 def ensure_list(val):
