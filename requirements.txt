@@ -1,5 +1,4 @@
 Fiona==1.8.13
-GDAL==3.0.4
 geojson==2.5.0
 geopandas==0.8.0
 nb-conda==2.2.1
