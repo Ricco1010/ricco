@@ -1,3 +1,4 @@
+#-*-coding: GBK -*-
 import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
@@ -34,7 +35,6 @@ def test_extract_num():
 
 def test_to_float():
     assert to_float('6.5') == 6.5
-    assert to_float('p6.5') == np.nan
     assert to_float('p6.5', rex=True, rex_warning=False) == 6.5
     assert to_float('p6.5xx3.5', rex=True, rex_warning=False) == 5.0
     assert to_float('p6.5xx3.5', rex=True, rex_method='min', rex_warning=False) == 3.5
