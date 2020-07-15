@@ -1,16 +1,16 @@
 import csv
 import os
-import sys
 
-import fiona
 import geopandas as gpd
 import pandas as pd
 from shapely.wkb import dumps
 from shapely.wkb import loads
+from tqdm import tqdm
 
 
 def max_grid():
     '''防止单个单元格文件过大而报错'''
+    import sys
     maxInt = sys.maxsize
     decrement = True
     while decrement:
@@ -48,7 +48,7 @@ def rdf(filepath):
     return df
 
 
-def save2csv(df,filename, encoding='GBK'):
+def save2csv(df, filename, encoding='GBK'):
     df.to_csv(filename, index=0, encoding=encoding)
 
 
@@ -97,7 +97,7 @@ def split_csv(filename, n=5):
     df = rdf(filename)
     t = len(df)
     p = int(t / n)
-    for i in range(0, n):
+    for i in tqdm(range(n)):
         low = i * p
         high = (i + 1) * p
         dir_name2 = 'Part_' + str(i)
@@ -134,6 +134,7 @@ def shp2csv(shpfile_name):
 
 def csv2shp(filename):
     '''csv文件 转 shapefile'''
+    import fiona
     df = rdf(filename)
     df = df.rename(columns={'名称': 'name',
                             'geom': 'geometry'})
@@ -149,7 +150,10 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
-def to_float(string, rex=False, rex_method='mean', rex_warning=True):
+def to_float(string,
+             rex: bool = False,
+             rex_method: str = 'mean',
+             rex_warning: bool = True):
     '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
     import numpy as np
     if rex:
@@ -158,7 +162,7 @@ def to_float(string, rex=False, rex_method='mean', rex_warning=True):
             message = '''Using 'rex=True' will ignore a value with a percent sign '%', try 'rex_warning=False' to avoid this warning.
                         You are using default "rex_method='mean'". Besides, There are alternatives of 'max' and 'min' to chose.'''
             warnings.warn(message)
-        string = str(extract_num(string, rex_method))
+        string = str(extract_num(string, num_type='float', method=rex_method))
     if '%' in string:
         string = string.replace('%', '')
         string = str(to_float(string) / 100)
@@ -177,7 +181,10 @@ def serise_to_float(serise):
     return serise.apply(lambda x: to_float(x))
 
 
-def extract_num(string, method=''):
+def extract_num(string,
+                num_type: str = 'str',
+                method: str = '',
+                join_list: bool = False):
     '''
     提取字符串中的数值，默认返回所有数值组成的列表
 
@@ -187,21 +194,35 @@ def extract_num(string, method=''):
     '''
     import re
     import numpy as np
+    from warnings import warn
     string = str(string)
     lis = re.findall(r"\d+\.?\d*", string)
-    lis2 = [float(i) for i in lis]
-    if method != '':
-        if method == 'max':
-            res = max(lis2)
-        elif method == 'min':
-            res = min(lis2)
-        elif method == 'mean':
-            res = np.mean(lis2)
+    if (num_type == 'float') or (num_type == 'int'):
+        lis2 = [float(i) for i in lis]
+        if num_type == 'int':
+            lis2 = [int(i) for i in lis2]
+        if method != '':
+            if method == 'max':
+                res = max(lis2)
+            elif method == 'min':
+                res = min(lis2)
+            elif method == 'mean':
+                res = np.mean(lis2)
+            elif method == 'sum':
+                res = np.sum(lis2)
+            else:
+                raise Exception("method方法错误，请选择'max', 'min', 'sum' or 'mean'")
         else:
-            raise Exception('method方法错误，请选择max、min 或 mean')
-        return res
+            res = lis2
+        if join_list:
+            warn('计算结果无法join')
+    elif num_type == 'str':
+        res = lis
+        if join_list:
+            res = ''.join([str(j) for j in res])
     else:
-        return lis2
+        raise Exception('num_type指定错误，可选项为str, float, int')
+    return res
 
 
 def ensure_list(val):
