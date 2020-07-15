@@ -150,7 +150,10 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
-def to_float(string, rex=False, rex_method='mean', rex_warning=True):
+def to_float(string,
+             rex: bool = False,
+             rex_method: str = 'mean',
+             rex_warning: bool = True):
     '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
     import numpy as np
     if rex:
@@ -159,7 +162,7 @@ def to_float(string, rex=False, rex_method='mean', rex_warning=True):
             message = '''Using 'rex=True' will ignore a value with a percent sign '%', try 'rex_warning=False' to avoid this warning.
                         You are using default "rex_method='mean'". Besides, There are alternatives of 'max' and 'min' to chose.'''
             warnings.warn(message)
-        string = str(extract_num(string, rex_method))
+        string = str(extract_num(string, num_type='float', method=rex_method))
     if '%' in string:
         string = string.replace('%', '')
         string = str(to_float(string) / 100)
@@ -178,7 +181,10 @@ def serise_to_float(serise):
     return serise.apply(lambda x: to_float(x))
 
 
-def extract_num(string, method='', num_type='str', join_list=False):
+def extract_num(string,
+                num_type: str = 'str',
+                method: str = '',
+                join_list: bool = False):
     '''
     提取字符串中的数值，默认返回所有数值组成的列表
 
@@ -192,10 +198,9 @@ def extract_num(string, method='', num_type='str', join_list=False):
     string = str(string)
     lis = re.findall(r"\d+\.?\d*", string)
     if (num_type == 'float') or (num_type == 'int'):
-        if num_type == 'float':
-            lis2 = [float(i) for i in lis]
-        else:
-            lis2 = [int(i) for i in lis]
+        lis2 = [float(i) for i in lis]
+        if num_type == 'int':
+            lis2 = [int(i) for i in lis2]
         if method != '':
             if method == 'max':
                 res = max(lis2)
@@ -203,8 +208,10 @@ def extract_num(string, method='', num_type='str', join_list=False):
                 res = min(lis2)
             elif method == 'mean':
                 res = np.mean(lis2)
+            elif method == 'sum':
+                res = np.sum(lis2)
             else:
-                raise Exception("method方法错误，请选择'max', 'min' or 'mean'")
+                raise Exception("method方法错误，请选择'max', 'min', 'sum' or 'mean'")
         else:
             res = lis2
         if join_list:
