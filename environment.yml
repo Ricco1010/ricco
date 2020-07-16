@@ -154,7 +154,6 @@ dependencies:
     - pyqt5-sip==4.19.18
     - pyqtchart==5.12
     - pyqtwebengine==5.12.1
-    - ricco==0.1.5
     - tqdm==4.47.0
 prefix: C:\ProgramData\Anaconda3\envs\ricco-dev
 
