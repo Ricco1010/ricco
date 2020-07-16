@@ -1,4 +1,3 @@
-import csv
 import math
 import os
 import sys
@@ -44,7 +43,7 @@ def city_epsgcode(city):
         epsgcode = citydict[city]
     else:
         epsgcode = 32651
-        print("报错：target文件名不含城市名 or 城市不在 citydict 字典里，请补充; 目前默认投影坐标系为 WGS 84_UTM zone 51N")
+        warnings.warn("报错：target文件名不含城市名 or 城市不在 citydict 字典里，请补充; 目前默认投影坐标系为 WGS 84_UTM zone 51N")
     return epsgcode
 
 
@@ -231,22 +230,6 @@ def s_join(house_data_buffer, poi_data, mode, var):
         ss.rename(columns={i: i + '_' + mm for i in var}, inplace=True)
         merge_t = merge_t.merge(ss)
     return merge_t
-
-
-# def s_join(house_data_buffer, poi_data, mode, var):
-#     house_data_buffer.crs =  'epsg:4326'
-#     poi_data.crs =  'epsg:4326'
-#     spacial_join_result = gpd.sjoin(house_data_buffer, poi_data, how='left', op='intersects')  # 空间连接
-#     merge_t = spacial_join_result.groupby(['key']).count()['order'].to_frame().reset_index().rename(
-#         columns={'order': 'counts'})
-#     for mm in mode:
-#         if mm == 'sum':
-#             ss = spacial_join_result.groupby(['key'])[var].sum().reset_index()  #
-#         if mm == 'mean':
-#             ss = spacial_join_result.groupby(['key'])[var].mean().reset_index()
-#         ss.rename(columns={i: i + '_' + mm for i in var}, inplace=True)
-#         merge_t = merge_t.merge(ss)
-#     return merge_t
 
 
 def target_split_calc(gdf_target, df_poi, num_per_part, tcode, mode, var, R=0):
