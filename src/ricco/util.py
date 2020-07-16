@@ -70,17 +70,22 @@ def read_and_rename(file):
     return df
 
 
-def reset2name(df):
+def reset2name(df, origin: bool = False):
+    if origin:
+        df = df.reset_index(drop=True)
     df = df.reset_index().rename(columns={'index': 'name'})
     return df
 
 
-def pinyin(word):
+def pinyin(word: str):
     '''将中文转换为汉语拼音'''
     import pypinyin
-    s = ''
-    for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
-        s += ''.join(i)
+    if isinstance(word, str):
+        s = ''
+        for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
+            s += ''.join(i)
+    else:
+        raise TypeError('输入参数必须为字符串')
     return s
 
 
@@ -156,6 +161,10 @@ def to_float(string,
              rex_warning: bool = True):
     '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
     import numpy as np
+    from warnings import warn
+    if not isinstance(string, str):
+        warn('输入应为字符')
+        string = str(string)
     if rex:
         if rex_warning:
             import warnings
@@ -237,4 +246,8 @@ def ensure_list(val):
 
 
 def add(x, y):
+    if isinstance(x, str):
+        x = to_float(x)
+    if isinstance(y, str):
+        y = to_float(y)
     return x + y

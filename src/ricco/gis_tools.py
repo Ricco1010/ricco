@@ -1,40 +1,31 @@
-import csv
 import math
 import os
-import sys
 import time
+import warnings
 
 import geopandas as gpd
 import pandas as pd
-from shapely.geometry import Point
 from shapely.wkb import dumps
 from shapely.wkb import loads
+from tqdm import tqdm
 
 from ricco.util import pinyin
 from ricco.util import read_and_rename
-import warnings
 
 warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS', UserWarning)
 
 
 def point_to_geo(df, lng, lat, delt=1):
-    df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lng], df[lat]))
+    # from shapely.geometry import Point
+    # df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)  # 识别经纬度，转换点数据
+    # df = gpd.GeoDataFrame(df)  # 转换Geodataframe格式
+    from geopandas import points_from_xy
+    df = gpd.GeoDataFrame(df, geometry=points_from_xy(df[lng], df[lat]))
     df.crs = 'epsg:4326'
     if delt == 1:
         del df[lng]
         del df[lat]
     return df
-
-
-# def point_to_geo(df, lng, lat, delt=1):
-#     # 转为地理坐标
-#     df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)  # 识别经纬度，转换点数据
-#     df = gpd.GeoDataFrame(df)  # 转换Geodataframe格式
-#     df.crs = 'epsg:4326'  # 定义坐标系WGS84
-#     if delt == 1:
-#         del df[lng]
-#         del df[lat]
-#     return df
 
 
 def city_epsgcode(city):
@@ -44,17 +35,18 @@ def city_epsgcode(city):
         epsgcode = citydict[city]
     else:
         epsgcode = 32651
-        print("报错：target文件名不含城市名 or 城市不在 citydict 字典里，请补充; 目前默认投影坐标系为 WGS 84_UTM zone 51N")
+        warnings.warn("报错：target文件名不含城市名 or 城市不在 citydict 字典里，请补充; 目前默认投影坐标系为 WGS 84_UTM zone 51N")
     return epsgcode
 
 
 def projection(gdf, code):
+    '''投影'''
     gdf_prj = gdf.to_crs(epsg=code)
     return gdf_prj
 
 
 def point_to_geom(df, lng, lat, delt=0):
-    # 转为地理坐标
+    '''转为地理坐标'''
     gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lng], df[lat]))
     gdf.crs = 'epsg:4326'  # 定义坐标系WGS84
     if delt == 1:
@@ -64,6 +56,7 @@ def point_to_geom(df, lng, lat, delt=0):
 
 
 def geo_centroid(df, geom):
+    '''获取中心点经纬度'''
     df[geom] = df[geom].apply(lambda x: loads(x, hex=True))
     df = gpd.GeoDataFrame(df, crs='epsg:4326')
     df["lng"] = df.centroid.x
@@ -73,6 +66,7 @@ def geo_centroid(df, geom):
 
 
 def min_distance(point, lines):
+    '''求最近距离'''
     return lines.distance(point).min()
 
 
@@ -118,9 +112,7 @@ def target_split_calc_list(gdf_target, df_poi, num_per_part, tcode, R=0):
     print('每一部分约有%s行。\n' % int(lenth))
     modified = (R + 250) * 360 / 31544206
     joined_mt = pd.DataFrame()
-    for i in range(n_split):
-        sys.stdout.write('\r正在进行第%s/%s部分.........' % (i, n_split))
-        sys.stdout.flush()
+    for i in tqdm(range(n_split)):
         # 数据行数最大最小值
         low = round(i * lenth)
         high = round(lenth * (i + 1))
@@ -226,27 +218,13 @@ def s_join(house_data_buffer, poi_data, mode, var):
     for mm in mode:
         if mm == 'sum':
             ss = spacial_join_result.groupby(['key'])[var].sum().reset_index()
-        if mm == 'mean':
+        elif mm == 'mean':
             ss = spacial_join_result.groupby(['key'])[var].mean().reset_index()
+        else:
+            raise ValueError('mode错误,请选择sum或mean')
         ss.rename(columns={i: i + '_' + mm for i in var}, inplace=True)
         merge_t = merge_t.merge(ss)
     return merge_t
-
-
-# def s_join(house_data_buffer, poi_data, mode, var):
-#     house_data_buffer.crs =  'epsg:4326'
-#     poi_data.crs =  'epsg:4326'
-#     spacial_join_result = gpd.sjoin(house_data_buffer, poi_data, how='left', op='intersects')  # 空间连接
-#     merge_t = spacial_join_result.groupby(['key']).count()['order'].to_frame().reset_index().rename(
-#         columns={'order': 'counts'})
-#     for mm in mode:
-#         if mm == 'sum':
-#             ss = spacial_join_result.groupby(['key'])[var].sum().reset_index()  #
-#         if mm == 'mean':
-#             ss = spacial_join_result.groupby(['key'])[var].mean().reset_index()
-#         ss.rename(columns={i: i + '_' + mm for i in var}, inplace=True)
-#         merge_t = merge_t.merge(ss)
-#     return merge_t
 
 
 def target_split_calc(gdf_target, df_poi, num_per_part, tcode, mode, var, R=0):
@@ -257,9 +235,7 @@ def target_split_calc(gdf_target, df_poi, num_per_part, tcode, mode, var, R=0):
     modified = (R + 250) * 360 / 31544206
     # 以防poi面数据或线数据过大过长，增加一定的modified，暂定250，即栅格的长短
     joined_mt = pd.DataFrame()
-    for i in range(n_split):
-        sys.stdout.write('\r正在进行第%s/%s部分.........' % (i, n_split))
-        sys.stdout.flush()
+    for i in tqdm(range(n_split)):
         # 数据行数最大最小值
         low = round(i * lenth)
         high = round(lenth * (i + 1))
@@ -416,26 +392,6 @@ def nearest_neighbor_csv_geo(target, POI, shp=0):
     return save_file
 
 
-def mark_tags(point_csv, polygon_csv, col_list=[], save=1):
-    ppp = read_and_rename(point_csv)
-    for i in col_list:
-        if i in ppp.columns:
-            ppp.rename(columns={i: str(i) + '_origon'}, inplace=True)
-    ppp = point_to_geo(ppp, 'lng', 'lat', delt=0)
-    ppp.crs = 'epsg:4326'
-    df_lable = read_and_rename(polygon_csv)
-    if col_list != []:
-        df_lable = df_lable[col_list + ['geometry']]
-    df_lable['geometry'] = df_lable['geometry'].apply(lambda x: loads(x, hex=True))
-    df_lable = gpd.GeoDataFrame(df_lable)
-    df_lable.crs = 'epsg:4326'
-    final_file = gpd.sjoin(ppp, df_lable, how='left', op='intersects').drop('index_right', axis=1)
-    final_file['geometry'] = final_file['geometry'].apply(lambda x: dumps(x, hex=True))
-    if save == 1:
-        final_file.to_csv(point_csv, index=0, encoding='GBK')
-    return final_file
-
-
 def mark_tags_df(point_df, polygon_df, col_list=[]):
     '''
     :param point_df: dataframe 点文件，需要有经纬度或geometry
@@ -449,11 +405,13 @@ def mark_tags_df(point_df, polygon_df, col_list=[]):
     for i in col_list:
         if i in ppp.columns:
             ppp.rename(columns={i: str(i) + '_origon'}, inplace=True)
-    if 'lat' in ppp.columns:
+    if ('lng' in ppp.columns) & ('lat' in ppp.columns):
         ppp = point_to_geo(ppp, 'lng', 'lat', delt=0)
-    else:
+    elif 'geometry' in ppp.columns:
         ppp['geometry'] = ppp['geometry'].apply(lambda x: loads(x, hex=True))
         ppp = gpd.GeoDataFrame(ppp)
+    else:
+        raise Exception('点文件中必须有经纬度或geometry', KeyError)
     ppp.crs = 'epsg:4326'
     df_lable = polygon_df.rename(columns=col_dict)
     if col_list != []:
