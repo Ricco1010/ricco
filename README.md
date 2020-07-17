@@ -23,8 +23,7 @@ pip install -i https://pypi.org/pypi ricco --upgrade
     filepath = 'data.csv'
     df = rdf(filepath)
     ```
-
-
+    
 
 #### 2. 拆分文件
 * func: `split_csv(filename, n=5)`
@@ -127,6 +126,29 @@ pip install -i https://pypi.org/pypi ricco --upgrade
     
     df = GD2WGS(df)
     ```
+
+* func: `get_lnglat(addr: str, addr_type: str, city: str = '')`
+  * geocoding工具，通过地址或项目名称，返回经纬度（wgs84）
+  * `addr`: 地址或经纬度
+  * `addr_type`: 地址的类型，可选`'addr'`(地址类型：xx路xx号)或`'name'`（项目名称：XX大厦）
+  * `city`: 城市
+  *示例代码
+    ```python
+    from ricco.geocode_bd import get_lnglat
+    
+    get_lnglat('脉策数据', addr_type='name', city='上海')
+    # [121.516868, 31.311847, '上海脉策数据科技有限公司']
+    
+    get_lnglat('政学路51号', addr_type='addr', city='上海')
+    # [121.5166918714937, 31.31181948447693, None]
+    ```
+
+* func: `geocode_df(df, addr_col, addr_type: str, city: str = '')`
+  * 针对dataframe批量解析经纬度
+  * `df`: 输入的dataframe
+  * `addr_col`: 作为地址去解析的列名，可传入列名的列表，列表中的元素是有顺序的，如`['区县', '项目名称']`
+  * `addr_type`: 地址的类型，可选`'addr'`(地址类型：xx路xx号)或`'name'`（项目名称：XX大厦）
+  * `city`: 城市
 ---
 
 
