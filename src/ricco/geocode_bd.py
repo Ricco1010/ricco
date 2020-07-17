@@ -6,7 +6,6 @@ import requests
 from tqdm import tqdm
 
 from ricco.coord_trans import BD2WGS
-from ricco.util import rdf
 from ricco.util import reset2name
 
 
@@ -40,7 +39,7 @@ def get_lnglat(addr: str,
         res1 = requests.get(address1)
         j1 = ast.literal_eval(res1.text)
         name = None
-        if  len(j1['result'])>0:
+        if len(j1['result']) > 0:
             lng = j1['result']['location']['lng']
             lat = j1['result']['location']['lat']
         else:
@@ -97,13 +96,3 @@ def geocode_df(df,
     if 'name' not in df.columns:
         df = reset2name(df)
     return df
-
-
-if __name__ == '__main__':
-    filename = '株洲项目名称.csv'
-    city = '株洲'
-    addr_col = ['项目名称']
-    addr_type = 'name'
-    df = rdf(filename)
-    df = geocode_df(df, addr_col, addr_type, city)
-    df.to_csv(filename.replace('.csv', '_已解析.csv'), index=False, encoding='gbk')
