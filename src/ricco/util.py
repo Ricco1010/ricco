@@ -116,8 +116,9 @@ def split_csv(filename, n=5):
         add.to_csv(savefile, index=0, encoding='utf-8')
 
 
-def valid_check(df):
+def valid_check(polygon_geom):
     '''检验面的有效性'''
+    df = polygon_geom.copy()
     df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
     df = gpd.GeoDataFrame(df)
     df.crs = 'epsg:4326'
