@@ -1,6 +1,7 @@
 *.pyc
 .DS_Store
 *.log
+src/ricco/*.csv
 /*.pkl*
 
 test.py
