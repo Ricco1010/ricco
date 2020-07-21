@@ -2,6 +2,7 @@ import csv
 import os
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 from shapely.wkb import dumps
 from shapely.wkb import loads
@@ -161,7 +162,6 @@ def to_float(string,
              rex_method: str = 'mean',
              rex_warning: bool = True):
     '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
-    import numpy as np
     from warnings import warn
     if not isinstance(string, str):
         warn('输入应为字符')
@@ -203,7 +203,6 @@ def extract_num(string,
     :return: list or float
     '''
     import re
-    import numpy as np
     from warnings import warn
     string = str(string)
     lis = re.findall(r"\d+\.?\d*", string)
@@ -252,3 +251,26 @@ def add(x, y):
     if isinstance(y, str):
         y = to_float(y)
     return x + y
+
+
+def segment(x, gap, sep: str = '-', unit: str = ''):
+    '''
+    区间段划分工具
+    :param x: 数值
+    :param gap: 间隔
+    :param unit: 单位
+    :param sep: 分隔符
+    :return: 区间段
+    '''
+    if isinstance(gap, list):
+        raise AttributeError('自定义分段功能尚未开发完成')
+    else:
+        if x >= 0:
+            l = int(x / gap) * gap
+            h = l + gap
+            s = '%d%s%d%s' % (l, sep, h, unit)
+        else:
+            l = int(x / gap) * gap
+            h = l - gap
+            s = '%d%s%d%s' % (h, sep, l, unit)
+    return s
