@@ -1,5 +1,5 @@
 # Ricco
-常用工具包
+实用工具包
 
 ## Installation
 ```bash
