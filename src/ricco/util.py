@@ -162,10 +162,7 @@ def to_float(string,
              rex_method: str = 'mean',
              rex_warning: bool = True):
     '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
-    from warnings import warn
-    if not isinstance(string, str):
-        warn('输入应为字符')
-        string = str(string)
+    string = str(string)
     if rex:
         if rex_warning:
             import warnings

@@ -89,7 +89,7 @@ def geocode_df(df,
                                '解析项目名': [lnglat[2]]})
         empty = empty.append(add_df)
     df = df.merge(empty, how='left', on=addr_m)
-    if addr_m in df.columns:
+    if isinstance(addr_col, list):
         df.drop(addr_m, axis=1, inplace=True)
     df = BD2WGS(df)
     if 'name' not in df.columns:

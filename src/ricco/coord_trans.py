@@ -331,7 +331,7 @@ def BD2WGS(df_org):
     df_org['lng'] = df_org['lng'].astype(float)
     df_org['lat'] = df_org['lat'].astype(float)
     df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
-    print('坐标转换完成：百度坐标系 -->> WGS84')
+    print('坐标转换完成：bd09（百度）→ WGS84')
     return df_org
 
 
@@ -343,5 +343,5 @@ def GD2WGS(df_org):
     df_org['lng'] = df_org['lng'].astype(float)
     df_org['lat'] = df_org['lat'].astype(float)
     df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
-    print('坐标转换完成：高德（火星坐标系） -->> WGS84')
+    print('坐标转换完成：gcj02（高德） → WGS84')
     return df_org
