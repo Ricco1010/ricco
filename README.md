@@ -83,17 +83,16 @@ pip install -i https://pypi.org/pypi ricco --upgrade
 
 * func: `to_float(string, rex: bool = False, rex_method: str = 'mean', rex_warning: bool = True)`
   * 将字符串转为数字格式，无法转换的为空值，同时支持正则表达式提取数字，支持%格式数据
-  * `rex`：是否适用正则表达式
   * `rex_method`：正则表达式参数，参考extract()中method
   * `rex_warning`：可忽略使用方法的警告信息
-  * 正则方式提取无法识别%类型的数值
+    * 正则方式提取无法识别%类型的数值
   * 示例代码：
     ```python
     from ricco import to_float
     
     to_float('10%')
     # 0.1
-    to_float('10--', rex=1, rex_warning=0)
+    to_float('10--', rex_method='mean', rex_warning=False)
     # 10.0
     ```
 * func: `serise_to_float(serise)`
