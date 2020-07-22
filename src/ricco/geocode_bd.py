@@ -8,9 +8,10 @@ from tqdm import tqdm
 from ricco.coord_trans import BD2WGS
 from ricco.util import reset2name
 
+
 def get_lnglat(addr: str,
                addr_type: str,
-               city: str = ''):
+               city: str):
     '''
     根据地址获取经纬度
 
@@ -89,7 +90,7 @@ def geocode_df(df,
                                '解析项目名': [lnglat[2]]})
         empty = empty.append(add_df)
     df = df.merge(empty, how='left', on=addr_m)
-    if addr_m in df.columns:
+    if isinstance(addr_col, list):
         df.drop(addr_m, axis=1, inplace=True)
     df = BD2WGS(df)
     if 'name' not in df.columns:

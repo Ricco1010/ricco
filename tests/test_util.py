@@ -1,4 +1,4 @@
-#-*-coding: GBK -*-
+# -*-coding: GBK -*-
 import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
@@ -7,6 +7,7 @@ from ricco.util import add
 from ricco.util import extract_num
 from ricco.util import pinyin
 from ricco.util import reset2name
+from ricco.util import segment
 from ricco.util import to_float
 
 
@@ -38,8 +39,12 @@ def test_extract_num():
 
 def test_to_float():
     assert to_float('6.5') == 6.5
-    assert to_float('p6.5', rex=True, rex_warning=False) == 6.5
-    assert to_float('p6.5xx3.5', rex=True, rex_warning=False) == 5.0
-    assert to_float('p6.5xx3.5', rex=True, rex_method='min', rex_warning=False) == 3.5
-    assert to_float('p6.5xx3.5', rex=True, rex_method='max', rex_warning=False) == 6.5
-    assert to_float('p6.5xx3.5', rex=True, rex_method='sum', rex_warning=False) == 10.0
+    assert to_float('p6.5', rex_method='mean', rex_warning=False) == 6.5
+    assert to_float('p6.5xx3.5', rex_method='mean', rex_warning=False) == 5.0
+    assert to_float('p6.5xx3.5', rex_method='min', rex_warning=False) == 3.5
+    assert to_float('p6.5xx3.5', rex_method='max', rex_warning=False) == 6.5
+    assert to_float('p6.5xx3.5', rex_method='sum', rex_warning=False) == 10.0
+
+def test_segment():
+    assert segment(55, 20) == '40-60'
+    assert segment(55, 20, sep='--', unit='รื') == '40--60รื'

@@ -278,8 +278,7 @@ def coord_transform(lng: float, lat: float, from_srs: SRS, to_srs: SRS):
 
     key = (from_srs, to_srs)
     if key not in _fn_mapping:
-        raise NotImplementedError('not support transformation from %s to %s' %
-                                  (from_srs, to_srs))
+        raise NotImplementedError('not support transformation from %s to %s' % (from_srs, to_srs))
     lat, lng = _fn_mapping[key](lat, lng)
     return lng, lat
 
@@ -331,7 +330,7 @@ def BD2WGS(df_org):
     df_org['lng'] = df_org['lng'].astype(float)
     df_org['lat'] = df_org['lat'].astype(float)
     df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
-    print('坐标转换完成：百度坐标系 -->> WGS84')
+    print('坐标转换完成：bd09（百度）→ WGS84')
     return df_org
 
 
@@ -343,5 +342,5 @@ def GD2WGS(df_org):
     df_org['lng'] = df_org['lng'].astype(float)
     df_org['lat'] = df_org['lat'].astype(float)
     df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
-    print('坐标转换完成：高德（火星坐标系） -->> WGS84')
+    print('坐标转换完成：gcj02（高德） → WGS84')
     return df_org
