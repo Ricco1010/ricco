@@ -8,9 +8,10 @@ from tqdm import tqdm
 from ricco.coord_trans import BD2WGS
 from ricco.util import reset2name
 
+
 def get_lnglat(addr: str,
                addr_type: str,
-               city: str = ''):
+               city: str):
     '''
     根据地址获取经纬度
 

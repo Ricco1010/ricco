@@ -278,8 +278,7 @@ def coord_transform(lng: float, lat: float, from_srs: SRS, to_srs: SRS):
 
     key = (from_srs, to_srs)
     if key not in _fn_mapping:
-        raise NotImplementedError('not support transformation from %s to %s' %
-                                  (from_srs, to_srs))
+        raise NotImplementedError('not support transformation from %s to %s' % (from_srs, to_srs))
     lat, lng = _fn_mapping[key](lat, lng)
     return lng, lat
 

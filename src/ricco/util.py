@@ -158,16 +158,15 @@ def csv2shp(filename):
 
 
 def to_float(string,
-             rex: bool = False,
-             rex_method: str = 'mean',
+             rex_method: str = '',
              rex_warning: bool = True):
     '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
     string = str(string)
-    if rex:
+    if rex_method != '':
         if rex_warning:
             import warnings
-            message = '''Using 'rex=True' will ignore a value with a percent sign '%', try 'rex_warning=False' to avoid this warning.
-                        You are using default "rex_method='mean'". Besides, There are alternatives of 'max' and 'min' to chose.'''
+            message = '''Using 'rex_method' will ignore a value with a percent sign '%', 
+                        try 'rex_warning=False' to avoid this warning. '''
             warnings.warn(message)
         string = str(extract_num(string, num_type='float', method=rex_method))
     if '%' in string:
@@ -253,11 +252,12 @@ def add(x, y):
 def segment(x, gap, sep: str = '-', unit: str = ''):
     '''
     区间段划分工具
+
     :param x: 数值
     :param gap: 间隔
-    :param unit: 单位
-    :param sep: 分隔符
-    :return: 区间段
+    :param unit: 单位，末尾
+    :param sep: 分隔符，中间
+    :return: 区间段 aaa分隔符bbbd单位
     '''
     if isinstance(gap, list):
         raise AttributeError('自定义分段功能尚未开发完成')

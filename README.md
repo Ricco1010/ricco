@@ -98,6 +98,22 @@ pip install -i https://pypi.org/pypi ricco --upgrade
     ```
 * func: `serise_to_float(serise)`
   * pandas.Series: str --> float
+  
+ 
+ * func: `segment(x, gap, sep: str = '-', unit: str = '')`
+   * 区间段划分工具
+   * `x`: 输入的数值
+   * `gap`: 划分间隔，数值或list
+   * `sep`: 分隔符，默认为'-' 
+   * `unit`: 分段末尾的单位，如米、元等
+   * 示例代码：
+   
+```python
+from ricco import segment
+
+segment(55, 20, sep='-', unit='米')
+# 40-60米
+```
 ---
 
 
