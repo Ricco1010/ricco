@@ -65,6 +65,7 @@ def isochrone(key, lng, lat, cost, mode='walk'):
 
 
 class Config(object):
+    # 每月更换一次key
     key = 'pk.eyJ1IjoicmljY28xMDEwIiwiYSI6ImNrY3k1bmVtNTA2a3kydGw3dWkzNXk2dDYifQ.d4RCEUKv4LDAAEqhgAFTzA'
     walk = 'walk'
     vehicle = 'vehicle'
@@ -82,10 +83,3 @@ def isochrone_df(df, cost, mode='walk'):
         elif isinstance(cost, int):
             df.loc[i, 'geometry'] = geom_list
     return df
-
-# if __name__ == '__main__':
-#     from ricco import rdf
-#
-#     df = rdf('广州_栅格底表.csv')
-#     df = isochrone_df(df, cost=600)
-#     df.to_csv('广州_栅格底表_isochrone.csv', index=0)
