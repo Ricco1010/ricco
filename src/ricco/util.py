@@ -25,8 +25,8 @@ def max_grid():
 
 def rdf(filepath):
     '''
-    常用文件讀取方式
-    :param filepath: 文件路徑
+    常用文件读取，支持.csv/.xlsx/.shp
+    :param filepath: 文件路径
     :return: dataframe
     '''
     max_grid()
@@ -59,12 +59,18 @@ def to_csv_by_line(filename, data):
         csv_write.writerow(data)
 
 
-def read_and_rename(file):
-    col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng',
-                'lat_WGS': 'lat', 'lon_WGS': 'lng',
+def rename2lnglat(df):
+    '''将df中的经纬度重命名为lng和lat'''
+    col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng', 'lat_WGS': 'lat', 'lon_WGS': 'lng',
                 'longitude': 'lng', 'latitude': 'lat', "geom": "geometry"}
-    df = rdf(file)
     df = df.rename(columns=col_dict)
+    return df
+
+
+def read_and_rename(file):
+    '''读取文件并将经纬度统一为lng和lat，并按照经纬度排序'''
+    df = rdf(file)
+    df = rename2lnglat(df)
     if 'lat' in df.columns:
         df.sort_values(['lat', 'lng'], inplace=True)
         df = df.reset_index(drop=True)
@@ -72,7 +78,12 @@ def read_and_rename(file):
 
 
 def reset2name(df, origin: bool = False):
-    if origin:
+    '''
+    重置索引，并重命名为name， 默认将索引重置为有序完整的数字（重置两次）
+
+    :param origin: 为True时，将原来的索引作为name列（重置一次）
+    '''
+    if not origin:
         df = df.reset_index(drop=True)
     df = df.reset_index().rename(columns={'index': 'name'})
     return df
