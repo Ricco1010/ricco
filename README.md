@@ -102,17 +102,29 @@ pip install -i https://pypi.org/pypi ricco --upgrade
  * func: `segment(x, gap, sep: str = '-', unit: str = '')`
    * 区间段划分工具
    * `x`: 输入的数值
-   * `gap`: 划分间隔，数值或list
+   * `gap`: 数值：划分间隔；list：自定义分段
    * `sep`: 分隔符，默认为'-' 
    * `unit`: 分段末尾的单位，如米、元等
    * 示例代码：
    
-```python
-from ricco import segment
-
-segment(55, 20, sep='-', unit='米')
-# 40-60米
-```
+    ```python
+    from ricco import segment
+    
+    segment(55, 20, sep='-', unit='米')
+    # 40-60米
+    segment(55, 20)
+    # '40-60'
+    segment(55, 20, sep='--', unit='米') 
+    # '40--60米'
+    segment(55, [20]) 
+    # '20以上'
+    segment(10, [20, 50], unit='米') 
+    # '20米以下'
+    segment(20, [20, 50], unit='米') 
+    # '20-50米'
+    segment(50, [20, 50], unit='米') 
+    # '50米以上'
+    ```
 ---
 
 
