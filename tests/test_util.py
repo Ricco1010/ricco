@@ -1,21 +1,12 @@
 # -*-coding: GBK -*-
-import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from ricco.util import add
 from ricco.util import extract_num
 from ricco.util import pinyin
 from ricco.util import reset2name
 from ricco.util import segment
 from ricco.util import to_float
-
-
-def test_add():
-    assert add(1, 1) == 2
-    assert add('1', 1) == 2.0
-    assert add(1, '1') == 2.0
-    assert add('1', '1') == 2.0
 
 
 def test_pinyin():
@@ -45,6 +36,11 @@ def test_to_float():
     assert to_float('p6.5xx3.5', rex_method='max', rex_warning=False) == 6.5
     assert to_float('p6.5xx3.5', rex_method='sum', rex_warning=False) == 10.0
 
+
 def test_segment():
     assert segment(55, 20) == '40-60'
     assert segment(55, 20, sep='--', unit='米') == '40--60米'
+    assert segment(55, [20]) == '20以上'
+    assert segment(10, [20, 50], unit='米') == '20米以下'
+    assert segment(20, [20, 50], unit='米') == '20-50米'
+    assert segment(50, [20, 50], unit='米') == '50米以上'
