@@ -25,7 +25,8 @@ def max_grid():
 
 def rdf(filepath):
     '''
-    常用文件读取，支持.csv/.xlsx/.shp
+    常用文件读取函数，支持.csv/.xlsx/.shp
+
     :param filepath: 文件路径
     :return: dataframe
     '''
@@ -171,10 +172,17 @@ def csv2shp(filename):
 def to_float(string,
              rex_method: str = '',
              rex_warning: bool = True):
-    '''字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值'''
+    '''
+    字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值
+
+    :param string:  包含数字的字符串
+    :param rex_method: 正则表达式提取一个或多个值后的求值方法，max/min/sum/mean
+    :param rex_warning: 当使用正则方法且有百分号时出现的警告
+    :return:
+    '''
     string = str(string)
     if rex_method != '':
-        if rex_warning:
+        if rex_warning & ('%' in string):
             import warnings
             message = '''Using 'rex_method' will ignore a value with a percent sign '%', 
                         try 'rex_warning=False' to avoid this warning. '''
@@ -193,9 +201,16 @@ def to_float(string,
     return f
 
 
-def serise_to_float(serise):
-    '''pandas.Series: str --> float'''
-    return serise.apply(lambda x: to_float(x))
+def serise_to_float(serise, rex_method='', rex_warning=False):
+    '''
+    pandas.Series: str --> float
+
+    :param serise: pandas的列
+    :param rex_method: 正则表达式提取一个或多个值后的求值方法，max/min/sum/mean
+    :param rex_warning: 当使用正则方法且有百分号时出现的警告
+    :return:
+    '''
+    return serise.apply(lambda x: to_float(x, rex_method=rex_method, rex_warning=rex_warning))
 
 
 def extract_num(string,
