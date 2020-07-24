@@ -241,14 +241,6 @@ def ensure_list(val):
     return [val]
 
 
-def add(x, y):
-    if isinstance(x, str):
-        x = to_float(x)
-    if isinstance(y, str):
-        y = to_float(y)
-    return x + y
-
-
 def segment(x, gap, sep: str = '-', unit: str = ''):
     '''
     区间段划分工具
@@ -257,10 +249,24 @@ def segment(x, gap, sep: str = '-', unit: str = ''):
     :param gap: 间隔
     :param unit: 单位，末尾
     :param sep: 分隔符，中间
-    :return: 区间段 aaa分隔符bbbd单位
+    :return: 区间段 'num1分隔符num2单位'：‘80-100米’
     '''
+
+    def between_list(x, lis):
+        for i in reversed(range(len(lis) - 1)):
+            if x >= lis[i]:
+                return lis[i], lis[i + 1]
+
     if isinstance(gap, list):
-        raise AttributeError('自定义分段功能尚未开发完成')
+        gap = sorted(list(set(gap)))
+        if x < gap[0]:
+            return '%d%s以下' % (gap[0], unit)
+        elif x >= gap[-1]:
+            return '%d%s以上' % (gap[-1], unit)
+        else:
+            l = between_list(x, gap)[0]
+            h = between_list(x, gap)[1]
+            s = '%d%s%d%s' % (l, sep, h, unit)
     else:
         if x >= 0:
             l = int(x / gap) * gap
@@ -271,3 +277,14 @@ def segment(x, gap, sep: str = '-', unit: str = ''):
             h = l - gap
             s = '%d%s%d%s' % (h, sep, l, unit)
     return s
+
+
+def standard(serise, q=0.01, min_score=0, minus=False):
+    if minus:
+        serise = 1 / (serise + 1)
+    max_ = serise.quantile(1 - q)
+    min_ = serise.quantile(q)
+    serise = serise.apply(lambda x: (x - min_) / (max_ - min_) * (100 - min_score) + min_score)
+    serise[serise >= 100] = 100
+    serise[serise <= min_score] = min_score
+    return serise
