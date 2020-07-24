@@ -1,4 +1,4 @@
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 
 from ricco.coord_trans import BD2WGS
 from ricco.coord_trans import GD2WGS
