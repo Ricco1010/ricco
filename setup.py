@@ -34,8 +34,8 @@ setup(name='ricco',
           'numpy>=0.17',
           'pandas>=0.24',
           'geojson>=2.5.0',
-          'pypinyin>=0.35.0'
-          'tqdm>=4.47.0'
+          'pypinyin>=0.35.0',
+          'tqdm>=4.47.0',
           'xlrd>=1.2.0'
 
       ],
