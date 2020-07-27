@@ -35,6 +35,8 @@ setup(name='ricco',
           'pandas>=0.24',
           'geojson>=2.5.0',
           'pypinyin>=0.35.0'
+          'tqdm>=4.47.0'
+          'xlrd>=1.2.0'
 
       ],
       classifiers=[
@@ -46,4 +48,4 @@ setup(name='ricco',
           'Programming Language :: Python :: 3',
           'Topic :: Software Development :: Libraries',
       ],
-      url='')
+      url='https://github.com/Ricco1010/ricco')

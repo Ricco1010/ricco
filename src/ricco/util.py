@@ -221,7 +221,6 @@ def extract_num(string,
     提取字符串中的数值，默认返回所有数值组成的列表
 
     :param method: 可选max/min/mean，返回为数值
-
     :return: list or float
     '''
     import re
