@@ -262,7 +262,7 @@ _fn_mapping = {
 }
 
 
-def coord_transform(lng: float, lat: float, from_srs: SRS, to_srs: SRS):
+def coord_transform(lng: float, lat: float, from_srs: (SRS, str), to_srs: (SRS, str)):
     """坐标系转换
 
     :param lng: 输入的经度
@@ -322,25 +322,33 @@ def lnglat_check(df):
         raise KeyError('经纬度列名必须为lng和lat')
 
 
-def BD2WGS(df_org):
+def coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
+    '''
+    坐标批量转换工具
+
+    :param df_org: 输入的dataframe，经纬度为lng和lat
+    :param srs_from: 当前坐标系，可选'wgs84', 'bd09', 'gcj02'
+    :param srs_to: 要转的坐标系，可选'wgs84', 'bd09', 'gcj02'
+    :return:
+    '''
     def fn(row):
-        return coord_transform(row['lng'], row['lat'], SRS.bd09, SRS.wgs84)
+        return coord_transform(row['lng'], row['lat'], srs_from, srs_to)
 
     lnglat_check(df_org)
     df_org['lng'] = df_org['lng'].astype(float)
     df_org['lat'] = df_org['lat'].astype(float)
     df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
-    print('坐标转换完成：bd09（百度）→ WGS84')
+    print('坐标转换完成：%s → %s' % (srs_from, srs_to))
+    return df_org
+
+
+def BD2WGS(df_org):
+    '''百度转WGS84'''
+    df_org = coord_trans_x2y(df_org, SRS.bd09, SRS.wgs84)
     return df_org
 
 
 def GD2WGS(df_org):
-    def fn(row):
-        return coord_transform(row['lng'], row['lat'], SRS.gcj02, SRS.wgs84)
-
-    lnglat_check(df_org)
-    df_org['lng'] = df_org['lng'].astype(float)
-    df_org['lat'] = df_org['lat'].astype(float)
-    df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
-    print('坐标转换完成：gcj02（高德） → WGS84')
+    '''高德转WGS84'''
+    df_org = coord_trans_x2y(df_org, SRS.gcj02, SRS.wgs84)
     return df_org
