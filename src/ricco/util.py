@@ -23,7 +23,7 @@ def max_grid():
             decrement = True
 
 
-def rdf(filepath):
+def rdf(filepath: str) -> pd.DataFrame:
     '''
     常用文件读取函数，支持.csv/.xlsx/.shp
 
@@ -50,17 +50,17 @@ def rdf(filepath):
     return df
 
 
-def save2csv(df, filename, encoding='GBK'):
+def save2csv(df, filename: str, encoding='GBK'):
     df.to_csv(filename, index=0, encoding=encoding)
 
 
-def to_csv_by_line(filename, data):
+def to_csv_by_line(filename: str, data: list):
     with open(filename, 'a') as f:
         csv_write = csv.writer(f, dialect='excel')
         csv_write.writerow(data)
 
 
-def rename2lnglat(df):
+def rename2lnglat(df) -> pd.DataFrame:
     '''将df中的经纬度重命名为lng和lat'''
     col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng', 'lat_WGS': 'lat', 'lon_WGS': 'lng',
                 'longitude': 'lng', 'latitude': 'lat', "geom": "geometry"}
@@ -68,7 +68,7 @@ def rename2lnglat(df):
     return df
 
 
-def read_and_rename(file):
+def read_and_rename(file: str) -> pd.DataFrame:
     '''读取文件并将经纬度统一为lng和lat，并按照经纬度排序'''
     df = rdf(file)
     df = rename2lnglat(df)
@@ -78,7 +78,7 @@ def read_and_rename(file):
     return df
 
 
-def reset2name(df, origin: bool = False):
+def reset2name(df: pd.DataFrame, origin: bool = False) -> pd.DataFrame:
     '''
     重置索引，并重命名为name， 默认将索引重置为有序完整的数字（重置两次）
 
@@ -90,7 +90,7 @@ def reset2name(df, origin: bool = False):
     return df
 
 
-def pinyin(word: str):
+def pinyin(word: str) -> str:
     '''将中文转换为汉语拼音'''
     import pypinyin
     if isinstance(word, str):
@@ -102,13 +102,13 @@ def pinyin(word: str):
     return s
 
 
-def mkdir_2(path):
+def mkdir_2(path: str):
     '''新建文件夹，忽略存在的文件夹'''
     if not os.path.isdir(path):
         os.makedirs(path)
 
 
-def split_csv(filename, n=5):
+def split_csv(filename: str, n=5):
     '''将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中'''
     dir_name = os.path.splitext(os.path.basename(filename))[0]
     abs_path = os.getcwd()
@@ -142,16 +142,16 @@ def valid_check(polygon_geom):
         raise Exception('有效性检验失败，请检查并修复面')
 
 
-def shp2csv(shpfile_name):
+def shp2csv(shpfile_name: str):
     '''shapefile 转 csv 文件'''
     df = rdf(shpfile_name)
     df['geometry'] = df['geometry'].apply(lambda x: dumps(x, hex=True, srid=4326))
     df.crs = 'epsg:4326'
     save_path = os.path.splitext(shpfile_name)[0] + '.csv'
-    df.to_csv(save_path, encoding='utf-8-sig', index=0)
+    df.to_csv(save_path, encoding='utf-8-sig', index=False)
 
 
-def csv2shp(filename):
+def csv2shp(filename: str):
     '''csv文件 转 shapefile'''
     import fiona
     df = rdf(filename)
@@ -169,7 +169,7 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
-def per2float(string: str):
+def per2float(string: str) -> float:
     if '%' in string:
         string = string.replace('%', '')
         return float(string) / 100
@@ -252,7 +252,7 @@ def ensure_list(val):
     return [val]
 
 
-def segment(x, gap, sep: str = '-', unit: str = ''):
+def segment(x, gap, sep: str = '-', unit: str = '') -> str:
     '''
     区间段划分工具
 
@@ -290,7 +290,10 @@ def segment(x, gap, sep: str = '-', unit: str = ''):
     return s
 
 
-def standard(serise, q=0.01, min_score=0, minus=False):
+def standard(serise: (pd.Series, list),
+             q: float = 0.01,
+             min_score: float = 0,
+             minus: bool = False) -> (pd.Series, list):
     if minus:
         serise = 1 / (serise + 1)
     max_ = serise.quantile(1 - q)
@@ -299,8 +302,3 @@ def standard(serise, q=0.01, min_score=0, minus=False):
     serise[serise >= 100] = 100
     serise[serise <= min_score] = min_score
     return serise
-
-
-if __name__ == '__main__':
-    a = to_float('')
-    print(a)

@@ -59,40 +59,32 @@ pip install -i https://pypi.org/pypi ricco --upgrade
     df = reset2name(df)
     ```
 
-* func: `extract_num(string, num_type='str', method='', join_list=False)`
-  * 使用正则表达式提取字符串中的数字
-  * `num_type`：返回的列表中的数字格式，可选：int, float, str
-  * `method`：对列表中的数字进行计算，得到唯一值，可选：max, min, mean, sum
-  * `join_list`：是否对列表中的字符串进行拼接，True or False
-  * 示例代码：
-    ```python
-    from ricco import extract_num
-    
-    extract_num('---1231```93.22dddd')
-    # ['1231', '93.22']
-    extract_num('---1231```93.22dddd', join_list=True)
-    # '123193.22'
-    extract_num('---1231```93.22dddd', num_type='float')
-    # [1231.0, 93.22]
-    extract_num('---1231```93.22dddd', num_type='int')
-    # [1231, 93]
-    extract_num('---1231```93.22dddd', num_type='int',method='mean')
-    # 662.0
-    ```
+* func: ```
+        extract_num(string: str,
+                num_type: str = 'str',
+                method: str = 'list',
+                join_list: bool = False,
+                ignore_pct: bool = True,
+                multi_warning=False)```
+   
+          提取字符串中的数值，默认返回所有数字组成的列表
+        :param string: 输入的字符串
+        :param num_type:  输出的数字类型，int/float/str，默认为str
+        :param method: 结果计算方法，对结果列表求最大/最小/平均/和/等，numpy方法，默认返回列表本身
+        :param join_list: 是否合并列表，默认FALSE
+        :param ignore_pct: 是否忽略百分号，默认True
+        
 
 
-* func: `to_float(string, rex: bool = False, rex_method: str = 'mean', rex_warning: bool = True)`
+* func: `to_float(string, rex_method: str = 'mean')`
   * 将字符串转为数字格式，无法转换的为空值，同时支持正则表达式提取数字，支持%格式数据
-  * `rex_method`：正则表达式参数，参考extract()中method
-  * `rex_warning`：可忽略使用方法的警告信息
-    * 正则方式提取无法识别%类型的数值
   * 示例代码：
     ```python
     from ricco import to_float
     
     to_float('10%')
     # 0.1
-    to_float('10--', rex_method='mean', rex_warning=False)
+    to_float('10--')
     # 10.0
     ```
 * func: `serise_to_float(serise)`
