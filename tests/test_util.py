@@ -31,12 +31,13 @@ def test_extract_num():
 def test_to_float():
     assert to_float('6.5') == 6.5
     assert to_float('6.5%') == 0.065
-    assert to_float('p6.5%', rex_method='mean', rex_warning=False) == 6.5
-    assert to_float('p6.5', rex_method='mean') == 6.5
-    assert to_float('p6.5xx3.5', rex_method='mean') == 5.0
-    assert to_float('p6.5xx3.5', rex_method='min') == 3.5
-    assert to_float('p6.5xx3.5', rex_method='max') == 6.5
-    assert to_float('p6.5xx3.5', rex_method='sum') == 10.0
+    assert to_float('6.5%', ignore_pct=True) == 6.5
+    assert to_float('p6.5%') == 0.065
+    assert to_float('p6.5') == 6.5
+    assert to_float('p6.5xx3.5', multi_warning=False) == 5.0
+    assert to_float('p6.5xx3.5', rex_method='min', multi_warning=False) == 3.5
+    assert to_float('p6.5xx3.5', rex_method='max', multi_warning=False) == 6.5
+    assert to_float('p6.5xx3.5', rex_method='sum', multi_warning=False) == 10.0
 
 
 def test_segment():

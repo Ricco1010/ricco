@@ -23,7 +23,7 @@ def max_grid():
             decrement = True
 
 
-def rdf(filepath):
+def rdf(filepath: str) -> pd.DataFrame:
     '''
     常用文件读取函数，支持.csv/.xlsx/.shp
 
@@ -50,17 +50,17 @@ def rdf(filepath):
     return df
 
 
-def save2csv(df, filename, encoding='GBK'):
+def save2csv(df, filename: str, encoding='GBK'):
     df.to_csv(filename, index=0, encoding=encoding)
 
 
-def to_csv_by_line(filename, data):
+def to_csv_by_line(filename: str, data: list):
     with open(filename, 'a') as f:
         csv_write = csv.writer(f, dialect='excel')
         csv_write.writerow(data)
 
 
-def rename2lnglat(df):
+def rename2lnglat(df) -> pd.DataFrame:
     '''将df中的经纬度重命名为lng和lat'''
     col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng', 'lat_WGS': 'lat', 'lon_WGS': 'lng',
                 'longitude': 'lng', 'latitude': 'lat', "geom": "geometry"}
@@ -68,7 +68,7 @@ def rename2lnglat(df):
     return df
 
 
-def read_and_rename(file):
+def read_and_rename(file: str) -> pd.DataFrame:
     '''读取文件并将经纬度统一为lng和lat，并按照经纬度排序'''
     df = rdf(file)
     df = rename2lnglat(df)
@@ -78,7 +78,7 @@ def read_and_rename(file):
     return df
 
 
-def reset2name(df, origin: bool = False):
+def reset2name(df: pd.DataFrame, origin: bool = False) -> pd.DataFrame:
     '''
     重置索引，并重命名为name， 默认将索引重置为有序完整的数字（重置两次）
 
@@ -90,7 +90,7 @@ def reset2name(df, origin: bool = False):
     return df
 
 
-def pinyin(word: str):
+def pinyin(word: str) -> str:
     '''将中文转换为汉语拼音'''
     import pypinyin
     if isinstance(word, str):
@@ -102,13 +102,13 @@ def pinyin(word: str):
     return s
 
 
-def mkdir_2(path):
+def mkdir_2(path: str):
     '''新建文件夹，忽略存在的文件夹'''
     if not os.path.isdir(path):
         os.makedirs(path)
 
 
-def split_csv(filename, n=5):
+def split_csv(filename: str, n=5):
     '''将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中'''
     dir_name = os.path.splitext(os.path.basename(filename))[0]
     abs_path = os.getcwd()
@@ -142,16 +142,16 @@ def valid_check(polygon_geom):
         raise Exception('有效性检验失败，请检查并修复面')
 
 
-def shp2csv(shpfile_name):
+def shp2csv(shpfile_name: str):
     '''shapefile 转 csv 文件'''
     df = rdf(shpfile_name)
     df['geometry'] = df['geometry'].apply(lambda x: dumps(x, hex=True, srid=4326))
     df.crs = 'epsg:4326'
     save_path = os.path.splitext(shpfile_name)[0] + '.csv'
-    df.to_csv(save_path, encoding='utf-8-sig', index=0)
+    df.to_csv(save_path, encoding='utf-8-sig', index=False)
 
 
-def csv2shp(filename):
+def csv2shp(filename: str):
     '''csv文件 转 shapefile'''
     import fiona
     df = rdf(filename)
@@ -169,90 +169,76 @@ def csv2shp(filename):
         print('已将列名转为汉语拼音进行转换')
 
 
-def to_float(string,
-             rex_method: str = '',
-             rex_warning: bool = True):
-    '''
-    字符串转换为float，无法转换的转为空值，可用选正则表达式提取所有数字的最大最小或均值
-
-    :param string:  包含数字的字符串
-    :param rex_method: 正则表达式提取一个或多个值后的求值方法，max/min/sum/mean
-    :param rex_warning: 当使用正则方法且有百分号时出现的警告
-    :return:
-    '''
-    string = str(string)
-    if rex_method != '':
-        if rex_warning & ('%' in string):
-            import warnings
-            message = '''Using 'rex_method' will ignore a value with a percent sign '%', 
-                        try 'rex_warning=False' to avoid this warning. '''
-            warnings.warn(message)
-        string = str(extract_num(string, num_type='float', method=rex_method))
+def per2float(string: str) -> float:
     if '%' in string:
         string = string.replace('%', '')
-        string = str(to_float(string) / 100)
-    if string != None:
-        try:
-            f = float(string)
-        except ValueError:
-            f = np.nan
+        return float(string) / 100
     else:
-        f = np.nan
-    return f
+        return float(string)
 
 
-def serise_to_float(serise, rex_method='', rex_warning=False):
+def extract_num(string: str,
+                num_type: str = 'str',
+                method: str = 'list',
+                join_list: bool = False,
+                ignore_pct: bool = True,
+                multi_warning=False):
     '''
-    pandas.Series: str --> float
+    提取字符串中的数值，默认返回所有数字组成的列表
 
-    :param serise: pandas的列
-    :param rex_method: 正则表达式提取一个或多个值后的求值方法，max/min/sum/mean
-    :param rex_warning: 当使用正则方法且有百分号时出现的警告
+    :param string: 输入的字符串
+    :param num_type:  输出的数字类型，int/float/str，默认为str
+    :param method: 结果计算方法，对结果列表求最大/最小/平均/和/等，numpy方法，默认返回列表本身
+    :param join_list: 是否合并列表，默认FALSE
+    :param ignore_pct: 是否忽略百分号，默认True
     :return:
     '''
-    return serise.apply(lambda x: to_float(x, rex_method=rex_method, rex_warning=rex_warning))
-
-
-def extract_num(string,
-                num_type: str = 'str',
-                method: str = '',
-                join_list: bool = False):
-    '''
-    提取字符串中的数值，默认返回所有数值组成的列表
-
-    :param method: 可选max/min/mean，返回为数值
-    :return: list or float
-    '''
     import re
+    import numpy
     from warnings import warn
+
     string = str(string)
-    lis = re.findall(r"\d+\.?\d*", string)
-    if (num_type == 'float') or (num_type == 'int'):
-        lis2 = [float(i) for i in lis]
-        if num_type == 'int':
-            lis2 = [int(i) for i in lis2]
-        if method != '':
-            if method == 'max':
-                res = max(lis2)
-            elif method == 'min':
-                res = min(lis2)
-            elif method == 'mean':
-                res = np.mean(lis2)
-            elif method == 'sum':
-                res = np.sum(lis2)
-            else:
-                raise Exception("method方法错误，请选择'max', 'min', 'sum' or 'mean'")
-        else:
-            res = lis2
-        if join_list:
-            warn('计算结果无法join')
-    elif num_type == 'str':
-        res = lis
-        if join_list:
-            res = ''.join([str(j) for j in res])
+    if ignore_pct:
+        lis = re.findall(r"\d+\.?\d*", string)
     else:
-        raise Exception('num_type指定错误，可选项为str, float, int')
+        lis = re.findall(r"\d+\.?\d*\%?", string)
+    lis2 = [getattr(numpy, num_type)(per2float(i)) for i in lis]
+    if len(lis2) > 0:
+        if method != 'list':
+            if join_list:
+                raise ValueError("计算结果无法join，只有在method='list'的情况下, 才能使用join_list=True")
+            if multi_warning & (len(lis2) >= 2):
+                warn(f'有多个值进行了{method}运算')
+            res = getattr(numpy, method)(lis2)
+        else:
+            if num_type == 'str':
+                res = ['{:g}'.format(float(j)) for j in lis2]
+            else:
+                res = lis2
+            if join_list:
+                res = ''.join(res)
+    else:
+        res = None
     return res
+
+
+def to_float(string,
+             rex_method: str = 'mean',
+             ignore_pct: bool = False,
+             multi_warning=True):
+    '''
+    字符串转换为float
+    '''
+    return extract_num(string,
+                       num_type='float',
+                       method=rex_method,
+                       ignore_pct=ignore_pct,
+                       multi_warning=multi_warning)
+
+
+def serise_to_float(serise: pd.Series, rex_method: str = 'mean'):
+    '''pandas.Series: str --> float'''
+    return serise.apply(lambda x: to_float(x, rex_method=rex_method))
 
 
 def ensure_list(val):
@@ -266,7 +252,7 @@ def ensure_list(val):
     return [val]
 
 
-def segment(x, gap, sep: str = '-', unit: str = ''):
+def segment(x, gap, sep: str = '-', unit: str = '') -> str:
     '''
     区间段划分工具
 
@@ -304,7 +290,10 @@ def segment(x, gap, sep: str = '-', unit: str = ''):
     return s
 
 
-def standard(serise, q=0.01, min_score=0, minus=False):
+def standard(serise: (pd.Series, list),
+             q: float = 0.01,
+             min_score: float = 0,
+             minus: bool = False) -> (pd.Series, list):
     if minus:
         serise = 1 / (serise + 1)
     max_ = serise.quantile(1 - q)
