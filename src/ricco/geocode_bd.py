@@ -3,15 +3,15 @@ import ast
 
 import pandas as pd
 import requests
-from tqdm import tqdm
-
 from ricco.coord_trans import BD2WGS
 from ricco.util import reset2name
+from tqdm import tqdm
 
 
 def get_lnglat(addr: str,
                addr_type: str,
-               city: str):
+               city: str,
+               key: str = None):
     '''
     根据地址获取经纬度
 
@@ -20,15 +20,15 @@ def get_lnglat(addr: str,
     :param city: 城市
     :return:
     '''
+    if key == None:
+        key = 'csxAwMRuLWFnOm2gK6vrR30uyx7CSAjW'
 
     def get_address_bd(keywords, city):
-        key = 'csxAwMRuLWFnOm2gK6vrR30uyx7CSAjW'
         basic_ads = 'http://api.map.baidu.com/geocoding/v3/?city={}&address={}&output=json&ak={}'
         address = basic_ads.format(city, keywords, key)
         return address
 
     def get_proj_bd(keywords, city):
-        key = 'csxAwMRuLWFnOm2gK6vrR30uyx7CSAjW'
         basic_ads = 'http://api.map.baidu.com/place/v2/search?query={}&region={}&city_limit=true&output=json&ak={}'
         address = basic_ads.format(keywords, city, key)
         return address
@@ -62,7 +62,8 @@ def get_lnglat(addr: str,
 def geocode_df(df,
                addr_col,
                addr_type: str,
-               city: str = ''):
+               city: str = '',
+               key: str = None):
     '''
     根据地址列或项目名称列解析经纬度
 
@@ -83,7 +84,7 @@ def geocode_df(df,
     prjct = df[addr_m].drop_duplicates()  # 避免重复解析
     empty = pd.DataFrame(columns=[addr_m, 'lng', 'lat', '解析项目名'])
     for i in tqdm(prjct):
-        lnglat = get_lnglat(i, addr_type, city)
+        lnglat = get_lnglat(i, addr_type, city, key=key)
         add_df = pd.DataFrame({addr_m: [i],
                                'lng': [lnglat[0]],
                                'lat': [lnglat[1]],

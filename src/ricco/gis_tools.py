@@ -5,12 +5,11 @@ import warnings
 
 import geopandas as gpd
 import pandas as pd
+from ricco.util import pinyin
+from ricco.util import read_and_rename
 from shapely.wkb import dumps
 from shapely.wkb import loads
 from tqdm import tqdm
-
-from ricco.util import pinyin
-from ricco.util import read_and_rename
 
 warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS', UserWarning)
 
