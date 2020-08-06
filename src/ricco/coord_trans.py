@@ -331,6 +331,7 @@ def coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
     :param srs_to: 要转的坐标系，可选'wgs84', 'bd09', 'gcj02'
     :return:
     '''
+
     def fn(row):
         return coord_transform(row['lng'], row['lat'], srs_from, srs_to)
 
@@ -351,4 +352,19 @@ def BD2WGS(df_org):
 def GD2WGS(df_org):
     '''高德转WGS84'''
     df_org = coord_trans_x2y(df_org, SRS.gcj02, SRS.wgs84)
+    return df_org
+
+
+def coord_trans_geom(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
+    from shapely.wkb import loads, dumps
+    if 'geometry' not in df_org.columns:
+        raise KeyError('必须有geometry列')
+    df_org['geometry'] = df_org['geometry'].apply(
+        lambda x: dumps(coord_transform_geometry(loads(x,
+                                                       hex=True),
+                                                 srs_from,
+                                                 srs_to),
+                        hex=True,
+                        srid=4326))
+    print(f'坐标转换：{srs_from} --> {srs_to}')
     return df_org

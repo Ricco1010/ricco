@@ -23,35 +23,38 @@ def get_lnglat(addr: str,
     if key == None:
         key = 'csxAwMRuLWFnOm2gK6vrR30uyx7CSAjW'
 
-    def get_address_bd(keywords, city):
-        basic_ads = 'http://api.map.baidu.com/geocoding/v3/?city={}&address={}&output=json&ak={}'
-        address = basic_ads.format(city, keywords, key)
-        return address
+    def get_address_bd(addr, city):
+        url = f'http://api.map.baidu.com/geocoding/v3/?city={city}&address={addr}&output=json&ak={key}'
+        return url
 
-    def get_proj_bd(keywords, city):
-        basic_ads = 'http://api.map.baidu.com/place/v2/search?query={}&region={}&city_limit=true&output=json&ak={}'
-        address = basic_ads.format(keywords, city, key)
-        return address
+    def get_proj_bd(addr, city):
+        url = f'http://api.map.baidu.com/place/v2/search?query={addr}&region={city}&city_limit=true&output=json&ak={key}'
+        return url
 
-    keywords = city + '' + addr
     if addr_type == 'addr':
-        address1 = get_address_bd(keywords, city)
+        address1 = get_address_bd(addr, city)
         res1 = requests.get(address1)
         j1 = ast.literal_eval(res1.text)
         name = None
-        if len(j1['result']) > 0:
-            lng = j1['result']['location']['lng']
-            lat = j1['result']['location']['lat']
+        if 'result' in j1:
+            if len(j1['result']) > 0:
+                lng = j1['result']['location']['lng']
+                lat = j1['result']['location']['lat']
+            else:
+                lng, lat = None, None
         else:
             lng, lat = None, None
     elif addr_type == 'name':
-        address1 = get_proj_bd(keywords, city)
+        address1 = get_proj_bd(addr, city)
         res1 = requests.get(address1)
         j1 = ast.literal_eval(res1.text)
-        if len(j1['results']) > 0:
-            name = j1['results'][0]['name']
-            lng = j1['results'][0]['location']['lng']
-            lat = j1['results'][0]['location']['lat']
+        if 'results' in j1:
+            if len(j1['results']) > 0:
+                name = j1['results'][0]['name']
+                lng = j1['results'][0]['location']['lng']
+                lat = j1['results'][0]['location']['lat']
+            else:
+                name, lng, lat = None, None, None
         else:
             name, lng, lat = None, None, None
     else:
@@ -62,8 +65,9 @@ def get_lnglat(addr: str,
 def geocode_df(df,
                addr_col,
                addr_type: str,
-               city: str = '',
-               key: str = None):
+               city: str = None,
+               city_col: (str, list) = None,
+               key=None):
     '''
     根据地址列或项目名称列解析经纬度
 
@@ -74,25 +78,41 @@ def geocode_df(df,
     :return:
     '''
     if isinstance(addr_col, list):
-        addr_m = 'merge_address'
-        df[addr_m] = ''
+        df['fake_address'] = ''
         for add in addr_col:
-            df[addr_m] = df[addr_m].astype(str).str.cat(df[add].astype(str))
+            df['fake_address'] = df['fake_address'].astype(str).str.cat(df[add].astype(str))
     else:
-        addr_m = addr_col
+        df['fake_address'] = df[addr_col]
 
-    prjct = df[addr_m].drop_duplicates()  # 避免重复解析
-    empty = pd.DataFrame(columns=[addr_m, 'lng', 'lat', '解析项目名'])
-    for i in tqdm(prjct):
-        lnglat = get_lnglat(i, addr_type, city, key=key)
-        add_df = pd.DataFrame({addr_m: [i],
+    if city_col == None:
+        if city == None:
+            raise KeyError('city和city_col不能同时为空')
+        else:
+            df['fake_city'] = city
+    else:
+        df['fake_city'] = df[city_col]
+        if city != None:
+            import warnings
+            warnings.warn('city和city_col同时存在的情况下，优先使用city_col')
+
+    prjct = df[~df['fake_city'].isna()][['fake_address', 'fake_city']].drop_duplicates()  # 避免重复解析
+    prjct = prjct.reset_index(drop=True)
+    empty = pd.DataFrame(columns=['fake_city', 'fake_address', 'lng', 'lat', '解析项目名'])
+
+    for i in tqdm(prjct.index):
+        lnglat = get_lnglat(addr=prjct['fake_address'][i],
+                            addr_type=addr_type,
+                            city=prjct['fake_city'][i],
+                            key=key)
+        add_df = pd.DataFrame({'fake_city': [prjct['fake_city'][i]],
+                               'fake_address': [prjct['fake_address'][i]],
                                'lng': [lnglat[0]],
                                'lat': [lnglat[1]],
                                '解析项目名': [lnglat[2]]})
         empty = empty.append(add_df)
-    df = df.merge(empty, how='left', on=addr_m)
-    if isinstance(addr_col, list):
-        df.drop(addr_m, axis=1, inplace=True)
+
+    df = df.merge(empty, how='left', on=['fake_city', 'fake_address'])
+    df.drop(['fake_city', 'fake_address'], axis=1, inplace=True)
     df = BD2WGS(df)
     if 'name' not in df.columns:
         df = reset2name(df)
