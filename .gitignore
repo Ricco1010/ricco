@@ -3,7 +3,7 @@
 *.log
 src/ricco/*.csv
 /*.pkl*
-
+**/*.csv
 test.py
 .idea/
 
