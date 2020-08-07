@@ -1,6 +1,4 @@
 # -*-coding: GBK -*-
-import ast
-
 import pandas as pd
 import requests
 from ricco.coord_trans import BD2WGS
@@ -109,5 +107,3 @@ def geocode_df(df,
         df = reset2name(df)
     df = BD2WGS(df)
     return df
-if __name__ == '__main__':
-    print(get_lnglat('上海市政学路51号', addr_type='addr', city='上海'))
