@@ -42,7 +42,7 @@ def rdf(filepath: str) -> pd.DataFrame:
         df = pd.read_excel(filepath)
     elif os.path.splitext(filepath)[1] == '.shp':
         try:
-            df = gpd.GeoDataFrame.from_file(filepath, encoding='utf-8-sig')
+            df = gpd.GeoDataFrame.from_file(filepath)
         except UnicodeEncodeError:
             df = gpd.GeoDataFrame.from_file(filepath, encoding='GBK')
     else:
@@ -141,13 +141,32 @@ def valid_check(polygon_geom):
         raise Exception('有效性检验失败，请检查并修复面')
 
 
-def shp2csv(shpfile_name: str):
+def _dumps(x, hex=True, srid=4326):
+    try:
+        x = dumps(x, hex=hex, srid=srid)
+    except AttributeError:
+        x = None
+    return x
+
+
+def shp2csv(shpfile_name: str, encoding='utf-8'):
     '''shapefile 转 csv 文件'''
     df = rdf(shpfile_name)
-    df['geometry'] = df['geometry'].apply(lambda x: dumps(x, hex=True, srid=4326))
+    print(df.head())
+    df = gpd.GeoDataFrame(df)
+    df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
     df.crs = 'epsg:4326'
     save_path = os.path.splitext(shpfile_name)[0] + '.csv'
-    df.to_csv(save_path, encoding='utf-8-sig', index=False)
+    print(df.head())
+    df.to_csv(save_path, encoding=encoding, index=False)
+
+
+def _loads(x, hex=True):
+    try:
+        x = loads(x, hex=hex)
+    except AttributeError:
+        x = None
+    return x
 
 
 def csv2shp(filename: str):
@@ -157,7 +176,7 @@ def csv2shp(filename: str):
     df = df.rename(columns={'名称': 'name',
                             'geom': 'geometry'})
     df = gpd.GeoDataFrame(df)
-    df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
+    df['geometry'] = df['geometry'].apply(lambda x: _loads(x, hex=True))
     df.crs = 'epsg:4326'
     save_path = os.path.splitext(filename)[0] + '.shp'
     try:

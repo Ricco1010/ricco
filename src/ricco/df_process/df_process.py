@@ -2,9 +2,10 @@
 import pandas as pd
 from ricco import rdf
 from ricco import reset2name
+import geopandas as gpd
 
 
-class BaseTransformer(object):
+class Base(object):
     def __init__(self, df):
         if isinstance(df, str):
             self.df = rdf(df)
@@ -14,15 +15,20 @@ class BaseTransformer(object):
             ValueError('请输入Dataframe或路径')
 
 
-class Data_process(BaseTransformer):
+class Geo_data_process(Base):
+    '''地理处理'''
+    def to_geo_df(self):
+        self.df = gpd.GeoDataFrame(self.df)
+        return self.df
+
+
+class Data_process(Base, Geo_data_process):
+    '''Dataframe处理流程'''
+
+    # 列名操作
     def reset2name(self):
         '''重置索引列并重命名为name'''
         self.df = reset2name(self.df)
-        return self.df
-
-    def to_gbk(self, filename: str):
-        '''保存coding为gbk的csv文件'''
-        self.df.to_csv(filename, index=False, encoding='GBK')
         return self.df
 
     def rename(self, dic: dict):
@@ -30,14 +36,24 @@ class Data_process(BaseTransformer):
         self.df.rename(columns=dic, inplace=True)
         return self.df
 
+    # 保存文件
+    def to_gbk(self, filename: str):
+        '''保存coding为gbk的csv文件'''
+        self.df.to_csv(filename, index=False, encoding='GBK')
+        return self.df
+
+    def to_utf8(self, filename: str):
+        '''保存coding为gbk的csv文件'''
+        self.df.to_csv(filename, index=False, encoding='utf-8')
+        return self.df
 
 # if __name__ == '__main__':
-#     # df = rdf('上海土地点位.csv')
-#     df = '上海土地点位.csv'
-#
-#     a = Data_process(df)
-#     a.reset2name()
-#     a.to_gbk('tes2.csv')
-#     a.rename({})
-#
-#     print(a.df)
+    # df = rdf('上海土地点位.csv')
+    # df = '上海土地点位.csv'
+    #
+    # a = Data_process(df)
+    # a.reset2name()
+    # a.to_gbk('tes2.csv')
+    # a.rename({})
+    # a.to_geo_df()
+    # print(a.df)
