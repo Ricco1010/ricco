@@ -62,9 +62,8 @@ def to_csv_by_line(filename: str, data: list):
 
 def rename2lnglat(df) -> pd.DataFrame:
     '''将df中的经纬度重命名为lng和lat'''
-    col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lng_WGS': 'lng', 'lat_WGS': 'lat', 'lon_WGS': 'lng',
-                'longitude': 'lng', 'latitude': 'lat', "geom": "geometry"}
-    df = df.rename(columns=col_dict)
+    from ricco import to_lnglat_dict
+    df = df.rename(columns=to_lnglat_dict)
     return df
 
 

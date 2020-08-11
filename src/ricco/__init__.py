@@ -1,3 +1,4 @@
+# encoding: gbk
 __version__ = '0.1.14'
 
 from ricco.coord_trans import BD2WGS
@@ -17,3 +18,15 @@ from ricco.util import split_csv
 from ricco.util import to_csv_by_line
 from ricco.util import to_float
 from ricco.util import valid_check
+
+
+to_lnglat_dict = {
+    '¾­¶È': 'lng',
+    'Î³¶È': 'lat',
+    'lon': 'lng',
+    'lng_WGS': 'lng',
+    'lat_WGS': 'lat',
+    'lon_WGS': 'lng',
+    'longitude': 'lng',
+    'latitude': 'lat',
+    'geom': 'geometry'}
