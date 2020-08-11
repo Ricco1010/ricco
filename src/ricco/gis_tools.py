@@ -342,7 +342,6 @@ def nearest_neighbor(target, POI):
     tcode = city_epsgcode(tcity)
     poi_name = os.path.splitext(os.path.basename(POI))[0].split('_')[-1]
     save_file = target.replace('.csv', '_nearest_') + poi_name + ".csv"
-
     df_target = read_and_rename(target)
     df_poi = read_and_rename(POI)
     print('step2：格式转换...')
@@ -410,7 +409,7 @@ def mark_tags_df(point_df: pd.DataFrame, polygon_df: pd.DataFrame, col_list: lis
 
     point_df = point_df.rename(columns=to_lnglat_dict)
     for i in col_list:
-        point_df.rename(columns={i: str(i) + '_origon'}, inplace=True)
+        point_df.rename(columns={i: str(i) + '_origin'}, inplace=True)
 
     if ('lng' in point_df.columns) & ('lat' in point_df.columns):
         point_df_null, point_df_ = split_df(point_df, 'lng')
