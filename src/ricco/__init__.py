@@ -1,4 +1,4 @@
-__version__ = '0.1.14'
+__version__ = '0.1.15'
 
 from ricco.coord_trans import BD2WGS
 from ricco.coord_trans import GD2WGS
@@ -17,3 +17,4 @@ from ricco.util import split_csv
 from ricco.util import to_csv_by_line
 from ricco.util import to_float
 from ricco.util import valid_check
+from ricco.Config import to_lnglat_dict

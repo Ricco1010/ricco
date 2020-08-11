@@ -342,7 +342,6 @@ def nearest_neighbor(target, POI):
     tcode = city_epsgcode(tcity)
     poi_name = os.path.splitext(os.path.basename(POI))[0].split('_')[-1]
     save_file = target.replace('.csv', '_nearest_') + poi_name + ".csv"
-
     df_target = read_and_rename(target)
     df_poi = read_and_rename(POI)
     print('step2：格式转换...')
@@ -391,33 +390,54 @@ def nearest_neighbor_csv_geo(target, POI, shp=0):
     return save_file
 
 
-def mark_tags_df(point_df, polygon_df, col_list=[]):
+def mark_tags_df(point_df: pd.DataFrame, polygon_df: pd.DataFrame, col_list: list = None):
     '''
     :param point_df: dataframe 点文件，需要有经纬度或geometry
     :param polygon_df: dataframe 面文件，需要有geometry
     :param col_list: 面文件中的列名，需要连接到点文件后面的
     :return:
     '''
-    col_dict = {'经度': 'lng', '纬度': 'lat', 'lon': 'lng', 'lon_WGS': 'lng', 'lat_WGS': 'lat', 'longitude': 'lng',
-                'latitude': 'lat'}
-    ppp = point_df.rename(columns=col_dict)
+    from ricco import to_lnglat_dict
+    from ricco.util import ensure_list
+    col_list = ensure_list(col_list)
+
+    def split_df(df: pd.DataFrame, column='geometry'):
+        df = df.reset_index().rename(columns={'index': 'uid'})
+        df_null = df[df[column].isna()].reset_index(drop=True)
+        df_not_null = df[~df[column].isna()].reset_index(drop=True)
+        return df_null, df_not_null
+
+    point_df = point_df.rename(columns=to_lnglat_dict)
     for i in col_list:
-        if i in ppp.columns:
-            ppp.rename(columns={i: str(i) + '_origon'}, inplace=True)
-    if ('lng' in ppp.columns) & ('lat' in ppp.columns):
-        ppp = point_to_geo(ppp, 'lng', 'lat', delt=0)
-    elif 'geometry' in ppp.columns:
-        ppp['geometry'] = ppp['geometry'].apply(lambda x: loads(x, hex=True))
-        ppp = gpd.GeoDataFrame(ppp)
+        point_df.rename(columns={i: str(i) + '_origin'}, inplace=True)
+
+    if ('lng' in point_df.columns) & ('lat' in point_df.columns):
+        point_df_null, point_df_ = split_df(point_df, 'lng')
+        point_df_ = point_to_geo(point_df_, 'lng', 'lat', delt=0)
+        point_df_null = point_df_null.drop(['lng', 'lat'], axis=1)
+    elif 'geometry' in point_df.columns:
+        point_df_null, point_df_ = split_df(point_df, 'geometry')
+        point_df_['geometry'] = point_df_['geometry'].apply(lambda x: loads(x, hex=True))
+        point_df_ = gpd.GeoDataFrame(point_df_)
+        point_df_null = point_df_null.drop('geometry', axis=1)
     else:
-        raise Exception('点文件中必须有经纬度或geometry', KeyError)
-    ppp.crs = 'epsg:4326'
-    df_lable = polygon_df.rename(columns=col_dict)
-    if col_list != []:
-        df_lable = df_lable[col_list + ['geometry']]
-    df_lable['geometry'] = df_lable['geometry'].apply(lambda x: loads(x, hex=True))
-    df_lable = gpd.GeoDataFrame(df_lable)
-    df_lable.crs = 'epsg:4326'
-    final_file = gpd.sjoin(ppp, df_lable, how='left', op='intersects').drop('index_right', axis=1)
-    final_file = final_file.drop('geometry', axis=1)
+        raise KeyError('点文件中必须有经纬度或geometry')
+
+    if col_list != None:
+        polygon_df = polygon_df[col_list + ['geometry']]
+
+    point_df_ = point_df_.reset_index(drop=True)
+    polygon_df = polygon_df.reset_index(drop=True)
+    polygon_df['geometry'] = polygon_df['geometry'].apply(lambda x: loads(x, hex=True))
+    polygon_df = gpd.GeoDataFrame(polygon_df)
+    polygon_df.crs, point_df_.crs = 'epsg:4326', 'epsg:4326'
+
+    final_file = gpd.sjoin(point_df_,
+                           polygon_df,
+                           how='left',
+                           op='intersects').drop('index_right', axis=1)
+    final_file = final_file.append(point_df_null,
+                                   sort=False)
+    final_file = final_file.drop('geometry',
+                                 axis=1).sort_values('uid').set_index('uid')
     return final_file
