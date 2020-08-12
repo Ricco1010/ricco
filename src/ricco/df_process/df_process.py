@@ -1,8 +1,8 @@
 # encoding:GBK
+import geopandas as gpd
 import pandas as pd
 from ricco import rdf
 from ricco import reset2name
-import geopandas as gpd
 
 
 class Base(object):
