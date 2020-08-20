@@ -10,10 +10,12 @@ from docx.shared import Pt, RGBColor
 from ricco.util import fn
 from ricco.dtxm.wiki import class_dic
 from ricco.util import col_round
+from ricco.util import ensure_list
+import matplotlib.pyplot as plt
 
 
 class Dtexm(object):
-    def __init__(self, filename):
+    def __init__(self, filename, cols_list: list = None):
         self.filename = filename
         self.doc = Document()
         # 设置默认字体
@@ -29,7 +31,10 @@ class Dtexm(object):
         elif isinstance(self.filename, pd.DataFrame):
             self.df = self.filename
         else:
-            ValueError('请输入Dataframe或路径')
+            raise ValueError('请输入Dataframe或路径')
+        if cols_list != None:
+            cols_list = ensure_list(cols_list)
+            self.df = self.df[[cols_list]]
         self.lenth = len(self.df)
 
     def add_df2table(self, table_df):
@@ -131,6 +136,15 @@ class Dtexm(object):
             p = self.doc.add_paragraph('')
             p.add_run(text).font.color.rgb = RGBColor(250, 0, 0)
 
+    def hist_plot(self, col):
+        plt.figure(figsize=(12, 4))
+        plt.style.use('seaborn')
+        plt.hist(self.df[col].values)
+        plt.savefig('image.png')
+        self.doc.add_picture('image.png', width=Inches(6))
+        if os.path.exists('image.png'):
+            os.remove('image.png')
+
     def col_by_col(self):
         '''逐列检测'''
         for col in self.df.columns:
@@ -139,6 +153,7 @@ class Dtexm(object):
                 desc_df = self.serise_describe(col)
                 desc_df = col_round(desc_df, '值')
                 self.add_df2table(desc_df)
+                self.hist_plot(col)
                 self.add_normal_p('')
             else:
                 desc_df = self.object_describe(col)
@@ -156,7 +171,7 @@ class Dtexm(object):
         self.doc.save(savefilename)
         print('文件保存至', os.path.abspath(savefilename))
 
-    def _all(self):
+    def examine_all(self):
         '''整套流程'''
         self.basic()
         self.col_by_col()
@@ -165,4 +180,4 @@ class Dtexm(object):
 
 if __name__ == '__main__':
     doc = Dtexm('sample.csv')
-    doc._all()
+    doc.examine_all()
