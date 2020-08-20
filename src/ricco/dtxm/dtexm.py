@@ -139,7 +139,8 @@ class Dtexm(object):
     def hist_plot(self, col):
         plt.figure(figsize=(12, 4))
         plt.style.use('seaborn')
-        plt.hist(self.df[col].values)
+        data = self.df[~self.df[col].isna()][col].values
+        plt.hist(data)
         plt.savefig('image.png')
         self.doc.add_picture('image.png', width=Inches(6))
         if os.path.exists('image.png'):
