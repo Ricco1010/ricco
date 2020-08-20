@@ -4,6 +4,8 @@
 src/ricco/*.csv
 /*.pkl*
 **/*.csv
+**/*.doc
+**/*.docx
 test.py
 .idea/
 
