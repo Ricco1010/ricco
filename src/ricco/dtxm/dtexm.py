@@ -9,6 +9,7 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor
 from ricco.util import fn
 from ricco.dtxm.wiki import class_dic
+from ricco.util import col_round
 
 
 class Dtexm(object):
@@ -20,7 +21,7 @@ class Dtexm(object):
         self.doc.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'微软雅黑')
         self.doc.styles['Normal'].font.size = Pt(10.5)
         self.doc.styles['Normal'].font.color.rgb = RGBColor(0, 0, 0)
-        self.doc.add_heading('数据质量检测报告', 0)
+        self.doc.add_heading('数据检测报告', 0)
 
         if isinstance(self.filename, str):
             self.add_intense_quote(f'Document：{self.filename}')
@@ -73,13 +74,14 @@ class Dtexm(object):
         self.add_df2table(self.col_types)
 
     def serise_describe(self, col):
+        '''数值型列的描述性统计'''
         desc = pd.DataFrame(self.df[col].describe().reset_index())
         desc = desc.rename(columns={'index': '分类', col: '值'})
         desc['分类'] = desc['分类'].replace(to_replace=class_dic)
         skew_add = pd.DataFrame({'分类': '偏度系数',
                                  '值': [self.df[col].skew()]})
         kurt_add = pd.DataFrame({'分类': '峰度系数',
-                                 '值': [self.df[col].kurt()]})
+                                 '值': [self.df[col].kurt() - 3]})
 
         null_num = self.lenth - desc.loc[desc['分类'] == '计数', '值'][0]
         null_rate = null_num / self.lenth
@@ -94,13 +96,56 @@ class Dtexm(object):
         desc = desc.append(null_rate_add, sort=False)
         return desc
 
+    def object_describe(self, col):
+        desc = pd.DataFrame(self.df[col].value_counts().reset_index())
+        if len(desc) > 20:
+            desc = desc.rename(columns={'index': '分类_Top15', col: '数量'})
+            desc['分类_Top15'] = desc['分类_Top15'].replace(to_replace=class_dic)
+            return desc.head(15)
+        else:
+            desc = desc.rename(columns={'index': '分类', col: '数量'})
+            desc['分类'] = desc['分类'].replace(to_replace=class_dic)
+            return desc
+
+    def is_float(self, col):
+        def try2float(x):
+            try:
+                return float(x)
+            except ValueError:
+                return None
+
+        length = len(self.df[~self.df[col].isna()])
+        null_num = len(self.df[~self.df[col].apply(lambda x: try2float(x)).isna()])
+        rates = null_num / length
+        if rates >= 0.8:
+            text = f' {col} 列有超过{int(rates * 100)}%的值为数值型的数据'
+            p = self.doc.add_paragraph('')
+            p.add_run(text).font.color.rgb = RGBColor(250, 0, 0)
+
+    def is_date(self, col):
+        length = len(self.df[~self.df[col].isna()])
+        null_num = len(self.df[~pd.to_datetime(self.df[col], errors='coerce').isna()])
+        rates = null_num / length
+        if rates >= 0.8:
+            text = f' {col} 列有超过{int(rates * 100)}%的值为日期格式的数据'
+            p = self.doc.add_paragraph('')
+            p.add_run(text).font.color.rgb = RGBColor(250, 0, 0)
+
     def col_by_col(self):
+        '''逐列检测'''
         for col in self.df.columns:
             self.add_bullet_list(col)
             if (self.df[col].dtype == 'int64') | (self.df[col].dtype == 'float64'):
                 desc_df = self.serise_describe(col)
+                desc_df = col_round(desc_df, '值')
                 self.add_df2table(desc_df)
                 self.add_normal_p('')
+            else:
+                desc_df = self.object_describe(col)
+                self.add_df2table(desc_df)
+                self.add_normal_p('')
+                self.is_float(col)
+                self.is_date(col)
 
     def save(self, savefilename: str = None):
         '''保存文件至word文档'''

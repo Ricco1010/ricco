@@ -8,11 +8,14 @@ from shapely.wkb import dumps
 from shapely.wkb import loads
 from tqdm import tqdm
 
+
 def ext(filepath):
     return os.path.splitext(filepath)[1]
 
+
 def fn(filepath):
     return os.path.splitext(filepath)[0]
+
 
 def max_grid():
     '''防止单个单元格文件过大而报错'''
@@ -328,3 +331,15 @@ def standard(serise: (pd.Series, list),
     serise[serise >= 100] = 100
     serise[serise <= min_score] = min_score
     return serise
+
+def col_round(df, col):
+    def _round(x):
+        if abs(x)>=1:
+            return round(x, 2)
+        else:
+            return round(x,4)
+
+    col = ensure_list(col)
+    for i in col:
+        df[i] = df[i].apply(lambda x:_round(x))
+    return df
