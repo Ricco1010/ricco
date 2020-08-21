@@ -1,8 +1,9 @@
 # encoding:GBK
-import pandas as pd
 import os
-from ricco.util import fn
+
+import pandas as pd
 from ricco.dtxm.basic_tools import _Tools
+from ricco.util import fn
 
 
 class Dtexm(_Tools):
