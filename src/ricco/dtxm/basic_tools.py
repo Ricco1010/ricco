@@ -1,18 +1,16 @@
 # encoding:GBK
-from docx import Document
-from docx.shared import Inches
-from ricco import rdf
-import pandas as pd
-import numpy as np
 import os
-from docx.oxml.ns import qn
-from docx.shared import Pt, RGBColor
-from ricco.util import fn
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from ricco import rdf
+from ricco.dtxm.basic_docx import _Docx
 from ricco.dtxm.wiki import class_dic
 from ricco.util import col_round
 from ricco.util import ensure_list
-import matplotlib.pyplot as plt
-from ricco.dtxm.basic_docx import _Docx
+
+from docx.shared import Inches
+from docx.shared import RGBColor
 
 
 class _Tools(_Docx):

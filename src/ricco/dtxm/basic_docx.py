@@ -1,7 +1,8 @@
 # encoding:GBK
 from docx import Document
 from docx.oxml.ns import qn
-from docx.shared import Pt, RGBColor
+from docx.shared import Pt
+from docx.shared import RGBColor
 
 
 class _Docx(object):
