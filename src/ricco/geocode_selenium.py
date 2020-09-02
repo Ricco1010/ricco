@@ -4,12 +4,15 @@ from ricco.util import reset2name
 from ricco.util import serise_to_float
 
 from selenium import webdriver
+from time import sleep
 
 
 def get_geocoding(driver, kwd):
     # 输入项目名称
     driver.find_element_by_xpath('//*[@id="localvalue"]').send_keys(kwd)
     # 点击搜索
+    driver.find_element_by_xpath('//*[@id="localsearch"]').click()
+    sleep(0.2)
     driver.find_element_by_xpath('//*[@id="localsearch"]').click()
     # 点击第一个项目 两次点击不同位置 主要目的是拖延时间
     driver.find_element_by_xpath('//*[@id="no_0"]/a').click()
@@ -27,7 +30,7 @@ def get_geocoding(driver, kwd):
     return [kwd, title, geom]
 
 
-def selenium_geocode(df, proj_name='项目名称', city=''):
+def selenium_geocode(df, proj_name='项目名称', city='') -> pd.DataFrame:
     fp = webdriver.FirefoxProfile()
     driver = webdriver.Firefox(firefox_profile=fp)
     driver.implicitly_wait(10)
