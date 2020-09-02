@@ -1,4 +1,4 @@
-__version__ = '0.1.16'
+__version__ = '0.1.17'
 
 import numpy as np
 import pandas as pd
@@ -9,6 +9,8 @@ from ricco.gis_tools import circum_pio_num_geo_aoi
 from ricco.gis_tools import mark_tags_df
 from ricco.util import csv2shp
 from ricco.util import extract_num
+from ricco.util import fuzz_df
+from ricco.util import fuzz_match
 from ricco.util import mkdir_2
 from ricco.util import pinyin
 from ricco.util import rdf
