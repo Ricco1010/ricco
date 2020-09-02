@@ -332,14 +332,78 @@ def standard(serise: (pd.Series, list),
     serise[serise <= min_score] = min_score
     return serise
 
+
 def col_round(df, col):
     def _round(x):
-        if abs(x)>=1:
+        if abs(x) >= 1:
             return round(x, 2)
         else:
-            return round(x,4)
+            return round(x, 4)
 
     col = ensure_list(col)
     for i in col:
-        df[i] = df[i].apply(lambda x:_round(x))
+        df[i] = df[i].apply(lambda x: _round(x))
     return df
+
+
+def fuzz_match(string: str, ss: (list, pd.Series)):
+    '''
+    为某一字符串从某一集合中匹配相似度最高的元素
+
+    :param x: 输入的字符串
+    :param ss: 要去匹配的集合
+    :return: 字符串及相似度组成的列表
+    '''
+    from fuzzywuzzy import fuzz
+
+    def _ratio(s, x):
+        return fuzz.ratio(s, x), fuzz.partial_ratio(s, x)
+
+    max_r, max_pr, max_s = 0, 0, None
+    for s in ss:
+        r, pr = _ratio(s, string)
+        if r > max_r:
+            max_r = r
+            max_pr = pr
+            max_s = s
+
+    # df = pd.DataFrame({'max_s': ss})
+    # df[['max_r',
+    #     'max_pr']] = df.apply(lambda x:
+    #                                  _ratio(x['max_s'], string),
+    #                                  result_type='expand',
+    #                                  axis=1)
+    # df_max = df[df['max_r'] == df['max_r'].max()].reset_index(drop=True)
+    # max_s = df_max['max_s'][0]
+    # max_r = df_max['max_r'][0]
+    # max_pr = df_max['max_pr'][0]
+
+    return max_s, max_r, max_pr
+
+
+def fuzz_df(df: pd.DataFrame,
+            col: str,
+            target_serise: (list, pd.Series)) -> pd.DataFrame:
+    '''
+    为DataFrame中的某一列，从某个集合中匹配相似度最高的元素
+
+    :param df: 输入的dataframe
+    :param col: 要匹配的列
+    :param target_serise: 从何处匹配， list/pd.Serise
+    :return:
+    '''
+    df[[col + '_target',
+        'normal_score',
+        'partial_score']] = df.apply(lambda x:
+                                     fuzz_match(x[col], target_serise),
+                                     result_type='expand',
+                                     axis=1)
+    return df
+
+
+# if __name__ == '__main__':
+#     df = rdf('沈阳酒店.csv')
+#     df2 = rdf('沈阳住宿服务.csv')
+#     df = fuzz_df(df, '项目名称', df2['propertyName'])
+#     df.to_csv('沈阳匹配结果.csv', index=False, encoding='GBK')
+#     print(df)

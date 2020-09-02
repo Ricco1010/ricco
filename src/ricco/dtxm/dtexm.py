@@ -29,11 +29,12 @@ class Dtexm(_Tools):
                 self.serise_describe(col)
                 self.hist_plot(col)
                 self.add_normal_p('')
-            else:
+            elif (self.df[col].dtype == 'O'):
                 self.object_describe(col)
                 self.is_float(col)
                 self.is_date(col)
                 self.add_normal_p('')
+
 
     def save(self, savefilename: str = None):
         '''保存文件至word文档'''
@@ -52,5 +53,5 @@ class Dtexm(_Tools):
 
 
 if __name__ == '__main__':
-    doc = Dtexm('sample.csv')
-    doc.examine_all('123.docx')
+    doc = Dtexm('成交2.xlsx')
+    doc.examine_all()
