@@ -10,10 +10,12 @@ from tqdm import tqdm
 
 
 def ext(filepath):
+    '''推广名'''
     return os.path.splitext(filepath)[1]
 
 
 def fn(filepath):
+    '''路径及文件名（不含推广名'''
     return os.path.splitext(filepath)[0]
 
 

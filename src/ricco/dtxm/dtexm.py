@@ -25,6 +25,7 @@ class Dtexm(_Tools):
         '''ÖðÁÐ¼ì²â'''
         for col in self.df.columns:
             self.add_bullet_list(col)
+            self.add_normal_p(self.df[col].dtype)
             if (self.df[col].dtype == 'int64') | (self.df[col].dtype == 'float64'):
                 self.serise_describe(col)
                 self.hist_plot(col)
