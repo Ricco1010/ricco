@@ -1,4 +1,4 @@
-__version__ = '0.1.19'
+__version__ = '0.1.20'
 
 from ricco.Config import to_lnglat_dict
 from ricco.coord_trans import BD2WGS
