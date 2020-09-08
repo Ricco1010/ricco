@@ -5,7 +5,6 @@ from ricco.coord_trans import BD2WGS
 from ricco.coord_trans import GD2WGS
 from ricco.coord_trans import coord_trans_x2y
 from ricco.geocode_bd import geocode_df
-from ricco.geocode_selenium import selenium_geocode
 from ricco.gis_tools import circum_pio_num_geo_aoi
 from ricco.gis_tools import mark_tags_df
 from ricco.gis_tools import point_to_geom
