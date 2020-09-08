@@ -15,6 +15,8 @@ from shapely.geometry.base import BaseGeometry
 from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import transform as sh_transform
 
+from ricco.util import ensure_lnglat
+
 """
 Dependencies:
 
@@ -318,6 +320,7 @@ def coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
 
 
 def lnglat_check(df):
+    '''检查列名'''
     if ('lng' not in df.columns) | ('lng' not in df.columns):
         raise KeyError('经纬度列名必须为lng和lat')
 
@@ -334,7 +337,7 @@ def coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
 
     def fn(row):
         return coord_transform(row['lng'], row['lat'], srs_from, srs_to)
-
+    df_org = ensure_lnglat(df_org)
     lnglat_check(df_org)
     df_org['lng'] = df_org['lng'].astype(float)
     df_org['lat'] = df_org['lat'].astype(float)
@@ -356,7 +359,8 @@ def GD2WGS(df_org):
 
 
 def coord_trans_geom(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
-    from shapely.wkb import loads, dumps
+    from shapely.wkb import dumps
+    from shapely.wkb import loads
     if 'geometry' not in df_org.columns:
         raise KeyError('必须有geometry列')
     df_org['geometry'] = df_org['geometry'].apply(
