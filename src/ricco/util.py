@@ -4,18 +4,16 @@ import os
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.wkb import dumps
-from shapely.wkb import loads
 from tqdm import tqdm
 
 
 def ext(filepath):
-    '''推广名'''
+    '''扩展名'''
     return os.path.splitext(filepath)[1]
 
 
 def fn(filepath):
-    '''路径及文件名（不含推广名'''
+    '''路径及文件名（不含扩展名）'''
     return os.path.splitext(filepath)[0]
 
 
@@ -41,16 +39,16 @@ def rdf(filepath: str) -> pd.DataFrame:
     :return: dataframe
     '''
     max_grid()
-    if os.path.splitext(filepath)[1] == '.csv':
+    if ext(filepath) == '.csv':
         try:
             df = pd.read_csv(filepath, engine='python', encoding='utf-8-sig')
         except:
             df = pd.read_csv(filepath, engine='python')
-    elif os.path.splitext(filepath)[1] == '.xls':
+    elif ext(filepath) == '.xls':
         df = pd.read_excel(filepath)
-    elif os.path.splitext(filepath)[1] == '.xlsx':
+    elif ext(filepath) == '.xlsx':
         df = pd.read_excel(filepath)
-    elif os.path.splitext(filepath)[1] == '.shp':
+    elif ext(filepath) == '.shp':
         try:
             df = gpd.GeoDataFrame.from_file(filepath)
         except UnicodeEncodeError:
@@ -70,17 +68,17 @@ def to_csv_by_line(filename: str, data: list):
         csv_write.writerow(data)
 
 
-def rename2lnglat(df) -> pd.DataFrame:
+def ensure_lnglat(df) -> pd.DataFrame:
     '''将df中的经纬度重命名为lng和lat'''
     from ricco import to_lnglat_dict
-    df = df.rename(columns=to_lnglat_dict)
+    df.rename(columns=to_lnglat_dict, inplace=True)
     return df
 
 
 def read_and_rename(file: str) -> pd.DataFrame:
     '''读取文件并将经纬度统一为lng和lat，并按照经纬度排序'''
     df = rdf(file)
-    df = rename2lnglat(df)
+    df = ensure_lnglat(df)
     if 'lat' in df.columns:
         df.sort_values(['lat', 'lng'], inplace=True)
         df = df.reset_index(drop=True)
@@ -117,9 +115,9 @@ def mkdir_2(path: str):
         os.makedirs(path)
 
 
-def split_csv(filename: str, n=5):
+def split_csv(filename: str, n: int = 5, encoding: str = 'utf-8'):
     '''将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中'''
-    dir_name = os.path.splitext(os.path.basename(filename))[0]
+    dir_name = fn(os.path.basename(filename))
     abs_path = os.getcwd()
     df = rdf(filename)
     t = len(df)
@@ -135,11 +133,12 @@ def split_csv(filename: str, n=5):
             add = df.iloc[low:, :]
         else:
             add = df.iloc[low: high, :]
-        add.to_csv(savefile, index=0, encoding='utf-8')
+        add.to_csv(savefile, index=0, encoding=encoding)
 
 
 def valid_check(polygon_geom):
     '''检验面的有效性'''
+    from shapely.wkb import loads
     df = polygon_geom.copy()
     df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
     df = gpd.GeoDataFrame(df)
@@ -152,6 +151,7 @@ def valid_check(polygon_geom):
 
 
 def _dumps(x, hex=True, srid=4326):
+    from shapely.wkb import dumps
     try:
         x = dumps(x, hex=hex, srid=srid)
     except AttributeError:
@@ -166,12 +166,13 @@ def shp2csv(shpfile_name: str, encoding='utf-8'):
     df = gpd.GeoDataFrame(df)
     df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
     df.crs = 'epsg:4326'
-    save_path = os.path.splitext(shpfile_name)[0] + '.csv'
+    save_path = fn(shpfile_name) + '.csv'
     print(df.head())
     df.to_csv(save_path, encoding=encoding, index=False)
 
 
 def _loads(x, hex=True):
+    from shapely.wkb import loads
     try:
         x = loads(x, hex=hex)
     except AttributeError:
@@ -188,7 +189,7 @@ def csv2shp(filename: str):
     df = gpd.GeoDataFrame(df)
     df['geometry'] = df['geometry'].apply(lambda x: _loads(x, hex=True))
     df.crs = 'epsg:4326'
-    save_path = os.path.splitext(filename)[0] + '.shp'
+    save_path = fn(filename) + '.shp'
     try:
         df.to_file(save_path, encoding='utf-8')
     except fiona.errors.SchemaError:
@@ -216,14 +217,15 @@ def extract_num(string: str,
 
     :param string: 输入的字符串
     :param num_type:  输出的数字类型，int/float/str，默认为str
-    :param method: 结果计算方法，对结果列表求最大/最小/平均/和/等，numpy方法，默认返回列表本身
+    :param method: 结果计算方法，对结果列表求最大/最小/平均/和等，numpy方法，默认返回列表本身
     :param join_list: 是否合并列表，默认FALSE
     :param ignore_pct: 是否忽略百分号，默认True
     :return:
     '''
     import re
-    import numpy
     from warnings import warn
+
+    import numpy
 
     string = str(string)
     if ignore_pct:
@@ -280,12 +282,12 @@ def ensure_list(val):
     return [val]
 
 
-def segment(x, gap, sep: str = '-', unit: str = '') -> str:
+def segment(x, gap: (list, float, int), sep: str = '-', unit: str = '') -> str:
     '''
     区间段划分工具
 
     :param x: 数值
-    :param gap: 间隔
+    :param gap: 间隔，固定间隔或列表
     :param unit: 单位，末尾
     :param sep: 分隔符，中间
     :return: 区间段 'num1分隔符num2单位'：‘80-100米’
@@ -309,7 +311,7 @@ def segment(x, gap, sep: str = '-', unit: str = '') -> str:
             l = between_list(x, gap)[0]
             h = between_list(x, gap)[1]
             s = '%d%s%d%s' % (l, sep, h, unit)
-    else:
+    elif isinstance(gap, (int, float)):
         if x >= 0:
             l = int(x / gap) * gap
             h = l + gap
@@ -318,6 +320,8 @@ def segment(x, gap, sep: str = '-', unit: str = '') -> str:
             l = int(x / gap) * gap
             h = l - gap
             s = '%d%s%d%s' % (h, sep, l, unit)
+    else:
+        raise TypeError('gap参数数据类型错误')
     return s
 
 
@@ -335,7 +339,9 @@ def standard(serise: (pd.Series, list),
     return serise
 
 
-def col_round(df, col):
+def col_round(df, col: list):
+    '''对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位'''
+
     def _round(x):
         if abs(x) >= 1:
             return round(x, 2)
@@ -368,18 +374,6 @@ def fuzz_match(string: str, ss: (list, pd.Series)):
             max_r = r
             max_pr = pr
             max_s = s
-
-    # df = pd.DataFrame({'max_s': ss})
-    # df[['max_r',
-    #     'max_pr']] = df.apply(lambda x:
-    #                                  _ratio(x['max_s'], string),
-    #                                  result_type='expand',
-    #                                  axis=1)
-    # df_max = df[df['max_r'] == df['max_r'].max()].reset_index(drop=True)
-    # max_s = df_max['max_s'][0]
-    # max_r = df_max['max_r'][0]
-    # max_pr = df_max['max_pr'][0]
-
     return max_s, max_r, max_pr
 
 
@@ -401,11 +395,3 @@ def fuzz_df(df: pd.DataFrame,
                                      result_type='expand',
                                      axis=1)
     return df
-
-
-# if __name__ == '__main__':
-#     df = rdf('沈阳酒店.csv')
-#     df2 = rdf('沈阳住宿服务.csv')
-#     df = fuzz_df(df, '项目名称', df2['propertyName'])
-#     df.to_csv('沈阳匹配结果.csv', index=False, encoding='GBK')
-#     print(df)
