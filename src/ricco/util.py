@@ -140,6 +140,8 @@ def valid_check(polygon_geom):
     '''检验面的有效性'''
     from shapely.wkb import loads
     df = polygon_geom.copy()
+    if len(df[df['geometry'].isna()]) > 0:
+        raise ValueError('geometry中有空值，请检查')
     df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
     df = gpd.GeoDataFrame(df)
     df.crs = 'epsg:4326'
