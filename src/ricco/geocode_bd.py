@@ -52,7 +52,7 @@ def get_lnglat(addr: str,
     return [lng, lat, name]
 
 
-def geocode_df(df,
+def _geocode_df(df,
                addr_col,
                addr_type: str,
                city: str = None,
