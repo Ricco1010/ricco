@@ -325,7 +325,7 @@ def lnglat_check(df):
         raise KeyError('经纬度列名必须为lng和lat')
 
 
-def _coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
+def coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
     '''
     坐标批量转换工具
 
@@ -346,13 +346,13 @@ def _coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
     return df_org
 
 
-def _BD2WGS(df_org):
+def BD2WGS(df_org):
     '''百度转WGS84'''
     df_org = coord_trans_x2y(df_org, SRS.bd09, SRS.wgs84)
     return df_org
 
 
-def _GD2WGS(df_org):
+def GD2WGS(df_org):
     '''高德转WGS84'''
     df_org = coord_trans_x2y(df_org, SRS.gcj02, SRS.wgs84)
     return df_org

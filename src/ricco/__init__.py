@@ -24,19 +24,19 @@ from ricco.util import valid_check
 
 
 def BD2WGS(df_org):
-    from ricco.coord_trans import _BD2WGS
+    from ricco.coord_trans import BD2WGS as _BD2WGS
     df_org = _BD2WGS(df_org)
     return df_org
 
 
 def GD2WGS(df_org):
-    from ricco.coord_trans import _GD2WGS
+    from ricco.coord_trans import GD2WGS as _GD2WGS
     df_org = _GD2WGS(df_org)
     return df_org
 
 
 def coord_trans_x2y(df_org, srs_from, srs_to):
-    from ricco.coord_trans import _coord_trans_x2y
+    from ricco.coord_trans import coord_trans_x2y as _coord_trans_x2y
     df_org = _coord_trans_x2y(df_org, srs_from, srs_to)
     return df_org
 
@@ -56,6 +56,6 @@ def geocode_df(df,
     :param city: 城市
     :return:
     '''
-    from ricco.geocode_bd import _geocode_df
+    from ricco.geocode_bd import geocode_df as _geocode_df
     df = _geocode_df(df, addr_col, addr_type, city, city_col, key)
     return df
