@@ -1,4 +1,4 @@
-__version__ = '0.1.24'
+__version__ = '0.1.25'
 
 from ricco.Config import to_lnglat_dict
 from ricco.gis_tools import circum_pio_num_geo_aoi
