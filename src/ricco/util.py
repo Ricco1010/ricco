@@ -70,8 +70,11 @@ def to_csv_by_line(filename: str, data: list):
 
 def ensure_lnglat(df) -> pd.DataFrame:
     '''将df中的经纬度重命名为lng和lat'''
+    from warnings import warn
     from ricco import to_lnglat_dict
     df.rename(columns=to_lnglat_dict, inplace=True)
+    if ('lng' not in df.columns) or ('lat' not in df.columns):
+        warn('转换失败，输出结果无lng或lat字段')
     return df
 
 
