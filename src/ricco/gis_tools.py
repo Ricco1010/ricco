@@ -10,21 +10,11 @@ from ricco.util import read_and_rename
 from shapely.wkb import dumps
 from shapely.wkb import loads
 from tqdm import tqdm
-
+from ricco.util import point_to_geo
 warnings.filterwarnings('ignore', 'Geometry is in a geographic CRS', UserWarning)
 
 
-def point_to_geo(df, lng, lat, delt=1):
-    # from shapely.geometry import Point
-    # df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)  # 识别经纬度，转换点数据
-    # df = gpd.GeoDataFrame(df)  # 转换Geodataframe格式
-    from geopandas import points_from_xy
-    df = gpd.GeoDataFrame(df, geometry=points_from_xy(df[lng], df[lat]))
-    df.crs = 'epsg:4326'
-    if delt == 1:
-        del df[lng]
-        del df[lat]
-    return df
+
 
 
 def city_epsgcode(city):

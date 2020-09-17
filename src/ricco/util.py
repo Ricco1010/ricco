@@ -136,70 +136,6 @@ def split_csv(filename: str, n: int = 5, encoding: str = 'utf-8'):
         add.to_csv(savefile, index=0, encoding=encoding)
 
 
-def valid_check(polygon_geom):
-    '''检验面的有效性'''
-    from shapely.wkb import loads
-    df = polygon_geom.copy()
-    if len(df[df['geometry'].isna()]) > 0:
-        raise ValueError('geometry中有空值，请检查')
-    df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
-    df = gpd.GeoDataFrame(df)
-    df.crs = 'epsg:4326'
-    df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
-    if len(df[df['flag'] < 0]) == 0:
-        print('Validity test passed.')
-    else:
-        raise Exception('有效性检验失败，请检查并修复面')
-
-
-def _dumps(x, hex=True, srid=4326):
-    from shapely.wkb import dumps
-    try:
-        x = dumps(x, hex=hex, srid=srid)
-    except AttributeError:
-        x = None
-    return x
-
-
-def shp2csv(shpfile_name: str, encoding='utf-8'):
-    '''shapefile 转 csv 文件'''
-    df = rdf(shpfile_name)
-    print(df.head())
-    df = gpd.GeoDataFrame(df)
-    df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
-    df.crs = 'epsg:4326'
-    save_path = fn(shpfile_name) + '.csv'
-    print(df.head())
-    df.to_csv(save_path, encoding=encoding, index=False)
-
-
-def _loads(x, hex=True):
-    from shapely.wkb import loads
-    try:
-        x = loads(x, hex=hex)
-    except AttributeError:
-        x = None
-    return x
-
-
-def csv2shp(filename: str):
-    '''csv文件 转 shapefile'''
-    import fiona
-    df = rdf(filename)
-    df = df.rename(columns={'名称': 'name',
-                            'geom': 'geometry'})
-    df = gpd.GeoDataFrame(df)
-    df['geometry'] = df['geometry'].apply(lambda x: _loads(x, hex=True))
-    df.crs = 'epsg:4326'
-    save_path = fn(filename) + '.shp'
-    try:
-        df.to_file(save_path, encoding='utf-8')
-    except fiona.errors.SchemaError:
-        df.columns = [pinyin(i) for i in df.columns]
-        df.to_file(save_path, encoding='utf-8')
-        print('已将列名转为汉语拼音进行转换')
-
-
 def per2float(string: str) -> float:
     if '%' in string:
         string = string.replace('%', '')
@@ -397,7 +333,72 @@ def fuzz_df(df: pd.DataFrame,
     return df
 
 
-def geom2lnglat(df, delete=False, geometry='geometry'):
+# 地理处理
+def valid_check(polygon_geom):
+    '''检验面的有效性'''
+    from shapely.wkb import loads
+    df = polygon_geom.copy()
+    if len(df[df['geometry'].isna()]) > 0:
+        raise ValueError('geometry中有空值，请检查')
+    df['geometry'] = df['geometry'].apply(lambda x: loads(x, hex=True))
+    df = gpd.GeoDataFrame(df)
+    df.crs = 'epsg:4326'
+    df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
+    if len(df[df['flag'] < 0]) == 0:
+        print('Validity test passed.')
+    else:
+        raise Exception('有效性检验失败，请检查并修复面')
+
+
+def _dumps(x, hex=True, srid=4326):
+    from shapely.wkb import dumps
+    try:
+        x = dumps(x, hex=hex, srid=srid)
+    except AttributeError:
+        x = None
+    return x
+
+
+def shp2csv(shpfile_name: str, encoding='utf-8'):
+    '''shapefile 转 csv 文件'''
+    df = rdf(shpfile_name)
+    print(df.head())
+    df = gpd.GeoDataFrame(df)
+    df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
+    df.crs = 'epsg:4326'
+    save_path = fn(shpfile_name) + '.csv'
+    print(df.head())
+    df.to_csv(save_path, encoding=encoding, index=False)
+
+
+def _loads(x, hex=True):
+    from shapely.wkb import loads
+    try:
+        x = loads(x, hex=hex)
+    except AttributeError:
+        x = None
+    return x
+
+
+def csv2shp(filename: str):
+    '''csv文件 转 shapefile'''
+    import fiona
+    df = rdf(filename)
+    df = df.rename(columns={'名称': 'name',
+                            'geom': 'geometry'})
+    df = gpd.GeoDataFrame(df)
+    df['geometry'] = df['geometry'].apply(lambda x: _loads(x, hex=True))
+    df.crs = 'epsg:4326'
+    save_path = fn(filename) + '.shp'
+    try:
+        df.to_file(save_path, encoding='utf-8')
+    except fiona.errors.SchemaError:
+        df.columns = [pinyin(i) for i in df.columns]
+        df.to_file(save_path, encoding='utf-8')
+        print('已将列名转为汉语拼音进行转换')
+
+
+def geom2lnglat(df, geometry='geometry', delete=False):
     '''求中心点经纬度'''
     df = gpd.GeoDataFrame(df)
     df[geometry] = df[geometry].apply(lambda x: _loads(x, hex=True))
@@ -408,4 +409,33 @@ def geom2lnglat(df, delete=False, geometry='geometry'):
         df.drop(geometry, axis=1, inplace=True)
     else:
         df[geometry] = df[geometry].apply(lambda x: _dumps(x, hex=True, srid=4326))
+    return df
+
+
+def point_to_geo(df, lng, lat, delt=1):
+    from geopandas import points_from_xy
+    df = gpd.GeoDataFrame(df, geometry=points_from_xy(df[lng], df[lat]))
+    df.crs = 'epsg:4326'
+    if delt == 1:
+        del df[lng]
+        del df[lat]
+    return df
+
+
+def point_to_geo_old(df, lng, lat, delt=1):
+    from shapely.geometry import Point
+    df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)  # 识别经纬度，转换点数据
+    df = gpd.GeoDataFrame(df)  # 转换Geodataframe格式
+    df.crs = 'epsg:4326'
+    if delt == 1:
+        del df[lng]
+        del df[lat]
+    return df
+
+
+def lnglat2geom(df, lng='lng', lat='lat', delete=False):
+    df = point_to_geo(df, lng, lat, delt=0)
+    df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
+    if delete:
+        df.drop(['lng', 'lat'], axis=1, inplace=True)
     return df
