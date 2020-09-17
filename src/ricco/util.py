@@ -390,10 +390,22 @@ def fuzz_df(df: pd.DataFrame,
     :param target_serise: 从何处匹配， list/pd.Serise
     :return:
     '''
-    df[[col + '_target',
+    df[[f'{col}_target',
         'normal_score',
-        'partial_score']] = df.apply(lambda x:
-                                     fuzz_match(x[col], target_serise),
-                                     result_type='expand',
-                                     axis=1)
+        'partial_score']] = df.apply(lambda x: fuzz_match(x[col], target_serise),
+                                     result_type='expand', axis=1)
+    return df
+
+
+def geom2lnglat(df, delete=False, geometry='geometry'):
+    '''求中心点经纬度'''
+    df = gpd.GeoDataFrame(df)
+    df[geometry] = df[geometry].apply(lambda x: _loads(x, hex=True))
+    df.crs = 'epsg:4326'
+    df['lng'] = df.centroid.x
+    df['lat'] = df.centroid.y
+    if delete:
+        df.drop(geometry, axis=1, inplace=True)
+    else:
+        df[geometry] = df[geometry].apply(lambda x: _dumps(x, hex=True, srid=4326))
     return df
