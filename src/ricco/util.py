@@ -424,8 +424,8 @@ def point_to_geo(df, lng, lat, delt=1):
 
 def point_to_geo_old(df, lng, lat, delt=1):
     from shapely.geometry import Point
-    df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)  # 识别经纬度，转换点数据
-    df = gpd.GeoDataFrame(df)  # 转换Geodataframe格式
+    df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)
+    df = gpd.GeoDataFrame(df)
     df.crs = 'epsg:4326'
     if delt == 1:
         del df[lng]
@@ -434,8 +434,19 @@ def point_to_geo_old(df, lng, lat, delt=1):
 
 
 def lnglat2geom(df, lng='lng', lat='lat', delete=False):
+    df = ensure_lnglat(df)
     df = point_to_geo(df, lng, lat, delt=0)
     df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
     if delete:
         df.drop(['lng', 'lat'], axis=1, inplace=True)
+    return df
+
+
+def wkt2wkb(df, geometry='geometry'):
+    from shapely import wkt
+    from shapely import wkb
+    df = gpd.GeoDataFrame(df)
+    df[geometry] = df[geometry].apply(lambda x: wkt.loads(x))
+    df.crs = 'epsg:4326'
+    df[geometry] = df[geometry].apply(lambda x: wkb.dumps(x, hex=True, srid=4326))
     return df
