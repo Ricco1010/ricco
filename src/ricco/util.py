@@ -402,7 +402,7 @@ def csv2shp(filename: str):
 
 
 def geom_wkb2lnglat(df, geometry='geometry', delete=False):
-    '''求中心点经纬度'''
+    '''geometry转经纬度，求中心点经纬度'''
     df = gpd.GeoDataFrame(df)
     df[geometry] = df[geometry].apply(lambda x: _loads(x, hex=True))
     df.crs = 'epsg:4326'
@@ -416,6 +416,7 @@ def geom_wkb2lnglat(df, geometry='geometry', delete=False):
 
 
 def geom_wkt2wkb(df, geometry='geometry'):
+    '''wkb转wkt'''
     from shapely import wkt
     from shapely import wkb
     df = gpd.GeoDataFrame(df)
@@ -426,6 +427,7 @@ def geom_wkt2wkb(df, geometry='geometry'):
 
 
 def point_to_geo(df, lng, lat, delt=1):
+    '''包含经纬度的DataFrame转GeoDataFrame'''
     from geopandas import points_from_xy
     df = gpd.GeoDataFrame(df, geometry=points_from_xy(df[lng], df[lat]))
     df.crs = 'epsg:4326'
@@ -436,6 +438,7 @@ def point_to_geo(df, lng, lat, delt=1):
 
 
 def point_to_geo_old(df, lng, lat, delt=1):
+    '''包含经纬度的DataFrame转GeoDataFrame'''
     from shapely.geometry import Point
     df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)
     df = gpd.GeoDataFrame(df)
@@ -447,6 +450,7 @@ def point_to_geo_old(df, lng, lat, delt=1):
 
 
 def lnglat2geom(df, lng='lng', lat='lat', delete=False):
+    '''经纬度转wkb格式的geometry'''
     df = ensure_lnglat(df)
     df = point_to_geo(df, lng, lat, delt=0)
     df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
