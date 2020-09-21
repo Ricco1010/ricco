@@ -1,44 +1,44 @@
-# Ricco
-***
-## 常用工具：util.py
+#Ricco
+* * * 
+##常用工具：util.py
 
-### 文件处理
+###文件处理
 * mkdir_2：新建文件夹
-* ext: 提取扩展名
-* fn： 提取除扩展名外的文件名
+* ext：提取扩展名
+* fn：提取除扩展名外的文件名
 * rdf：读取文件
 * split_csv：将文件拆分为多个同名的csv
 * to_csv_by_line：一行一行的写入csv
-* csv2shp: csv转shapefile
-* shp2csv: shapefile转csv文件
+* csv2shp：csv转shapefile
+* shp2csv：shapefile转csv文件
 
-### 数据处理
+###数据处理
 * extract_num：提取数字
-* to_float: 封装好的转数值型工具
-* serise_to_float: 封装好的整列转数值型的工具
-* col_round: 四舍五入，默认保留两位小数，绝对值小于1的保留4位小数
+* to_float：封装好的转数值型工具
+* serise_to_float：封装好的整列转数值型的工具
+* col_round：四舍五入，默认保留两位小数，绝对值小于1的保留4位小数
 * standard：数据标准化
-* fuzz_match： 一个字符串和一堆进行匹配模糊匹配，计算相似度
+* fuzz_match：一个字符串和一堆进行匹配模糊匹配，计算相似度
 * fuzz_df：两列进行模糊匹配，计算相似度
 * reset2name：重置索引列为name
 * segment：分段工具，'10-20米'
 
-### 空间地理处理
+###空间地理处理
 * geom_wkb2lnglat：geometry转经纬度
 * geom_wkt2wkb：wkt转wkb
 * lnglat2geom：经纬度转geometry
 * valid_check：面数据的有效性检查
 
-### 其他工具
-* ensure_list: 各种变量转list
-* pinyin: 转汉语拼音
-***
-## 坐标转换：coord_trans.py
+###其他工具
+* ensure_list：各种变量转list
+* pinyin：转汉语拼音
+* * * 
+##坐标转换：coord_trans.py
 * BD2WGS：百度转84
 * GD2WGS：高德转84
 * coord_trans_x2y：自定义转换
 
-## 坐标解析：geocode_bd.py
+##坐标解析：geocode_bd.py
 * get_lnglat：单个点位解析
 * geocode_df：批量解析
 ***
