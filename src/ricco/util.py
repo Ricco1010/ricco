@@ -350,7 +350,7 @@ def valid_check(polygon_geom):
     if len(df[df['flag'] < 0]) == 0:
         print('Validity test passed.')
     else:
-        raise Exception('有效性检验失败，请检查并修复面')
+        raise ValueError('有效性检验失败，请检查并修复面')
 
 
 def _loads(x, hex=True):
@@ -373,6 +373,7 @@ def _dumps(x, hex=True, srid=4326):
 
 def shp2csv(shpfile_name: str, encoding='utf-8'):
     '''shapefile 转 csv 文件'''
+    import warnings
     df = rdf(shpfile_name)
     print(df.head())
     df = gpd.GeoDataFrame(df)
@@ -380,6 +381,10 @@ def shp2csv(shpfile_name: str, encoding='utf-8'):
     df.crs = 'epsg:4326'
     save_path = fn(shpfile_name) + '.csv'
     print(df.head())
+    try:
+        valid_check(df)
+    except ValueError:
+        warnings.warn('有效性检验失败，可能影响数据上传')
     df.to_csv(save_path, encoding=encoding, index=False)
 
 

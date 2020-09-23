@@ -1,8 +1,8 @@
 #Ricco
 * * * 
-##常用工具：util.py
+## 常用工具：util.py
 
-###文件处理
+### 文件处理
 * mkdir_2：新建文件夹
 * ext：提取扩展名
 * fn：提取除扩展名外的文件名
@@ -12,7 +12,7 @@
 * csv2shp：csv转shapefile
 * shp2csv：shapefile转csv文件
 
-###数据处理
+### 数据处理
 * extract_num：提取数字
 * to_float：封装好的转数值型工具
 * serise_to_float：封装好的整列转数值型的工具
@@ -23,22 +23,22 @@
 * reset2name：重置索引列为name
 * segment：分段工具，'10-20米'
 
-###空间地理处理
+### 空间地理处理
 * geom_wkb2lnglat：geometry转经纬度
 * geom_wkt2wkb：wkt转wkb
 * lnglat2geom：经纬度转geometry
 * valid_check：面数据的有效性检查
 
-###其他工具
+### 其他工具
 * ensure_list：各种变量转list
 * pinyin：转汉语拼音
 * * * 
-##坐标转换：coord_trans.py
+## 坐标转换：coord_trans.py
 * BD2WGS：百度转84
 * GD2WGS：高德转84
 * coord_trans_x2y：自定义转换
 
-##坐标解析：geocode_bd.py
+## 坐标解析：geocode_bd.py
 * get_lnglat：单个点位解析
 * geocode_df：批量解析
 ***
