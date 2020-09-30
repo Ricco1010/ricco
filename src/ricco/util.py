@@ -1,6 +1,6 @@
 import csv
 import os
-
+import datetime
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -210,6 +210,21 @@ def to_float(string,
 def serise_to_float(serise: pd.Series, rex_method: str = 'mean'):
     '''pandas.Series: str --> float'''
     return serise.apply(lambda x: to_float(x, rex_method=rex_method))
+
+
+def excel2date(dates):
+    '''excel的数字样式时间格式转日期格式'''
+    if len(str(dates)) == 5:
+        try:
+            dates = int(dates)
+            delta = datetime.timedelta(days=dates)
+            today = datetime.datetime.strptime('1899-12-30', '%Y-%m-%d') + delta
+            dates_ = datetime.datetime.strftime(today, '%Y-%m-%d')
+            return dates_
+        except ValueError:
+            return None
+    else:
+        return dates
 
 
 def ensure_list(val):
