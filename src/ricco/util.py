@@ -31,6 +31,17 @@ def max_grid():
             decrement = True
 
 
+def versionCompare(smaller: str, bigger: str, n=3):
+    lis1 = smaller.split('.')
+    lis2 = bigger.split('.')
+    lis1 = [to_float(i) for i in lis1]
+    lis2 = [to_float(i) for i in lis2]
+    for i in range(n):
+        if lis1[i] > lis2[i]:
+            return False
+    return True
+
+
 def rdf(filepath: str) -> pd.DataFrame:
     '''
     常用文件读取函数，支持.csv/.xlsx/.shp
@@ -42,7 +53,7 @@ def rdf(filepath: str) -> pd.DataFrame:
     if ext(filepath) == '.csv':
         try:
             df = pd.read_csv(filepath, engine='python', encoding='utf-8-sig')
-        except:
+        except UnicodeDecodeError:
             df = pd.read_csv(filepath, engine='python')
     elif ext(filepath) == '.xls':
         df = pd.read_excel(filepath)
@@ -380,7 +391,10 @@ def _loads(x, hex=True):
 def _dumps(x, hex=True, srid=4326):
     from shapely.wkb import dumps
     try:
-        x = dumps(x, hex=hex, srid=srid)
+        if versionCompare(gpd.__version__,'0.7.2'):
+            x = dumps(x, hex=hex, srid=srid)
+        else:
+            x = dumps(x, hex=hex)
     except AttributeError:
         x = None
     return x
