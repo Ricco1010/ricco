@@ -1,6 +1,6 @@
 import csv
 import os
-
+import datetime
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -31,6 +31,17 @@ def max_grid():
             decrement = True
 
 
+def versionCompare(smaller: str, bigger: str, n=3):
+    lis1 = smaller.split('.')
+    lis2 = bigger.split('.')
+    lis1 = [to_float(i) for i in lis1]
+    lis2 = [to_float(i) for i in lis2]
+    for i in range(n):
+        if lis1[i] > lis2[i]:
+            return False
+    return True
+
+
 def rdf(filepath: str) -> pd.DataFrame:
     '''
     常用文件读取函数，支持.csv/.xlsx/.shp
@@ -42,7 +53,7 @@ def rdf(filepath: str) -> pd.DataFrame:
     if ext(filepath) == '.csv':
         try:
             df = pd.read_csv(filepath, engine='python', encoding='utf-8-sig')
-        except:
+        except UnicodeDecodeError:
             df = pd.read_csv(filepath, engine='python')
     elif ext(filepath) == '.xls':
         df = pd.read_excel(filepath)
@@ -212,6 +223,21 @@ def serise_to_float(serise: pd.Series, rex_method: str = 'mean'):
     return serise.apply(lambda x: to_float(x, rex_method=rex_method))
 
 
+def excel2date(dates):
+    '''excel的数字样式时间格式转日期格式'''
+    if len(str(dates)) == 5:
+        try:
+            dates = int(dates)
+            delta = datetime.timedelta(days=dates)
+            today = datetime.datetime.strptime('1899-12-30', '%Y-%m-%d') + delta
+            dates_ = datetime.datetime.strftime(today, '%Y-%m-%d')
+            return dates_
+        except ValueError:
+            return None
+    else:
+        return dates
+
+
 def ensure_list(val):
     """将标量值和Collection类型都统一转换为LIST类型"""
     if val is None:
@@ -350,7 +376,7 @@ def valid_check(polygon_geom):
     if len(df[df['flag'] < 0]) == 0:
         print('Validity test passed.')
     else:
-        raise Exception('有效性检验失败，请检查并修复面')
+        raise ValueError('有效性检验失败，请检查并修复面')
 
 
 def _loads(x, hex=True):
@@ -365,7 +391,10 @@ def _loads(x, hex=True):
 def _dumps(x, hex=True, srid=4326):
     from shapely.wkb import dumps
     try:
-        x = dumps(x, hex=hex, srid=srid)
+        if versionCompare(gpd.__version__,'0.7.2'):
+            x = dumps(x, hex=hex, srid=srid)
+        else:
+            x = dumps(x, hex=hex)
     except AttributeError:
         x = None
     return x
@@ -373,6 +402,7 @@ def _dumps(x, hex=True, srid=4326):
 
 def shp2csv(shpfile_name: str, encoding='utf-8'):
     '''shapefile 转 csv 文件'''
+    import warnings
     df = rdf(shpfile_name)
     print(df.head())
     df = gpd.GeoDataFrame(df)
@@ -380,6 +410,10 @@ def shp2csv(shpfile_name: str, encoding='utf-8'):
     df.crs = 'epsg:4326'
     save_path = fn(shpfile_name) + '.csv'
     print(df.head())
+    try:
+        valid_check(df)
+    except ValueError:
+        warnings.warn('有效性检验失败，可能影响数据上传')
     df.to_csv(save_path, encoding=encoding, index=False)
 
 
