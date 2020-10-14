@@ -39,6 +39,7 @@ setup(name='ricco',
                    'Natural Language :: English',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
-                   'Programming Language :: Python :: 3',
+                   'Programming Language :: Python :: 3.7',
+                   'Programming Language :: Python :: 3.8',
                    'Topic :: Software Development :: Libraries'],
       url='https://github.com/Ricco1010/ricco')
