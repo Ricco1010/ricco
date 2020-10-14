@@ -2,7 +2,6 @@ attrs==19.3.0
 click==7.1.2
 cligj==0.5.0
 Fiona==1.8.13
-GDAL==3.0.4
 geojson==2.5.0
 geopandas==0.8.0
 more-itertools==8.4.0
