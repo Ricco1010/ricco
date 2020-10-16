@@ -1,5 +1,7 @@
 import csv
 import os
+import zipfile
+import re
 import datetime
 import geopandas as gpd
 import numpy as np
@@ -127,6 +129,55 @@ def mkdir_2(path: str):
     '''新建文件夹，忽略存在的文件夹'''
     if not os.path.isdir(path):
         os.makedirs(path)
+
+
+import zipfile
+import os
+
+import re
+
+
+def dir2zip(filepath, delete_exist=True, delete_origin=False):
+    """压缩文件夹"""
+    zipfilename = filepath + '.zip'
+    if delete_exist:
+        if os.path.exists(zipfilename):
+            os.remove(zipfilename)
+            print(f'文件已存在，delete {zipfilename}')
+    print(f'saving {zipfilename}')
+    z = zipfile.ZipFile(zipfilename, 'w', zipfile.ZIP_DEFLATED)
+    for dirpath, dirnames, filenames in os.walk(filepath):
+        for filename in filenames:
+            filepath_out = os.path.join(dirpath, filename)
+            filepath_in = os.path.join(os.path.split(dirpath)[-1], filename)
+            z.write(filepath_out, arcname=filepath_in)
+    z.close()
+    if delete_origin:
+        print(f'delete {filepath}')
+        del_file(filepath)
+
+
+def del_file(filepath):
+    """
+    删除某一目录下的所有文件或文件夹
+    :param filepath: 路径
+    :return:
+    """
+    import shutil
+    del_list = os.listdir(filepath)
+    for f in del_list:
+        file_path = os.path.join(filepath, f)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    shutil.rmtree(filepath)
+
+
+def zip_format_dir(root_dir, pattern='.*Update20\d{6}', delete_origin=False):
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        if re.match(pattern, dirpath):
+            dir2zip(dirpath, delete_origin=delete_origin)
 
 
 def split_csv(filename: str, n: int = 5, encoding: str = 'utf-8'):
@@ -391,7 +442,7 @@ def _loads(x, hex=True):
 def _dumps(x, hex=True, srid=4326):
     from shapely.wkb import dumps
     try:
-        if versionCompare(gpd.__version__,'0.7.2'):
+        if versionCompare(gpd.__version__, '0.7.2'):
             x = dumps(x, hex=hex, srid=srid)
         else:
             x = dumps(x, hex=hex)
