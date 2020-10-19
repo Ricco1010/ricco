@@ -1,8 +1,9 @@
 import csv
-import os
-import zipfile
-import re
 import datetime
+import os
+import re
+import zipfile
+
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -84,6 +85,7 @@ def to_csv_by_line(filename: str, data: list):
 def ensure_lnglat(df) -> pd.DataFrame:
     '''将df中的经纬度重命名为lng和lat'''
     from warnings import warn
+
     from ricco import to_lnglat_dict
     df.rename(columns=to_lnglat_dict, inplace=True)
     if ('lng' not in df.columns) or ('lat' not in df.columns):
@@ -129,12 +131,6 @@ def mkdir_2(path: str):
     '''新建文件夹，忽略存在的文件夹'''
     if not os.path.isdir(path):
         os.makedirs(path)
-
-
-import zipfile
-import os
-
-import re
 
 
 def dir2zip(filepath, delete_exist=True, delete_origin=False):
@@ -502,8 +498,8 @@ def geom_wkb2lnglat(df, geometry='geometry', delete=False):
 
 def geom_wkt2wkb(df, geometry='geometry'):
     '''wkb转wkt'''
-    from shapely import wkt
     from shapely import wkb
+    from shapely import wkt
     df = gpd.GeoDataFrame(df)
     df[geometry] = df[geometry].apply(lambda x: wkt.loads(x))
     df.crs = 'epsg:4326'
