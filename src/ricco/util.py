@@ -1,6 +1,9 @@
 import csv
-import os
 import datetime
+import os
+import re
+import zipfile
+
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -8,17 +11,17 @@ from tqdm import tqdm
 
 
 def ext(filepath):
-    '''扩展名'''
+    """扩展名"""
     return os.path.splitext(filepath)[1]
 
 
 def fn(filepath):
-    '''路径及文件名（不含扩展名）'''
+    """路径及文件名（不含扩展名）"""
     return os.path.splitext(filepath)[0]
 
 
 def max_grid():
-    '''防止单个单元格文件过大而报错'''
+    """防止单个单元格文件过大而报错"""
     import sys
     maxInt = sys.maxsize
     decrement = True
@@ -43,12 +46,12 @@ def versionCompare(smaller: str, bigger: str, n=3):
 
 
 def rdf(filepath: str) -> pd.DataFrame:
-    '''
+    """
     常用文件读取函数，支持.csv/.xlsx/.shp
 
     :param filepath: 文件路径
     :return: dataframe
-    '''
+    """
     max_grid()
     if ext(filepath) == '.csv':
         try:
@@ -79,9 +82,38 @@ def to_csv_by_line(filename: str, data: list):
         csv_write.writerow(data)
 
 
+def plate_format(filename, name_col='板块', plate_name=True):
+    """
+    自动处理板块名
+
+    :param filename: 文件路径
+    :param name_col: 有板块名的列
+    :param plate_name: 是否增加“板块名”这一列
+    :return:
+    """
+    import warnings
+    if plate_name:
+        if '脉策板块' not in filename:
+            warnings.warn('非脉策板块不应该有板块名，请确认是否正确', UserWarning)
+    else:
+        if '脉策板块' in filename:
+            warnings.warn('脉策板块应该有板块名，请确认是否正确', UserWarning)
+    df = rdf(filename)
+    valid_check(df)
+    df['name'] = df[name_col]
+    df['板块名'] = df[name_col]
+    if plate_name:
+        df = df[['name', name_col, '板块名', 'geometry']]
+    else:
+        df = df[['name', name_col, 'geometry']]
+    df.to_csv(filename, index=False, encoding='utf-8')
+    return df
+
+
 def ensure_lnglat(df) -> pd.DataFrame:
-    '''将df中的经纬度重命名为lng和lat'''
+    """将df中的经纬度重命名为lng和lat"""
     from warnings import warn
+
     from ricco import to_lnglat_dict
     df.rename(columns=to_lnglat_dict, inplace=True)
     if ('lng' not in df.columns) or ('lat' not in df.columns):
@@ -90,7 +122,7 @@ def ensure_lnglat(df) -> pd.DataFrame:
 
 
 def read_and_rename(file: str) -> pd.DataFrame:
-    '''读取文件并将经纬度统一为lng和lat，并按照经纬度排序'''
+    """读取文件并将经纬度统一为lng和lat，并按照经纬度排序"""
     df = rdf(file)
     df = ensure_lnglat(df)
     if 'lat' in df.columns:
@@ -100,11 +132,11 @@ def read_and_rename(file: str) -> pd.DataFrame:
 
 
 def reset2name(df: pd.DataFrame, origin: bool = False) -> pd.DataFrame:
-    '''
+    """
     重置索引，并重命名为name， 默认将索引重置为有序完整的数字（重置两次）
 
     :param origin: 为True时，将原来的索引作为name列（重置一次）
-    '''
+    """
     if not origin:
         df = df.reset_index(drop=True)
     df = df.reset_index().rename(columns={'index': 'name'})
@@ -112,7 +144,7 @@ def reset2name(df: pd.DataFrame, origin: bool = False) -> pd.DataFrame:
 
 
 def pinyin(word: str) -> str:
-    '''将中文转换为汉语拼音'''
+    """将中文转换为汉语拼音"""
     import pypinyin
     if isinstance(word, str):
         s = ''
@@ -124,13 +156,56 @@ def pinyin(word: str) -> str:
 
 
 def mkdir_2(path: str):
-    '''新建文件夹，忽略存在的文件夹'''
+    """新建文件夹，忽略存在的文件夹"""
     if not os.path.isdir(path):
         os.makedirs(path)
 
 
+def dir2zip(filepath, delete_exist=True, delete_origin=False):
+    """压缩文件夹"""
+    zipfilename = filepath + '.zip'
+    if delete_exist:
+        if os.path.exists(zipfilename):
+            os.remove(zipfilename)
+            print(f'文件已存在，delete {zipfilename}')
+    print(f'saving {zipfilename}')
+    z = zipfile.ZipFile(zipfilename, 'w', zipfile.ZIP_DEFLATED)
+    for dirpath, dirnames, filenames in os.walk(filepath):
+        for filename in filenames:
+            filepath_out = os.path.join(dirpath, filename)
+            filepath_in = os.path.join(os.path.split(dirpath)[-1], filename)
+            z.write(filepath_out, arcname=filepath_in)
+    z.close()
+    if delete_origin:
+        print(f'delete {filepath}')
+        del_file(filepath)
+
+
+def del_file(filepath):
+    """
+    删除某一目录下的所有文件或文件夹
+    :param filepath: 路径
+    :return:
+    """
+    import shutil
+    del_list = os.listdir(filepath)
+    for f in del_list:
+        file_path = os.path.join(filepath, f)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    shutil.rmtree(filepath)
+
+
+def zip_format_dir(root_dir, pattern=r'.*Update20\d{6}', delete_origin=False):
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        if re.match(pattern, dirpath):
+            dir2zip(dirpath, delete_origin=delete_origin)
+
+
 def split_csv(filename: str, n: int = 5, encoding: str = 'utf-8'):
-    '''将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中'''
+    """将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中"""
     dir_name = fn(os.path.basename(filename))
     abs_path = os.getcwd()
     df = rdf(filename)
@@ -164,7 +239,7 @@ def extract_num(string: str,
                 join_list: bool = False,
                 ignore_pct: bool = True,
                 multi_warning=False):
-    '''
+    """
     提取字符串中的数值，默认返回所有数字组成的列表
 
     :param string: 输入的字符串
@@ -173,7 +248,7 @@ def extract_num(string: str,
     :param join_list: 是否合并列表，默认FALSE
     :param ignore_pct: 是否忽略百分号，默认True
     :return:
-    '''
+    """
     import re
     from warnings import warn
 
@@ -183,7 +258,7 @@ def extract_num(string: str,
     if ignore_pct:
         lis = re.findall(r"\d+\.?\d*", string)
     else:
-        lis = re.findall(r"\d+\.?\d*\%?", string)
+        lis = re.findall(r"\d+\.?\d*%?", string)
     lis2 = [getattr(numpy, num_type)(per2float(i)) for i in lis]
     if len(lis2) > 0:
         if method != 'list':
@@ -208,9 +283,9 @@ def to_float(string,
              rex_method: str = 'mean',
              ignore_pct: bool = False,
              multi_warning=True):
-    '''
+    """
     字符串转换为float
-    '''
+    """
     return extract_num(string,
                        num_type='float',
                        method=rex_method,
@@ -219,12 +294,12 @@ def to_float(string,
 
 
 def serise_to_float(serise: pd.Series, rex_method: str = 'mean'):
-    '''pandas.Series: str --> float'''
+    """pandas.Series: str --> float"""
     return serise.apply(lambda x: to_float(x, rex_method=rex_method))
 
 
 def excel2date(dates):
-    '''excel的数字样式时间格式转日期格式'''
+    """excel的数字样式时间格式转日期格式"""
     if len(str(dates)) == 5:
         try:
             dates = int(dates)
@@ -250,7 +325,7 @@ def ensure_list(val):
 
 
 def segment(x, gap: (list, float, int), sep: str = '-', unit: str = '') -> str:
-    '''
+    """
     区间段划分工具
 
     :param x: 数值
@@ -258,7 +333,7 @@ def segment(x, gap: (list, float, int), sep: str = '-', unit: str = '') -> str:
     :param unit: 单位，末尾
     :param sep: 分隔符，中间
     :return: 区间段 'num1分隔符num2单位'：‘80-100米’
-    '''
+    """
 
     def between_list(x, lis):
         for i in reversed(range(len(lis) - 1)):
@@ -307,7 +382,7 @@ def standard(serise: (pd.Series, list),
 
 
 def col_round(df, col: list):
-    '''对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位'''
+    """对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位"""
 
     def _round(x):
         if abs(x) >= 1:
@@ -322,13 +397,13 @@ def col_round(df, col: list):
 
 
 def fuzz_match(string: str, ss: (list, pd.Series)):
-    '''
+    """
     为某一字符串从某一集合中匹配相似度最高的元素
 
-    :param x: 输入的字符串
+    :param string: 输入的字符串
     :param ss: 要去匹配的集合
     :return: 字符串及相似度组成的列表
-    '''
+    """
     from fuzzywuzzy import fuzz
 
     def _ratio(s, x):
@@ -347,14 +422,14 @@ def fuzz_match(string: str, ss: (list, pd.Series)):
 def fuzz_df(df: pd.DataFrame,
             col: str,
             target_serise: (list, pd.Series)) -> pd.DataFrame:
-    '''
+    """
     为DataFrame中的某一列，从某个集合中匹配相似度最高的元素
 
     :param df: 输入的dataframe
     :param col: 要匹配的列
     :param target_serise: 从何处匹配， list/pd.Serise
     :return:
-    '''
+    """
     df[[f'{col}_target',
         'normal_score',
         'partial_score']] = df.apply(lambda x: fuzz_match(x[col], target_serise),
@@ -364,7 +439,7 @@ def fuzz_df(df: pd.DataFrame,
 
 # 地理处理
 def valid_check(polygon_geom):
-    '''检验面的有效性'''
+    """检验面的有效性"""
     from shapely.wkb import loads
     df = polygon_geom.copy()
     if len(df[df['geometry'].isna()]) > 0:
@@ -391,7 +466,7 @@ def _loads(x, hex=True):
 def _dumps(x, hex=True, srid=4326):
     from shapely.wkb import dumps
     try:
-        if versionCompare(gpd.__version__,'0.7.2'):
+        if versionCompare(gpd.__version__, '0.7.2'):
             x = dumps(x, hex=hex, srid=srid)
         else:
             x = dumps(x, hex=hex)
@@ -401,7 +476,7 @@ def _dumps(x, hex=True, srid=4326):
 
 
 def shp2csv(shpfile_name: str, encoding='utf-8'):
-    '''shapefile 转 csv 文件'''
+    """shapefile 转 csv 文件"""
     import warnings
     df = rdf(shpfile_name)
     print(df.head())
@@ -418,7 +493,7 @@ def shp2csv(shpfile_name: str, encoding='utf-8'):
 
 
 def csv2shp(filename: str):
-    '''csv文件 转 shapefile'''
+    """csv文件 转 shapefile"""
     import fiona
     df = rdf(filename)
     df = df.rename(columns={'名称': 'name',
@@ -436,7 +511,7 @@ def csv2shp(filename: str):
 
 
 def geom_wkb2lnglat(df, geometry='geometry', delete=False):
-    '''geometry转经纬度，求中心点经纬度'''
+    """geometry转经纬度，求中心点经纬度"""
     df = gpd.GeoDataFrame(df)
     df[geometry] = df[geometry].apply(lambda x: _loads(x, hex=True))
     df.crs = 'epsg:4326'
@@ -450,9 +525,9 @@ def geom_wkb2lnglat(df, geometry='geometry', delete=False):
 
 
 def geom_wkt2wkb(df, geometry='geometry'):
-    '''wkb转wkt'''
-    from shapely import wkt
+    """wkb转wkt"""
     from shapely import wkb
+    from shapely import wkt
     df = gpd.GeoDataFrame(df)
     df[geometry] = df[geometry].apply(lambda x: wkt.loads(x))
     df.crs = 'epsg:4326'
@@ -461,7 +536,7 @@ def geom_wkt2wkb(df, geometry='geometry'):
 
 
 def point_to_geo(df, lng, lat, delt=1):
-    '''包含经纬度的DataFrame转GeoDataFrame'''
+    """包含经纬度的DataFrame转GeoDataFrame"""
     from geopandas import points_from_xy
     df = gpd.GeoDataFrame(df, geometry=points_from_xy(df[lng], df[lat]))
     df.crs = 'epsg:4326'
@@ -472,7 +547,7 @@ def point_to_geo(df, lng, lat, delt=1):
 
 
 def point_to_geo_old(df, lng, lat, delt=1):
-    '''包含经纬度的DataFrame转GeoDataFrame'''
+    """包含经纬度的DataFrame转GeoDataFrame"""
     from shapely.geometry import Point
     df['geometry'] = gpd.GeoSeries(list(zip(df[lng], df[lat]))).apply(Point)
     df = gpd.GeoDataFrame(df)
@@ -484,7 +559,7 @@ def point_to_geo_old(df, lng, lat, delt=1):
 
 
 def lnglat2geom(df, lng='lng', lat='lat', delete=False):
-    '''经纬度转wkb格式的geometry'''
+    """经纬度转wkb格式的geometry"""
     df = ensure_lnglat(df)
     df = point_to_geo(df, lng, lat, delt=0)
     df['geometry'] = df['geometry'].apply(lambda x: _dumps(x, hex=True, srid=4326))
