@@ -438,7 +438,7 @@ def fuzz_df(df: pd.DataFrame,
 
 
 # 地理处理
-def valid_check(polygon_geom):
+def valid_check(polygon_geom, log=True):
     """检验面的有效性"""
     from shapely.wkb import loads
     df = polygon_geom.copy()
@@ -449,7 +449,8 @@ def valid_check(polygon_geom):
     df.crs = 'epsg:4326'
     df['flag'] = df['geometry'].apply(lambda x: 1 if x.is_valid else -1)
     if len(df[df['flag'] < 0]) == 0:
-        print('Validity test passed.')
+        if log:
+            print('Validity test passed.')
     else:
         raise ValueError('有效性检验失败，请检查并修复面')
 
@@ -503,7 +504,7 @@ def csv2shp(filename: str):
     df.crs = 'epsg:4326'
     save_path = fn(filename) + '.shp'
     try:
-        df.to_file(save_path, encoding='utf-8')
+        df.to_file(save_path)
     except fiona.errors.SchemaError:
         df.columns = [pinyin(i) for i in df.columns]
         df.to_file(save_path, encoding='utf-8')

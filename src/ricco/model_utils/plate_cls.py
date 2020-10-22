@@ -1,4 +1,3 @@
-from ricco import rdf
 from ricco import mark_tags_df
 from ricco.util import geom_wkb2lnglat
 
@@ -90,10 +89,19 @@ def grid2plate(grid, bk, col='分类_住宅'):
 
 
 def gird2plate_q(grid, bk, q=0.75):
-    """grid columns: ['grid_id', '平均工资', 'geometry']"""
+    """
+    grid columns: ['grid_id', '平均工资', 'geometry']
+
+    :param grid: 栅格底表
+    :param bk: 板块df
+    :param q: 0-1：板块汇总时的分位数，-1：求均值
+    """
     df = grid[['grid_id', '平均工资', 'geometry']]
     df = mark_tags_df(df, bk, col_list=['板块'])
-    df = df.groupby('板块', as_index=False)['平均工资'].quantile(q)
+    if q == -1:
+        df = df.groupby('板块', as_index=False)['平均工资'].mean()
+    else:
+        df = df.groupby('板块', as_index=False)['平均工资'].quantile(q)
     df_m = bk.merge(df, how='left')
     return df_m
 
@@ -107,7 +115,3 @@ def disadv_list(df, ds):
         '无', '').combine_first(bk_cls['板块分类'])
     bk_cls['板块分类_修正'] = bk_cls['板块分类_修正'].replace('去化周期长', '04_负面清单')
     return bk_cls
-
-
-def test():
-    print('3')
