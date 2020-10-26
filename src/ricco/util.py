@@ -101,11 +101,12 @@ def plate_format(filename, name_col='板块', plate_name=True):
     df = rdf(filename)
     valid_check(df)
     df['name'] = df[name_col]
+    df['板块'] = df[name_col]
     df['板块名'] = df[name_col]
     if plate_name:
-        df = df[['name', name_col, '板块名', 'geometry']]
+        df = df[['name', '板块', '板块名', 'geometry']]
     else:
-        df = df[['name', name_col, 'geometry']]
+        df = df[['name', '板块', 'geometry']]
     df.to_csv(filename, index=False, encoding='utf-8')
     return df
 

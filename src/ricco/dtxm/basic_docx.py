@@ -26,6 +26,7 @@ class _Docx(object):
                 t.cell(i + 1, j).text = str(table_df.values[i, j])
 
     def add_normal_p(self, text):
+        text = str(text)
         '''ÃÌº”∆’Õ®∂Œ¬‰'''
         self.doc.add_paragraph(text)
 

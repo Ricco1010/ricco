@@ -54,5 +54,5 @@ class Dtexm(_Tools):
 
 
 if __name__ == '__main__':
-    doc = Dtexm('成交2.xlsx')
+    doc = Dtexm('2020年8月郑州.xlsx')
     doc.examine_all()
