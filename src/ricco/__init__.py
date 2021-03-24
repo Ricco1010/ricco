@@ -1,6 +1,6 @@
-__version__ = '0.1.32'
+__version__ = '0.2.0'
 
-from ricco.Config import to_lnglat_dict
+from ricco.config import to_lnglat_dict
 from ricco.gis_tools import circum_pio_num_geo_aoi
 from ricco.gis_tools import mark_tags_df
 from ricco.gis_tools import point_to_geom
