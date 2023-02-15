@@ -6,8 +6,10 @@ libpysal==4.3.5
 matplotlib==3.2.1
 numpy==1.21.6
 pandas==1.5.1
+pygeos==0.13
 pypinyin==0.41.0
 requests==2.28.1
+Rtree==0.9.7
 shapely[vectorized]==1.8.0
 tqdm==4.62.0
 xlrd==2.0.1
