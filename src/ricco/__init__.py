@@ -1,4 +1,4 @@
-__version__ = '0.2.0'
+__version__ = '1.0.0'
 
 from ricco.etl.extract import rdf
 from ricco.etl.file import split_csv
