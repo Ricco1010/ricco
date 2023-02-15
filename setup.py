@@ -1,5 +1,3 @@
-# coding: utf-8
-
 import os
 import re
 
@@ -8,15 +6,16 @@ from setuptools import setup
 
 pwd = os.path.dirname(__file__)
 
-with open(os.path.join(pwd, 'src', 'ricco', '__init__.py'), encoding='utf-8') as f:
-    VERSION = (
-        re.compile(r""".*__version__ = ["'](.*?)['"]""", re.S)
-            .match(f.read())
-            .group(1)
-    )
+with open(os.path.join(pwd, 'src', 'ricco', '__init__.py'),
+          encoding='utf-8') as f:
+  VERSION = (
+    re.compile(r""".*__version__ = ["'](.*?)['"]""", re.S)
+    .match(f.read())
+    .group(1)
+  )
 
 with open(os.path.join(pwd, 'README.md'), encoding='utf-8') as f:
-    README = f.read()
+  README = f.read()
 
 setup(name='ricco',
       version=VERSION,

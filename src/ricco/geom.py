@@ -18,29 +18,20 @@ from ricco.util import first_notnull_value
 warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 
-def ensure_lnglat(df) -> pd.DataFrame:
-  """将df中的经纬度重命名为lng和lat"""
-  from ricco.config import to_lnglat_dict
-
-  if not ('lng' in df and 'lat' in df):
-    df.rename(columns=to_lnglat_dict, inplace=True)
-  return df
-
-
 def get_epsg(city):
   """
   查找citycode，用于投影
   """
-  from ricco.config import epsg_dict
-  if city in epsg_dict.keys():
-    return epsg_dict[city]
+  from ricco.config import EPSG_CODE
+  if city in EPSG_CODE.keys():
+    return EPSG_CODE[city]
   else:
     city = city + '市'
-    if city in epsg_dict.keys():
-      return epsg_dict[city]
+    if city in EPSG_CODE.keys():
+      return EPSG_CODE[city]
     else:
       warnings.warn(
-        "获取城市epsg失败，当前默认为32651。请在config.py中补充该城市")
+          "获取城市epsg失败，当前默认为32651。请在config.py中补充该城市")
       return 32651
 
 
@@ -48,7 +39,7 @@ def projection(gdf, proj_epsg: int = None, city: str = None):
   if not proj_epsg:
     if not city:
       raise ValueError(
-        '获取投影信息失败，请补充参数:proj_epsg投影的坐标系统的epsg编号或city中国城市名称')
+          '获取投影信息失败，请补充参数:proj_epsg投影的坐标系统的epsg编号或city中国城市名称')
     else:
       proj_epsg = get_epsg(city)
   return gdf.to_crs(epsg=proj_epsg)
@@ -163,7 +154,7 @@ def geom_shapely2lnglat(df, geometry='geometry', within=False, delete=False):
   当为True时，不在面内的中心点将用一个在面内的点代替
   """
   df['geometry_temp'] = df[geometry].apply(
-    lambda x: get_inner_point(x, within=within) if x else None)
+      lambda x: get_inner_point(x, within=within) if x else None)
   df['lng'] = df['geometry_temp'].centroid.x
   df['lat'] = df['geometry_temp'].centroid.y
   del df['geometry_temp']
@@ -174,8 +165,6 @@ def geom_shapely2lnglat(df, geometry='geometry', within=False, delete=False):
 
 def geom_lnglat2wkb(df, lng='lng', lat='lat', delete=False, code=4326):
   """经纬度转wkb格式的geometry"""
-  if lng in df and lat in df:
-    df = ensure_lnglat(df)
   df = geom_lnglat2shapely(df, 'lng', 'lat', delete=delete, epsg_code=code)
   df['geometry'] = df['geometry'].apply(wkb_dumps)
   if not delete:
@@ -241,7 +230,7 @@ def geom_split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
 
   # 构建经纬度列表
   lng_array, lat_array = np.linspace(x_start, x_end, num=x_num), np.linspace(
-    y_start, y_end, num=y_num)
+      y_start, y_end, num=y_num)
   lng_list, lat_list = list(lng_array), list(lat_array)
 
   # 构建栅格索引
@@ -364,7 +353,6 @@ def mark_tags_v2(
     polygon_df = polygon_df[col_list + ['geometry']]
 
   col_list = ensure_list(col_list)
-  point_df = ensure_lnglat(point_df)
   for c in col_list:
     if c in point_df and c not in ['lng', 'lat', 'geometry']:
       c_n = f'{c}_origin'
@@ -410,3 +398,40 @@ def mark_tags_v2(
       raise ValueError('不支持的geometry格式')
 
   return pd.DataFrame(point_df)
+
+
+def dis_point2point(lnglat_ori: (tuple, str),
+                    lnglat_dis: (tuple, str),
+                    city: str,
+                    crs_from: int = 4326,
+                    crs_to: (str, int) = 'auto'):
+  """
+  计算两个点（经度，纬度）之间的距离，单位：米
+
+  example:
+
+  >>> dis_point2point((121.579051,31.3402), (121.581099,31.342405), '上海市')
+  >>> 312.6011508211181
+
+  :param lnglat_ori: 经纬度或wkb
+  :param lnglat_dis: 经纬度或wkb
+  :param city: 城市
+  :param crs_from: 原始epsg，默认为4326
+  :param crs_to: 投影epsg，默认为'auto',按城市自动获取
+  :return:
+  """
+  # TODO(wangyukang): 目前会有性能问题，需优化
+  from pyproj import Transformer
+  from shapely.geometry import Point
+  if crs_to == 'auto':
+    crs_to = get_epsg(city)
+  if isinstance(lnglat_ori, str):
+    geom = wkb_loads(lnglat_ori)
+    lnglat_ori = (geom.x, geom.y)
+  if isinstance(lnglat_dis, str):
+    geom = wkb_loads(lnglat_dis)
+    lnglat_dis = (geom.x, geom.y)
+  transformer = Transformer.from_crs(crs_from, crs_to)
+  xy1 = transformer.transform(xx=lnglat_ori[1], yy=lnglat_ori[0])
+  xy2 = transformer.transform(xx=lnglat_dis[1], yy=lnglat_dis[0])
+  return Point(xy1).distance(Point(xy2))
