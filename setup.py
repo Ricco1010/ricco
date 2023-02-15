@@ -19,7 +19,7 @@ with open(os.path.join(pwd, 'README.md'), encoding='utf-8') as f:
 
 setup(name='ricco',
       version=VERSION,
-      description='tools',
+      description='A handy ETL&GEOM kit',
       long_description=README,
       long_description_content_type="text/markdown",
       author="Ricco Wang",
