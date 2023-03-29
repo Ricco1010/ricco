@@ -6,6 +6,7 @@ from ricco.etl.load import to_csv_by_line
 from ricco.etl.transformer import fuzz_df
 from ricco.etl.transformer import serise_to_float
 from ricco.geom import mark_tags_v2
+from ricco.local import Ricco
 from ricco.os import ext
 from ricco.os import fn
 from ricco.os import mkdir_2
