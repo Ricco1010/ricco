@@ -15,6 +15,15 @@ from shapely.geometry.base import BaseGeometry
 from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import transform as sh_transform
 
+"""
+Dependencies:
+
+pyproj==2.3.1
+pandas==0.24.2
+shapely[vectorized]==1.7a1
+geojson==2.5.0
+"""
+
 __all__ = ['wgs2gcj', 'gcj2wgs', 'gcj2wgs_exact', 'distance', 'gcj2bd',
            'bd2gcj', 'wgs2bd', 'bd2wgs']
 
@@ -309,6 +318,12 @@ def coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
       lambda x, y, z=None: coord_transform(x, y, from_srs, to_srs), geo)
 
 
+def lnglat_check(df):
+  """检查列名"""
+  if ('lng' not in df.columns) | ('lng' not in df.columns):
+    raise KeyError('经纬度列名必须为lng和lat')
+
+
 def coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
   """
   坐标批量转换工具
@@ -322,10 +337,23 @@ def coord_trans_x2y(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
   def fn(row):
     return coord_transform(row['lng'], row['lat'], srs_from, srs_to)
 
+  lnglat_check(df_org)
   df_org['lng'] = df_org['lng'].astype(float)
   df_org['lat'] = df_org['lat'].astype(float)
   df_org[['lng', 'lat']] = df_org.apply(fn, axis=1, result_type='expand')
   print('坐标转换完成：%s → %s' % (srs_from, srs_to))
+  return df_org
+
+
+def BD2WGS(df_org):
+  """百度转WGS84"""
+  df_org = coord_trans_x2y(df_org, SRS.bd09, SRS.wgs84)
+  return df_org
+
+
+def GD2WGS(df_org):
+  """高德转WGS84"""
+  df_org = coord_trans_x2y(df_org, SRS.gcj02, SRS.wgs84)
   return df_org
 
 
@@ -338,15 +366,15 @@ def coord_trans_geom(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
   :param srs_to: 要转的坐标系，可选'wgs84', 'bd09', 'gcj02'
   :return:
   """
-  from ricco.geom import wkb_dumps
-  from ricco.geom import wkb_loads
+  from .geom import wkb_dumps
+  from .geom import wkb_loads
   if 'geometry' not in df_org.columns:
     raise KeyError('必须有geometry列')
   df_org['geometry'] = df_org['geometry'].apply(
-      lambda x: wkb_dumps(coord_transform_geometry(
-          wkb_loads(x, hex=True),
-          srs_from,
-          srs_to),
+      lambda x: wkb_dumps(
+          coord_transform_geometry(wkb_loads(x, hex=True),
+                                   srs_from,
+                                   srs_to),
           hex=True,
           srid=4326))
   print(f'坐标转换：{srs_from} --> {srs_to}')

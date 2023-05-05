@@ -1,16 +1,20 @@
 import requests
 from fuzzywuzzy import fuzz
 
-from ricco.geocode.util import MapKeys
-from ricco.geocode.util import MapUrls
-from ricco.geocode.util import error_amap
-from ricco.geocode.util import gcj2xx
+from ..util.util import is_empty
+from .util import MapKeys
+from .util import MapUrls
+from .util import error_amap
+from .util import fix_address
+from .util import gcj2xx
 
 KEY = MapKeys.amap
 
 
 def address_json(city: str, address: str, key=None):
   """高德地理编码接口"""
+  if is_empty(address):
+    return None
   if not key:
     key = KEY
   url = f'{MapUrls.amap}?address={address}&city={city}&key={key}'
@@ -23,6 +27,8 @@ def address_json(city: str, address: str, key=None):
 
 def place_json(city: str, keywords: str, key=None):
   """高德地点检索接口"""
+  if is_empty(keywords):
+    return None
   if not key:
     key = KEY
   url = f'{MapUrls.amap_poi}?keywords={keywords}&city={city}&key={key}'
@@ -41,6 +47,8 @@ def get_amap(*,
              disable_cache=False,
              key=None):
   """脉策geocode服务"""
+  if is_empty(address):
+    return None
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
   req = requests.get(url)
   if req.status_code == 200:
@@ -57,8 +65,15 @@ def get_amap(*,
 
 
 def get_address_amap(city: str, address: str, srs: str = 'wgs84', key=None):
+  if is_empty(address):
+    return {
+      'rv': None,
+      'score': 0,
+      'lng': None,
+      'lat': None,
+    }
   city = city.rstrip('市')
-  address = address.replace('|', '')
+  address = fix_address(address).replace('|', '')
   address_dict = get_amap(city=city, address=address, source='amap', key=key)
   if address_dict:
     rv = address_dict['formatted_address']
@@ -70,14 +85,22 @@ def get_address_amap(city: str, address: str, srs: str = 'wgs84', key=None):
     rv, lng, lat = None, None, None
   return {
     'rv': rv,
-    'score': None,
+    'score': 0,
     'lng': lng,
     'lat': lat,
   }
 
 
 def get_place_amap(city: str, keywords: str, srs='wgs84', key=None):
+  if is_empty(keywords):
+    return {
+      'rv': None,
+      'score': 0,
+      'lng': None,
+      'lat': None,
+    }
   city = city.rstrip('市')
+  keywords = fix_address(keywords)
   res = get_amap(city=city, address=keywords, source='amap_poi', key=key)
   if res:
     rv = res['name']
@@ -95,8 +118,3 @@ def get_place_amap(city: str, keywords: str, srs='wgs84', key=None):
     'lng': lng,
     'lat': lat,
   }
-
-
-if __name__ == '__main__':
-  res = address_json('上海', '大同路922弄97号', key='111')
-  print(res)

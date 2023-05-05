@@ -2,9 +2,25 @@ from datetime import datetime
 
 import pandas as pd
 
-from ..util import ensure_list
-from ..util import fuzz_match
-from ..util import to_float
+from ..util.geom import wkb_loads
+from ..util.util import ensure_list
+from ..util.util import fuzz_match
+from ..util.util import list2dict
+from ..util.util import to_float
+
+
+def filter_valid_geom(df: pd.DataFrame,
+                      c_geometry='geometry',
+                      ignore_index=True):
+  """仅保留有效的geometry，剔除空白和错误的geometry行"""
+  if 'temp_xxx' in df.columns:
+    raise KeyError('数据集中不能存在【temp_xxx】列')
+  df['temp_xxx'] = df[c_geometry].apply(wkb_loads)
+  df = df[df['temp_xxx'].notna()]
+  if ignore_index:
+    df = df.reset_index(drop=True)
+  del df['temp_xxx']
+  return df
 
 
 def best_unique(df: pd.DataFrame,
@@ -82,19 +98,19 @@ def round_by_columns(df, col: list):
   return df
 
 
-def standard(serise: (pd.Series, list),
+def standard(series: (pd.Series, list),
              q: float = 0.01,
              min_score: float = 0,
              minus: bool = False) -> (pd.Series, list):
   if minus:
-    serise = 1 / (serise + 1)
-  max_ = serise.quantile(1 - q)
-  min_ = serise.quantile(q)
-  serise = serise.apply(
+    series = 1 / (series + 1)
+  max_ = series.quantile(1 - q)
+  min_ = series.quantile(q)
+  series = series.apply(
       lambda x: (x - min_) / (max_ - min_) * (100 - min_score) + min_score)
-  serise[serise >= 100] = 100
-  serise[serise <= min_score] = min_score
-  return serise
+  series[series >= 100] = 100
+  series[series <= min_score] = min_score
+  return series
 
 
 def update_df(df: pd.DataFrame,
@@ -132,11 +148,11 @@ def update_df(df: pd.DataFrame,
   return df
 
 
-def date_to(serise: pd.Series, mode: str = 'first'):
+def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
   """
   将日期转为当月的第一天或最后一天
 
-  :param serise: pd.Serise
+  :param series: pd.Serise
   :param mode: 'first' or 'last'
   :return:
   """
@@ -151,15 +167,14 @@ def date_to(serise: pd.Series, mode: str = 'first'):
     else:
       return None
 
-  serise = pd.to_datetime(serise)
+  series = pd.to_datetime(series)
   if mode == 'first':
-    serise = serise.apply(lambda x: x.replace(day=1))
+    series = series.apply(lambda x: x.replace(day=1))
   elif mode == 'last':
-    serise = pd.to_datetime(serise, format="%Y%m") + MonthEnd(1)
+    series = pd.to_datetime(series, format="%Y%m") + MonthEnd(1)
   else:
     raise ValueError(f"{mode}不是正确的参数，请使用 'first' or 'last'")
-  serise = serise.apply(trans)
-  return serise
+  return series.apply(trans)
 
 
 def fuzz_df(df: pd.DataFrame,
@@ -180,11 +195,63 @@ def fuzz_df(df: pd.DataFrame,
   return df
 
 
-def serise_to_float(serise: pd.Series, rex_method: str = 'mean'):
+def series_to_float(series: pd.Series, rex_method: str = 'mean') -> pd.Series:
   """
   pandas.Series: str --> float
 
-  :param serise: 要转换的pandas列
+  :param series: 要转换的pandas列
   :param rex_method: 计算mean,max,min， 默认为mean
   """
-  return serise.apply(lambda x: to_float(x, rex_method=rex_method))
+  return series.apply(lambda x: to_float(x, rex_method=rex_method))
+
+
+def filter_by_df(df: pd.DataFrame, sizer: pd.DataFrame) -> pd.DataFrame:
+  """根据一个dataframe筛选另一个dataframe"""
+  sizer = sizer.drop_duplicates()
+  cond = False
+  for i in sizer.index:
+    _cond = True
+    for c in sizer:
+      value = sizer[c][i]
+      if pd.isna(value):
+        _cond = _cond & df[c].isna()
+      else:
+        _cond = _cond & (df[c] == value)
+    cond = cond | _cond
+  return df[cond]
+
+
+def expand_dict(df, c_src):
+  """展开字典为多列"""
+  return pd.concat(
+      [
+        df.drop(c_src, axis=1),
+        df[c_src].apply(
+            lambda x: pd.Series(x, dtype='object')
+        ).set_index(df.index)
+      ],
+      axis=1
+  )
+
+
+def split_list_to_row(df, column):
+  """将列表列中列表的元素拆成多行"""
+  df[column] = df[column].apply(list2dict)
+  return df.drop(columns=column).join(
+      expand_dict(
+          df[[column]], column
+      ).stack(
+      ).reset_index(
+          level=1, drop=True
+      ).rename(column)
+  )
+
+
+def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
+  """将字典转为dataframe"""
+  df = pd.DataFrame()
+  df[c_key] = data.keys()
+  df[c_value] = data.values()
+  if as_index:
+    df.set_index(c_key, inplace=True)
+  return df

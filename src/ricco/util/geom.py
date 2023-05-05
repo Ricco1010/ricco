@@ -1,48 +1,105 @@
+import json
 import logging
 import warnings
 
+import geojson
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 from shapely import wkb
 from shapely import wkt
+from shapely.errors import GeometryTypeError
 from shapely.errors import ShapelyDeprecationWarning
 from shapely.errors import WKBReadingError
+from shapely.geometry import LinearRing
+from shapely.geometry import LineString
+from shapely.geometry import MultiLineString
+from shapely.geometry import MultiPoint
+from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
 from shapely.geometry import Polygon
+from shapely.geometry import shape
 from shapely.geos import WKTReadingError
+from simplejson.errors import JSONDecodeError
 
-from ricco.util import ensure_list
-from ricco.util import first_notnull_value
+from ..util.util import ensure_list
+from ..util.util import first_notnull_value
 
 warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
+GeomTypeSet = (
+  Point, MultiPoint,
+  Polygon, MultiPolygon,
+  LineString, MultiLineString,
+  LinearRing
+)
 
-def get_epsg(city):
-  """
-  查找citycode，用于投影
-  """
-  from ricco.config import EPSG_CODE
-  if city in EPSG_CODE.keys():
-    return EPSG_CODE[city]
+
+class GeomFormat:
+  wkb = 'wkb'
+  wkt = 'wkt'
+  shapely = 'shapely'
+  geojson = 'geojson'
+  unknown = 'unknown'
+
+
+def crs_sh2000():
+  """测绘院（上海2000）crs信息"""
+  from ..resource.crs import CRS_SH2000
+  return CRS_SH2000
+
+
+def get_epsg_by_lng(lng):
+  """通过经度获取epsg代码"""
+  lng_epsg_mapping = {
+    # 中央经线和epsg代码的对应关系
+    75: 4534, 78: 4535, 81: 4536, 84: 4537, 87: 4538,
+    90: 4539, 93: 4540, 96: 4541, 99: 4542,
+    102: 4543, 105: 4544, 108: 4545, 111: 4546,
+    114: 4547, 117: 4548, 120: 4549, 123: 4550,
+    126: 4551, 129: 4552, 132: 4553, 135: 4554,
+  }
+  lng = np.median(lng)
+  key = min(lng_epsg_mapping.keys(), key=lambda x: abs(x - lng))
+  return lng_epsg_mapping.get(key)
+
+
+def get_lng_by_city(city: str):
+  from ..resource.epsg_code import CITY_POINT
+  if city in CITY_POINT.keys():
+    return CITY_POINT[city]['lng']
   else:
-    city = city + '市'
-    if city in EPSG_CODE.keys():
-      return EPSG_CODE[city]
+    city += '市'
+    if city in CITY_POINT.keys():
+      return CITY_POINT[city]['lng']
     else:
-      warnings.warn(
-          "获取城市epsg失败，当前默认为32651。请在config.py中补充该城市")
-      return 32651
+      warnings.warn(f'请补充{city}的epsg信息，默认返回经度120')
+      return 120
 
 
-def projection(gdf, proj_epsg: int = None, city: str = None):
-  if not proj_epsg:
-    if not city:
-      raise ValueError(
-          '获取投影信息失败，请补充参数:proj_epsg投影的坐标系统的epsg编号或city中国城市名称')
+def get_epsg(city: str):
+  """根据城市查询epsg代码，用于投影"""
+  return get_epsg_by_lng(get_lng_by_city(city))
+
+
+def projection(
+    gdf: gpd.GeoDataFrame,
+    epsg: int = None,
+    city: str = None):
+  """投影变换"""
+  if not epsg:
+    if city:
+      epsg = get_epsg(city)
     else:
-      proj_epsg = get_epsg(city)
-  return gdf.to_crs(epsg=proj_epsg)
+      lngs = gdf['geometry'].centroid.x.tolist()
+      epsg = get_epsg_by_lng(lngs)
+  return gdf.to_crs(epsg=epsg)
+
+
+def projection_lnglat(lnglat, crs_from, crs_to):
+  from pyproj import Transformer
+  transformer = Transformer.from_crs(crs_from, crs_to)
+  return transformer.transform(xx=lnglat[1], yy=lnglat[0])
 
 
 def wkb_loads(x, hex=True):
@@ -59,7 +116,7 @@ def wkb_loads(x, hex=True):
     return None
 
 
-def wkb_dumps(x, hex=True, srid=4326):
+def wkb_dumps(x, hex=True, srid=4326) -> (str, None):
   if pd.isna(x):
     return None
 
@@ -78,13 +135,120 @@ def wkt_loads(x):
     return None
 
 
-def wkt_dumps(x):
+def wkt_dumps(x) -> (str, None):
   if pd.isna(x):
     return None
   try:
     return wkt.dumps(x)
   except AttributeError:
     return None
+
+
+def geojson_loads(x):
+  """geojson文本形式转为shapely格式"""
+  if pd.isna(x):
+    return None
+  try:
+    geom = shape(geojson.loads(x))
+    if geom.is_empty:
+      return None
+    return geom
+  except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError):
+    return None
+
+
+def geojson_dumps(x) -> (str, None):
+  """shapely转为geojson文本格式"""
+  if pd.isna(x):
+    return None
+  try:
+    geom = geojson.Feature(geometry=x)
+    return json.dumps(geom.geometry)
+  except TypeError:
+    return None
+
+
+def is_shapely(x, na=False) -> bool:
+  """判断是否为shapely格式"""
+  if pd.isna(x):
+    return na
+  if type(x) in GeomTypeSet:
+    return True
+  else:
+    return False
+
+
+def is_wkb(x, na=False) -> bool:
+  """判断是否为wkb格式"""
+  if pd.isna(x):
+    return na
+  try:
+    wkb.loads(x, hex=True)
+    return True
+  except WKBReadingError:
+    return False
+
+
+def is_wkt(x, na=False) -> bool:
+  """判断是否为wkt格式"""
+  if pd.isna(x):
+    return na
+  try:
+    wkt.loads(x)
+    return True
+  except WKTReadingError:
+    return False
+
+
+def is_geojson(x, na=False) -> bool:
+  """判断是否为geojson格式"""
+  if pd.isna(x):
+    return na
+  try:
+    if shape(geojson.loads(x)).is_empty:
+      return False
+    return True
+  except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError):
+    return False
+
+
+def infer_geom_format(x):
+  """推断geometry格式"""
+  if is_shapely(x):
+    return GeomFormat.shapely
+  if is_wkb(x):
+    return GeomFormat.wkb
+  if is_wkt(x):
+    return GeomFormat.wkt
+  if is_geojson(x):
+    return GeomFormat.geojson
+  return GeomFormat.unknown
+
+
+def ensure_multi_geom(geom):
+  """将LineString和Polygon转为multi格式"""
+  if geom.geom_type == 'LineString':
+    return MultiLineString([geom])
+  if geom.geom_type == 'Polygon':
+    return MultiPolygon([geom])
+  return geom
+
+
+def multiline2multipolygon(multiline_shapely):
+  """multiline转为multipolygon，直接首尾相连"""
+  coords = []
+  for line in multiline_shapely:
+    lngs = line.xy[0]
+    lats = line.xy[1]
+    for i in range(len(lngs)):
+      lng, lat = lngs[i], lats[i]
+      point = Point((lng, lat))
+      if len(coords) >= 1:
+        if point != coords[-1]:
+          coords.append(point)
+      else:
+        coords.append(point)
+  return MultiPolygon([Polygon(coords)])
 
 
 def geom_wkt2shapely(df, geometry='geometry',
@@ -268,54 +432,6 @@ def geom_split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
   return df_res
 
 
-def is_shapely(x, na=False):
-  from shapely.geometry import Point
-  from shapely.geometry import MultiPoint
-  from shapely.geometry import Polygon
-  from shapely.geometry import MultiPolygon
-  from shapely.geometry import LineString
-  from shapely.geometry import MultiLineString
-  from shapely.geometry import LinearRing
-
-  geom_type_set = (
-    Point, MultiPoint,
-    Polygon, MultiPolygon,
-    LineString, MultiLineString,
-    LinearRing
-  )
-  if pd.isna(x):
-    return na
-  if type(x) in geom_type_set:
-    return True
-  else:
-    return False
-
-
-def is_geojson(x, na=False):
-  # TODO(wangyukang): 未来考虑支持geojson格式
-  pass
-
-
-def infer_geom_format(x):
-  if is_shapely(x):
-    return 'shapely'
-  if isinstance(x, str):
-    # 尝试是否能成功转为wkb格式
-    try:
-      wkb.loads(x, hex=True)
-      return 'wkb'
-    except WKBReadingError:
-      pass
-    # 尝试是否能成功转为wkt格式
-    try:
-      wkt.loads(x)
-      return 'wkt'
-    except WKTReadingError:
-      pass
-  # TODO(wangyukang): 未来考虑支持geojson格式
-  return 'unknown'
-
-
 def ensure_gdf(df, geometry='geometry'):
   geom = first_notnull_value(df[geometry])
   geom_format = infer_geom_format(geom)
@@ -337,7 +453,7 @@ def mark_tags_v2(
     drop_geometry=False,
     geometry_format='wkb'):
   """
-  使用面数据给点数据打标签
+  使用面数据通过空间关联（sjoin）给点数据打标签
 
   Args:
       point_df: 点数据
@@ -400,38 +516,43 @@ def mark_tags_v2(
   return pd.DataFrame(point_df)
 
 
-def dis_point2point(lnglat_ori: (tuple, str),
-                    lnglat_dis: (tuple, str),
-                    city: str,
-                    crs_from: int = 4326,
-                    crs_to: (str, int) = 'auto'):
+def ensure_lnglat(lnglat) -> tuple:
+  if isinstance(lnglat, (list, tuple)):
+    if all([isinstance(i, (float, int)) for i in lnglat]):
+      return lnglat
+    else:
+      raise TypeError('数据类型错误，经度和纬度都应该为数值型')
+  if is_shapely(lnglat):
+    geom = lnglat
+  elif is_wkt(lnglat):
+    geom = wkt_loads(lnglat)
+  elif is_wkb(lnglat):
+    geom = wkb_loads(lnglat)
+  elif is_geojson(lnglat):
+    geom = geojson_loads(lnglat)
+  else:
+    raise ValueError('未知的地理类型')
+  return (geom.x, geom.y)
+
+
+def distance(
+    p1: (tuple, str),
+    p2: (tuple, str),
+    city: str = None,
+    epsg_from: int = 4326,
+    epsg_to: (str, int) = None):
   """
   计算两个点（经度，纬度）之间的距离，单位：米
-
-  example:
-
-  >>> dis_point2point((121.579051,31.3402), (121.581099,31.342405), '上海市')
-  >>> 312.6011508211181
-
-  :param lnglat_ori: 经纬度或wkb
-  :param lnglat_dis: 经纬度或wkb
-  :param city: 城市
-  :param crs_from: 原始epsg，默认为4326
-  :param crs_to: 投影epsg，默认为'auto',按城市自动获取
-  :return:
+  Args:
+    p1: 点位1，经纬度或geometry
+    p2: 点位2，经纬度或geometry
+    city: 所在城市，用于投影
+    epsg_from: epsg代码
+    epsg_to: 投影epsg代码
   """
-  # TODO(wangyukang): 目前会有性能问题，需优化
-  from pyproj import Transformer
-  from shapely.geometry import Point
-  if crs_to == 'auto':
-    crs_to = get_epsg(city)
-  if isinstance(lnglat_ori, str):
-    geom = wkb_loads(lnglat_ori)
-    lnglat_ori = (geom.x, geom.y)
-  if isinstance(lnglat_dis, str):
-    geom = wkb_loads(lnglat_dis)
-    lnglat_dis = (geom.x, geom.y)
-  transformer = Transformer.from_crs(crs_from, crs_to)
-  xy1 = transformer.transform(xx=lnglat_ori[1], yy=lnglat_ori[0])
-  xy2 = transformer.transform(xx=lnglat_dis[1], yy=lnglat_dis[0])
-  return Point(xy1).distance(Point(xy2))
+  p1, p2 = ensure_lnglat(p1), ensure_lnglat(p2)
+  if not epsg_to:
+    epsg_to = get_epsg(city) if city else get_epsg_by_lng([p1[0], p2[0]])
+  p1 = projection_lnglat(p1, epsg_from, epsg_to)
+  p2 = projection_lnglat(p2, epsg_from, epsg_to)
+  return Point(p1).distance(Point(p2))

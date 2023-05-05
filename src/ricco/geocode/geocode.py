@@ -6,13 +6,19 @@ from requests.exceptions import ConnectionError
 from requests.exceptions import ConnectTimeout
 from tqdm import tqdm
 
-from ricco.geocode.amap import get_address_amap
-from ricco.geocode.amap import get_place_amap
-from ricco.geocode.baidu import get_address_baidu
-from ricco.geocode.baidu import get_place_baidu
+from ..util.util import is_empty
+from .amap import get_address_amap
+from .amap import get_place_amap
+from .baidu import get_address_baidu
+from .baidu import get_place_baidu
 
 
-def geocode(*, address, city, source, srs='wgs84', key_baidu=None,
+def geocode(*,
+            address,
+            city,
+            source,
+            srs='wgs84',
+            key_baidu=None,
             key_amap=None):
   """
   Args:
@@ -53,6 +59,8 @@ def geocode_best_poi(city,
       key_baidu: 百度接口的key，公共key失效后可自行传入
       key_amap: 高德接口的key，公共key失效后可自行传入
   """
+  if is_empty(keywords):
+    return None, None, None, None, None
   res = {
     'lng': None,
     'lat': None,
@@ -87,6 +95,8 @@ def geocode_best_poi(city,
 def geocode_best_address(city, address, srs='wgs84', key_baidu=None,
                          key_amap=None):
   """获取最优的地理编码结果"""
+  if is_empty(address):
+    return None, None, None, None, None
   try:
     br = get_address_baidu(city, address, srs=srs, key=key_baidu)
     if br['score'] >= 90:

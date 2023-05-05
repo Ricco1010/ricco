@@ -2,15 +2,15 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 from shapely.geometry import Point
 
-from ricco.geom import get_epsg
-from ricco.geom import mark_tags_v2
-from ricco.geom import wkb_loads
+from ricco.util.geom import get_epsg
+from ricco.util.geom import mark_tags_v2
+from ricco.util.geom import wkb_loads
 
 
 def test_getepsg():
-  assert get_epsg('郑州') == 32649
-  assert get_epsg('郑州市') == 32649
-  assert get_epsg('一个没有的市') == 32651
+  assert get_epsg('郑州') == 4547
+  assert get_epsg('郑州市') == 4547
+  assert get_epsg('一个没有的市') == 4549
 
 
 def test_mark_tags_v2():
