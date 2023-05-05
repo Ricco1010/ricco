@@ -1,7 +1,8 @@
 import warnings
 
-from ricco.coord_trans import gcj2bd
-from ricco.coord_trans import gcj2wgs
+from ..util.coord_trans import gcj2bd
+from ..util.coord_trans import gcj2wgs
+from ..util.util import is_empty
 
 
 class MapUrls:
@@ -18,8 +19,8 @@ class MapUrls:
 
 
 class MapKeys:
-  amap = '2cc433cc0b5e0a737d50800bc2d6eb42'
-  baidu = 'M40WZd3qdNYtRSdyRu3IMAtzpH14kgs4'
+  amap = '7c14855824549a84c543e48990239f3d'
+  baidu = '9Fy1lMHbwpr07WVBFPLw9vpntGUSOUMN'
 
 
 def gcj2xx(lnglat, srs):
@@ -48,3 +49,9 @@ def error_amap(js):
         '接口错误，状态码【%s】，错误原因请查阅：'
         'https://lbs.amap.com/api/webservice/guide/tools/info' % js['infocode']
     )
+
+
+def fix_address(string):
+  if is_empty(string):
+    return ''
+  return str(string)

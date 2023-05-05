@@ -2,9 +2,9 @@ import os
 
 from tqdm import tqdm
 
+from ..util.os import fn
+from ..util.os import mkdir_2
 from .extract import rdf
-from ..os import mkdir_2
-from ..os import fn
 
 
 def split_csv(filename: str, n: int = 5, encoding: str = 'utf-8'):

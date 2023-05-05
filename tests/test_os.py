@@ -1,5 +1,5 @@
-from ricco.os import ext
-from ricco.os import fn
+from ricco.util.os import ext
+from ricco.util.os import fn
 
 
 def test_fn():

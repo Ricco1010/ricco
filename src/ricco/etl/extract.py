@@ -1,10 +1,11 @@
 import csv
+import os
 import warnings
 
 import geopandas as gpd
 import pandas as pd
 
-from ..os import ext
+from ..util.os import ext
 
 
 def max_grid():
@@ -21,7 +22,13 @@ def max_grid():
       decrement = True
 
 
-def rdxls(filename, sheet_name=0, sheet_contains: str = None, errors='raise'):
+def rdxls(
+    filename,
+    sheet_name=0,
+    sheet_contains: str = None,
+    errors='raise',
+    dtype=None,
+) -> pd.DataFrame:
   """
   读取excel文件
 
@@ -33,7 +40,7 @@ def rdxls(filename, sheet_name=0, sheet_contains: str = None, errors='raise'):
   """
   if sheet_name == 0:
     if sheet_contains is not None:
-      df = pd.read_excel(filename, sheet_name=None)
+      df = pd.read_excel(filename, sheet_name=None, dtype=dtype)
       sheet_list = [i for i in df.keys() if sheet_contains in i]
       if len(sheet_list) != 0:
         sheet_name = sheet_list[0]
@@ -53,27 +60,42 @@ def rdxls(filename, sheet_name=0, sheet_contains: str = None, errors='raise'):
           raise KeyError("参数'error'错误, 可选参数为coerce和raise")
   else:
     print(f"sheet:  <'{sheet_name}'>")
-  return pd.read_excel(filename, sheet_name=sheet_name)
+  return pd.read_excel(filename, sheet_name=sheet_name, dtype=dtype)
 
 
-def rdf(file_path: str,
-        sheet_name=0,
-        sheet_contains: str = None,
-        encoding='utf-8-sig',
-        info=False) -> pd.DataFrame:
+def rdf(
+    file_path: str,
+    *,
+    sheet_name=0,
+    sheet_contains: str = None,
+    encoding='utf-8-sig',
+    info=False,
+    dtype=None,
+) -> pd.DataFrame:
   """
-  常用文件读取函数，支持.csv/.xlsx/.shp
+  常用文件读取函数，支持.csv/.xlsx/.shp/.parquet/.pickle/.feather'
   """
   max_grid()
-
-  if ext(file_path) == '.csv':
+  ex = ext(file_path)
+  if ex == '.csv':
     try:
-      df = pd.read_csv(file_path, engine='python', encoding=encoding)
+      df = pd.read_csv(file_path,
+                       engine='python',
+                       encoding=encoding,
+                       dtype=dtype)
     except UnicodeDecodeError:
-      df = pd.read_csv(file_path, engine='python')
-  elif ext(file_path) in ('.xls', '.xlsx'):
-    df = rdxls(file_path, sheet_name=sheet_name, sheet_contains=sheet_contains)
-  elif ext(file_path) == '.shp':
+      df = pd.read_csv(file_path, engine='python', dtype=dtype)
+  elif ex in ('.parquet', '.pickle', '.feather'):
+    _t = ex.strip('.')
+    df = getattr(pd, f'read_{_t}')(
+        file_path
+    )
+  elif ex in ('.xls', '.xlsx'):
+    df = rdxls(file_path,
+               sheet_name=sheet_name,
+               sheet_contains=sheet_contains,
+               dtype=dtype)
+  elif ex == '.shp':
     try:
       df = gpd.GeoDataFrame.from_file(file_path)
     except UnicodeEncodeError:
@@ -86,9 +108,9 @@ def rdf(file_path: str,
   return df
 
 
-def read_line_json(filename, encoding='utf-8'):
+def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
   """
-  逐行读取json格式的文件，目前用于金刚石数据读取
+  逐行读取json格式的文件
 
   :param filename: 文件名
   :param encoding: 文件编码，默认为utf-8
@@ -103,11 +125,12 @@ def read_line_json(filename, encoding='utf-8'):
   return pd.DataFrame(records)
 
 
-def bigdata2df(filename: str, chunksize: int = 10000,
-               code: str = "utf-8") -> pd.DataFrame:
+def bigdata2df(filename: str,
+               chunksize: int = 10000,
+               code: str = 'utf-8') -> pd.DataFrame:
   reader = pd.read_table(filename,
                          encoding=code,
-                         sep=",",
+                         sep=',',
                          skip_blank_lines=True,
                          iterator=True)
   loop = True
@@ -121,4 +144,12 @@ def bigdata2df(filename: str, chunksize: int = 10000,
       loop = False
       print('Iteration is stopped.')
   df = pd.concat(chunks, ignore_index=True, axis=1)
+  return df
+
+
+def read_parquet_by_dir(dir_path):
+  df = pd.DataFrame()
+  for filename in os.listdir(dir_path):
+    if ext(filename) == '.parquet':
+      df = pd.concat([df, rdf(os.path.join(dir_path, filename))])
   return df

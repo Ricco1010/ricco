@@ -62,3 +62,34 @@ def excel2date(dates, date_type='str'):
       raise ValueError('date_type参数错误，可选参数为str或date')
   else:
     return _date
+
+
+class DT:
+  # TODO(wangyukang): 补充日期方法
+  @property
+  def today(self):
+    return
+
+  @property
+  def tomorrow(self):
+    return
+
+  @property
+  def yesterday(self):
+    return
+
+  @property
+  def the_day_after_tomorrow(self):
+    return
+
+  @property
+  def the_day_before_yesterday(self):
+    return
+
+  @property
+  def one_year_ago(self):
+    return
+
+  @property
+  def d(self):
+    return

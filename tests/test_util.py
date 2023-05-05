@@ -1,8 +1,36 @@
-from ricco.util import extract_num
-from ricco.util import house_type_format
-from ricco.util import pinyin
-from ricco.util import segment
-from ricco.util import to_float
+from ricco.util.util import eval
+from ricco.util.util import extract_num
+from ricco.util.util import get_shortest_element
+from ricco.util.util import house_type_format
+from ricco.util.util import list2dict
+from ricco.util.util import pinyin
+from ricco.util.util import relstrip
+from ricco.util.util import rerstrip
+from ricco.util.util import segment
+from ricco.util.util import sort_by_list
+from ricco.util.util import to_float
+from ricco.util.util import union_list
+from ricco.util.util import union_str
+
+
+def test_relstrip():
+  assert relstrip('257号2234', '257号') == '2234'
+
+
+def test_rerstrip():
+  assert rerstrip('257号2234', '234') == '257号2'
+
+
+def test_get_get_shortest_element():
+  assert get_shortest_element(
+      ['123', '1', '3211', 'abcdef']
+  ) == '1'
+  assert get_shortest_element(
+      ['123', 1, '3211', 'abcdef']
+  ) == 1
+  assert get_shortest_element(
+      [None, 'sssssss', 'sssssss', '3211', 'abcdef']
+  ) == '3211'
 
 
 def test_pinyin():
@@ -46,3 +74,33 @@ def test_house_type_format():
   assert house_type_format('4房1厅') == '4房'
   assert house_type_format('5室1厅') == '5房及以上'
   assert house_type_format('8室1厅') == '5房及以上'
+
+
+def test_list2dict():
+  assert list2dict([1, 2, 3]) == {0: 1, 1: 2, 2: 3}
+
+
+def test_eval():
+  assert eval(None) == None
+  assert eval('[1]') == [1]
+  assert eval("{'a':1}") == {'a': 1}
+
+
+def test_union_str():
+  assert union_str(['abc', 'def']) == 'abcdef'
+  assert union_str(['abc', 'def'], sep='|') == 'abc|def'
+  assert union_str(['abc', None]) == 'abc'
+  assert union_str([]) == None
+
+
+def test_union_list():
+  assert union_list([]) == []
+  assert union_list([[1, 2, 3]]) == [1, 2, 3]
+  assert union_list([[1, 2, 3], [4, 5]]) == [1, 2, 3, 4, 5]
+
+
+def test_sort_by_list():
+  src_list = [1, 2, 3, 4, 5]
+  by_list = [4, 5, 3, 6]
+  assert sort_by_list(src_list, by_list, mode='s') == [4, 5, 3, 1, 2]
+  assert sort_by_list(src_list, by_list, mode='f') == [4, 5, 3]
