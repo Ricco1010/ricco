@@ -1,4 +1,4 @@
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 from .etl import file
 from .etl import load
