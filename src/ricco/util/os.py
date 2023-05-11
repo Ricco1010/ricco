@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import zipfile
+from .util import ensure_list
 
 
 def ext(filepath):
@@ -96,3 +97,26 @@ def rm_scratch_file(dir_path, days):
       if num == 0:
         remove_dir(dir_full_path)
         logging.warning(f'已删除空文件夹：{dir_full_path}')
+
+
+def dir_iter(root, exts: (list, str) = None, abspath=False):
+  """
+  文件夹中的文件路径生成器，用于遍历文件夹中的文件
+  Args:
+    root: 文件目录
+    exts: 文件扩展名，不指定则返回所有文件
+
+  Returns:
+
+  """
+
+  for filename in os.listdir(root):
+    filepath = os.path.join(root, filename)
+    if abspath:
+      filepath = os.path.abspath(filepath)
+    if exts:
+      exts = ensure_list(exts)
+      if ext(filepath) in exts:
+        yield filepath
+    else:
+      yield filepath

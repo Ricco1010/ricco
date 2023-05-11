@@ -1,10 +1,13 @@
 from datetime import datetime
 
 import pandas as pd
+from tqdm import tqdm
 
 from ..util.geom import wkb_loads
+from ..util.util import and_
 from ..util.util import ensure_list
 from ..util.util import fuzz_match
+from ..util.util import is_empty
 from ..util.util import list2dict
 from ..util.util import to_float
 
@@ -13,7 +16,7 @@ def filter_valid_geom(df: pd.DataFrame,
                       c_geometry='geometry',
                       ignore_index=True):
   """仅保留有效的geometry，剔除空白和错误的geometry行"""
-  if 'temp_xxx' in df.columns:
+  if 'temp_xxx' in df:
     raise KeyError('数据集中不能存在【temp_xxx】列')
   df['temp_xxx'] = df[c_geometry].apply(wkb_loads)
   df = df[df['temp_xxx'].notna()]
@@ -27,7 +30,7 @@ def best_unique(df: pd.DataFrame,
                 key_cols: (list, str),
                 value_cols: (str, list) = None,
                 filter=False,
-                drop_if_null='all'):
+                drop_if_null=None) -> pd.DataFrame:
   """
   优化的去重函数：
     为保证数据的完整性，去重时优先去除指定列中的空值
@@ -40,15 +43,18 @@ def best_unique(df: pd.DataFrame,
   :return:
   """
   key_cols = ensure_list(key_cols)
-  if value_cols is None:
+  if not value_cols:
     value_cols = [i for i in df.columns if i not in key_cols]
-  else:
-    value_cols = ensure_list(value_cols)
-  if drop_if_null is not None:
-    df = df.dropna(subset=value_cols, how=drop_if_null).dropna(subset=key_cols,
-                                                               how='all')
+  value_cols = ensure_list(value_cols)
+  if drop_if_null:
+    df = df.dropna(
+        subset=value_cols,
+        how=drop_if_null
+    ).dropna(
+        subset=key_cols,
+        how='all')
   df = df.sort_values(value_cols, na_position='first')
-  df = df.drop_duplicates(key_cols, keep='last').reset_index(drop=True)
+  df = df.drop_duplicates(key_cols, keep='last', ignore_index=True)
   if filter:
     df = df[key_cols + value_cols]
   return df
@@ -71,10 +77,7 @@ def table2dict(df: pd.DataFrame,
     cols = list(df.columns).copy()
     key_col = cols[0]
     value_col = cols[1]
-
-  df = df[~df[key_col].isna()]
-  df.set_index(key_col, inplace=True)
-
+  df = df[df[key_col].notna()].set_index(key_col)
   if isinstance(value_col, list):
     df = df[value_col]
     return df.to_dict(orient=orient)
@@ -116,35 +119,30 @@ def standard(series: (pd.Series, list),
 def update_df(df: pd.DataFrame,
               new_df: pd.DataFrame,
               on: (str, list) = None,
-              mode='update'):
+              overwrite: bool = True,
+              errors: str = 'ignore') -> pd.DataFrame:
   """
   根据某一列更新dataframe里的数据
+  Args:
+    df: 待升级的数据集
+    new_df: 用于更新的DataFrame
+    on: （可选参数）用于判断更新哪些行的列
+    overwrite : （可选参数）控制如何处理原DataFrame在重叠位置上 **非空** 的值，默认为True
 
-  :param df: 待升级的
-  :param new_df: 新表
-  :param on: 根据哪一列升级,默认为None，使用index
-  :param mode：处理方式，update：直接更新对应位置的数值，insert：只有对应位置为空时才更新
-  :return:
+      * True: 默认值；使用 `other` DataFrame中的值覆盖原DataFrame中相应位置的值.
+      * False: 只更新原DataFrame中重叠位置数据为 *空* 的值.
+    errors: （可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为'ignore'
+
+      * 'ignore': 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，
+        使用other中的值替换df中的值。
+      * 'raise': target和other都在同一位置包含非NA数据将抛出ValueError异常（'Data overlaps'）。
   """
-  v1 = len(df)
-  if on is not None:
-    on = ensure_list(on)
-    new_df = new_df.drop_duplicates()
-    if any(new_df[on].duplicated()):
-      raise ValueError('new_df中有重复的索引列对应不同的值，请检查')
-    new_df = df[on].drop_duplicates().merge(new_df, how='inner', on=on)
-    df = df.set_index(on, drop=False)
-    new_df = new_df.set_index(on, drop=False)
-  if mode == 'update':
-    df.update(new_df)
-  elif mode == 'insert':
-    df = df.combine_first(new_df)
+  if on:
+    df.set_index(on, inplace=True)
+    df.update(new_df.set_index(on), overwrite=overwrite, errors=errors)
+    df.reset_index(inplace=True)
   else:
-    raise ValueError(f'参数{mode}错误,可选参数为 update or insert')
-  df = df.reset_index(drop=True)
-  if on is not None:
-    if v1 != len(df):
-      raise ValueError('update后Dataframe结构发生变化，请检查')
+    df.update(new_df, overwrite=overwrite, errors=errors)
   return df
 
 
@@ -255,3 +253,102 @@ def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
   if as_index:
     df.set_index(c_key, inplace=True)
   return df
+
+
+def is_unique(df: pd.DataFrame, key_cols: (str, list) = None):
+  """判断是否唯一"""
+  if not key_cols:
+    key_cols = list(df.columns)
+  key_cols = ensure_list(key_cols)
+  return df[df.duplicated(subset=key_cols, keep=False)].empty
+
+
+def one_line(df, key_cols, key_value, value_cols):
+  """获取一行重置索引后的数据"""
+  cond = and_(*[df[c] == key_value[c] for c in key_cols])
+  df = df[cond][[*key_cols, *value_cols]]
+  return df.reset_index(drop=True)
+
+
+def is_changed_old(
+    df_old: pd.DataFrame,
+    df_new: pd.DataFrame,
+    key_cols,
+    value_cols: (str, list) = None,
+    c_res: str = 'is_changed',
+    info=False) -> pd.DataFrame:
+  """判断新旧数据集中的每一条数据是否变化"""
+  df_old = df_old.copy()
+  key_cols = ensure_list(key_cols)
+  if not is_unique(df_new, key_cols):
+    raise ValueError(f'对照数据集{key_cols}列必须唯一')
+  if not value_cols:
+    if set(df_new.columns) != set(df_old.columns):
+      raise ValueError('Each datasets must have same columns.')
+    value_cols = [c for c in df_old.columns if c not in key_cols]
+  all_cols = [*key_cols, *value_cols]
+  df_temp = pd.concat(
+      [df_old[all_cols], df_new[all_cols]],
+      ignore_index=True
+  )
+  df_temp = df_temp[df_temp.duplicated()][key_cols]
+  df_temp[c_res] = 'NotChange'
+
+  if info:
+    print('关键列为：', key_cols,
+          '\n对比列为：', value_cols,
+          '\n全部参与列为：', all_cols,
+          '\n数据总量:', df_old.shape[0],
+          '\n重复key数量:', df_temp.shape[0]
+          )
+  df_old = df_old.merge(df_temp, how='left', on=key_cols)
+  for i, v in tqdm(df_old[key_cols].iterrows(), total=df_old.shape[0]):
+    cond_old = and_(*[df_old[c] == v[c] for c in key_cols])
+    if is_empty(df_old[c_res][i]):
+      v_old = one_line(df_old, key_cols, v, value_cols)
+      v_new = one_line(df_new, key_cols, v, value_cols)
+      if v_new.equals(v_old):
+        df_old.loc[cond_old, c_res] = 'NotChange'
+      elif v_new.empty:
+        df_old.loc[cond_old, c_res] = 'NotFound'
+      else:
+        df_old.loc[cond_old, c_res] = 'Changed'
+  return df_old
+
+
+def is_changed(df_old: pd.DataFrame,
+               df_new: pd.DataFrame,
+               key_cols: (str, list) = None,
+               value_cols: (str, list) = None,
+               c_res: str = 'is_changed') -> pd.DataFrame:
+  """判断新旧数据集中的每一条数据是否变化"""
+  # 数据集及参数检验
+  key_cols = ensure_list(key_cols)
+  if not is_unique(df_new, key_cols):
+    raise ValueError(f'对照数据集{key_cols}列必须唯一')
+  if not value_cols:
+    if set(df_new.columns) != set(df_old.columns):
+      raise ValueError('Each datasets must have same columns.')
+    value_cols = [c for c in df_old if c not in key_cols]
+  # 对比
+  # 默认所有的都是更改的
+  df_new = df_new.copy()
+  df_new[c_res] = 'Changed'
+  df_temp = df_old[[*key_cols, *value_cols]].merge(
+      df_new[[*key_cols, *value_cols, c_res]],
+      how='left',
+      on=key_cols)
+  # 合并后为空的为 NotFound
+  df_temp[c_res] = df_temp[c_res].fillna('NotFound')
+
+  # 对比每一个值，如果每一列的每一个值都相同，则认为是没有变化
+  cond = and_(
+      *[
+        (df_temp[f'{c}_x'] == df_temp[f'{c}_y']) |
+        (df_temp[f'{c}_x'].isna() & df_temp[f'{c}_y'].isna())
+        for c in value_cols
+      ]
+  )
+  df_temp.loc[cond, c_res] = 'NotChange'
+  df_temp = df_temp[[*key_cols, c_res]]
+  return df_old.merge(df_temp, how='left', on=key_cols)

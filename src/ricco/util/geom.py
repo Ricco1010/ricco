@@ -1,6 +1,8 @@
 import json
 import logging
 import warnings
+from typing import List
+from typing import Union
 
 import geojson
 import geopandas as gpd
@@ -248,7 +250,11 @@ def multiline2multipolygon(multiline_shapely):
           coords.append(point)
       else:
         coords.append(point)
-  return MultiPolygon([Polygon(coords)])
+  try:
+    return MultiPolygon([Polygon(coords)])
+  except ValueError as e:
+    warnings.warn(f'{e}，{multiline_shapely}')
+    return None
 
 
 def geom_wkt2shapely(df, geometry='geometry',
@@ -451,7 +457,8 @@ def mark_tags_v2(
     col_list: list = None,
     predicate='intersects',
     drop_geometry=False,
-    geometry_format='wkb'):
+    geometry_format='wkb',
+    warning_message=True):
   """
   使用面数据通过空间关联（sjoin）给点数据打标签
 
@@ -466,22 +473,24 @@ def mark_tags_v2(
   if not col_list:
     col_list = polygon_df.columns.to_list()
   else:
-    polygon_df = polygon_df[col_list + ['geometry']]
+    col_list = ensure_list(col_list)
+    polygon_df = polygon_df[[*col_list, 'geometry']]
 
-  col_list = ensure_list(col_list)
   for c in col_list:
     if c in point_df and c not in ['lng', 'lat', 'geometry']:
       c_n = f'{c}_origin'
-      warnings.warn(f'点数据中存在面文件中待关联的列，已重命名：{c} --> {c_n}')
+      if warning_message:
+        warnings.warn(f'点数据中存在面文件中待关联的列，已重命名：{c} --> {c_n}')
       point_df.rename(columns={c: c_n}, inplace=True)
 
   if 'geometry' in point_df:
     point_df = ensure_gdf(point_df)
     geom = first_notnull_value(point_df['geometry'])
     if geom.geom_type not in ['point', 'Point']:
-      warnings.warn('左侧数据实际非点数据，将自动提取中心点进行关联')
+      if warning_message:
+        warnings.warn('左侧数据实际非点数据，将自动提取中心点进行关联')
       point_df['geometry_backup'] = point_df['geometry']
-      point_df = geom_shapely2lnglat(point_df)
+      point_df = geom_shapely2lnglat(point_df, within=True)
       point_df = geom_lnglat2shapely(point_df, delete=False)
   elif 'lng' in point_df and 'lat' in point_df:
     point_df = geom_lnglat2shapely(point_df, delete=False)
@@ -556,3 +565,111 @@ def distance(
   p1 = projection_lnglat(p1, epsg_from, epsg_to)
   p2 = projection_lnglat(p2, epsg_from, epsg_to)
   return Point(p1).distance(Point(p2))
+
+
+def buffer(df: pd.DataFrame, radius: Union[int, float],
+           city: str = None,
+           geo_type: str = 'point',
+           geometry: str = 'geometry',
+           buffer_geometry: str = 'buffer_geometry',
+           geo_format='wkb') -> pd.DataFrame:
+  """
+  获得一定半径的缓冲区
+
+  Args:
+    df: pd.DataFrame, 包含地理信息的DataFrame
+    radius: numeric, 缓冲区半径（单位米）
+    city: str, 可选, 投影城市，可提高数据精度
+    geo_type: str, 地理数据类型，可选point, line或polygon(包括multipolygon)，默认point
+    geometry: str, geometry字段名，默认"geometry"
+    buffer_geometry: 输出的缓冲区geometry字段名，默认"buffer_geometry"
+    geo_format: str, 输出的缓冲区geometry格式，支持"wkb","wkt","shapely"，默认"wkb"
+
+  Returns: 包含缓冲区geometry的DataFrame
+
+  Examples:
+    >>> df = pd.DataFrame({'id': [1, 2, 3],
+    >>>                    'lng': [116.18601, 116.18366, 116.18529],
+    >>>                    'lat': [40.02894, 40.03550, 40.03565]})
+
+    >>> df
+        id        lng       lat
+    0   1  116.18601  40.02894
+    1   2  116.18366  40.03550
+    2   3  116.18529  40.03565
+
+    >>> buffer(df=df, radius=1500, city='北京', geo_type='point')
+        id        lng       lat                                    buffer_geometry
+    0   1  116.18601  40.02894  0103000020E6100000010000004100000092A0207A070D...
+    1   2  116.18366  40.03550  0103000020E6100000010000004100000071178800E10C...
+    2   3  116.18529  40.03565  0103000020E610000001000000410000008A2570B5FB0C...
+
+  """
+  df = df.reset_index(drop=True)
+  cols = []
+  if geometry in df:
+    cols.append(geometry)
+  if 'lng' in df and 'lat' in df:
+    cols.extend(['lng', 'lat'])
+  df_tmp = df[cols]
+  df_tmp.rename(columns={geometry: 'geometry'}, inplace=True)
+
+  if geo_type == 'point':
+    if 'geometry' in df_tmp:
+      df_tmp = ensure_gdf(df_tmp)
+      geom = first_notnull_value(df_tmp['geometry'])
+      if geom.geom_type not in ['point', 'Point']:
+        warnings.warn('数据实际非点数据，将自动提取中心点进行关联')
+        df_tmp = geom_shapely2lnglat(df_tmp)
+        df_tmp = geom_lnglat2shapely(df_tmp, delete=False)
+    elif 'lng' in df_tmp and 'lat' in df_tmp:
+      df_tmp = geom_lnglat2shapely(df_tmp, delete=False)
+
+    else:
+      raise KeyError('点文件中必须有经纬度或geometry')
+  elif geo_type == 'line' or geo_type == 'polygon':
+    df_tmp = ensure_gdf(df_tmp, geometry=geometry)
+  else:
+    raise ValueError('geo_type必须为point，line或polygon')
+  df_buffer = df_tmp[['geometry']]
+
+  df_buffer = projection(df_buffer, city=city)
+  df_buffer['geometry'] = df_buffer.geometry.buffer(radius)
+  df_buffer = projection(df_buffer, epsg=4326)
+  if geo_format == 'wkb':
+    df_buffer['geometry'] = df_buffer['geometry'].apply(wkb_dumps)
+  elif geo_format == 'wkt':
+    df_buffer['geometry'] = df_buffer['geometry'].apply(wkt_dumps)
+  elif geo_format == 'shapely':
+    pass
+  else:
+    raise ValueError('不支持的geometry格式')
+  df_buffer.rename(columns={'geometry': buffer_geometry}, inplace=True)
+  df = df.join(df_buffer, how='left')
+
+  return df
+
+
+def spatial_agg(point_df: pd.DataFrame, polygon_df: pd.DataFrame,
+                by: Union[str, List[str]],
+                agg: dict,
+                polygon_geometry: str = 'geometry') -> pd.DataFrame:
+  """
+  对面数据覆盖范围内的点数据进行空间统计
+  Args:
+    point_df: pd.DataFrame, 点数据dataframe;
+    polygon_df: pd.DataFrame, 面数据dataframe;
+    by: Union[str, List[str]], 空间统计单位字段；
+    agg: dict, 空间统计操作。格式为{'被统计字段名': '操作名', ...}的字典。如{'poi':'sum'};
+    polygon_geometry: str, 面数据geometry字段名，默认"geometry";
+
+  Returns: pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame
+  """
+
+  polygon_df.rename({polygon_geometry: 'geometry'}, inplace=True)
+  polygon_df = polygon_df[[by, 'geometry']]
+  point_df = mark_tags_v2(polygon_df=polygon_df, point_df=point_df,
+                          drop_geometry=True)
+  df_grouped = point_df.groupby(by=by, as_index=False).agg(agg)
+
+  return df_grouped

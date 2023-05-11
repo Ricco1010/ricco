@@ -402,10 +402,11 @@ def list2dict(x: list):
 
 def re_fast(pattern, string, warning=True):
   """根据正则表达式快速提取匹配到的第一个"""
-  if ls := re.findall(pattern, string):
-    if warning and len(ls) >= 2:
-      warnings.warn('匹配到多个值，默认返回第一个')
-    return ls[0]
+  if isinstance(string, str):
+    if ls := re.findall(pattern, string):
+      if warning and len(ls) >= 2:
+        warnings.warn('匹配到多个值，默认返回第一个')
+      return ls[0]
 
 
 def random_name():
@@ -448,8 +449,54 @@ def random_by_prob(mapping: dict):
 def to_int_str(x):
   if is_empty(x):
     return
+  try:
+    return str(int(float(x)))
+  except ValueError:
+    return str(x)
+
+
+def fix_empty_str(x: str) -> (str, None):
+  """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
+  if isinstance(x, str):
+    x = x.strip()
+    if x == '':
+      return None
+  return x
+
+
+def interchange_dict(dic: dict) -> dict:
+  """将字典的key和value互换"""
+  return dict((v, k) for k, v in dic.items())
+
+
+def to_bool(x, na: bool = False, other: (bool, str) = False):
+  """
+  将常见的布尔类型的代替值转为布尔类型
+  Args:
+    x: 输入值
+    na: 空值返回真还是假
+    other: 无法判断的值如何处理
+      - 'raise'：抛出异常
+      - 'coerce'：返回传入的值
+      - 除'raise'和'coerce'之外的其他值：直接返回该值
+  """
+  if is_empty(x):
+    return na
+  if isinstance(x, bool):
+    return x
+  if isinstance(x, str):
+    x2 = x.lower()
   else:
-    try:
-      return str(int(float(x)))
-    except ValueError:
-      return str(x)
+    x2 = x
+  t_list = ['是', 1, 1.0, '1', '1.0', 't', 'true']
+  f_list = ['否', 0, '0', 'f', 'false']
+  if x2 in t_list:
+    return True
+  elif x2 in f_list:
+    return False
+  else:
+    if other == 'raise':
+      raise ValueError(f'无法转换的值：{x}')
+    if other == 'coerce':
+      return x
+    return other

@@ -25,15 +25,24 @@ def test_best_unique():
     'v1': ['s1', 's1']
   })
   assert_frame_equal(
-      best_unique(input_df, key_cols=['k'], value_cols=['v1', 'v2']),
+      best_unique(input_df,
+                  key_cols=['k'],
+                  value_cols=['v1', 'v2'],
+                  drop_if_null='all'),
       res_df1
   )
   assert_frame_equal(
-      best_unique(input_df, key_cols=['k'], value_cols=['v1', 'v2'],
+      best_unique(input_df,
+                  key_cols=['k'],
+                  value_cols=['v1', 'v2'],
                   drop_if_null=None),
       res_df2
   )
   assert_frame_equal(
-      best_unique(input_df, key_cols=['k'], value_cols=['v1'], filter=True),
+      best_unique(input_df,
+                  key_cols=['k'],
+                  value_cols=['v1'],
+                  filter=True,
+                  drop_if_null='all'),
       res_df3
   )
