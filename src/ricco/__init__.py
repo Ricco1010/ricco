@@ -8,6 +8,8 @@ from .etl.transformer import expand_dict
 from .etl.transformer import table2dict
 from .geocode.geocode import geocode
 from .geocode.geocode import geocode_df
+from .local import Rc
+from .local import Ricco
 from .util import coord_trans
 from .util import dt
 from .util import geom
