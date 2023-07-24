@@ -11,6 +11,7 @@ from ast import literal_eval
 import numpy as np
 import pandas as pd
 
+from ..resource.geometry import GeomTypeSet
 from ..resource.names import FirstName
 from ..resource.names import LastName
 from ..resource.patterns import Pattern
@@ -52,7 +53,7 @@ def is_ID_number(string, na=False) -> bool:
   :param na: 空值返回True还是False，默认为False
   :return:
   """
-  if pd.isna(string):
+  if is_empty(string):
     return na
 
   if not isinstance(string, str):
@@ -77,7 +78,7 @@ def get_shortest_element(elements: list):
   """获取列表中长度最短的元素"""
 
   def condition(string):
-    if pd.isna(string):
+    if is_empty(string):
       return np.inf
     string = str(string)
     return len(string)
@@ -122,7 +123,7 @@ def all_year_old(birthday: datetime.datetime,
 
 def first_notnull_value(series):
   for v in series:
-    if pd.notna(v):
+    if pd.notna(v) or not v.is_empty:
       return v
   warnings.warn('所有值均为空值')
   return None
@@ -151,7 +152,7 @@ def is_valid_uuid(uuid_to_test, version=4):
 
 def get_uuid(s):
   """针对格式错误的uuid和空白值生成新的uuid"""
-  if pd.isna(s):
+  if is_empty(s):
     return uuid.uuid4()
   elif not is_valid_uuid(s):
     return uuid.uuid4()
@@ -354,11 +355,18 @@ def remove_null_in_dict(dic: dict) -> dict:
 
 
 def is_empty(x) -> bool:
-  """判断是否为空值"""
+  """
+  判断是否为空值，以下值认为是空白
+    - 空白列表、字典, 如：[], {}，
+    - 空白Dataframe、series, 如：pd.DataFrame()
+    - 空白shapely格式的geometry，如：Point(np.nan, np.nan)
+  """
   if isinstance(x, (list, dict, tuple)):
     return False if x else True
   if isinstance(x, (pd.DataFrame, pd.Series)):
     return x.empty
+  if isinstance(x, GeomTypeSet):
+    return x.is_empty
   return pd.isna(x)
 
 
@@ -402,10 +410,11 @@ def list2dict(x: list):
 
 def re_fast(pattern, string, warning=True):
   """根据正则表达式快速提取匹配到的第一个"""
-  if ls := re.findall(pattern, string):
-    if warning and len(ls) >= 2:
-      warnings.warn('匹配到多个值，默认返回第一个')
-    return ls[0]
+  if isinstance(string, str):
+    if ls := re.findall(pattern, string):
+      if warning and len(ls) >= 2:
+        warnings.warn('匹配到多个值，默认返回第一个')
+      return ls[0]
 
 
 def random_name():
@@ -448,8 +457,83 @@ def random_by_prob(mapping: dict):
 def to_int_str(x):
   if is_empty(x):
     return
-  else:
-    try:
-      return str(int(float(x)))
-    except ValueError:
-      return str(x)
+  try:
+    return str(int(float(x)))
+  except ValueError:
+    return str(x)
+
+
+def fix_empty_str(x: str) -> (str, None):
+  """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
+  if isinstance(x, str):
+    x = x.strip()
+    if x == '':
+      return None
+  return x
+
+
+def fix_str(x: str) -> (str, None):
+  """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
+  return fix_empty_str(x)
+
+
+def interchange_dict(dic: dict) -> dict:
+  """将字典的key和value互换"""
+  return dict((v, k) for k, v in dic.items())
+
+
+def to_bool(x,
+            na: bool = False,
+            other: (bool, str) = False,
+            t_list: list = None,
+            f_list: list = None):
+  """
+  将常见的布尔类型的代替值转为布尔类型
+  Args:
+    x: 输入值
+    na: 空值返回真还是假
+    other: 无法判断的值如何处理
+      - 'raise'：抛出异常
+      - 'coerce'：返回传入的值
+      - 除'raise'和'coerce'之外的其他值：直接返回该值
+    t_list:指定为True的类别
+    f_list:指定为False的类别
+  """
+  if not t_list:
+    t_list = ['是', 1, 1.0, '1', '1.0', 't', 'true']
+  if not f_list:
+    f_list = ['否', 0, '0', 'f', 'false']
+
+  if is_empty(x):
+    return na
+  if isinstance(x, bool):
+    return x
+
+  x2 = x.lower() if isinstance(x, str) else x
+  if x2 in t_list:
+    return True
+  if x2 in f_list:
+    return False
+  if other == 'raise':
+    raise ValueError(f'无法转换的值：{x}')
+  if other == 'coerce':
+    return x
+  return other
+
+
+def is_unique_series(df: pd.DataFrame, key_cols: (str, list) = None):
+  """判断是否唯一"""
+  if not key_cols:
+    key_cols = df.columns.tolist()
+  key_cols = ensure_list(key_cols)
+  return not df.duplicated(subset=key_cols, keep=False).any()
+
+
+def is_digit(x):
+  if isinstance(x, bool):
+    return False
+  try:
+    int(float(x))
+    return True
+  except (ValueError, TypeError):
+    return False

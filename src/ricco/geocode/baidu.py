@@ -1,5 +1,4 @@
 import requests
-from fuzzywuzzy import fuzz
 
 from ..util.util import is_empty
 from .util import MapKeys
@@ -7,6 +6,7 @@ from .util import MapUrls
 from .util import error_baidu
 from .util import fix_address
 from .util import gcj2xx
+from .util import rv_score
 
 KEY = MapKeys.baidu
 
@@ -112,8 +112,7 @@ def get_place_baidu(city: str, keywords: str, srs='wgs84', key=None):
     latlng = gcj2xx(lnglat, srs=srs)
     lng = latlng[1]
     lat = latlng[0]
-    score = max(fuzz.ratio(rv, keywords.lstrip(city)),
-                fuzz.partial_ratio(rv, keywords.lstrip(city)))
+    score = rv_score(city, keywords, rv)
   else:
     rv, lng, lat, score = None, None, None, 0
   return {

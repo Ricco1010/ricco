@@ -1,12 +1,15 @@
-__version__ = '1.1.0'
+__version__ = '1.1.2'
 
 from .etl import file
 from .etl import load
 from .etl import transformer
 from .etl.extract import rdf
 from .etl.transformer import expand_dict
+from .etl.transformer import table2dict
 from .geocode.geocode import geocode
 from .geocode.geocode import geocode_df
+from .local import Rc
+from .local import Ricco
 from .util import coord_trans
 from .util import dt
 from .util import geom
@@ -28,4 +31,7 @@ from .util.util import is_empty
 from .util.util import list2dict
 from .util.util import not_empty
 from .util.util import pinyin
+from .util.util import re_fast
 from .util.util import segment
+from .util.util import union_list
+from .util.util import union_str

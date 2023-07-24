@@ -1,3 +1,4 @@
+import logging
 import uuid
 import warnings
 
@@ -148,24 +149,27 @@ def geocode_df(df: pd.DataFrame,
   df_temp = df[on].drop_duplicates().reset_index(drop=True)
 
   for i in tqdm(df_temp.index):
-    kw = df_temp[by][i]
-    ct = df_temp[temp_city_col][i]
-    if address_type == 'poi':
-      rv = geocode_best_poi(
-          ct, kw,
-          sig=sig,
-          address_geocode=address_geocode,
-          srs=srs,
-          key_baidu=key_baidu,
-          key_amap=key_amap)
-    elif address_type == 'address':
-      rv = geocode_best_address(ct, kw, srs=srs,
-                                key_baidu=key_baidu, key_amap=key_amap)
-    else:
-      raise ValueError('参数address_type错误，可选参数为"poi"或"address"')
-    df_temp.loc[
-      (df_temp[temp_city_col] == ct) & (df_temp[by] == kw),
-      ['lng', 'lat', 'rv', 'geocode_score', 'geocode_type']] = rv
+    try:
+      kw = df_temp[by][i]
+      ct = df_temp[temp_city_col][i]
+      if address_type == 'poi':
+        rv = geocode_best_poi(
+            ct, kw,
+            sig=sig,
+            address_geocode=address_geocode,
+            srs=srs,
+            key_baidu=key_baidu,
+            key_amap=key_amap)
+      elif address_type == 'address':
+        rv = geocode_best_address(ct, kw, srs=srs,
+                                  key_baidu=key_baidu, key_amap=key_amap)
+      else:
+        raise ValueError('参数address_type错误，可选参数为"poi"或"address"')
+      df_temp.loc[
+        (df_temp[temp_city_col] == ct) & (df_temp[by] == kw),
+        ['lng', 'lat', 'rv', 'geocode_score', 'geocode_type']] = rv
+    except Exception as e:
+      logging.warning(f'{e},{kw}')
 
   df = df.merge(df_temp, on=on, how='left')
   if not with_detail:

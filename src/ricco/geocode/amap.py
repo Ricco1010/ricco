@@ -1,5 +1,6 @@
+import logging
+
 import requests
-from fuzzywuzzy import fuzz
 
 from ..util.util import is_empty
 from .util import MapKeys
@@ -7,6 +8,7 @@ from .util import MapUrls
 from .util import error_amap
 from .util import fix_address
 from .util import gcj2xx
+from .util import rv_score
 
 KEY = MapKeys.amap
 
@@ -52,7 +54,11 @@ def get_amap(*,
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
   req = requests.get(url)
   if req.status_code == 200:
-    return req.json()['result'][0]['extra']
+    try:
+      return req.json()['result'][0]['extra']
+    except Exception as e:
+      logging.warning(f'{e}，{req}')
+      return None
   elif req.status_code in (400, 403):
     if source == 'amap':
       return address_json(city=city, address=address, key=key)
@@ -108,8 +114,7 @@ def get_place_amap(city: str, keywords: str, srs='wgs84', key=None):
     latlng = gcj2xx(lnglat, srs=srs)
     lng = latlng[1]
     lat = latlng[0]
-    score = max(fuzz.ratio(rv, keywords.lstrip(city)),
-                fuzz.partial_ratio(rv, keywords.lstrip(city)))
+    score = rv_score(city, keywords, rv)
   else:
     rv, lng, lat, score = None, None, None, 0
   return {

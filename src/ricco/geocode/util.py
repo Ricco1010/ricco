@@ -55,3 +55,11 @@ def fix_address(string):
   if is_empty(string):
     return ''
   return str(string)
+
+
+def rv_score(city, keywords, rv):
+  from fuzzywuzzy import fuzz
+  return max(
+      fuzz.ratio(rv, keywords.lstrip(city)),
+      fuzz.partial_ratio(rv, keywords.lstrip(city))
+  )

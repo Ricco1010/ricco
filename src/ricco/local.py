@@ -28,7 +28,7 @@ class Dirs:
     return f'/Users/ricco/common_data/bd_region/{city}边界_街镇最新.csv'
 
   def p_region(self, city):
-    return f'/Users/ricco/common_data/bd_region/{city}边界_街镇最新.csv'
+    return f'/Users/ricco/common_data/bd_region/{city}边界_区县最新.csv'
 
 
 class Datas(Dirs):
