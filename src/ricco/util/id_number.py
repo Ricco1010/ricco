@@ -9,19 +9,10 @@ from .util import all_year_old
 from .util import random_date
 
 
-def get_check_code(id_number):
+def get_check_code(id_number) -> str:
   mapping = {
-    0: '1',
-    1: '0',
-    2: 'X',
-    3: '9',
-    4: '8',
-    5: '7',
-    6: '6',
-    7: '5',
-    8: '4',
-    9: '3',
-    10: '2',
+    0: '1', 1: '0', 2: 'X', 3: '9', 4: '8',
+    5: '7', 6: '6', 7: '5', 8: '4', 9: '3', 10: '2',
   }
   weight = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
   ils = [int(i) for i in id_number[:17]]
@@ -39,20 +30,20 @@ class IDNumber:
     return self.id_number
 
   @staticmethod
-  def is_valid(id_number) -> bool:
+  def is_valid(id_number, check_code=False) -> bool:
     """判断身份证号是否有效"""
     string = str(id_number)
     if re.match(Pattern.ID_number, string):
+      if check_code:
+        if get_check_code(string) != string[-1]:
+          return False
       return True
     return False
 
   @staticmethod
-  def not_valid(id_number) -> bool:
+  def not_valid(id_number, check_code=False) -> bool:
     """判断身份证号是否无效"""
-    string = str(id_number)
-    if not re.match(Pattern.ID_number, string):
-      return True
-    return False
+    return not IDNumber.is_valid(id_number, check_code == check_code)
 
   def format_id_number(self, id_number) -> str:
     """对身份证号进行校验并转为字符串格式"""
@@ -60,8 +51,11 @@ class IDNumber:
       id_number = str(int(id_number))
     if self.is_valid(id_number):
       return id_number
-    else:
-      raise ValueError('身份证号格式错误')
+    raise ValueError('身份证号格式错误')
+
+  @property
+  def check_code(self):
+    return get_check_code(self.id_number)
 
   @property
   def birthdate(self):

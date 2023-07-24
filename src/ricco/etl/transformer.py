@@ -1,29 +1,16 @@
+import warnings
 from datetime import datetime
 
 import pandas as pd
-from tqdm import tqdm
 
-from ..util.geom import wkb_loads
+from ..util.assertion import assert_series_unique
+from ..util.decorator import timer
+from ..util.decorator import progress
 from ..util.util import and_
 from ..util.util import ensure_list
 from ..util.util import fuzz_match
-from ..util.util import is_empty
 from ..util.util import list2dict
 from ..util.util import to_float
-
-
-def filter_valid_geom(df: pd.DataFrame,
-                      c_geometry='geometry',
-                      ignore_index=True):
-  """仅保留有效的geometry，剔除空白和错误的geometry行"""
-  if 'temp_xxx' in df:
-    raise KeyError('数据集中不能存在【temp_xxx】列')
-  df['temp_xxx'] = df[c_geometry].apply(wkb_loads)
-  df = df[df['temp_xxx'].notna()]
-  if ignore_index:
-    df = df.reset_index(drop=True)
-  del df['temp_xxx']
-  return df
 
 
 def best_unique(df: pd.DataFrame,
@@ -74,7 +61,7 @@ def table2dict(df: pd.DataFrame,
   :return:
   """
   if (key_col is None) or (value_col is None):
-    cols = list(df.columns).copy()
+    cols = df.columns.tolist()
     key_col = cols[0]
     value_col = cols[1]
   df = df[df[key_col].notna()].set_index(key_col)
@@ -150,7 +137,7 @@ def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
   """
   将日期转为当月的第一天或最后一天
 
-  :param series: pd.Serise
+  :param series: pd.Series
   :param mode: 'first' or 'last'
   :return:
   """
@@ -177,19 +164,21 @@ def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
 
 def fuzz_df(df: pd.DataFrame,
             col: str,
-            target_serise: (list, pd.Series)) -> pd.DataFrame:
+            target_series: (list, pd.Series)) -> pd.DataFrame:
   """
   为DataFrame中的某一列，从某个集合中匹配相似度最高的元素
 
   :param df: 输入的dataframe
   :param col: 要匹配的列
-  :param target_serise: 从何处匹配， list/pd.Serise
+  :param target_series: 从何处匹配， list/pd.Series
   :return:
   """
-  df[[f'{col}_target',
-      'normal_score',
-      'partial_score']] = df.apply(lambda x: fuzz_match(x[col], target_serise),
-                                   result_type='expand', axis=1)
+  df[[
+    f'{col}_target', 'normal_score', 'partial_score'
+  ]] = df.apply(
+      lambda x: fuzz_match(x[col], target_series),
+      result_type='expand',
+      axis=1)
   return df
 
 
@@ -219,12 +208,14 @@ def filter_by_df(df: pd.DataFrame, sizer: pd.DataFrame) -> pd.DataFrame:
   return df[cond]
 
 
+@timer
+@progress
 def expand_dict(df, c_src):
   """展开字典为多列"""
   return pd.concat(
       [
         df.drop(c_src, axis=1),
-        df[c_src].apply(
+        df[c_src].progress_apply(
             lambda x: pd.Series(x, dtype='object')
         ).set_index(df.index)
       ],
@@ -232,9 +223,11 @@ def expand_dict(df, c_src):
   )
 
 
+@progress
+@timer
 def split_list_to_row(df, column):
   """将列表列中列表的元素拆成多行"""
-  df[column] = df[column].apply(list2dict)
+  df[column] = df[column].progress_apply(list2dict)
   return df.drop(columns=column).join(
       expand_dict(
           df[[column]], column
@@ -257,10 +250,14 @@ def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
 
 def is_unique(df: pd.DataFrame, key_cols: (str, list) = None):
   """判断是否唯一"""
+  warnings.warn(
+      '方法即将停用，请使用"ricco.util.util.is_unique_series"方法替代',
+      DeprecationWarning
+  )
   if not key_cols:
-    key_cols = list(df.columns)
+    key_cols = df.columns.to_list()
   key_cols = ensure_list(key_cols)
-  return df[df.duplicated(subset=key_cols, keep=False)].empty
+  return not df.duplicated(subset=key_cols, keep=False).any()
 
 
 def one_line(df, key_cols, key_value, value_cols):
@@ -270,52 +267,7 @@ def one_line(df, key_cols, key_value, value_cols):
   return df.reset_index(drop=True)
 
 
-def is_changed_old(
-    df_old: pd.DataFrame,
-    df_new: pd.DataFrame,
-    key_cols,
-    value_cols: (str, list) = None,
-    c_res: str = 'is_changed',
-    info=False) -> pd.DataFrame:
-  """判断新旧数据集中的每一条数据是否变化"""
-  df_old = df_old.copy()
-  key_cols = ensure_list(key_cols)
-  if not is_unique(df_new, key_cols):
-    raise ValueError(f'对照数据集{key_cols}列必须唯一')
-  if not value_cols:
-    if set(df_new.columns) != set(df_old.columns):
-      raise ValueError('Each datasets must have same columns.')
-    value_cols = [c for c in df_old.columns if c not in key_cols]
-  all_cols = [*key_cols, *value_cols]
-  df_temp = pd.concat(
-      [df_old[all_cols], df_new[all_cols]],
-      ignore_index=True
-  )
-  df_temp = df_temp[df_temp.duplicated()][key_cols]
-  df_temp[c_res] = 'NotChange'
-
-  if info:
-    print('关键列为：', key_cols,
-          '\n对比列为：', value_cols,
-          '\n全部参与列为：', all_cols,
-          '\n数据总量:', df_old.shape[0],
-          '\n重复key数量:', df_temp.shape[0]
-          )
-  df_old = df_old.merge(df_temp, how='left', on=key_cols)
-  for i, v in tqdm(df_old[key_cols].iterrows(), total=df_old.shape[0]):
-    cond_old = and_(*[df_old[c] == v[c] for c in key_cols])
-    if is_empty(df_old[c_res][i]):
-      v_old = one_line(df_old, key_cols, v, value_cols)
-      v_new = one_line(df_new, key_cols, v, value_cols)
-      if v_new.equals(v_old):
-        df_old.loc[cond_old, c_res] = 'NotChange'
-      elif v_new.empty:
-        df_old.loc[cond_old, c_res] = 'NotFound'
-      else:
-        df_old.loc[cond_old, c_res] = 'Changed'
-  return df_old
-
-
+@timer
 def is_changed(df_old: pd.DataFrame,
                df_new: pd.DataFrame,
                key_cols: (str, list) = None,
@@ -324,11 +276,10 @@ def is_changed(df_old: pd.DataFrame,
   """判断新旧数据集中的每一条数据是否变化"""
   # 数据集及参数检验
   key_cols = ensure_list(key_cols)
-  if not is_unique(df_new, key_cols):
-    raise ValueError(f'对照数据集{key_cols}列必须唯一')
+  assert_series_unique(df_new, key_cols)
   if not value_cols:
-    if set(df_new.columns) != set(df_old.columns):
-      raise ValueError('Each datasets must have same columns.')
+    error_msg = 'Each datasets must have same columns.'
+    assert set(df_new.columns) == set(df_old.columns), error_msg
     value_cols = [c for c in df_old if c not in key_cols]
   # 对比
   # 默认所有的都是更改的

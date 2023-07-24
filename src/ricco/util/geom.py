@@ -13,28 +13,22 @@ from shapely import wkt
 from shapely.errors import GeometryTypeError
 from shapely.errors import ShapelyDeprecationWarning
 from shapely.errors import WKBReadingError
-from shapely.geometry import LinearRing
-from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
-from shapely.geometry import MultiPoint
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 from shapely.geometry import shape
 from shapely.geos import WKTReadingError
 from simplejson.errors import JSONDecodeError
+from tqdm import tqdm
 
 from ..util.util import ensure_list
 from ..util.util import first_notnull_value
+from ..util.util import is_empty
+from ..util.util import not_empty
+from .decorator import geom_progress
 
 warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
-
-GeomTypeSet = (
-  Point, MultiPoint,
-  Polygon, MultiPolygon,
-  LineString, MultiLineString,
-  LinearRing
-)
 
 
 class GeomFormat:
@@ -109,69 +103,76 @@ def wkb_loads(x, hex=True):
                           'Geometry column does not contain geometry.',
                           UserWarning)
 
-  if pd.isna(x):
-    return None
+  if is_empty(x):
+    return
 
   try:
     return wkb.loads(x, hex=hex)
-  except (AttributeError, WKBReadingError):
-    return None
+  except (AttributeError, WKBReadingError) as e:
+    warnings.warn(f'{e}, 【{x}】')
+    return
 
 
 def wkb_dumps(x, hex=True, srid=4326) -> (str, None):
-  if pd.isna(x):
-    return None
+  if is_empty(x):
+    return
 
   try:
     return wkb.dumps(x, hex=hex, srid=srid)
-  except AttributeError:
-    return None
+  except AttributeError as e:
+    warnings.warn(f'{e}, 【{x}】')
+    return
 
 
 def wkt_loads(x):
-  if pd.isna(x):
-    return None
+  if is_empty(x):
+    return
   try:
     return wkt.loads(x)
-  except (AttributeError, WKTReadingError):
-    return None
+  except (AttributeError, WKTReadingError, TypeError) as e:
+    warnings.warn(f'{e}, 【{x}】')
+    return
 
 
 def wkt_dumps(x) -> (str, None):
-  if pd.isna(x):
-    return None
+  if is_empty(x):
+    return
   try:
     return wkt.dumps(x)
-  except AttributeError:
-    return None
+  except AttributeError as e:
+    warnings.warn(f'{e}, 【{x}】')
+    return
 
 
 def geojson_loads(x):
   """geojson文本形式转为shapely格式"""
-  if pd.isna(x):
-    return None
+  if is_empty(x):
+    return
   try:
     geom = shape(geojson.loads(x))
     if geom.is_empty:
-      return None
+      return
     return geom
-  except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError):
-    return None
+  except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError) as e:
+    warnings.warn(f'{e}, 【{x}】')
+    return
 
 
 def geojson_dumps(x) -> (str, None):
   """shapely转为geojson文本格式"""
-  if pd.isna(x):
-    return None
+  if is_empty(x):
+    return
   try:
     geom = geojson.Feature(geometry=x)
     return json.dumps(geom.geometry)
-  except TypeError:
-    return None
+  except TypeError as e:
+    warnings.warn(f'{e}, 【{x}】')
+    return
 
 
 def is_shapely(x, na=False) -> bool:
   """判断是否为shapely格式"""
+  from ..resource.geometry import GeomTypeSet
   if pd.isna(x):
     return na
   if type(x) in GeomTypeSet:
@@ -182,6 +183,8 @@ def is_shapely(x, na=False) -> bool:
 
 def is_wkb(x, na=False) -> bool:
   """判断是否为wkb格式"""
+  if not isinstance(x, str):
+    return False
   if pd.isna(x):
     return na
   try:
@@ -193,6 +196,8 @@ def is_wkb(x, na=False) -> bool:
 
 def is_wkt(x, na=False) -> bool:
   """判断是否为wkt格式"""
+  if not isinstance(x, str):
+    return False
   if pd.isna(x):
     return na
   try:
@@ -204,6 +209,8 @@ def is_wkt(x, na=False) -> bool:
 
 def is_geojson(x, na=False) -> bool:
   """判断是否为geojson格式"""
+  if not isinstance(x, (str, dict)):
+    return False
   if pd.isna(x):
     return na
   try:
@@ -254,61 +261,62 @@ def multiline2multipolygon(multiline_shapely):
     return MultiPolygon([Polygon(coords)])
   except ValueError as e:
     warnings.warn(f'{e}，{multiline_shapely}')
-    return None
-
-
-def geom_wkt2shapely(df, geometry='geometry',
-                     epsg_code: int = 4326) -> gpd.GeoDataFrame:
-  """wkt转gpd"""
-  df[geometry] = df[geometry].apply(wkt_loads)
-  return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
-
-
-def geom_wkb2lnglat(df, geometry='geometry', delete=False, within=False):
-  """geometry转经纬度，求中心点经纬度"""
-  df = geom_wkb2shapely(df, geometry=geometry)
-  df = geom_shapely2lnglat(df, geometry=geometry, within=within, delete=delete)
-  if not delete:
-    df[geometry] = df[geometry].apply(wkb_dumps)
-  return df
+    return
 
 
 def get_inner_point(polygon: Polygon, within=True):
   """返回面内的一个点，默认返回中心点，当中心点不在面内则返回面内一个点"""
-  if pd.isna(polygon):
-    return None
+  if is_empty(polygon):
+    return
   point = polygon.centroid
-  if polygon.contains(point):
+  if not polygon.is_valid:
+    polygon = polygon.buffer(0.000001)
+  if polygon.contains(point) or not within:
     return point
-  else:
-    if within:
-      return polygon.representative_point()
-    else:
-      return point
+  return polygon.representative_point()
 
 
-def geom_wkt2wkb(df, geometry='geometry', epsg_code: int = 4326):
-  """wkb转wkt"""
-  df = geom_wkt2shapely(df, geometry=geometry, epsg_code=epsg_code)
-  df[geometry] = df[geometry].apply(wkb_dumps)
-  return df
-
-
+@geom_progress
 def geom_wkb2shapely(df, geometry='geometry',
                      epsg_code: int = 4326) -> gpd.GeoDataFrame:
-  """wkb直接转Dataframe"""
   df = df.copy()
-  df[geometry] = df[geometry].apply(wkb_loads)
+  df[geometry] = df[geometry].progress_apply(wkb_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
 
 
-def geom_lnglat2shapely(df, lng='lng', lat='lat', delete=True,
+@geom_progress
+def geom_shapely2wkb(df, geometry='geometry'):
+  df[geometry] = df[geometry].progress_apply(wkb_dumps)
+  return df
+
+
+@geom_progress
+def geom_wkt2shapely(df, geometry='geometry',
+                     epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  df[geometry] = df[geometry].progress_apply(wkt_loads)
+  return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
+
+
+@geom_progress
+def geom_shapely2wkt(df, geometry='geometry'):
+  df[geometry] = df[geometry].progress_apply(wkt_dumps)
+  return df
+
+
+@geom_progress
+def geom_lnglat2shapely(df,
+                        lng='lng',
+                        lat='lat',
+                        geometry='geometry',
+                        delete=True,
                         epsg_code: int = 4326) -> gpd.GeoDataFrame:
-  """包含经纬度的DataFrame转GeoDataFrame"""
   from pandas.errors import SettingWithCopyWarning
   warnings.filterwarnings('ignore', category=SettingWithCopyWarning)
-  df['geometry'] = df.apply(
-      lambda d: Point((d[lng], d[lat])) if all([d[lng], d[lat]]) else None,
+
+  df[geometry] = df.progress_apply(
+      lambda d: Point((d[lng], d[lat]))
+      if not_empty(d[lng]) and not_empty(d[lat])
+      else None,
       axis=1
   )
   df = gpd.GeoDataFrame(df, crs=epsg_code)
@@ -317,29 +325,88 @@ def geom_lnglat2shapely(df, lng='lng', lat='lat', delete=True,
   return df
 
 
-def geom_shapely2lnglat(df, geometry='geometry', within=False, delete=False):
+@geom_progress
+def geom_shapely2lnglat(df, geometry='geometry',
+                        lng='lng', lat='lat',
+                        within=False, delete=False):
   """
   shapely格式提取中心点转为经纬度。
   within: 范围的点是否再面内，默认False，直接返回中心点；
   当为True时，不在面内的中心点将用一个在面内的点代替
   """
-  df['geometry_temp'] = df[geometry].apply(
-      lambda x: get_inner_point(x, within=within) if x else None)
-  df['lng'] = df['geometry_temp'].centroid.x
-  df['lat'] = df['geometry_temp'].centroid.y
-  del df['geometry_temp']
+
+  def get_xy(x):
+    p = get_inner_point(x, within=within)
+    return p.centroid.x, p.centroid.y
+
+  df[[lng, lat]] = df[[geometry]].progress_apply(
+      lambda r: get_xy(r[geometry]) if r[geometry] else (None, None),
+      result_type='expand',
+      axis=1
+  )
   if delete:
     del df[geometry]
   return df
 
 
-def geom_lnglat2wkb(df, lng='lng', lat='lat', delete=False, code=4326):
+def geom_wkb2lnglat(df, geometry='geometry', delete=False, within=False):
+  """geometry转经纬度，求中心点经纬度"""
+  df = geom_wkb2shapely(df, geometry=geometry)
+  df = geom_shapely2lnglat(df, geometry=geometry, within=within, delete=delete)
+  if not delete:
+    df = geom_shapely2wkb(df, geometry=geometry)
+  return df
+
+
+def geom_lnglat2wkb(df,
+                    lng='lng',
+                    lat='lat',
+                    geometry='geometry',
+                    delete=False, code=4326):
   """经纬度转wkb格式的geometry"""
-  df = geom_lnglat2shapely(df, 'lng', 'lat', delete=delete, epsg_code=code)
-  df['geometry'] = df['geometry'].apply(wkb_dumps)
+  df = geom_lnglat2shapely(
+      df, 'lng', 'lat', geometry=geometry, delete=delete, epsg_code=code
+  )
+  df = geom_shapely2wkb(df, geometry=geometry)
   if not delete:
     df = df.rename(columns={'lng': lng, 'lat': lat})
   return df
+
+
+def geom_wkt2lnglat(df, geometry='geometry', delete=False, within=False):
+  """geometry转经纬度，求中心点经纬度"""
+  df = geom_wkt2shapely(df, geometry=geometry)
+  df = geom_shapely2lnglat(df, geometry=geometry, within=within, delete=delete)
+  if not delete:
+    df = geom_shapely2wkt(df, geometry=geometry)
+  return df
+
+
+def geom_lnglat2wkt(df,
+                    lng='lng',
+                    lat='lat',
+                    geometry='geometry',
+                    delete=False, code=4326):
+  """经纬度转wkb格式的geometry"""
+  df = geom_lnglat2shapely(
+      df, 'lng', 'lat', geometry=geometry, delete=delete, epsg_code=code
+  )
+  df = geom_shapely2wkt(df, geometry=geometry)
+  if not delete:
+    df = df.rename(columns={'lng': lng, 'lat': lat})
+  return df
+
+
+def geom_wkb2wkt(df, geometry='geometry', epsg_code: int = 4326):
+  """wkb转wkt"""
+  df = geom_wkb2shapely(df, geometry=geometry, epsg_code=epsg_code)
+  return geom_shapely2wkt(df, geometry=geometry)
+
+
+def geom_wkt2wkb(df, geometry='geometry', epsg_code: int = 4326):
+  """wkb转wkt"""
+  df = geom_wkt2shapely(df, geometry=geometry, epsg_code=epsg_code)
+  return geom_shapely2wkb(df, geometry=geometry)
 
 
 def geom_split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
@@ -418,7 +485,8 @@ def geom_split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
     ['i', 'j']].reset_index(drop=True)
 
   # 组合坐标集并转为Polygon
-  df_res['geometry'] = df_res.apply(
+  tqdm.pandas(desc='lnglat2shapely')
+  df_res['geometry'] = df_res.progress_apply(
       lambda df: get_lnglat_sets(df_temp, df['i'], df['j']), axis=1)
 
   # 生成grid_id列
@@ -434,7 +502,8 @@ def geom_split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
                      predicate='intersects').drop('index_right', axis=1)
 
   # 将geometry转为wkb格式
-  df_res['geometry'] = df_res['geometry'].apply(wkb_dumps)
+  tqdm.pandas(desc='shapely2wkb')
+  df_res['geometry'] = df_res['geometry'].progress_apply(wkb_dumps)
   return df_res
 
 
@@ -514,9 +583,9 @@ def mark_tags_v2(
     del point_df['geometry']
   else:
     if geometry_format == 'wkb':
-      point_df['geometry'] = point_df['geometry'].apply(wkb_dumps)
+      point_df = geom_shapely2wkb(point_df)
     elif geometry_format == 'wkt':
-      point_df['geometry'] = point_df['geometry'].apply(wkt_dumps)
+      point_df = geom_shapely2wkt(point_df)
     elif geometry_format == 'shapely':
       pass
     else:
@@ -637,9 +706,11 @@ def buffer(df: pd.DataFrame, radius: Union[int, float],
   df_buffer['geometry'] = df_buffer.geometry.buffer(radius)
   df_buffer = projection(df_buffer, epsg=4326)
   if geo_format == 'wkb':
-    df_buffer['geometry'] = df_buffer['geometry'].apply(wkb_dumps)
+    tqdm.pandas(desc='shapely2wkb')
+    df_buffer['geometry'] = df_buffer['geometry'].progress_apply(wkb_dumps)
   elif geo_format == 'wkt':
-    df_buffer['geometry'] = df_buffer['geometry'].apply(wkt_dumps)
+    tqdm.pandas(desc='shapely2wkt')
+    df_buffer['geometry'] = df_buffer['geometry'].progress_apply(wkt_dumps)
   elif geo_format == 'shapely':
     pass
   else:
