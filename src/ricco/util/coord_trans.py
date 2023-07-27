@@ -366,8 +366,8 @@ def coord_trans_geom(df_org, srs_from: (SRS, str), srs_to: (SRS, str)):
   :param srs_to: 要转的坐标系，可选'wgs84', 'bd09', 'gcj02'
   :return:
   """
-  from .geom import wkb_dumps
-  from .geom import wkb_loads
+  from ..geometry.util import wkb_dumps
+  from ..geometry.util import wkb_loads
   if 'geometry' not in df_org.columns:
     raise KeyError('必须有geometry列')
   df_org['geometry'] = df_org['geometry'].apply(

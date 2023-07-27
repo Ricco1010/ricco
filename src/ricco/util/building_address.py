@@ -1,7 +1,7 @@
 import re
 import warnings
 
-from .geom import mark_tags_v2
+from ..geometry.df import mark_tags_v2
 from .strings import drop_repeat_string
 from .util import union_str
 
