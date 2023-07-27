@@ -1,0 +1,515 @@
+import logging
+import warnings
+from typing import List
+from typing import Union
+
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+from shapely.errors import ShapelyDeprecationWarning
+from shapely.geometry import Point
+from shapely.geometry import Polygon
+from tqdm import tqdm
+
+from ..util.decorator import geom_progress
+from ..util.util import ensure_list
+from ..util.util import first_notnull_value
+from ..util.util import not_empty
+from .util import get_epsg
+from .util import get_epsg_by_lng
+from .util import get_inner_point
+from .util import infer_geom_format
+from .util import wkb_dumps
+from .util import wkb_loads
+from .util import wkt_dumps
+from .util import wkt_loads
+
+warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
+
+
+def projection(
+    gdf: gpd.GeoDataFrame,
+    epsg: int = None,
+    city: str = None):
+  """投影变换"""
+  if not epsg:
+    epsg = get_epsg(city) if city else get_epsg_by_lng(
+        gdf['geometry'].centroid.x.tolist()
+    )
+  return gdf.to_crs(epsg=epsg)
+
+
+@geom_progress
+def wkb2shapely(df, geometry='geometry',
+                epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  df = df.copy()
+  df[geometry] = df[geometry].progress_apply(wkb_loads)
+  return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
+
+
+@geom_progress
+def shapely2wkb(df, geometry='geometry'):
+  df[geometry] = df[geometry].progress_apply(wkb_dumps)
+  return df
+
+
+@geom_progress
+def wkt2shapely(df, geometry='geometry',
+                epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  df[geometry] = df[geometry].progress_apply(wkt_loads)
+  return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
+
+
+@geom_progress
+def shapely2wkt(df, geometry='geometry'):
+  df[geometry] = df[geometry].progress_apply(wkt_dumps)
+  return df
+
+
+@geom_progress
+def lnglat2shapely(df,
+                   lng='lng',
+                   lat='lat',
+                   geometry='geometry',
+                   delete=True,
+                   epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  from pandas.errors import SettingWithCopyWarning
+  warnings.filterwarnings('ignore', category=SettingWithCopyWarning)
+
+  df[geometry] = df.progress_apply(
+      lambda d: Point((d[lng], d[lat]))
+      if not_empty(d[lng]) and not_empty(d[lat])
+      else None,
+      axis=1
+  )
+  df = gpd.GeoDataFrame(df, crs=epsg_code)
+  if delete:
+    del df[lng], df[lat]
+  return df
+
+
+@geom_progress
+def shapely2lnglat(df, geometry='geometry',
+                   lng='lng', lat='lat',
+                   within=False, delete=False):
+  """
+  shapely格式提取中心点转为经纬度。
+  within: 范围的点是否再面内，默认False，直接返回中心点；
+  当为True时，不在面内的中心点将用一个在面内的点代替
+  """
+
+  def get_xy(x):
+    p = get_inner_point(x, within=within)
+    return p.centroid.x, p.centroid.y
+
+  df[[lng, lat]] = df[[geometry]].progress_apply(
+      lambda r: get_xy(r[geometry]) if r[geometry] else (None, None),
+      result_type='expand',
+      axis=1
+  )
+  if delete:
+    del df[geometry]
+  return df
+
+
+def wkb2lnglat(df, geometry='geometry', delete=False, within=False):
+  """geometry转经纬度，求中心点经纬度"""
+  df = wkb2shapely(df, geometry=geometry)
+  df = shapely2lnglat(df, geometry=geometry, within=within, delete=delete)
+  if not delete:
+    df = shapely2wkb(df, geometry=geometry)
+  return df
+
+
+def lnglat2wkb(df,
+               lng='lng',
+               lat='lat',
+               geometry='geometry',
+               delete=False, code=4326):
+  """经纬度转wkb格式的geometry"""
+  df = lnglat2shapely(
+      df, 'lng', 'lat', geometry=geometry, delete=delete, epsg_code=code
+  )
+  df = shapely2wkb(df, geometry=geometry)
+  if not delete:
+    df = df.rename(columns={'lng': lng, 'lat': lat})
+  return df
+
+
+def wkt2lnglat(df, geometry='geometry', delete=False, within=False):
+  """geometry转经纬度，求中心点经纬度"""
+  df = wkt2shapely(df, geometry=geometry)
+  df = shapely2lnglat(df, geometry=geometry, within=within, delete=delete)
+  if not delete:
+    df = shapely2wkt(df, geometry=geometry)
+  return df
+
+
+def lnglat2wkt(df,
+               lng='lng',
+               lat='lat',
+               geometry='geometry',
+               delete=False, code=4326):
+  """经纬度转wkb格式的geometry"""
+  df = lnglat2shapely(
+      df, 'lng', 'lat', geometry=geometry, delete=delete, epsg_code=code
+  )
+  df = shapely2wkt(df, geometry=geometry)
+  if not delete:
+    df = df.rename(columns={'lng': lng, 'lat': lat})
+  return df
+
+
+def wkb2wkt(df, geometry='geometry', epsg_code: int = 4326):
+  """wkb转wkt"""
+  df = wkb2shapely(df, geometry=geometry, epsg_code=epsg_code)
+  return shapely2wkt(df, geometry=geometry)
+
+
+def wkt2wkb(df, geometry='geometry', epsg_code: int = 4326):
+  """wkb转wkt"""
+  df = wkt2shapely(df, geometry=geometry, epsg_code=epsg_code)
+  return shapely2wkb(df, geometry=geometry)
+
+
+def auto2shapely(df, geometry='geometry'):
+  geom = first_notnull_value(df[geometry])
+  geom_format = infer_geom_format(geom)
+  if geom_format == 'wkb':
+    return wkb2shapely(df, geometry=geometry)
+  elif geom_format == 'wkt':
+    return wkt2shapely(df, geometry=geometry)
+  elif geom_format == 'shapely':
+    return gpd.GeoDataFrame(df, geometry=geometry)
+  else:
+    raise TypeError('未知的地理格式，支持wkb,wkt,shapely三种格式')
+
+
+def shapely2x(df, geometry_format: str):
+  """将shapely转为指定的格式"""
+  if geometry_format == 'wkb':
+    return shapely2wkb(df)
+  elif geometry_format == 'wkt':
+    return shapely2wkt(df)
+  elif geometry_format == 'shapely':
+    return df
+  else:
+    raise ValueError('不支持的geometry格式')
+
+
+def distance_min(geometry, gdf: gpd.GeoDataFrame) -> float:
+  """
+  计算单个geometry到数据集gdf中元素的最短距离
+  Args:
+    geometry: 单个geometry，shapely格式
+    gdf: 数据集，GeoDataFrame格式
+  """
+  return gdf.distance(geometry).min()
+
+
+@geom_progress
+def distance_gdf(df: gpd.GeoDataFrame, df_target: gpd.GeoDataFrame, c_dst: str):
+  """计算一个数据集中的每个元素到另一个数据集之间的最短距离"""
+  df[c_dst] = df['geometry'].progress_apply(
+      lambda p: distance_min(p, df_target) if not_empty(p) else np.nan
+  )
+  return df
+
+
+def split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
+  """
+  根据所给边界划分固定边长的栅格
+
+  Args:
+      df: 边界文件，GeoDataFrame格式
+      step: 栅格边长，单位：米
+      city: 所属城市，用于投影
+  """
+
+  def get_xxyy(df):
+    bounds_dict = df.bounds.T.to_dict()[0]
+    minx = bounds_dict['minx']
+    miny = bounds_dict['miny']
+    maxx = bounds_dict['maxx']
+    maxy = bounds_dict['maxy']
+    xx = maxx - minx
+    yy = maxy - miny
+    return [xx, yy, minx, miny, maxx, maxy]
+
+  def get_lnglat(df, i, j):
+    _lng = df.loc[(df['i'] == i) &
+                  (df['j'] == j), 'lng'].reset_index(drop=True)[0]
+    _lat = df.loc[(df['i'] == i) &
+                  (df['j'] == j), 'lat'].reset_index(drop=True)[0]
+    return (_lng, _lat)
+
+  def get_lnglat_sets(df, i, j):
+    A = get_lnglat(df, i, j)
+    B = get_lnglat(df, i, j + 1)
+    C = get_lnglat(df, i + 1, j + 1)
+    D = get_lnglat(df, i + 1, j)
+    return Polygon((A, B, C, D, A))
+
+  # 融合
+  if not isinstance(df, gpd.GeoDataFrame):
+    df = wkb2shapely(df)
+  df = df[['geometry']].dissolve()
+
+  # 投影，获取实际的距离
+  df_p = projection(df, city=city)
+
+  # 分别获取投影前和投影后的点位及边长信息
+  xy_o, xy_p = get_xxyy(df), get_xxyy(df_p)
+
+  # 获取栅格的起止经纬度，步长等信息
+  xr, yr = xy_o[0] / xy_p[0], xy_o[1] / xy_p[1]
+  x_len, y_len = xr * step, yr * step
+  x_num, y_num = int(xy_o[0] // x_len + 1), int(xy_o[1] // y_len + 1)
+  logging.info(f'lng分段数：{x_num}，lat分段数：{y_num}')
+  x_start, y_start = xy_o[2], xy_o[3]
+  x_end, y_end = x_start + x_num * x_len, y_start + y_num * y_len
+
+  # 构建经纬度列表
+  lng_array, lat_array = np.linspace(x_start, x_end, num=x_num), np.linspace(
+      y_start, y_end, num=y_num)
+  lng_list, lat_list = list(lng_array), list(lat_array)
+
+  # 构建栅格索引
+  i_l, j_l, lng_l, lat_l = [], [], [], []
+  for i, lng in enumerate(lng_list):
+    for j, lat in enumerate(lat_list):
+      i_l.append(i)
+      j_l.append(j)
+      lng_l.append(lng)
+      lat_l.append(lat)
+  df_temp = pd.DataFrame({'i': i_l, 'j': j_l, 'lng': lng_l, 'lat': lat_l})
+  # 删除末尾的格子，避免后面出现out of range
+  df_res = df_temp.loc[
+    (df_temp['i'] != x_num - 1) & (df_temp['j'] != y_num - 1),
+    ['i', 'j']].reset_index(drop=True)
+
+  # 组合坐标集并转为Polygon
+  tqdm.pandas(desc='lnglats2shapelyPolygon')
+  df_res['geometry'] = df_res.progress_apply(
+      lambda df: get_lnglat_sets(df_temp, df['i'], df['j']), axis=1)
+
+  # 生成grid_id列
+  df_res['grid_id'] = df_res['i'].astype(str) + '-' + df_res['j'].astype(str)
+  del df_res['i'], df_res['j']
+
+  # 通过边界裁剪栅格
+  df_res = gpd.GeoDataFrame(df_res, crs="epsg:4326")
+  df.crs = 'epsg:4326'
+  df_res = gpd.sjoin(df_res,
+                     df,
+                     how='inner',
+                     predicate='intersects').drop('index_right', axis=1)
+
+  # 将geometry转为wkb格式
+  df_res = shapely2wkb(df_res)
+  return df_res
+
+
+def mark_tags_v2(
+    point_df: pd.DataFrame,
+    polygon_df: pd.DataFrame,
+    col_list: list = None,
+    predicate='intersects',
+    drop_geometry=False,
+    geometry_format='wkb',
+    warning_message=True):
+  """
+  使用面数据通过空间关联（sjoin）给点数据打标签
+
+  Args:
+      point_df: 点数据
+      polygon_df: 面数据
+      col_list: 面数据中要关联到结果中的列，若为空则全部关联
+      predicate: 关联方法，默认'intersects'
+      drop_geometry: 结果是否删除geometry，默认删除
+      geometry_format: 输出的geometry格式，支持wkb,、wkt、shapely，默认wkb
+      warning_message: 是否输出警告信息
+  """
+  if not col_list:
+    col_list = polygon_df.columns.to_list()
+  else:
+    col_list = ensure_list(col_list)
+    polygon_df = polygon_df[[*col_list, 'geometry']]
+
+  for c in col_list:
+    if c in point_df and c not in ['lng', 'lat', 'geometry']:
+      c_n = f'{c}_origin'
+      if warning_message:
+        warnings.warn(f'点数据中存在面文件中待关联的列，已重命名：{c} --> {c_n}')
+      point_df.rename(columns={c: c_n}, inplace=True)
+
+  if 'geometry' in point_df:
+    point_df = auto2shapely(point_df)
+    geom = first_notnull_value(point_df['geometry'])
+    if geom.geom_type not in ['point', 'Point']:
+      if warning_message:
+        warnings.warn('左侧数据实际非点数据，将自动提取中心点进行关联')
+      point_df['geometry_backup'] = point_df['geometry']
+      point_df = shapely2lnglat(point_df, within=True)
+      point_df = lnglat2shapely(point_df, delete=False)
+  elif 'lng' in point_df and 'lat' in point_df:
+    point_df = lnglat2shapely(point_df, delete=False)
+  else:
+    raise KeyError('点文件中必须有经纬度或geometry')
+
+  polygon_df = auto2shapely(polygon_df)
+
+  point_df = gpd.sjoin(
+      point_df,
+      polygon_df,
+      how='left',
+      predicate=predicate,
+  ).drop('index_right', axis=1)
+
+  if 'geometry_backup' in point_df:
+    del point_df['geometry']
+    point_df.rename(columns={'geometry_backup': 'geometry'}, inplace=True)
+
+  if drop_geometry:
+    del point_df['geometry']
+  else:
+    point_df = shapely2x(point_df, geometry_format)
+
+  return pd.DataFrame(point_df)
+
+
+def nearest_neighbor(
+    df: pd.DataFrame,
+    df_target: pd.DataFrame,
+    c_dst='min_distance',
+    epsg: int = None) -> pd.DataFrame:
+  """
+  近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）
+
+  Args:
+    df:
+    df_target:
+    c_dst: 输出最短距离的列名
+    epsg: 对于跨时区或不在同一个城市的可以指定epsg code
+  """
+
+  def ensure_geometry(_df):
+    if 'geometry' in _df:
+      return auto2shapely(_df[['geometry']])[['geometry']]
+    elif 'lng' in _df and 'lat' in _df:
+      return lnglat2shapely(
+          _df[['lng', 'lat']],
+          delete=False)[['geometry']]
+    else:
+      raise KeyError('文件中必须有经纬度或geometry')
+
+  # 将两个数据集都转为shapely格式
+  df_left = ensure_geometry(df)
+  df_target = ensure_geometry(df_target)
+  # 投影
+  df_left = projection(df_left, epsg=epsg)
+  df_target = projection(df_target, epsg=epsg)
+  # 计算最短距离
+  df_left = distance_gdf(df_left, df_target, c_dst)
+  # 将距离合并到原来的数据集上
+  df = df.merge(df_left[[c_dst]], left_index=True, right_index=True, how='left')
+  return pd.DataFrame(df).sort_index()
+
+
+def buffer(df: pd.DataFrame, radius: Union[int, float],
+           city: str = None,
+           geo_type: str = 'point',
+           geometry: str = 'geometry',
+           buffer_geometry: str = 'buffer_geometry',
+           geo_format='wkb') -> pd.DataFrame:
+  """
+  获得一定半径的缓冲区
+
+  Args:
+    df: pd.DataFrame, 包含地理信息的DataFrame
+    radius: numeric, 缓冲区半径（单位米）
+    city: str, 可选, 投影城市，可提高数据精度
+    geo_type: str, 地理数据类型，可选point, line或polygon(包括multipolygon)，默认point
+    geometry: str, geometry字段名，默认"geometry"
+    buffer_geometry: 输出的缓冲区geometry字段名，默认"buffer_geometry"
+    geo_format: str, 输出的缓冲区geometry格式，支持"wkb","wkt","shapely"，默认"wkb"
+
+  Returns: 包含缓冲区geometry的DataFrame
+
+  Examples:
+    >>> df = pd.DataFrame({'id': [1, 2, 3],
+    >>>                    'lng': [116.18601, 116.18366, 116.18529],
+    >>>                    'lat': [40.02894, 40.03550, 40.03565]})
+
+    >>> df
+        id        lng       lat
+    0   1  116.18601  40.02894
+    1   2  116.18366  40.03550
+    2   3  116.18529  40.03565
+
+    >>> buffer(df=df, radius=1500, city='北京', geo_type='point')
+        id        lng       lat                                    buffer_geometry
+    0   1  116.18601  40.02894  0103000020E6100000010000004100000092A0207A070D...
+    1   2  116.18366  40.03550  0103000020E6100000010000004100000071178800E10C...
+    2   3  116.18529  40.03565  0103000020E610000001000000410000008A2570B5FB0C...
+
+  """
+  df = df.reset_index(drop=True)
+  cols = []
+  if geometry in df:
+    cols.append(geometry)
+  if 'lng' in df and 'lat' in df:
+    cols.extend(['lng', 'lat'])
+  df_tmp = df[cols]
+  df_tmp.rename(columns={geometry: 'geometry'}, inplace=True)
+
+  if geo_type == 'point':
+    if 'geometry' in df_tmp:
+      df_tmp = auto2shapely(df_tmp)
+      geom = first_notnull_value(df_tmp['geometry'])
+      if geom.geom_type not in ['point', 'Point']:
+        warnings.warn('数据实际非点数据，将自动提取中心点进行关联')
+        df_tmp = shapely2lnglat(df_tmp)
+        df_tmp = lnglat2shapely(df_tmp, delete=False)
+    elif 'lng' in df_tmp and 'lat' in df_tmp:
+      df_tmp = lnglat2shapely(df_tmp, delete=False)
+    else:
+      raise KeyError('点文件中必须有经纬度或geometry')
+  elif geo_type == 'line' or geo_type == 'polygon':
+    df_tmp = auto2shapely(df_tmp, geometry=geometry)
+  else:
+    raise ValueError('geo_type必须为point，line或polygon')
+
+  df_buffer = df_tmp[['geometry']]
+  df_buffer = projection(df_buffer, city=city)
+  df_buffer['geometry'] = df_buffer.geometry.buffer(radius)
+  df_buffer = projection(df_buffer, epsg=4326)
+  df_buffer = shapely2x(df_buffer, geo_format)
+  df_buffer.rename(columns={'geometry': buffer_geometry}, inplace=True)
+  df = df.join(df_buffer, how='left')
+  return df
+
+
+def spatial_agg(point_df: pd.DataFrame, polygon_df: pd.DataFrame,
+                by: Union[str, List[str]],
+                agg: dict,
+                polygon_geometry: str = 'geometry') -> pd.DataFrame:
+  """
+  对面数据覆盖范围内的点数据进行空间统计
+  Args:
+    point_df: pd.DataFrame, 点数据dataframe;
+    polygon_df: pd.DataFrame, 面数据dataframe;
+    by: Union[str, List[str]], 空间统计单位字段；
+    agg: dict, 空间统计操作。格式为{'被统计字段名': '操作名', ...}的字典。如{'poi':'sum'};
+    polygon_geometry: str, 面数据geometry字段名，默认"geometry";
+
+  Returns: pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame
+  """
+
+  polygon_df.rename({polygon_geometry: 'geometry'}, inplace=True)
+  polygon_df = polygon_df[[by, 'geometry']]
+  point_df = mark_tags_v2(polygon_df=polygon_df, point_df=point_df,
+                          drop_geometry=True)
+  df_grouped = point_df.groupby(by=by, as_index=False).agg(agg)
+
+  return df_grouped

@@ -123,7 +123,7 @@ def all_year_old(birthday: datetime.datetime,
 
 def first_notnull_value(series):
   for v in series:
-    if pd.notna(v) or not v.is_empty:
+    if not_empty(v):
       return v
   warnings.warn('所有值均为空值')
   return None
