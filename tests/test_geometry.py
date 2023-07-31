@@ -2,9 +2,9 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 from shapely.geometry import Point
 
-from mdt_biz_utils.geometry.df import mark_tags_v2
-from mdt_biz_utils.geometry.util import get_epsg
-from mdt_biz_utils.geometry.util import wkb_loads
+from ricco.geometry.df import mark_tags_v2
+from ricco.geometry.util import get_epsg
+from ricco.geometry.util import wkb_loads
 
 
 def test_get_epsg():
