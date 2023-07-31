@@ -1,5 +1,6 @@
 from .df import auto2shapely
 from .df import buffer
+from .df import get_area
 from .df import lnglat2shapely
 from .df import lnglat2wkb
 from .df import lnglat2wkt

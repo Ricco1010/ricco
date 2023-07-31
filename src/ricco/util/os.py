@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import zipfile
+
 from .util import ensure_list
 
 
@@ -105,9 +106,7 @@ def dir_iter(root, exts: (list, str) = None, abspath=False):
   Args:
     root: 文件目录
     exts: 文件扩展名，不指定则返回所有文件
-
-  Returns:
-
+    abspath: 是否返回绝对路径
   """
 
   for filename in os.listdir(root):
