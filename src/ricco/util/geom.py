@@ -39,6 +39,6 @@ from ..geometry.util import wkt_dumps
 from ..geometry.util import wkt_loads
 
 warnings.warn(
-    'util.geom模块不再更新，请使用"mdt_biz_utils.geometry"中的相关模块',
+    'util.geom模块不再更新，请使用"ricco.geometry"中的相关模块',
     DeprecationWarning
 )
