@@ -1,5 +1,6 @@
 from .df import auto2shapely
 from .df import buffer
+from .df import geojson2shapely
 from .df import get_area
 from .df import lnglat2shapely
 from .df import lnglat2wkb
@@ -7,6 +8,7 @@ from .df import lnglat2wkt
 from .df import mark_tags_v2
 from .df import nearest_neighbor
 from .df import projection
+from .df import shapely2geojson
 from .df import shapely2lnglat
 from .df import shapely2wkb
 from .df import shapely2wkt

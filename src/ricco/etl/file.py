@@ -1,28 +1,25 @@
 import os
 
-from tqdm import tqdm
-
 from ..util.os import fn
-from ..util.os import mkdir_2
 from .extract import rdf
+from .transformer import df_iter
 
 
-def split_csv(filename: str, n: int = 5, encoding: str = 'utf-8'):
-  """将文件拆分为多个同名文件，放置在与文件同名文件夹下的不同Part_文件夹中"""
-  dir_name = fn(os.path.basename(filename))
-  abs_path = os.getcwd()
-  df = rdf(filename)
-  t = len(df)
-  p = int(t / n)
-  for i in tqdm(range(n)):
-    low = i * p
-    high = (i + 1) * p
-    dir_name2 = 'Part_' + str(i)
-    save_path = os.path.join(abs_path, dir_name, dir_name2)
-    savefile = os.path.join(save_path, filename)
-    mkdir_2(save_path)
-    if i == n - 1:
-      add = df.iloc[low:, :]
-    else:
-      add = df.iloc[low: high, :]
-    add.to_csv(savefile, index=0, encoding=encoding)
+def split2csvs(
+    filename: str,
+    *,
+    chunksize: int = None,
+    parts: int = None,
+):
+  """将文件拆分为多个文件，放置在与文件同名文件夹下"""
+  if not any([chunksize, parts]):
+    raise ValueError(f'chunksize 和 parts必须指定一个')
+  full_path = os.path.abspath(filename)
+  dir_name = fn(full_path)
+  os.makedirs(dir_name, exist_ok=True)
+  df = rdf(full_path)
+  for i, df_part in enumerate(df_iter(df, chunksize=chunksize, parts=parts)):
+    savefile = os.path.join(
+        dir_name, f'part_{str(i + 1).zfill(len(str(parts)))}.csv')
+    print(f'文件保存至：{savefile}, Rows：{df_part.shape[0]}')
+    df_part.to_csv(savefile, index=0)

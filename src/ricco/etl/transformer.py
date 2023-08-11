@@ -1,14 +1,16 @@
 import warnings
 from datetime import datetime
 
+import numpy as np
 import pandas as pd
 
 from ..util.assertion import assert_series_unique
-from ..util.decorator import timer
 from ..util.decorator import progress
+from ..util.decorator import timer
 from ..util.util import and_
 from ..util.util import ensure_list
 from ..util.util import fuzz_match
+from ..util.util import is_empty
 from ..util.util import list2dict
 from ..util.util import to_float
 
@@ -47,23 +49,46 @@ def best_unique(df: pd.DataFrame,
   return df
 
 
+def keep_best_unique(df: pd.DataFrame,
+                     subset: (list, str),
+                     value_cols: (str, list) = None
+                     ) -> pd.DataFrame:
+  """
+  优化的去重函数，为保证数据的完整性，去重时优先去除指定列中的空值
+  Args:
+    df: 要去重的Dataframe
+    subset: 按照哪些列去重
+    value_cols: 优先去除那些列的空值，该列表是有顺序的
+  """
+  subset = ensure_list(subset)
+
+  if not value_cols:
+    value_cols = [i for i in df if i not in subset]
+  value_cols = ensure_list(value_cols)
+
+  return df.sort_values(
+      value_cols, na_position='first'
+  ).drop_duplicates(
+      subset, keep='last'
+  ).sort_index()
+
+
 def table2dict(df: pd.DataFrame,
                key_col: str = None,
                value_col: (str, list) = None,
                orient: str = 'dict') -> dict:
   """
   DataFrame转字典
-
-  :param df:
-  :param key_col: 生成key的列
-  :param value_col: 生成value的列
-  :param orient: 生成dict的方式，默认'dict',还有 ‘list’, ‘series’, ‘split’, ‘records’, ‘index’
-  :return:
+  Args:
+    df:
+    key_col: 生成key的列
+    value_col: 生成value的列
+    orient: 生成dict的方式，默认'dict',还有 ‘list’, ‘series’, ‘split’, ‘records’, ‘index’
   """
-  if (key_col is None) or (value_col is None):
-    cols = df.columns.tolist()
-    key_col = cols[0]
-    value_col = cols[1]
+  if not all([key_col, value_col]):
+    columns = df.columns.tolist()
+    key_col = columns[0]
+    value_col = columns[1]
   df = df[df[key_col].notna()].set_index(key_col)
   if isinstance(value_col, list):
     df = df[value_col]
@@ -73,18 +98,19 @@ def table2dict(df: pd.DataFrame,
     return df.to_dict(orient=orient)[value_col]
 
 
-def round_by_columns(df, col: list):
+def round_by_columns(df, columns: list):
   """对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位"""
 
   def _round(x):
+    if is_empty(x):
+      return np.nan
     if abs(x) >= 1:
       return round(x, 2)
-    else:
-      return round(x, 4)
+    return round(x, 4)
 
-  col = ensure_list(col)
-  for i in col:
-    df[i] = df[i].apply(lambda x: _round(x))
+  columns = ensure_list(columns)
+  for c in columns:
+    df[c] = df[c].apply(lambda x: _round(x))
   return df
 
 
@@ -162,24 +188,31 @@ def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
   return series.apply(trans)
 
 
+@progress
 def fuzz_df(df: pd.DataFrame,
             col: str,
-            target_series: (list, pd.Series)) -> pd.DataFrame:
+            target_series: (list, pd.Series),
+            c_dst=None) -> pd.DataFrame:
   """
-  为DataFrame中的某一列，从某个集合中匹配相似度最高的元素
+  模糊匹配。为DataFrame中的某一列从某个集合中模糊匹配匹配相似度最高的元素
+  Args:
+    df: 输入的dataframe
+    col: 要匹配的列
+    target_series: 从何处匹配， list/pd.Series
+    c_dst: 关联后输出的列名，默认为原列名+"_target"后缀
+  """
+  if not c_dst:
+    c_dst = f'{col}_target'
 
-  :param df: 输入的dataframe
-  :param col: 要匹配的列
-  :param target_series: 从何处匹配， list/pd.Series
-  :return:
-  """
-  df[[
-    f'{col}_target', 'normal_score', 'partial_score'
-  ]] = df.apply(
-      lambda x: fuzz_match(x[col], target_series),
+  df_temp = df[[col]].drop_duplicates(ignore_index=True)
+
+  df_temp[[
+    c_dst, 'normal_score', 'partial_score'
+  ]] = df_temp.progress_apply(
+      lambda r: fuzz_match(r[col], target_series),
       result_type='expand',
       axis=1)
-  return df
+  return df.merge(df_temp, on=col, how='left')
 
 
 def series_to_float(series: pd.Series, rex_method: str = 'mean') -> pd.Series:
@@ -225,8 +258,10 @@ def expand_dict(df, c_src):
 
 @progress
 @timer
-def split_list_to_row(df, column):
+def split_list_to_row(df: pd.DataFrame, column):
   """将列表列中列表的元素拆成多行"""
+  if pd.__version__ >= '1.3.0':
+    return df.explode(column, ignore_index=True)
   df[column] = df[column].progress_apply(list2dict)
   return df.drop(columns=column).join(
       expand_dict(
@@ -273,7 +308,15 @@ def is_changed(df_old: pd.DataFrame,
                key_cols: (str, list) = None,
                value_cols: (str, list) = None,
                c_res: str = 'is_changed') -> pd.DataFrame:
-  """判断新旧数据集中的每一条数据是否变化"""
+  """
+  判断新旧数据集中的每一条数据是否变化
+  Args:
+    df_old: 原始数据集
+    df_new: 修改后的数据集
+    key_cols: 关键列，不指定则以索引列为准
+    value_cols: 要对比的列，默认出key_cols之外的其他列
+    c_res: 对比结果列名，默认为“is_changed”
+  """
   # 数据集及参数检验
   key_cols = ensure_list(key_cols)
   assert_series_unique(df_new, key_cols)
@@ -303,3 +346,20 @@ def is_changed(df_old: pd.DataFrame,
   df_temp.loc[cond, c_res] = 'NotChange'
   df_temp = df_temp[[*key_cols, c_res]]
   return df_old.merge(df_temp, how='left', on=key_cols)
+
+
+def df_iter(df: pd.DataFrame, *, chunksize: int = None, parts: int = None):
+  if not any([chunksize, parts]):
+    raise ValueError(f'chunksize 和 parts必须指定一个')
+  size = df.shape[0]
+  if chunksize:
+    parts = int(size / chunksize) + 1
+  else:
+    chunksize = int(size / parts) + 1
+  for i in range(parts):
+    low = i * chunksize
+    high = (i + 1) * chunksize
+    if i == parts - 1:
+      yield df.iloc[low:, :]
+    else:
+      yield df.iloc[low: high, :]

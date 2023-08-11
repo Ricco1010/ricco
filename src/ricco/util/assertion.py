@@ -2,6 +2,7 @@ import warnings
 
 import pandas as pd
 
+from .util import and_
 from .util import ensure_list
 from .util import is_digit
 from .util import is_unique_series
@@ -76,17 +77,27 @@ def assert_values_in(df: pd.DataFrame,
 
 
 def assert_series_unique(df: pd.DataFrame,
-                         cols: (str, list) = '名称',
-                         text: str = ''):
-  """检查并输出重复项"""
-  cols = ensure_list(cols)
-  if not is_unique_series(df, cols):
-    df_dup = df[df.duplicated(subset=cols)][cols].sort_values(cols)
-    df_dup = df_dup.drop_duplicates()
-    ls = df_dup.astype(str).to_dict('records')
+                         columns: (str, list) = '名称',
+                         text: str = '',
+                         ignore_na=False):
+  """
+  检查并输出重复项
+  Args:
+    df: 要检查的Dataframe
+    columns: 唯一的列
+    text: 输出的文案
+    ignore_na: 是否忽略空值，默认False，为True时，有空值的行不参与校验
+  """
+  columns = ensure_list(columns)
+  if not is_unique_series(df, columns, ignore_na=ignore_na):
+    if ignore_na:
+      df = df[and_(*[df[c].notna() for c in columns])]
+    df = df[df.duplicated(subset=columns)][columns].sort_values(columns)
+    df = df.drop_duplicates()
+    ls = df.astype(str).to_dict('records')
     ls = [','.join(list(i.values())) for i in ls]
     info = '\n-->'.join(ls)
-    raise AssertionError(f'{text}【{cols}】列中存在重复值:\n-->{info}')
+    raise AssertionError(f'{text}【{columns}】列中存在重复值:\n-->{info}')
 
 
 def assert_series_digit(df: pd.DataFrame, col: str):

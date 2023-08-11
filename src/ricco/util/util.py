@@ -292,7 +292,7 @@ def segment(x,
     raise TypeError('gap参数数据类型错误')
 
 
-def fuzz_match(string: str, ss: (list, pd.Series)):
+def fuzz_match(string: str, ss: (list, pd.Series, tuple)):
   """
   为某一字符串从某一集合中匹配相似度最高的元素
 
@@ -301,18 +301,8 @@ def fuzz_match(string: str, ss: (list, pd.Series)):
   :return: 字符串及相似度组成的列表
   """
   from fuzzywuzzy import fuzz
-
-  def _ratio(_s, x):
-    return fuzz.ratio(_s, x), fuzz.partial_ratio(_s, x)
-
-  max_r, max_pr, max_s = 0, 0, None
-  for s in ss:
-    r, pr = _ratio(s, string)
-    if r > max_r:
-      max_r = r
-      max_pr = pr
-      max_s = s
-  return max_s, max_r, max_pr
+  max_s = max(ss, key=lambda x: fuzz.ratio(x, string))
+  return max_s, fuzz.ratio(string, max_s), fuzz.partial_ratio(string, max_s)
 
 
 def get_city_id_by_name(city: str):
@@ -521,11 +511,16 @@ def to_bool(x,
   return other
 
 
-def is_unique_series(df: pd.DataFrame, key_cols: (str, list) = None):
+def is_unique_series(df: pd.DataFrame,
+                     key_cols: (str, list) = None,
+                     ignore_na=False):
   """判断是否唯一"""
+  df = df.copy()
   if not key_cols:
     key_cols = df.columns.tolist()
   key_cols = ensure_list(key_cols)
+  if ignore_na:
+    df = df[and_(*[df[c].notna() for c in key_cols])]
   return not df.duplicated(subset=key_cols, keep=False).any()
 
 

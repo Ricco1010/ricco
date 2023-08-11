@@ -1,4 +1,4 @@
-__version__ = '1.2.2'
+__version__ = '1.2.3'
 
 from .etl import file
 from .etl import load
@@ -8,6 +8,14 @@ from .etl.transformer import expand_dict
 from .etl.transformer import table2dict
 from .geocode.geocode import geocode
 from .geocode.geocode import geocode_df
+from .geometry.df import auto2shapely
+from .geometry.df import mark_tags_v2
+from .geometry.df import nearest_neighbor
+from .geometry.df import shapely2x
+from .geometry.util import wkb_dumps
+from .geometry.util import wkb_loads
+from .geometry.util import wkt_dumps
+from .geometry.util import wkt_loads
 from .local import Rc
 from .local import Ricco
 from .util import coord_trans
@@ -17,14 +25,10 @@ from .util import id_number
 from .util import os
 from .util import phone_number
 from .util import strings
-from .util.geom import mark_tags_v2
-from .util.geom import wkb_dumps
-from .util.geom import wkb_loads
-from .util.geom import wkt_dumps
-from .util.geom import wkt_loads
+from .util.assertion import assert_series_unique as check_unique
+from .util.os import dir_iter
 from .util.os import ext
 from .util.os import fn
-from .util.os import mkdir_2
 from .util.strings import drop_repeat_string
 from .util.util import extract_num
 from .util.util import is_empty

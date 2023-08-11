@@ -6,7 +6,6 @@ from typing import Union
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.errors import ShapelyDeprecationWarning
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 from tqdm import tqdm
@@ -15,16 +14,15 @@ from ..util.decorator import geom_progress
 from ..util.util import ensure_list
 from ..util.util import first_notnull_value
 from ..util.util import not_empty
+from .util import geojson_dumps
+from .util import geojson_loads
 from .util import get_epsg
 from .util import get_epsg_by_lng
-from .util import get_inner_point
 from .util import infer_geom_format
 from .util import wkb_dumps
 from .util import wkb_loads
 from .util import wkt_dumps
 from .util import wkt_loads
-
-warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 
 def projection(
@@ -71,17 +69,30 @@ def shapely2wkt(df, geometry='geometry'):
 
 
 @geom_progress
+def geojson2shapely(df, geometry='geometry',
+                    epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  df = df.copy()
+  df[geometry] = df[geometry].progress_apply(geojson_loads)
+  return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
+
+
+@geom_progress
+def shapely2geojson(df, geometry='geometry'):
+  df = df.copy()
+  df[geometry] = df[geometry].progress_apply(geojson_dumps)
+  return df
+
+
+@geom_progress
 def lnglat2shapely(df,
                    lng='lng',
                    lat='lat',
                    geometry='geometry',
                    delete=True,
                    epsg_code: int = 4326) -> gpd.GeoDataFrame:
-  from pandas.errors import SettingWithCopyWarning
-  warnings.filterwarnings('ignore', category=SettingWithCopyWarning)
   df = df.copy()
   df[geometry] = df.progress_apply(
-      lambda d: Point((d[lng], d[lat]))
+      lambda d: Point(d[lng], d[lat])
       if not_empty(d[lng]) and not_empty(d[lat])
       else None,
       axis=1
@@ -97,21 +108,20 @@ def shapely2lnglat(df, geometry='geometry',
                    lng='lng', lat='lat',
                    within=False, delete=False):
   """
-  shapely格式提取中心点转为经纬度。
-  within: 范围的点是否再面内，默认False，直接返回中心点；
-  当为True时，不在面内的中心点将用一个在面内的点代替
+  shapely格式提取面内点转为经纬度。
+  Args:
+    within: 范围的点是否再面内
+      - False(default): 直接返回中心点；
+      - True: 返回面内的一个点
   """
 
-  def get_xy(x):
-    p = get_inner_point(x, within=within)
-    return p.centroid.x, p.centroid.y
-
   df = df.copy()
-  df[[lng, lat]] = df[[geometry]].progress_apply(
-      lambda r: get_xy(r[geometry]) if r[geometry] else (None, None),
-      result_type='expand',
-      axis=1
-  )
+  if within:
+    df[lng] = df.representative_point().x
+    df[lat] = df.representative_point().y
+  else:
+    df[lng] = df.centroid.x
+    df[lat] = df.centroid.y
   if delete:
     del df[geometry]
   return df
@@ -181,30 +191,44 @@ def shapely2central_shapely(df, geometry='geometry', within=False):
 def auto2shapely(df, geometry='geometry'):
   _geom = first_notnull_value(df[geometry])
   geom_format = infer_geom_format(_geom)
+  if geom_format == 'geojson':
+    return geojson2shapely(df, geometry=geometry)
   if geom_format == 'wkb':
     return wkb2shapely(df, geometry=geometry)
-  elif geom_format == 'wkt':
+  if geom_format == 'wkt':
     return wkt2shapely(df, geometry=geometry)
-  elif geom_format == 'shapely':
+  if geom_format == 'shapely':
     return gpd.GeoDataFrame(df, geometry=geometry)
-  else:
-    raise TypeError('未知的地理格式，支持wkb,wkt,shapely三种格式')
+  raise TypeError('未知的地理格式，支持wkb,wkt,shapely三种格式')
 
 
 def shapely2x(df, geometry_format: str, geometry='geometry'):
-  """将shapely转为指定的格式"""
+  """
+  将shapely转为指定的格式
+  Args:
+    df: 要转换的Dataframe
+    geometry_format: 支持wkb,wkt,shapely,geojson
+    geometry: geometry列的列名，默认“geometry”
+  """
+  if geometry_format == 'geojson':
+    return shapely2geojson(df, geometry=geometry)
   if geometry_format == 'wkb':
     return shapely2wkb(df, geometry=geometry)
-  elif geometry_format == 'wkt':
+  if geometry_format == 'wkt':
     return shapely2wkt(df, geometry=geometry)
-  elif geometry_format == 'shapely':
+  if geometry_format == 'shapely':
     return df
-  else:
-    raise ValueError('不支持的geometry格式')
+  raise ValueError('未知的地理格式，支持wkb,wkt,shapely三种格式')
 
 
 def auto2x(df, geometry_format: str, geometry='geometry'):
-  """将shapely转为指定的格式"""
+  """
+  将geometry转为指定格式
+  Args:
+    df: 要转换的Dataframe
+    geometry_format: 要转换为的geometry类型，支持shapely,wkb,wkt,geojson
+    geometry: geometry列的列名，默认为“geometry”
+  """
   geom = first_notnull_value(df[geometry])
   __geom_format = infer_geom_format(geom)
   if __geom_format == geometry_format:
@@ -376,7 +400,7 @@ def mark_tags_v2(
       col_list: 面数据中要关联到结果中的列，若为空则全部关联
       predicate: 关联方法，默认'intersects'
       drop_geometry: 结果是否删除geometry，默认删除
-      geometry_format: 输出的geometry格式，支持wkb,、wkt、shapely，默认wkb
+      geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
       warning_message: 是否输出警告信息
   """
   point_df = point_df.copy()
@@ -479,7 +503,7 @@ def buffer(df: pd.DataFrame, radius: Union[int, float],
     geo_type: str, 地理数据类型，可选point, line或polygon(包括multipolygon)，默认point
     geometry: str, geometry字段名，默认"geometry"
     buffer_geometry: 输出的缓冲区geometry字段名，默认"buffer_geometry"
-    geo_format: str, 输出的缓冲区geometry格式，支持"wkb","wkt","shapely"，默认"wkb"
+    geo_format: str, 输出的缓冲区geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
 
   Returns: 包含缓冲区geometry的DataFrame
 
