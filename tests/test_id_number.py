@@ -1,7 +1,7 @@
 import datetime
 
-from ricco.util.id_number import get_check_code
 from ricco.util.id_number import IDNumber
+from ricco.util.id_number import get_check_code
 
 id_t = '110000200001010000'
 id_f = '110000200001010001'
