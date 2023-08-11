@@ -6,7 +6,6 @@ from typing import Union
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.errors import ShapelyDeprecationWarning
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 from tqdm import tqdm
@@ -19,14 +18,11 @@ from .util import geojson_dumps
 from .util import geojson_loads
 from .util import get_epsg
 from .util import get_epsg_by_lng
-from .util import get_inner_point
 from .util import infer_geom_format
 from .util import wkb_dumps
 from .util import wkb_loads
 from .util import wkt_dumps
 from .util import wkt_loads
-
-warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 
 def projection(
@@ -94,11 +90,9 @@ def lnglat2shapely(df,
                    geometry='geometry',
                    delete=True,
                    epsg_code: int = 4326) -> gpd.GeoDataFrame:
-  from pandas.errors import SettingWithCopyWarning
-  warnings.filterwarnings('ignore', category=SettingWithCopyWarning)
   df = df.copy()
   df[geometry] = df.progress_apply(
-      lambda d: Point((d[lng], d[lat]))
+      lambda d: Point(d[lng], d[lat])
       if not_empty(d[lng]) and not_empty(d[lat])
       else None,
       axis=1
@@ -114,21 +108,20 @@ def shapely2lnglat(df, geometry='geometry',
                    lng='lng', lat='lat',
                    within=False, delete=False):
   """
-  shapely格式提取中心点转为经纬度。
-  within: 范围的点是否再面内，默认False，直接返回中心点；
-  当为True时，不在面内的中心点将用一个在面内的点代替
+  shapely格式提取面内点转为经纬度。
+  Args:
+    within: 范围的点是否再面内
+      - False(default): 直接返回中心点；
+      - True: 返回面内的一个点
   """
 
-  def get_xy(x):
-    p = get_inner_point(x, within=within)
-    return p.centroid.x, p.centroid.y
-
   df = df.copy()
-  df[[lng, lat]] = df[[geometry]].progress_apply(
-      lambda r: get_xy(r[geometry]) if r[geometry] else (None, None),
-      result_type='expand',
-      axis=1
-  )
+  if within:
+    df[lng] = df.representative_point().x
+    df[lat] = df.representative_point().y
+  else:
+    df[lng] = df.centroid.x
+    df[lat] = df.centroid.y
   if delete:
     del df[geometry]
   return df

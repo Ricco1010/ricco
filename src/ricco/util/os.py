@@ -16,10 +16,13 @@ def fn(filepath):
   return os.path.splitext(filepath)[0]
 
 
-def mkdir_2(path: str):
-  """新建文件夹，忽略存在的文件夹"""
-  if not os.path.isdir(path):
-    os.makedirs(path)
+def split_path(filepath, abs=False):
+  """将文件路径拆分为文件夹路径、文件名、扩展名三部分"""
+  if abs:
+    filepath = os.path.abspath(filepath)
+  basename = os.path.basename(filepath)
+  dir_path = os.path.dirname(filepath)
+  return dir_path, fn(basename), ext(basename)
 
 
 def remove_dir(filepath):
@@ -69,7 +72,7 @@ def get_file_counts(dir_path):
   return num
 
 
-def rm_scratch_file(dir_path, days):
+def rm_scratch_file(dir_path, days, rm_hidden_file=False):
   """删除指定天数前修改过的文件"""
   dirs = [
     '/bin', '/sbin', '/usr', '/etc', '/dev', '/Applications', '/Library',
@@ -84,6 +87,8 @@ def rm_scratch_file(dir_path, days):
   # 删除过期文件
   for dirpath, dirnames, filenames in os.walk(dir_path):
     for filename in filenames:
+      if not rm_hidden_file:
+        continue
       full_path = os.path.join(dirpath, filename)
       m_time = os.path.getmtime(full_path)
       m_time = datetime.datetime.fromtimestamp(m_time)

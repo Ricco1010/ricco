@@ -1,5 +1,7 @@
 import json
 import warnings
+from typing import Union
+from typing import List
 
 import geojson
 import numpy as np
@@ -7,8 +9,9 @@ import pandas as pd
 from shapely import wkb
 from shapely import wkt
 from shapely.errors import GeometryTypeError
-from shapely.errors import ShapelyDeprecationWarning
 from shapely.errors import WKBReadingError
+from shapely.geometry import GeometryCollection
+from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
@@ -16,11 +19,10 @@ from shapely.geometry import Polygon
 from shapely.geometry import shape
 from shapely.geos import WKTReadingError
 
+from ..resource.geometry import GeomTypeSet
 from ..util.util import ensure_list
 from ..util.util import is_empty
 from ..util.util import not_empty
-
-warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 
 class GeomFormat:
@@ -300,3 +302,23 @@ def distance(
   p1 = projection_lnglat(p1, epsg_from, epsg_to)
   p2 = projection_lnglat(p2, epsg_from, epsg_to)
   return Point(p1).distance(Point(p2))
+
+
+def get_geoms(geo: Union[GeomTypeSet]) -> List:
+  """
+  将geo中包含的LineString、Point、Polygon取出存放到list中
+  Args:
+    geo: geometry类型的数据
+
+  Returns:
+    List：geo中包含的LineString、Point、Polygon
+  """
+  list_geo = []
+  if geo.is_empty:
+    list_geo.append(geo)
+  elif hasattr(geo, 'geoms'):
+    for g in geo.geoms:
+      list_geo.extend(get_geoms(g))
+  else:
+    list_geo.append(geo)
+  return list_geo

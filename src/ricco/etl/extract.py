@@ -100,6 +100,8 @@ def rdf(
       df = gpd.GeoDataFrame.from_file(file_path)
     except UnicodeEncodeError:
       df = gpd.GeoDataFrame.from_file(file_path, encoding='GBK')
+  elif ex in ('.kml', '.ovkml'):
+    df = read_kml(file_path)
   else:
     raise Exception('未知文件格式')
   if info:
@@ -153,3 +155,78 @@ def read_parquet_by_dir(dir_path):
     if ext(filename) == '.parquet':
       df = pd.concat([df, rdf(os.path.join(dir_path, filename))])
   return df
+
+
+def kml_df_create_level(gdf_dict) -> dict:
+  """
+  读取 dict {level: gpd.GeoDataFrame} 字典, 并根据[name]列包含关系提取
+  分辨文件夹层级
+  Args:
+    gdf_dict: {dict} {level: gpd.GeoDataFrame} key为文件夹名称, value为对应数据
+  Returns: dict: 文件夹层级字典
+      example:
+        {'板块名称': 0,
+        'T顶豪': 1,
+        'TOP1城区顶级': 2,
+        'O远郊': 1,
+        'O1远郊品质': 2,
+        'O2远郊安居': 2}
+  """
+  level_dict = {}
+  for i in gdf_dict.keys():
+    level_dict[i] = 0
+  for k in range(1, len(gdf_dict.keys())):
+    for j in list(gdf_dict.keys())[k:]:
+      sample = list(gdf_dict.keys())[k - 1]
+      if set(gdf_dict[j]['name']) <= set(gdf_dict[sample]['name']):
+        level_dict[j] = level_dict[sample] + 1
+  return level_dict
+
+
+def get_kml_df_with_level(gdf_dict) -> gpd.GeoDataFrame:
+  """
+  从中gdf_dict读取数据以及文件夹名称,并构造文件夹层级,按照指定层级合并所
+  有数据,并打上层级标签
+  Args:
+    gdf_dict{dict}:{level: gpd.GeoDataFrame} key为文件夹名称, value为对应数据
+  """
+  level_dict = kml_df_create_level(gdf_dict)
+  level_dict_new = {}
+  for k, v in level_dict.items():
+    columns_name = f'level_{v}'
+    if columns_name not in level_dict_new.keys():
+      level_dict_new[columns_name] = []
+    gdf_dict[k][columns_name] = k
+    level_dict_new[columns_name].append(gdf_dict[k])
+  data_all = gpd.GeoDataFrame(columns=['name', 'geometry'])
+  for v in level_dict_new.values():
+    level_df = pd.concat(v)
+    data_all = data_all.merge(level_df, on=['name', 'geometry'], how='outer')
+  data_all['name'] = data_all['name'].replace('-', None)
+  return data_all
+
+
+def read_kml(file_path, keep_level=True) -> gpd.GeoDataFrame:
+  """
+  读取kml类文件,将其转换成DataFrame, 根据separate_folders选择是否拆分,
+  输出仅保留[name, geometry]字段,暂时只支持polygon和multipolygon数据
+  Args:
+    file_path{str}: kml or ovkml文件路径
+    keep_level(bool): 是否保留文件夹层级标签
+  """
+  import kml2geojson as k2g
+  features = k2g.convert(file_path, separate_folders=keep_level)
+  gdf_dict = {}
+  if keep_level:
+    for i in range(len(features)):
+      gdf = gpd.GeoDataFrame.from_features(features[i]['features'])
+      level = features[i]['name']
+      if 'name' not in gdf.columns:
+        gdf['name'] = '-'
+      gdf = gdf[['name', 'geometry']]
+      gdf_dict[level] = gdf
+    data_all = get_kml_df_with_level(gdf_dict)
+  else:
+    data_all = gpd.GeoDataFrame.from_features(features[0]['features'])
+    data_all = data_all[['name', 'geometry']]
+  return data_all
