@@ -52,7 +52,7 @@ class PhoneNumber:
   def home(self):
     # TODO(wangyukang): 补充手机号归属地
     warnings.warn('方法待补充')
-    return None
+    return
 
   @classmethod
   def random(cls):

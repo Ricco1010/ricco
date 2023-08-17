@@ -1,4 +1,5 @@
 import logging
+import warnings
 
 import geopandas as gpd
 import pandas as pd
@@ -6,14 +7,12 @@ from pandas.errors import SettingWithCopyWarning
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
-
-from ricco.etl.transformer import update_df
-from ricco.util.assertion import assert_not_null
 from shapely.validation import make_valid
 
-from ricco.geometry.util import get_geoms
+from ..etl.transformer import update_df
+from ..util.assertion import assert_not_null
+from .util import get_geoms
 
-import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=SettingWithCopyWarning)
 warnings.filterwarnings('ignore', category=RuntimeWarning)
@@ -26,7 +25,8 @@ _desc = '''
 '''
 
 
-def overlap_check(gdf: gpd.GeoDataFrame, geo_col='geometry') -> gpd.GeoDataFrame:
+def overlap_check(gdf: gpd.GeoDataFrame,
+                  geo_col='geometry') -> gpd.GeoDataFrame:
   """
   面数据重叠检查：
   遍历待检查的geoDataFrame, 两两之间检查是否重叠, 并提取重合部分
@@ -117,7 +117,8 @@ def fix_contains(gdf: gpd.GeoDataFrame,
   contains_res['is_contains'] = contains_res.apply(is_contain,
                                                    args=(geo_col,),
                                                    axis=1)
-  contains_res = contains_res[['overlap_index', 'index', 'is_contains', geo_col]]
+  contains_res = contains_res[
+    ['overlap_index', 'index', 'is_contains', geo_col]]
   contains_geo = contains_res[contains_res['is_contains']]
   contains_num = len(contains_geo)
   if not contains_num:
@@ -137,7 +138,8 @@ def fix_contains(gdf: gpd.GeoDataFrame,
               overwrite=True)
   else:
     contains_res.loc[contains_res['is_contains'], geo_col] = Polygon()
-  contains_res = contains_res.groupby('index').agg({geo_col: lambda df: unary_union(df.values)})
+  contains_res = contains_res.groupby('index').agg(
+      {geo_col: lambda df: unary_union(df.values)})
   res = gdf.drop(geo_col, axis=1).join(contains_res, how='left')
   return contains_num, gpd.GeoDataFrame(res, crs=4326, geometry=geo_col)
 
@@ -155,7 +157,7 @@ def fix_overlap(gdf: gpd.GeoDataFrame,
     fill_intersects: 是否填满相交的区域，如果为True的话，两个面相交的区域会随机分配到其中一个面内
     keep_contains: fill_intersects为True时才有效，即是否保留被包含的面
   Returns:
-    object: 
+    object:
 
   """
   if not fill_intersects:
@@ -179,7 +181,7 @@ def fix_overlap(gdf: gpd.GeoDataFrame,
       .reset_index(names=['index', 'overlap_index'])
     )
     df['index'] = df['index'].astype('int')
-    df = gpd.GeoDataFrame(df, geometry=geo_col, crs=4326,)
+    df = gpd.GeoDataFrame(df, geometry=geo_col, crs=4326, )
     intersects = overlap_check(df, geo_col)
     if intersects.empty:
       return gdf_fix_contain
@@ -204,7 +206,8 @@ def fix_overlap(gdf: gpd.GeoDataFrame,
         else r[geo_col],
         axis=1)
 
-    res = intersects.groupby('index').agg({geo_col: lambda df: unary_union(df.values)})
+    res = intersects.groupby('index').agg(
+        {geo_col: lambda df: unary_union(df.values)})
     gdf_clear = gdf.drop(geo_col, axis=1).join(res, how='left')
     return gpd.GeoDataFrame(gdf_clear, geometry=geo_col, crs=4326)
 

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from ..resource.patterns import Pattern
-from .util import all_year_old
+from .util import physical_age
 from .util import random_date
 
 
@@ -73,8 +73,8 @@ class IDNumber:
 
   @property
   def age(self) -> int:
-    """年龄"""
-    return all_year_old(self.birthdate)
+    """年龄(周岁)"""
+    return physical_age(self.birthdate)
 
   @property
   def gender(self) -> str:

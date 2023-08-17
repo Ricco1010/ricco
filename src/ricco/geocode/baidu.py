@@ -14,7 +14,7 @@ KEY = MapKeys.baidu
 def address_json(city: str, address: str, key=None):
   """百度地理编码接口"""
   if is_empty(address):
-    return None
+    return
   if not key:
     key = KEY
   url = f'{MapUrls.baidu}?city={city}&address={address}&output=json&ak={key}&ret_coordtype=gcj02ll'
@@ -22,13 +22,13 @@ def address_json(city: str, address: str, key=None):
   error_baidu(js)
   if js['status'] == 0:
     return js['result']
-  return None
+  return
 
 
 def place_json(city: str, keywords: str, key=None):
   """百度地点检索接口"""
   if is_empty(keywords):
-    return None
+    return
   if not key:
     key = KEY
   url = f'{MapUrls.baidu_poi}?query={keywords}&region={city}&city_limit=true&output=json&ak={key}&ret_coordtype=gcj02ll'
@@ -36,7 +36,7 @@ def place_json(city: str, keywords: str, key=None):
   error_baidu(js)
   if js['status'] == 0 and len(js['results']) >= 1:
     return js['results'][0]
-  return None
+  return
 
 
 def get_baidu(*,
@@ -48,7 +48,7 @@ def get_baidu(*,
               key=None):
   """脉策geocode服务"""
   if is_empty(address):
-    return None
+    return
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
   req = requests.get(url)
   if req.status_code == 200:
@@ -61,7 +61,7 @@ def get_baidu(*,
     else:
       raise ValueError('source参数错误')
   else:
-    return None
+    return
 
 
 def get_address_baidu(city: str, address: str, srs='wgs84', key=None):

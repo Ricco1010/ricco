@@ -1,8 +1,8 @@
 import warnings
 
-from ..util.coord_trans import gcj2bd
-from ..util.coord_trans import gcj2wgs
-from ..util.util import is_empty
+from ..geometry.coord_trans import gcj2bd
+from ..geometry.coord_trans import gcj2wgs
+from ..geometry.util import is_empty
 
 
 class MapUrls:
@@ -24,14 +24,13 @@ class MapKeys:
 
 
 def gcj2xx(lnglat, srs):
+  assert srs in ('wgs84', 'bd09', 'gcj02'), '可选参数为bd09,wgs84,gcj02'
   if srs == 'wgs84':
     return gcj2wgs(float(lnglat[1]), float(lnglat[0]))
   elif srs == 'bd09':
     return gcj2bd(float(lnglat[1]), float(lnglat[0]))
-  elif srs == 'gcj02':
-    return float(lnglat[1]), float(lnglat[0])
   else:
-    raise ValueError('参数输入错误，可选参数为bd09,wgs84,gcj02')
+    return float(lnglat[1]), float(lnglat[0])
 
 
 def error_baidu(js):

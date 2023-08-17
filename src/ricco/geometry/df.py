@@ -10,7 +10,7 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 from tqdm import tqdm
 
-from ..util.decorator import geom_progress
+from ..util.decorator import progress
 from ..util.util import ensure_list
 from ..util.util import first_notnull_value
 from ..util.util import not_empty
@@ -29,8 +29,15 @@ def projection(
     gdf: gpd.GeoDataFrame,
     epsg: int = None,
     city: str = None,
-    geometry='geometry'):
-  """投影变换"""
+    geometry='geometry') -> gpd.GeoDataFrame:
+  """
+  投影变换
+  Args:
+    gdf: 输入的GeomDataFrame格式的数据
+    epsg: epsg code, 第一优先级
+    city: 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取
+    geometry: geometry列名
+  """
   if not epsg:
     epsg = get_epsg(city) if city else get_epsg_by_lng(
         gdf[geometry].centroid.x.tolist()
@@ -38,52 +45,55 @@ def projection(
   return gdf.to_crs(epsg=epsg)
 
 
-@geom_progress
-def wkb2shapely(df, geometry='geometry',
+@progress
+def wkb2shapely(df,
+                geometry='geometry',
                 epsg_code: int = 4326) -> gpd.GeoDataFrame:
   df = df.copy()
   df[geometry] = df[geometry].progress_apply(wkb_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
 
 
-@geom_progress
+@progress
 def shapely2wkb(df, geometry='geometry'):
-  df = df.copy()
+  df = pd.DataFrame(df).copy()
   df[geometry] = df[geometry].progress_apply(wkb_dumps)
   return df
 
 
-@geom_progress
-def wkt2shapely(df, geometry='geometry',
+@progress
+def wkt2shapely(df,
+                geometry='geometry',
                 epsg_code: int = 4326) -> gpd.GeoDataFrame:
   df = df.copy()
   df[geometry] = df[geometry].progress_apply(wkt_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
 
 
-@geom_progress
+@progress
 def shapely2wkt(df, geometry='geometry'):
-  df = df.copy()
+  df = pd.DataFrame(df).copy()
   df[geometry] = df[geometry].progress_apply(wkt_dumps)
   return df
 
 
-@geom_progress
-def geojson2shapely(df, geometry='geometry',
+@progress
+def geojson2shapely(df,
+                    geometry='geometry',
                     epsg_code: int = 4326) -> gpd.GeoDataFrame:
   df = df.copy()
   df[geometry] = df[geometry].progress_apply(geojson_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
 
 
-@geom_progress
+@progress
 def shapely2geojson(df, geometry='geometry'):
-  df = df.copy()
+  df = pd.DataFrame(df).copy()
   df[geometry] = df[geometry].progress_apply(geojson_dumps)
   return df
 
 
-@geom_progress
+@progress
 def lnglat2shapely(df,
                    lng='lng',
                    lat='lat',
@@ -103,10 +113,12 @@ def lnglat2shapely(df,
   return df
 
 
-@geom_progress
-def shapely2lnglat(df, geometry='geometry',
-                   lng='lng', lat='lat',
-                   within=False, delete=False):
+def shapely2lnglat(df,
+                   geometry='geometry',
+                   lng='lng',
+                   lat='lat',
+                   within=False,
+                   delete=False):
   """
   shapely格式提取面内点转为经纬度。
   Args:
@@ -184,13 +196,15 @@ def wkt2wkb(df, geometry='geometry', epsg_code: int = 4326):
 
 
 def shapely2central_shapely(df, geometry='geometry', within=False):
+  """获取中心点shapely格式"""
   df = shapely2lnglat(df, geometry=geometry, within=within)
   return lnglat2shapely(df, geometry=geometry, delete=True)
 
 
-def auto2shapely(df, geometry='geometry'):
-  _geom = first_notnull_value(df[geometry])
-  geom_format = infer_geom_format(_geom)
+def auto2shapely(df, geometry='geometry') -> gpd.GeoDataFrame:
+  """自动识别地理格式并转换为shapely格式"""
+  geom_format = infer_geom_format(df[geometry])
+  assert geom_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
   if geom_format == 'geojson':
     return geojson2shapely(df, geometry=geometry)
   if geom_format == 'wkb':
@@ -199,17 +213,20 @@ def auto2shapely(df, geometry='geometry'):
     return wkt2shapely(df, geometry=geometry)
   if geom_format == 'shapely':
     return gpd.GeoDataFrame(df, geometry=geometry)
-  raise TypeError('未知的地理格式，支持wkb,wkt,shapely三种格式')
 
 
-def shapely2x(df, geometry_format: str, geometry='geometry'):
+def shapely2x(df: (gpd.GeoDataFrame, pd.DataFrame),
+              geometry_format: str,
+              geometry='geometry'):
   """
   将shapely转为指定的格式
   Args:
-    df: 要转换的Dataframe
+    df: 要转换的GeoDataFrame
     geometry_format: 支持wkb,wkt,shapely,geojson
     geometry: geometry列的列名，默认“geometry”
   """
+  assert geometry_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
+
   if geometry_format == 'geojson':
     return shapely2geojson(df, geometry=geometry)
   if geometry_format == 'wkb':
@@ -217,8 +234,7 @@ def shapely2x(df, geometry_format: str, geometry='geometry'):
   if geometry_format == 'wkt':
     return shapely2wkt(df, geometry=geometry)
   if geometry_format == 'shapely':
-    return df
-  raise ValueError('未知的地理格式，支持wkb,wkt,shapely三种格式')
+    return gpd.GeoDataFrame(df, geometry=geometry)
 
 
 def auto2x(df, geometry_format: str, geometry='geometry'):
@@ -229,8 +245,7 @@ def auto2x(df, geometry_format: str, geometry='geometry'):
     geometry_format: 要转换为的geometry类型，支持shapely,wkb,wkt,geojson
     geometry: geometry列的列名，默认为“geometry”
   """
-  geom = first_notnull_value(df[geometry])
-  __geom_format = infer_geom_format(geom)
+  __geom_format = infer_geom_format(df[geometry])
   if __geom_format == geometry_format:
     return df
   df = auto2shapely(df, geometry=geometry)
@@ -247,7 +262,7 @@ def distance_min(geometry, gdf: gpd.GeoDataFrame) -> float:
   return gdf.distance(geometry).min()
 
 
-@geom_progress
+@progress
 def distance_gdf(df: gpd.GeoDataFrame, df_target: gpd.GeoDataFrame, c_dst: str,
                  left_geometry='geometry'):
   """计算一个数据集中的每个元素到另一个数据集之间的最短距离"""
@@ -356,7 +371,8 @@ def _ensure_geometry(_df,
                      ensure_point=False,
                      warning_message=False,
                      geometry='geometry',
-                     lng='lng', lat='lat'):
+                     lng='lng',
+                     lat='lat'):
   """转换并仅保留geometry列"""
   if geometry in _df:
     _df = auto2shapely(_df[[geometry]], geometry=geometry)[[geometry]]
@@ -364,24 +380,26 @@ def _ensure_geometry(_df,
       geom = first_notnull_value(_df[geometry])
       if geom.geom_type not in ['point', 'Point']:
         if warning_message:
-          warnings.warn('非点数据，将自动提取中心点')
+          warnings.warn('非点数据，提取面内点')
         _df = shapely2central_shapely(_df, within=True, geometry=geometry)
     return _df
-  elif lng in _df and lat in _df:
+
+  if lng in _df and lat in _df:
     return lnglat2shapely(
         _df[[lng, lat]],
         lng=lng, lat=lat,
         geometry=geometry,
         delete=False,
     )[[geometry]]
-  else:
-    raise KeyError(f'文件中必须有"lng"+"lat"列或"{geometry}"列')
+
+  raise KeyError(f'文件中必须有["lng", "lat"]列或"{geometry}"列')
 
 
 def mark_tags_v2(
     point_df: pd.DataFrame,
     polygon_df: pd.DataFrame,
     col_list: list = None,
+    *,
     predicate='intersects',
     drop_geometry=False,
     geometry_format='wkb',
@@ -487,7 +505,8 @@ def get_area(
   return df.join(df_left[[c_dst]], how='left')
 
 
-def buffer(df: pd.DataFrame, radius: Union[int, float],
+def buffer(df: pd.DataFrame,
+           radius: Union[int, float],
            city: str = None,
            geo_type: str = 'point',
            geometry: str = 'geometry',
@@ -539,11 +558,12 @@ def buffer(df: pd.DataFrame, radius: Union[int, float],
       df_buffer[[buffer_geometry]], geometry=buffer_geometry
   )
   df_buffer = projection(df_buffer, epsg=4326, geometry=buffer_geometry)
-  df_buffer = shapely2x(df_buffer, geo_format)
-  return df.join(df_buffer, how='left')
+  df = df.join(df_buffer, how='left')
+  return shapely2x(df, geo_format, geometry=buffer_geometry)
 
 
-def spatial_agg(point_df: pd.DataFrame, polygon_df: pd.DataFrame,
+def spatial_agg(point_df: pd.DataFrame,
+                polygon_df: pd.DataFrame,
                 by: Union[str, List[str]],
                 agg: dict,
                 polygon_geometry: str = 'geometry') -> pd.DataFrame:

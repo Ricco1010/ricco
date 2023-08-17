@@ -1,6 +1,6 @@
 import json
+import re
 import warnings
-from typing import Union
 from typing import List
 
 import geojson
@@ -10,18 +10,18 @@ from shapely import wkb
 from shapely import wkt
 from shapely.errors import GeometryTypeError
 from shapely.errors import WKBReadingError
-from shapely.geometry import GeometryCollection
-from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 from shapely.geometry import shape
+from shapely.geometry.base import BaseGeometry
 from shapely.geos import WKTReadingError
 
-from ..resource.geometry import GeomTypeSet
 from ..util.util import ensure_list
+from ..util.util import first_notnull_value
 from ..util.util import is_empty
+from ..util.util import is_hex
 from ..util.util import not_empty
 
 
@@ -57,6 +57,7 @@ def get_epsg_by_lng(lng):
 
 
 def get_lng_by_city(city: str):
+  """获取城市所在的经度"""
   from ..resource.epsg_code import CITY_POINT
   if city in CITY_POINT.keys():
     return CITY_POINT[city]['lng']
@@ -65,8 +66,8 @@ def get_lng_by_city(city: str):
     if city in CITY_POINT.keys():
       return CITY_POINT[city]['lng']
     else:
-      warnings.warn(f'请补充{city}的epsg信息，默认返回经度120')
-      return 120
+      warnings.warn(f'请补充{city}的epsg信息，默认返回经度120.0')
+      return 120.0
 
 
 def get_epsg(city: str):
@@ -75,102 +76,107 @@ def get_epsg(city: str):
 
 
 def projection_lnglat(lnglat, crs_from, crs_to):
+  """对经纬度进行投影"""
   from pyproj import Transformer
   transformer = Transformer.from_crs(crs_from, crs_to)
   return transformer.transform(xx=lnglat[1], yy=lnglat[0])
 
 
-def wkb_loads(x, hex=True):
-  warnings.filterwarnings('ignore',
-                          'Geometry column does not contain geometry.',
-                          UserWarning)
-
+def wkb_loads(x: str, hex=True):
   if is_empty(x):
     return
-
+  if not isinstance(x, str):
+    warnings.warn(f'Type error:【{x}】')
+    return
   try:
     return wkb.loads(x, hex=hex)
   except (AttributeError, WKBReadingError) as e:
     warnings.warn(f'{e}, 【{x}】')
-    return
 
 
-def wkb_dumps(x, hex=True, srid=4326) -> (str, None):
+def wkb_dumps(x: BaseGeometry, hex=True, srid=4326) -> (str, None):
   if is_empty(x):
     return
-
+  if not isinstance(x, BaseGeometry):
+    warnings.warn(f'TypeError:【{x}】')
+    return
   try:
     return wkb.dumps(x, hex=hex, srid=srid)
   except AttributeError as e:
     warnings.warn(f'{e}, 【{x}】')
-    return
 
 
-def wkt_loads(x):
+def wkt_loads(x: str):
   if is_empty(x):
+    return
+  if not isinstance(x, str):
+    warnings.warn(f'Type error:【{x}】')
     return
   try:
     return wkt.loads(x)
   except (AttributeError, WKTReadingError, TypeError) as e:
     warnings.warn(f'{e}, 【{x}】')
-    return
 
 
-def wkt_dumps(x) -> (str, None):
+def wkt_dumps(x: BaseGeometry) -> (str, None):
   if is_empty(x):
+    return
+  if not isinstance(x, BaseGeometry):
+    warnings.warn(f'TypeError:【{x}】')
     return
   try:
     return wkt.dumps(x)
   except AttributeError as e:
     warnings.warn(f'{e}, 【{x}】')
-    return
 
 
-def geojson_loads(x):
+def geojson_loads(x: BaseGeometry):
   """geojson文本形式转为shapely格式"""
   from simplejson.errors import JSONDecodeError
 
   if is_empty(x):
     return
+  if not isinstance(x, (str, dict)):
+    warnings.warn(f'Type error:【{x}】')
+    return
   try:
-    geom = shape(geojson.loads(x))
+    geom = shape(geojson.loads(x)) if isinstance(x, str) else shape(x)
     if geom.is_empty:
       return
     return geom
-  except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError) as e:
+  except (JSONDecodeError, AttributeError, GeometryTypeError) as e:
     warnings.warn(f'{e}, 【{x}】')
-    return
 
 
 def geojson_dumps(x) -> (str, None):
   """shapely转为geojson文本格式"""
   if is_empty(x):
     return
+  if not isinstance(x, BaseGeometry):
+    warnings.warn(f'TypeError:【{x}】')
+    return
   try:
     geom = geojson.Feature(geometry=x)
     return json.dumps(geom.geometry)
   except TypeError as e:
     warnings.warn(f'{e}, 【{x}】')
-    return
 
 
 def is_shapely(x, na=False) -> bool:
   """判断是否为shapely格式"""
-  from ..resource.geometry import GeomTypeSet
-  if pd.isna(x):
+  if is_empty(x):
     return na
-  if type(x) in GeomTypeSet:
+  if isinstance(x, BaseGeometry):
     return True
-  else:
-    return False
+  return False
 
 
 def is_wkb(x, na=False) -> bool:
   """判断是否为wkb格式"""
-  if not isinstance(x, str):
-    return False
-  if pd.isna(x):
+  if is_empty(x):
     return na
+  if not isinstance(x, str) or not is_hex(x):
+    return False
   try:
     wkb.loads(x, hex=True)
     return True
@@ -180,10 +186,10 @@ def is_wkb(x, na=False) -> bool:
 
 def is_wkt(x, na=False) -> bool:
   """判断是否为wkt格式"""
-  if not isinstance(x, str):
-    return False
-  if pd.isna(x):
+  if is_empty(x):
     return na
+  if not isinstance(x, str) or not re.match('^[MPL]', x.lstrip(' (')):
+    return False
   try:
     wkt.loads(x)
     return True
@@ -195,19 +201,20 @@ def is_geojson(x, na=False) -> bool:
   """判断是否为geojson格式"""
   from simplejson.errors import JSONDecodeError
 
+  if is_empty(x):
+    return na
   if not isinstance(x, (str, dict)):
     return False
-  if pd.isna(x):
-    return na
   try:
-    if shape(geojson.loads(x)).is_empty:
+    geom = shape(geojson.loads(x)) if isinstance(x, str) else shape(x)
+    if geom.is_empty:
       return False
     return True
   except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError):
     return False
 
 
-def infer_geom_format(x):
+def _infer_geom_format(x):
   """推断geometry格式"""
   if is_shapely(x):
     return GeomFormat.shapely
@@ -218,6 +225,13 @@ def infer_geom_format(x):
   if is_geojson(x):
     return GeomFormat.geojson
   return GeomFormat.unknown
+
+
+def infer_geom_format(series: (str, list, tuple, pd.Series)):
+  """推断geometry格式"""
+  if isinstance(series, pd.Series):
+    series = series.unique().tolist()
+  return _infer_geom_format(first_notnull_value(series))
 
 
 def ensure_multi_geom(geom):
@@ -304,7 +318,7 @@ def distance(
   return Point(p1).distance(Point(p2))
 
 
-def get_geoms(geo: Union[GeomTypeSet]) -> List:
+def get_geoms(geo: BaseGeometry) -> List:
   """
   将geo中包含的LineString、Point、Polygon取出存放到list中
   Args:

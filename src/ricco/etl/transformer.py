@@ -176,15 +176,14 @@ def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
       d = int(x.day)
       return datetime(y, m, d)
     else:
-      return None
+      return
 
+  assert mode in ('first', 'last'), "可选参数为first or last"
   series = pd.to_datetime(series)
   if mode == 'first':
     series = series.apply(lambda x: x.replace(day=1))
-  elif mode == 'last':
-    series = pd.to_datetime(series, format="%Y%m") + MonthEnd(1)
   else:
-    raise ValueError(f"{mode}不是正确的参数，请使用 'first' or 'last'")
+    series = pd.to_datetime(series, format="%Y%m") + MonthEnd(1)
   return series.apply(trans)
 
 

@@ -115,7 +115,7 @@ def extra_process(string):
   }
 
   if pd.isna(string) or string == '':
-    return None
+    return
 
   # 类似标准格式的，标准化后直接返回
   if is_std_hao(string):
@@ -178,7 +178,7 @@ def extract_extra(res):
 def pre_process(string: str):
   """对字符串进行预处理，统一部分字符，删除空格及特殊字符"""
   if pd.isna(string):
-    return None
+    return
 
   string = str(string)
   for s in ['—', '－', '~', '～']:
@@ -195,7 +195,7 @@ def pre_process(string: str):
       str_d = f'{s1}号{s2}'
       string = string.replace(str_o, str_d)
   if string == '':
-    return None
+    return
   return string
 
 

@@ -20,7 +20,9 @@ from ricco.util.util import to_bool
 from ricco.util.util import to_float
 from ricco.util.util import to_int_str
 from ricco.util.util import union_list
+from ricco.util.util import union_list_v2
 from ricco.util.util import union_str
+from ricco.util.util import union_str_v2
 
 
 def test_relstrip():
@@ -98,22 +100,28 @@ def test_eval():
 
 def test_union_str():
   assert union_str(['abc', 'def']) == 'abcdef'
+  assert union_str_v2('abc', 'def') == 'abcdef'
   assert union_str(['abc', 'def'], sep='|') == 'abc|def'
+  assert union_str_v2('abc', 'def', sep='|') == 'abc|def'
   assert union_str(['abc', None]) == 'abc'
+  assert union_str_v2('abc', None) == 'abc'
   assert union_str([]) == None
 
 
 def test_union_list():
   assert union_list([]) == []
   assert union_list([[1, 2, 3]]) == [1, 2, 3]
+  assert union_list_v2([1, 2, 3]) == [1, 2, 3]
   assert union_list([[1, 2, 3], [4, 5]]) == [1, 2, 3, 4, 5]
+  assert union_list_v2([1, 2, 3], [4, 5]) == [1, 2, 3, 4, 5]
+  assert union_list_v2([1, 2, 3], 4, 5) == [1, 2, 3, 4, 5]
 
 
 def test_sort_by_list():
   src_list = [1, 2, 3, 4, 5]
   by_list = [4, 5, 3, 6]
-  assert sort_by_list(src_list, by_list, mode='s') == [4, 5, 3, 1, 2]
-  assert sort_by_list(src_list, by_list, mode='f') == [4, 5, 3]
+  assert sort_by_list(src_list, by_list, filter=False) == [4, 5, 3, 1, 2]
+  assert sort_by_list(src_list, by_list, filter=True) == [4, 5, 3]
 
 
 def test_fix_empty_str():

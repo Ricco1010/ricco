@@ -105,22 +105,29 @@ def rm_scratch_file(dir_path, days, rm_hidden_file=False):
         logging.warning(f'已删除空文件夹：{dir_full_path}')
 
 
-def dir_iter(root, exts: (list, str) = None, abspath=False):
+def dir_iter(root,
+             exts: (list, str) = None,
+             abspath=False,
+             recursive=False):
   """
   文件夹中的文件路径生成器，用于遍历文件夹中的文件
   Args:
     root: 文件目录
     exts: 文件扩展名，不指定则返回所有文件
     abspath: 是否返回绝对路径
+    recursive: 是否循环遍历更深层级的文件，默认只返回当前目录下的文件
   """
+  if exts:
+    exts = ensure_list(exts)
 
-  for filename in os.listdir(root):
-    filepath = os.path.join(root, filename)
-    if abspath:
-      filepath = os.path.abspath(filepath)
-    if exts:
-      exts = ensure_list(exts)
-      if ext(filepath) in exts:
-        yield filepath
-    else:
+  for dirpath, _, filenames in os.walk(root):
+    for _name in filenames:
+      filepath = os.path.join(dirpath, _name)
+      filepath = os.path.abspath(filepath) if abspath else filepath
+      # 不符合扩展名要求忽略
+      if exts and ext(_name) not in exts:
+        continue
+      # 仅需要当前目录时，dirpath和root不相同的过滤掉
+      if not recursive and dirpath != root:
+        continue
       yield filepath

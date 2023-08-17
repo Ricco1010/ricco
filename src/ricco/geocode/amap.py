@@ -16,7 +16,7 @@ KEY = MapKeys.amap
 def address_json(city: str, address: str, key=None):
   """高德地理编码接口"""
   if is_empty(address):
-    return None
+    return
   if not key:
     key = KEY
   url = f'{MapUrls.amap}?address={address}&city={city}&key={key}'
@@ -24,13 +24,13 @@ def address_json(city: str, address: str, key=None):
   error_amap(js)
   if js['status'] == '1' and int(js['count']) >= 1:
     return js['geocodes'][0]
-  return None
+  return
 
 
 def place_json(city: str, keywords: str, key=None):
   """高德地点检索接口"""
   if is_empty(keywords):
-    return None
+    return
   if not key:
     key = KEY
   url = f'{MapUrls.amap_poi}?keywords={keywords}&city={city}&key={key}'
@@ -38,7 +38,7 @@ def place_json(city: str, keywords: str, key=None):
   error_amap(js)
   if js['status'] == '1' and int(js['count']) >= 1:
     return js['pois'][0]
-  return None
+  return
 
 
 def get_amap(*,
@@ -50,7 +50,7 @@ def get_amap(*,
              key=None):
   """脉策geocode服务"""
   if is_empty(address):
-    return None
+    return
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
   req = requests.get(url)
   if req.status_code == 200:
@@ -58,7 +58,7 @@ def get_amap(*,
       return req.json()['result'][0]['extra']
     except Exception as e:
       logging.warning(f'{e}，{req}')
-      return None
+      return
   elif req.status_code in (400, 403):
     if source == 'amap':
       return address_json(city=city, address=address, key=key)
@@ -67,7 +67,7 @@ def get_amap(*,
     else:
       raise ValueError('source参数错误')
   else:
-    return None
+    return
 
 
 def get_address_amap(city: str, address: str, srs: str = 'wgs84', key=None):
