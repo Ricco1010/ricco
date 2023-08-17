@@ -1,10 +1,10 @@
 import csv
-import os
 import warnings
 
 import geopandas as gpd
 import pandas as pd
 
+from ..util.os import dir_iter
 from ..util.os import ext
 
 
@@ -38,6 +38,7 @@ def rdxls(
   :param errors: 当没有对应sheet时，raise: 抛出错误, coerce: 返回空的dataframe
   :return:
   """
+  assert errors in ('coerce', 'raise'), '可选参数为coerce和raise'
   if sheet_name == 0:
     if sheet_contains is not None:
       df = pd.read_excel(filename, sheet_name=None, dtype=dtype)
@@ -54,10 +55,8 @@ def rdxls(
         if errors == 'coerce':
           warnings.warn(f'没有包含{sheet_contains}的sheet，请检查')
           return pd.DataFrame()
-        elif errors == 'raise':
-          raise ValueError(f'没有包含{sheet_contains}的sheet，请检查')
         else:
-          raise KeyError("参数'error'错误, 可选参数为coerce和raise")
+          raise ValueError(f'没有包含{sheet_contains}的sheet，请检查')
   else:
     print(f"sheet:  <'{sheet_name}'>")
   return pd.read_excel(filename, sheet_name=sheet_name, dtype=dtype)
@@ -68,12 +67,19 @@ def rdf(
     *,
     sheet_name=0,
     sheet_contains: str = None,
-    encoding='utf-8-sig',
-    info=False,
+    encoding: str = 'utf-8-sig',
+    info: bool = False,
     dtype=None,
 ) -> pd.DataFrame:
   """
-  常用文件读取函数，支持.csv/.xlsx/.shp/.parquet/.pickle/.feather'
+  常用文件读取函数，支持.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml'
+  Args:
+    file_path: 文件路径
+    sheet_name: 数据所在sheet的名称，仅对.xlsx/.xls生效
+    sheet_contains: 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效
+    encoding: 编码
+    info: 是否打印数据集情况（shape & columns）
+    dtype: 指定读取列的类型
   """
   max_grid()
   ex = ext(file_path)
@@ -102,6 +108,8 @@ def rdf(
       df = gpd.GeoDataFrame.from_file(file_path, encoding='GBK')
   elif ex in ('.kml', '.ovkml'):
     df = read_kml(file_path)
+  elif ex == '.json':
+    df = read_line_json(file_path, encoding=encoding)
   else:
     raise Exception('未知文件格式')
   if info:
@@ -127,34 +135,12 @@ def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
   return pd.DataFrame(records)
 
 
-def bigdata2df(filename: str,
-               chunksize: int = 10000,
-               code: str = 'utf-8') -> pd.DataFrame:
-  reader = pd.read_table(filename,
-                         encoding=code,
-                         sep=',',
-                         skip_blank_lines=True,
-                         iterator=True)
-  loop = True
-  chunks = []
-  while loop:
-    try:
-      chunk = reader.get_chunk(chunksize)
-      chunk.dropna(axis=0, inplace=True)
-      chunks.append(chunk)
-    except StopIteration:
-      loop = False
-      print('Iteration is stopped.')
-  df = pd.concat(chunks, ignore_index=True, axis=1)
-  return df
-
-
-def read_parquet_by_dir(dir_path):
-  df = pd.DataFrame()
-  for filename in os.listdir(dir_path):
-    if ext(filename) == '.parquet':
-      df = pd.concat([df, rdf(os.path.join(dir_path, filename))])
-  return df
+def read_parquet_by_dir(dir_path, ignore_index=True):
+  """从文件夹中读取所有的parquet文件并拼接成一个DataFrame"""
+  dfs = []
+  for filename in dir_iter(dir_path, exts=['.parquet']):
+    dfs.append(rdf(filename))
+  return pd.concat(dfs, ignore_index=ignore_index)
 
 
 def kml_df_create_level(gdf_dict) -> dict:

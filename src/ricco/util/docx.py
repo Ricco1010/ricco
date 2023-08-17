@@ -1,6 +1,7 @@
 import os
 
 import pandas as pd
+
 from .decorator import print_doc
 from .dt import DT
 
@@ -9,6 +10,7 @@ class Docx:
   """Docx"""
 
   def set_default_style(self):
+    """格式初始化"""
     from docx import Document
     from docx.oxml.ns import qn
     from docx.shared import Pt
@@ -63,12 +65,14 @@ class Docx:
     self.doc.add_paragraph(text)
 
   def add_paragraph_color(self, text: str, rgb: (list, tuple)):
+    """添加自定义颜色的段落"""
     from docx.shared import RGBColor
 
     p = self.doc.add_paragraph('')
     p.add_run(text).font.color.rgb = RGBColor(*rgb)
 
   def add_paragraph_red(self, text: str):
+    """添加红色字体的段落"""
     from docx.shared import RGBColor
 
     p = self.doc.add_paragraph('')
@@ -93,6 +97,7 @@ class Docx:
     print('文件保存至：', os.path.abspath(file_path))
 
   def add_hist_from_data(self, data: list, newline=False):
+    """通过数据生成并添加直方图"""
     from docx.shared import Inches
     from matplotlib import pyplot as plt
     plt.figure(figsize=(12, 4))

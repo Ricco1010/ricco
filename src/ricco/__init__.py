@@ -8,7 +8,14 @@ from .etl.transformer import expand_dict
 from .etl.transformer import table2dict
 from .geocode.geocode import geocode
 from .geocode.geocode import geocode_df
+from .geometry import coord_trans
+from .geometry import df as geom
+from .geometry.coord_trans import coord_trans_geom
+from .geometry.coord_trans import coord_trans_x2y
+from .geometry.coord_trans import coord_transformer
 from .geometry.df import auto2shapely
+from .geometry.df import auto2x
+from .geometry.df import get_area
 from .geometry.df import mark_tags_v2
 from .geometry.df import nearest_neighbor
 from .geometry.df import shapely2x
@@ -25,11 +32,18 @@ from .util import id_number
 from .util import os
 from .util import phone_number
 from .util import strings
-from .util.assertion import assert_series_unique as check_unique
+from .util.assertion import assert_columns_exists
+from .util.assertion import assert_not_empty_str
+from .util.assertion import assert_not_null
+from .util.assertion import assert_series_digit
+from .util.assertion import assert_series_unique
+from .util.assertion import assert_values_in
 from .util.os import dir_iter
 from .util.os import ext
 from .util.os import fn
+from .util.os import split_path
 from .util.strings import drop_repeat_string
+from .util.util import ensure_list
 from .util.util import extract_num
 from .util.util import is_empty
 from .util.util import list2dict
@@ -38,4 +52,6 @@ from .util.util import pinyin
 from .util.util import re_fast
 from .util.util import segment
 from .util.util import union_list
+from .util.util import union_list_v2
 from .util.util import union_str
+from .util.util import union_str_v2

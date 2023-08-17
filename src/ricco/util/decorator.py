@@ -13,15 +13,9 @@ def to_str(func):
   return wrapper
 
 
-def geom_progress(func):
-  def wrapper(*args, **kwargs):
-    tqdm.pandas(desc=func.__name__.lstrip('geom_'))
-    return func(*args, **kwargs)
-
-  return wrapper
-
-
 def progress(func):
+  """带有函数名的tqdm进度条"""
+
   def wrapper(*args, **kwargs):
     tqdm.pandas(desc=func.__name__)
     return func(*args, **kwargs)
@@ -30,6 +24,8 @@ def progress(func):
 
 
 def print_doc(func):
+  """打印docstring"""
+
   def wrapper(*args, **kwargs):
     print(func.__doc__)
     return func(*args, **kwargs)
@@ -38,6 +34,8 @@ def print_doc(func):
 
 
 def timer(func):
+  """函数运行时间统计"""
+
   def wrapper(*args, **kwargs):
     start_time = time.time()
     result = func(*args, **kwargs)

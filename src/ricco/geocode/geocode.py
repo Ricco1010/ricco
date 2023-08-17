@@ -136,6 +136,8 @@ def geocode_df(df: pd.DataFrame,
       key_baidu: 百度接口的key，公共key失效后可自行传入
       key_amap: 高德接口的key，公共key失效后可自行传入
   """
+  assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
+
   temp_city_col = uuid.uuid1()
 
   if isinstance(city, str):
@@ -160,11 +162,9 @@ def geocode_df(df: pd.DataFrame,
             srs=srs,
             key_baidu=key_baidu,
             key_amap=key_amap)
-      elif address_type == 'address':
+      else:
         rv = geocode_best_address(ct, kw, srs=srs,
                                   key_baidu=key_baidu, key_amap=key_amap)
-      else:
-        raise ValueError('参数address_type错误，可选参数为"poi"或"address"')
       df_temp.loc[
         (df_temp[temp_city_col] == ct) & (df_temp[by] == kw),
         ['lng', 'lat', 'rv', 'geocode_score', 'geocode_type']] = rv

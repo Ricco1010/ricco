@@ -10,8 +10,8 @@ from ast import literal_eval
 
 import numpy as np
 import pandas as pd
+from shapely.geometry.base import BaseGeometry
 
-from ..resource.geometry import GeomTypeSet
 from ..resource.names import FirstName
 from ..resource.names import LastName
 from ..resource.patterns import Pattern
@@ -29,18 +29,18 @@ def ensure_list(val):
 
 
 def to_json_string(string, errors='raise'):
+  """将字符串转为接送格式的字符串"""
+  assert errors in ('raise', 'coerce', 'ignore'), '参数错误'
   if not isinstance(string, (list, dict)):
     try:
       string = literal_eval(string)
     except ValueError as e:
       if errors == 'raise':
         raise ValueError(e)
-      elif errors == 'coerce':
-        return None
-      elif errors == 'ignore':
+      if errors == 'coerce':
+        return
+      if errors == 'ignore':
         return string
-      else:
-        raise ValueError('errors传参错误')
 
   return json.dumps(string)
 
@@ -53,6 +53,8 @@ def is_ID_number(string, na=False) -> bool:
   :param na: 空值返回True还是False，默认为False
   :return:
   """
+  warnings.warn('即将弃用，请使用util.id_number中的方法', DeprecationWarning)
+
   if is_empty(string):
     return na
 
@@ -67,10 +69,12 @@ def is_ID_number(string, na=False) -> bool:
 
 
 def relstrip(string, kwd):
+  """通过正则变大是删除左侧字符串"""
   return re.sub(f'^{kwd}', '', string)
 
 
 def rerstrip(string, kwd):
+  """通过正则变大是删除右侧字符串"""
   return re.sub(f'{kwd}$', '', string)
 
 
@@ -88,7 +92,7 @@ def get_shortest_element(elements: list):
 
 def and_(*conditions):
   if len(conditions) < 1:
-    raise Exception('Must there be one condition')
+    raise Exception('最少一个条件')
   res = conditions[0]
   for c in conditions[1:]:
     res = res & c
@@ -103,15 +107,16 @@ def or_(*conditions):
     else:
       cond.append(c)
   if len(cond) < 1:
-    raise Exception('Must there be one condition')
+    raise Exception('最少一个条件')
   res = cond[0]
   for c in cond[1:]:
     res = res | c
   return res
 
 
-def all_year_old(birthday: datetime.datetime,
+def physical_age(birthday: datetime.datetime,
                  deadline: datetime.datetime = None):
+  """计算周岁，默认按照当前时间点计算"""
   now = deadline if deadline else datetime.datetime.now()
   now_str = now.strftime('%m%d')
   birth_str = birthday.strftime('%m%d')
@@ -122,11 +127,11 @@ def all_year_old(birthday: datetime.datetime,
 
 
 def first_notnull_value(series):
+  """筛选第一个不为空的值"""
   for v in series:
     if not_empty(v):
       return v
   warnings.warn('所有值均为空值')
-  return None
 
 
 def pinyin(word: str) -> str:
@@ -152,12 +157,9 @@ def is_valid_uuid(uuid_to_test, version=4):
 
 def get_uuid(s):
   """针对格式错误的uuid和空白值生成新的uuid"""
-  if is_empty(s):
+  if is_empty(s) or not is_valid_uuid(s):
     return uuid.uuid4()
-  elif not is_valid_uuid(s):
-    return uuid.uuid4()
-  else:
-    return s
+  return s
 
 
 def per2float(string: str) -> float:
@@ -166,8 +168,7 @@ def per2float(string: str) -> float:
   if '%' in string:
     string = string.rstrip('%')
     return float(string) / 100
-  else:
-    return float(string)
+  return float(string)
 
 
 def extract_num(string: str,
@@ -245,8 +246,6 @@ def house_type_format(x):
       return res_num + '房'
     else:
       return '5房及以上'
-  else:
-    return None
 
 
 def segment(x,
@@ -314,7 +313,7 @@ def get_city_id_by_name(city: str):
   return city_id
 
 
-def sort_by_list(src_list, by_list, mode='sort') -> list:
+def sort_by_list(src_list, by_list, filter=False) -> list:
   """
   根据一个列表对另一个列表进行筛选或排序，
   当mode为f/filter时，对列表进行筛选并排序，取二者交集；
@@ -323,13 +322,10 @@ def sort_by_list(src_list, by_list, mode='sort') -> list:
   Args:
     src_list: 要进行排序的列表
     by_list: 参照的列表
-    mode: f/filter, s/sort
+    fliter: 是否根据参照列表筛选
   """
-  if mode not in ('f', 'filter', 's', 'sort'):
-    raise ValueError('参数错误')
-
   res = [i for i in by_list if i in src_list]
-  if mode in ('s', 'sort'):
+  if not filter:
     _res = [i for i in src_list if i not in res]
     res.extend(_res)
   return res
@@ -355,7 +351,7 @@ def is_empty(x) -> bool:
     return False if x else True
   if isinstance(x, (pd.DataFrame, pd.Series)):
     return x.empty
-  if isinstance(x, GeomTypeSet):
+  if isinstance(x, BaseGeometry):
     return x.is_empty
   return pd.isna(x)
 
@@ -365,25 +361,43 @@ def not_empty(x) -> bool:
   return not is_empty(x)
 
 
-def union_str(lis: list, sep='') -> (str, None):
+def union_str(strings: list, sep='') -> (str, None):
   """连接字符串"""
-  if is_empty(lis):
-    return None
-  lis = [i for i in lis if not_empty(i)]
-  if lis:
-    return sep.join(lis)
-  else:
-    return None
+  warnings.warn('方法即将停用，请使用union_str_v2', DeprecationWarning)
+  if is_empty(strings):
+    return
+  if strings := [i for i in strings if not_empty(i)]:
+    return sep.join(strings)
+
+
+def union_str_v2(*strings, sep='') -> str:
+  """
+  连接字符串，空白字符串会被忽略
+  Examples:
+    >>> union_str_v2('a', 'b', sep='-') # 'a-b'
+    >>> union_str_v2('a', 'b', 'c') # 'abc'
+  """
+  if strings := [i for i in strings if not_empty(i) and i != '']:
+    return sep.join(strings)
 
 
 def union_list(s) -> list:
   """合并列表"""
+  warnings.warn('方法即将停用，请使用union_list_v2', DeprecationWarning)
   if is_empty(s):
     return []
   lis = s[0]
   for i in s[1:]:
     lis.extend(i)
   return lis
+
+
+def union_list_v2(*lists) -> list:
+  """合并列表"""
+  res = ensure_list(lists[0])
+  for i in lists[1:]:
+    res.extend(ensure_list(i))
+  return res
 
 
 def eval(x: str):
@@ -445,6 +459,7 @@ def random_by_prob(mapping: dict):
 
 
 def to_int_str(x):
+  """将由数字转成的字符串转为int格式的，针对手机号等场景，如：'13088888888.0' -> '13088888888'"""
   if is_empty(x):
     return
   try:
@@ -458,7 +473,7 @@ def fix_empty_str(x: str) -> (str, None):
   if isinstance(x, str):
     x = x.strip()
     if x == '':
-      return None
+      return
   return x
 
 
@@ -525,6 +540,7 @@ def is_unique_series(df: pd.DataFrame,
 
 
 def is_digit(x):
+  """判断一个值是否能转为数值型"""
   if isinstance(x, bool):
     return False
   try:
@@ -532,3 +548,12 @@ def is_digit(x):
     return True
   except (ValueError, TypeError):
     return False
+
+
+def is_hex(string):
+  """判断一个字符串是否是十六进制"""
+  if is_empty(string):
+    return False
+  if re.match('^[0-9a-fA-F]+$', str(string)):
+    return True
+  return False

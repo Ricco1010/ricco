@@ -97,10 +97,11 @@ def assert_series_unique(df: pd.DataFrame,
     ls = df.astype(str).to_dict('records')
     ls = [','.join(list(i.values())) for i in ls]
     info = '\n-->'.join(ls)
-    raise AssertionError(f'{text}【{columns}】列中存在重复值:\n-->{info}')
+    raise AssertionError(f'{text}{columns}列中存在重复值:\n-->{info}')
 
 
 def assert_series_digit(df: pd.DataFrame, col: str):
+  """检查一列是否可以转为数值型"""
   values = df[col].unique().tolist()
   rv = [i for i in values if not is_digit(i) and not_empty(i)]
   if rv:

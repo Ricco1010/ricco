@@ -4,6 +4,10 @@ from shapely.geometry import Point
 
 from ricco.geometry.df import mark_tags_v2
 from ricco.geometry.util import get_epsg
+from ricco.geometry.util import is_geojson
+from ricco.geometry.util import is_shapely
+from ricco.geometry.util import is_wkb
+from ricco.geometry.util import is_wkt
 from ricco.geometry.util import wkb_loads
 
 
@@ -248,3 +252,25 @@ def test_mark_tags_v22():
       res[['name', 'geometry_shapely2', '板块']].rename(
           columns={'geometry_shapely2': 'geometry2'})
   )
+
+
+def test_is_xxx():
+  assert is_wkt(None) is False
+  assert is_wkb(None) is False
+  assert is_shapely(None) is False
+  assert is_geojson(None) is False
+
+  assert is_wkt(None, na=True) is True
+  assert is_wkb(None, na=True) is True
+  assert is_shapely(None, na=True) is True
+  assert is_geojson(None, na=True) is True
+
+  assert is_wkt('aaa') is False
+  assert is_wkb('aaa') is False
+  assert is_shapely('aaa') is False
+  assert is_geojson('aaa') is False
+
+  assert is_wkt('Point(1 1)') is True
+  assert is_wkb('0101000020E6100000000000000000F03F000000000000F03F') is True
+  assert is_shapely(Point(1, 1)) is True
+  assert is_geojson('{"type": "Point", "coordinates": [1.0, 1.0]}') is True

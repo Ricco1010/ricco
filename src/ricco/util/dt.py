@@ -9,14 +9,14 @@ from .decorator import to_str
 
 
 def auto2date(string, errors='raise'):
+  """自动检查格式并输出日期"""
   if string in ['', None]:
-    return None
+    return
   string = str(string)
 
   if '时' in string:
     _hour = re.findall('\d+时', string)[0]
     string = string.split(_hour)[0]
-
   if ('年' in string) & ('月' in string) & ('日' in string):
     return pd.to_datetime(string, format='%Y年%m月%d日')
   elif ('年' in string) & ('月' in string):
@@ -47,7 +47,7 @@ def excel2date(dates, date_type='str'):
   from xlrd import xldate_as_datetime
 
   if pd.isna(dates):
-    return None
+    return
 
   dates = str(dates)
   if re.match('^\d{4,5}$', dates):
@@ -69,19 +69,18 @@ def excel2date(dates, date_type='str'):
 
 
 class DT:
-  """
-  DT日期类
-  初始化支持字符串、datetime.date和datetime.datetime格式作为基准日期。不指定是，默认
-  基准日期今天。
-  当初始化为字符串时，需要输入format指定日期字符串格式。
-  参数dst_format可选。未指定时，类方法输出结果为datetime.date日期格式。指定dst_format时，
-  输出结果为符合dst_format的字符串格式。
-  """
 
   def __init__(self,
                date: (str, dt.date, dt.datetime) = None,
                format='%Y-%m-%d',
                dst_format=None):
+    """
+    DT日期类
+    Args:
+      date: 初始化支持字符串、datetime.date和datetime.datetime格式作为基准日期。不指定时，默认基准日期今天。
+      format: 当初始化为字符串时，需要输入format指定日期字符串格式。
+      dst_format: 可选。未指定时，类方法输出结果为datetime.date日期格式。指定dst_format时，输出结果为符合dst_format的字符串格式。
+    """
     if date:
       if isinstance(date, str):
         self.date = dt.datetime.strptime(date, format).date()
