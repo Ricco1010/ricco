@@ -12,10 +12,6 @@ import numpy as np
 import pandas as pd
 from shapely.geometry.base import BaseGeometry
 
-from ..resource.names import FirstName
-from ..resource.names import LastName
-from ..resource.patterns import Pattern
-
 
 def ensure_list(val):
   """将标量值和Collection类型都统一转换为LIST类型"""
@@ -43,29 +39,6 @@ def to_json_string(string, errors='raise'):
         return string
 
   return json.dumps(string)
-
-
-def is_ID_number(string, na=False) -> bool:
-  """
-  校验一个字符串是否为正确的身份证号
-
-  :param string: 要传入的字符串
-  :param na: 空值返回True还是False，默认为False
-  :return:
-  """
-  warnings.warn('即将弃用，请使用util.id_number中的方法', DeprecationWarning)
-
-  if is_empty(string):
-    return na
-
-  if not isinstance(string, str):
-    string = str(string)
-  if len(string) != 18:
-    return False
-  if re.match(Pattern.ID_number, string):
-    return True
-  else:
-    return False
 
 
 def relstrip(string, kwd):
@@ -163,8 +136,7 @@ def get_uuid(s):
 
 
 def per2float(string: str) -> float:
-  """带有百分号的数值字符串转小数点形式的数值，
-  没有百分号的返回原值"""
+  """带有百分号的数值字符串转小数点形式的数值，没有百分号的返回原值"""
   if '%' in string:
     string = string.rstrip('%')
     return float(string) / 100
@@ -179,14 +151,13 @@ def extract_num(string: str,
                 multi_warning=False):
   """
   提取字符串中的数值，默认返回所有数字组成的列表
-
-  :param string: 输入的字符串
-  :param num_type:  输出的数字类型，int/float/str，默认为str
-  :param method: 结果计算方法，对结果列表求最大/最小/平均/和等，numpy方法，默认返回列表本身
-  :param join_list: 是否合并列表，默认FALSE
-  :param ignore_pct: 是否忽略百分号，默认True
-  :param multi_warning:
-  :return:
+  Args:
+    string: 输入的字符串
+    num_type:  输出的数字类型，int/float/str，默认为str
+    method: 结果计算方法，对结果列表求最大/最小/平均/和等，numpy方法，默认返回列表本身
+    join_list: 是否合并列表，默认FALSE
+    ignore_pct: 是否忽略百分号，默认True
+    multi_warning: 当有多个值的时候是否输出警告信息
   """
   string = str(string)
   if ignore_pct:
@@ -218,9 +189,7 @@ def to_float(string,
              rex_method: str = 'mean',
              ignore_pct: bool = False,
              multi_warning=True):
-  """
-  字符串转换为float
-  """
+  """字符串转换为float"""
   return extract_num(string,
                      num_type='float',
                      method=rex_method,
@@ -234,16 +203,16 @@ def house_type_format(x):
   其中5室及以上的类别为“5房及以上”
   """
   from ..resource import UTIL_CN_NUM
-
-  exp = '|'.join(UTIL_CN_NUM.keys())
-  pattern = f'([{exp}|\d])[室|房]'
-  res = re.findall(pattern, str(x))
-  if len(res) >= 1:
-    res_num = res[0]
-    for i in UTIL_CN_NUM:
-      res_num = res_num.replace(i, UTIL_CN_NUM[i])
+  if is_empty(x):
+    return
+  if re.match('^[1-4][室房]$', x) or x == '5房及以上':
+    return x
+  exp = ''.join(UTIL_CN_NUM.keys())
+  if res_num := re_fast(f'([{exp}\d])[室房]', str(x)):
+    for ori, dst in UTIL_CN_NUM.items():
+      res_num = res_num.replace(ori, dst)
     if int(res_num) <= 4:
-      return res_num + '房'
+      return f'{res_num}房'
     else:
       return '5房及以上'
 
@@ -256,14 +225,14 @@ def segment(x,
             top: str = '以上') -> str:
   """
   区间段划分工具
-
-  :param x: 数值
-  :param gap: 间隔，固定间隔或列表
-  :param unit: 单位，末尾
-  :param sep: 分隔符，中间
-  :param bottom: 默认为“以下”：80米以下
-  :param top: 默认为“以上”：100米以上
-  :return: 区间段 'num1分隔符num2单位'：‘80-100米’
+  Args:
+    x: 数值
+    gap: 间隔，固定间隔或列表
+    unit: 单位，末尾
+    sep: 分隔符，中间
+    bottom: 默认为“以下”：80米以下
+    top: 默认为“以上”：100米以上
+  Returns: 区间段 'num1分隔符num2单位'：‘80-100米’
   """
 
   def between_list(_x, lis):
@@ -291,16 +260,20 @@ def segment(x,
     raise TypeError('gap参数数据类型错误')
 
 
-def fuzz_match(string: str, ss: (list, pd.Series, tuple)):
+def fuzz_match(string: str, string_set: (list, pd.Series, tuple)):
   """
   为某一字符串从某一集合中匹配相似度最高的元素
-
-  :param string: 输入的字符串
-  :param ss: 要去匹配的集合
-  :return: 字符串及相似度组成的列表
+  Args:
+    string: 输入的字符串
+    string_set: 要去匹配的集合
+  Returns: 字符串及相似度组成的列表
   """
   from fuzzywuzzy import fuzz
-  max_s = max(ss, key=lambda x: fuzz.ratio(x, string))
+  if is_empty(string) or is_empty(string_set):
+    return None, None, None
+  if string in string_set:
+    return string, 100, 100
+  max_s = max(string_set, key=lambda x: fuzz.ratio(x, string))
   return max_s, fuzz.ratio(string, max_s), fuzz.partial_ratio(string, max_s)
 
 
@@ -313,19 +286,16 @@ def get_city_id_by_name(city: str):
   return city_id
 
 
-def sort_by_list(src_list, by_list, filter=False) -> list:
+def sort_by_list(src_list, by_list, filter_=False) -> list:
   """
-  根据一个列表对另一个列表进行筛选或排序，
-  当mode为f/filter时，对列表进行筛选并排序，取二者交集；
-  当mode为s/sort时，对列表进行排序，优先按照参照的列表排序，忽略没有的元素，
-  参照列表中不存在的元素按照原始顺序排列在后
+  根据一个列表对另一个列表进行筛选或排序，参照列表中不存在的元素按照原始顺序排列在后
   Args:
     src_list: 要进行排序的列表
     by_list: 参照的列表
-    fliter: 是否根据参照列表筛选
+    filter_: 是否根据参照列表筛选
   """
   res = [i for i in by_list if i in src_list]
-  if not filter:
+  if not filter_:
     _res = [i for i in src_list if i not in res]
     res.extend(_res)
   return res
@@ -400,7 +370,7 @@ def union_list_v2(*lists) -> list:
   return res
 
 
-def eval(x: str):
+def eval_(x: str):
   """将文本型的列表、字典等转为真正的类型"""
   return literal_eval(x) if not_empty(x) else None
 
@@ -423,6 +393,8 @@ def re_fast(pattern, string, warning=True):
 
 def random_name():
   """随机生成中文名字，仅生成2或3字名字"""
+  from ..resource.names import FirstName
+  from ..resource.names import LastName
   c = [random.choice(FirstName)]
   l = random.randint(1, 2)
   for i in range(l):
@@ -459,27 +431,34 @@ def random_by_prob(mapping: dict):
 
 
 def to_int_str(x):
-  """将由数字转成的字符串转为int格式的，针对手机号等场景，如：'13088888888.0' -> '13088888888'"""
+  """将由数字转成的字符串转为int格式的，针对手机号等场景，如：'130.0' -> '130'"""
+  warnings.warn('即将弃用，请使用 rstrip_d0', DeprecationWarning)
+  return rstrip_d0(x)
+
+
+def rstrip_d0(x):
+  """删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -> '130'"""
   if is_empty(x):
     return
-  try:
-    return str(int(float(x)))
-  except ValueError:
-    return str(x)
+  _x = str(x)
+  if re.match('^\d+\.0$', _x):
+    return _x[:-2]
+  return x
 
 
 def fix_empty_str(x: str) -> (str, None):
+  """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
+  warnings.warn('即将弃用，请使用fix_str', DeprecationWarning)
+  return fix_str(x)
+
+
+def fix_str(x: str) -> (str, None):
   """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
   if isinstance(x, str):
     x = x.strip()
     if x == '':
       return
   return x
-
-
-def fix_str(x: str) -> (str, None):
-  """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
-  return fix_empty_str(x)
 
 
 def interchange_dict(dic: dict) -> dict:
@@ -539,18 +518,19 @@ def is_unique_series(df: pd.DataFrame,
   return not df.duplicated(subset=key_cols, keep=False).any()
 
 
-def is_digit(x):
-  """判断一个值是否能转为数值型"""
-  if isinstance(x, bool):
+def is_digit(x) -> bool:
+  """判断一个值是否能通过float方法转为数值型"""
+  if is_empty(x):
     return False
-  try:
-    int(float(x))
+  if isinstance(x, (float, int)):
     return True
-  except (ValueError, TypeError):
-    return False
+  if isinstance(x, str):
+    if re.match(r'\d+\.?\d*', x):
+      return True
+  return False
 
 
-def is_hex(string):
+def is_hex(string) -> bool:
   """判断一个字符串是否是十六进制"""
   if is_empty(string):
     return False

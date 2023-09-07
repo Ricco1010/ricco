@@ -124,12 +124,13 @@ _fn_mapping = {
 
 def _coord_transform(lng: float, lat: float, from_srs: (SRS, str),
                      to_srs: (SRS, str)):
-  """坐标系转换
-
-  :param lng: 输入的经度
-  :param lat: 输入的纬度
-  :param from_srs: 输入坐标的格式
-  :param to_srs: 输出坐标的格式
+  """
+  坐标系转换
+  Args:
+    lng: 输入的经度
+    lat: 输入的纬度
+    from_srs: 输入坐标的格式
+    to_srs: 输出坐标的格式
   """
   if from_srs == to_srs:
     return lng, lat

@@ -104,19 +104,19 @@ def pca_score(df, columns: list = None):
 
 
 class EntropyClass:
-  """
-  熵值法计算器-输出结果需要后续再进行rescale处理
-  Args:
-    df: 为原始待计算df
-    cols: 需要参与计算的列名list
-    neg_cols: cols中需要负向处理的列名
-  Returns:
-    entropy_res: 单独计算结果列
-    entropy_df: 包含计算结果的df
-    entropy_weight: 权重dict
-  """
-
   def __init__(self, df, cols, neg_cols, key):
+    """
+    熵值法计算器-输出结果需要后续再进行rescale处理
+    Args:
+      df: 为原始待计算df
+      cols: 需要参与计算的列名list
+      neg_cols: cols中需要负向处理的列名
+      key: 计算结果的列名
+    Returns:
+      entropy_res: 单独计算结果列
+      entropy_df: 包含计算结果的df
+      entropy_weight: 权重dict
+    """
     df = standard_e(df, cols)
     df = standard_e_neg(df, neg_cols)
     df[key], self.entropy_weight = entropy(df, columns=cols)

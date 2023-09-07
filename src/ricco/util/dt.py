@@ -4,10 +4,11 @@ from datetime import datetime
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-
+from .decorator import check_null
 from .decorator import to_str
 
 
+@check_null
 def auto2date(string, errors='raise'):
   """自动检查格式并输出日期"""
   if string in ['', None]:
@@ -27,22 +28,23 @@ def auto2date(string, errors='raise'):
     return pd.to_datetime(string, errors=errors)
 
 
-def is_valid_date(string):
+def is_valid_date(string, na=False):
   """判断是否是一个有效的日期字符串"""
+  if string in ['', None]:
+    return na
   try:
     auto2date(string)
     return True
-  except:
+  except Exception:
     return False
 
 
 def excel2date(dates, date_type='str'):
   """
   excel的数字样式时间格式转日期格式
-
-  :param dates: 传入excel的日期格式，或ymd的日期格式
-  :param date_type: 返回日期类型，str or date
-  :return:
+  Args:
+    dates: 传入excel的日期格式，或ymd的日期格式
+    date_type: 返回日期类型，str or date
   """
   from xlrd import xldate_as_datetime
 
@@ -55,17 +57,14 @@ def excel2date(dates, date_type='str'):
   elif is_valid_date(dates):
     _date = datetime.strftime(auto2date(dates), '%Y-%m-%d')
   else:
-    _date = None
+    return
 
-  if _date:
-    if date_type in ('string', 'str', str):
-      return _date
-    elif date_type in ('date', 'datetime'):
-      return datetime.strptime(_date, '%Y-%m-%d')
-    else:
-      raise ValueError('date_type参数错误，可选参数为str或date')
-  else:
+  if date_type in ('string', 'str', str):
     return _date
+  elif date_type in ('date', 'datetime'):
+    return datetime.strptime(_date, '%Y-%m-%d')
+  else:
+    raise ValueError('date_type参数错误，可选参数为str或date')
 
 
 class DT:

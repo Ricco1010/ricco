@@ -26,10 +26,13 @@ setup(
     author_email="wyk_0610@163.com",
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    include_package_data=True,
     platforms='any',
     install_requires=[
+      'geojson',
       'numpy>=0.17',
       'pandas>=1.0.0',
+      'requests',
       'tqdm>=4.62.0',
     ],
     classifiers=[

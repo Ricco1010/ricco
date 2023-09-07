@@ -1,4 +1,12 @@
 """资源目录"""
+import os
+
+
+def resource_path(filename):
+  return os.path.join(__path__[0], filename)
+
+
+P_BD_REGION = resource_path('bd_region.csv')
 
 UTIL_CN_NUM = {
   '〇': '0',

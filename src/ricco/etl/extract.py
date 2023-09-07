@@ -3,9 +3,10 @@ import warnings
 
 import geopandas as gpd
 import pandas as pd
+from tqdm import tqdm
 
 from ..util.os import dir_iter
-from ..util.os import ext
+from ..util.os import extension
 
 
 def max_grid():
@@ -31,12 +32,12 @@ def rdxls(
 ) -> pd.DataFrame:
   """
   读取excel文件
-
-  :param filename: 文件名
-  :param sheet_name: sheet表的名称
-  :param sheet_contains: sheet表包含的字符串
-  :param errors: 当没有对应sheet时，raise: 抛出错误, coerce: 返回空的dataframe
-  :return:
+  Args
+    filename: 文件名
+    sheet_name: sheet表的名称
+    sheet_contains: sheet表包含的字符串
+    errors: 当没有对应sheet时，raise: 抛出错误, coerce: 返回空的dataframe
+    dtype: 指定读取列的类型
   """
   assert errors in ('coerce', 'raise'), '可选参数为coerce和raise'
   if sheet_name == 0:
@@ -70,6 +71,7 @@ def rdf(
     encoding: str = 'utf-8-sig',
     info: bool = False,
     dtype=None,
+    columns=None,
 ) -> pd.DataFrame:
   """
   常用文件读取函数，支持.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml'
@@ -82,25 +84,25 @@ def rdf(
     dtype: 指定读取列的类型
   """
   max_grid()
-  ex = ext(file_path)
+  ex = extension(file_path)
   if ex == '.csv':
     try:
-      df = pd.read_csv(file_path,
-                       engine='python',
-                       encoding=encoding,
-                       dtype=dtype)
+      df = pd.read_csv(
+          file_path, engine='python', encoding=encoding,
+          dtype=dtype, usecols=columns,
+      )
     except UnicodeDecodeError:
-      df = pd.read_csv(file_path, engine='python', dtype=dtype)
-  elif ex in ('.parquet', '.pickle', '.feather'):
+      df = pd.read_csv(file_path, engine='python', dtype=dtype, usecols=columns)
+  elif ex in ('.parquet', '.feather'):
     _t = ex.strip('.')
-    df = getattr(pd, f'read_{_t}')(
-        file_path
-    )
+    df = getattr(pd, f'read_{_t}')(file_path, columns=columns)
+  elif ex == '.pickle':
+    df = pd.read_pickle(file_path)
   elif ex in ('.xls', '.xlsx'):
-    df = rdxls(file_path,
-               sheet_name=sheet_name,
-               sheet_contains=sheet_contains,
-               dtype=dtype)
+    df = rdxls(
+        file_path, sheet_name=sheet_name, sheet_contains=sheet_contains,
+        dtype=dtype
+    )
   elif ex == '.shp':
     try:
       df = gpd.GeoDataFrame.from_file(file_path)
@@ -112,19 +114,20 @@ def rdf(
     df = read_line_json(file_path, encoding=encoding)
   else:
     raise Exception('未知文件格式')
+  if columns:
+    df = df[columns]
   if info:
     print(f'shape: {df.shape}')
-    print(f'columns: {df.columns}')
+    print(f'columns: {df.columns.tolist()}')
   return df
 
 
 def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
   """
   逐行读取json格式的文件
-
-  :param filename: 文件名
-  :param encoding: 文件编码，默认为utf-8
-  :return:
+  Args:
+    filename: 文件名
+    encoding: 文件编码，默认为utf-8
   """
   import json
   records = []
@@ -135,12 +138,32 @@ def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
   return pd.DataFrame(records)
 
 
-def read_parquet_by_dir(dir_path, ignore_index=True):
-  """从文件夹中读取所有的parquet文件并拼接成一个DataFrame"""
+def rdf_by_dir(dir_path, exts=None, ignore_index=True,
+               info=False) -> pd.DataFrame:
+  """
+  从文件夹中读取所有文件并拼接成一个DataFrame
+  Args:
+    dir_path: 文件夹路径
+    exts: 要读取的文件扩展名
+    ignore_index: 是否忽略索引
+    info: 是否打印基本信息（列名、行列数）
+  """
+  path_list = []
+  for p in dir_iter(dir_path, exts=exts):
+    path_list.append(p)
   dfs = []
-  for filename in dir_iter(dir_path, exts=['.parquet']):
+  for filename in tqdm(path_list):
     dfs.append(rdf(filename))
-  return pd.concat(dfs, ignore_index=ignore_index)
+  df = pd.concat(dfs, ignore_index=ignore_index)
+  if info:
+    print(f'shape: {df.shape}')
+    print(f'columns: {df.columns.tolist()}')
+  return df
+
+
+def read_parquet_by_dir(dir_path, ignore_index=True) -> pd.DataFrame:
+  """从文件夹中读取所有的parquet文件并拼接成一个DataFrame"""
+  return rdf_by_dir(dir_path, exts=['.parquet'], ignore_index=ignore_index)
 
 
 def kml_df_create_level(gdf_dict) -> dict:
@@ -197,8 +220,8 @@ def read_kml(file_path, keep_level=True) -> gpd.GeoDataFrame:
   读取kml类文件,将其转换成DataFrame, 根据separate_folders选择是否拆分,
   输出仅保留[name, geometry]字段,暂时只支持polygon和multipolygon数据
   Args:
-    file_path{str}: kml or ovkml文件路径
-    keep_level(bool): 是否保留文件夹层级标签
+    file_path: kml or ovkml文件路径
+    keep_level: 是否保留文件夹层级标签
   """
   import kml2geojson as k2g
   features = k2g.convert(file_path, separate_folders=keep_level)

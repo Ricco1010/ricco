@@ -1,20 +1,13 @@
 *.pyc
 .DS_Store
 *.log
-src/ricco/*.csv
 /*.pkl*
-**/*.csv
-**/*.xls
-**/*.xlsx
-**/*.doc
-**/*.docx
-test.py
+
 .idea/
 
 # python package
 *.egg-info/
 dist/
-build/
 */__pycache__
 
 # sphinx
@@ -40,7 +33,13 @@ venv/
 #vim
 .ropeproject
 
-
 #testfile
 .develop_file/
 .develop_file
+
+local
+src/ricco/local/
+
+#files
+src/ricco/*/*.csv
+!src/ricco/resource/bd_region.csv

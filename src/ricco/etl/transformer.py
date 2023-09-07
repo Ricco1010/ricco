@@ -23,14 +23,14 @@ def best_unique(df: pd.DataFrame,
   """
   优化的去重函数：
     为保证数据的完整性，去重时优先去除指定列中的空值
-
-  :param df:
-  :param key_cols: 按照哪些列去重
-  :param value_cols: 优先去除那些列的空值，该列表是有顺序的
-  :param filter:
-  :param drop_if_null: 如何处理value_cols内值为空的列；'all'：都为空时删除该列，'any'：任意一列为空时就删除，None：保留空白
-  :return:
+  Args:
+    df:
+    key_cols: 按照哪些列去重
+    value_cols: 优先去除那些列的空值，该列表是有顺序的
+    filter:
+    drop_if_null: 如何处理value_cols内值为空的列；'all'：都为空时删除该列，'any'：任意一列为空时就删除，None：保留空白
   """
+  warnings.warn('即将弃用，请使用keep_best_unique', DeprecationWarning)
   key_cols = ensure_list(key_cols)
   if not value_cols:
     value_cols = [i for i in df.columns if i not in key_cols]
@@ -162,10 +162,9 @@ def update_df(df: pd.DataFrame,
 def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
   """
   将日期转为当月的第一天或最后一天
-
-  :param series: pd.Series
-  :param mode: 'first' or 'last'
-  :return:
+  Args:
+    series: pd.Series
+    mode: 'first' or 'last'
   """
   from pandas.tseries.offsets import MonthEnd
 
@@ -217,9 +216,9 @@ def fuzz_df(df: pd.DataFrame,
 def series_to_float(series: pd.Series, rex_method: str = 'mean') -> pd.Series:
   """
   pandas.Series: str --> float
-
-  :param series: 要转换的pandas列
-  :param rex_method: 计算mean,max,min， 默认为mean
+  Args:
+    series: 要转换的pandas列
+    rex_method: 计算mean,max,min， 默认为mean
   """
   return series.apply(lambda x: to_float(x, rex_method=rex_method))
 
@@ -348,8 +347,14 @@ def is_changed(df_old: pd.DataFrame,
 
 
 def df_iter(df: pd.DataFrame, *, chunksize: int = None, parts: int = None):
-  if not any([chunksize, parts]):
-    raise ValueError(f'chunksize 和 parts必须指定一个')
+  """
+  DataFrame切片生成器
+  Args:
+    df: 要切片的DataFrame
+    chunksize: 每次返回的大小，与parts必须指定一个
+    parts: 返回的次数，与chunksize必须指定一个
+  """
+  assert any([chunksize, parts]), 'chunksize和parts必须指定一个'
   size = df.shape[0]
   if chunksize:
     parts = int(size / chunksize) + 1

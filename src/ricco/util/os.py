@@ -11,26 +11,38 @@ def ext(filepath):
   return os.path.splitext(filepath)[1]
 
 
+def extension(filepath):
+  """扩展名"""
+  return os.path.splitext(filepath)[1]
+
+
 def fn(filepath):
   """路径及文件名（不含扩展名）"""
   return os.path.splitext(filepath)[0]
 
 
-def split_path(filepath, abs=False):
+def path_name(filepath):
+  """路径及文件名（不含扩展名）"""
+  return os.path.splitext(filepath)[0]
+
+
+def split_path(filepath, abspath=False):
   """将文件路径拆分为文件夹路径、文件名、扩展名三部分"""
-  if abs:
+  if abspath:
     filepath = os.path.abspath(filepath)
   basename = os.path.basename(filepath)
   dir_path = os.path.dirname(filepath)
-  return dir_path, fn(basename), ext(basename)
+  return dir_path, path_name(basename), extension(basename)
+
+
+def ensure_dir(dirpath: str):
+  if not dirpath.endswith('/'):
+    return dirpath + '/'
+  return dirpath
 
 
 def remove_dir(filepath):
-  """
-  删除某一目录下的所有文件或文件夹
-  :param filepath: 路径
-  :return:
-  """
+  """除某一目录下的所有文件或文件夹"""
   import shutil
   del_list = os.listdir(filepath)
   for f in del_list:
@@ -40,6 +52,28 @@ def remove_dir(filepath):
     elif os.path.isdir(file_path):
       shutil.rmtree(file_path)
   shutil.rmtree(filepath)
+
+
+def find_undefined_dirs(dirpath):
+  """获取不存在的目录列表"""
+  dirs = []
+  dirpath = os.path.abspath(dirpath)
+  while not os.path.exists(dirpath):
+    dirs.append(dirpath)
+    dirpath = os.path.dirname(dirpath)
+  dirs.reverse()
+  return dirs
+
+
+def ensure_dirpath_exist(filepath):
+  """确保目录存在，不存在则创建"""
+  dir_path = os.path.dirname(filepath)
+  if os.path.exists(dir_path):
+    return
+  undefined_dirs = find_undefined_dirs(dir_path)
+  for p in undefined_dirs:
+    logging.warning(f'目录：{p}不存在，已创建')
+    os.makedirs(p)
 
 
 def dir2zip(filepath, delete_exist=False, delete_origin=False):
@@ -125,9 +159,28 @@ def dir_iter(root,
       filepath = os.path.join(dirpath, _name)
       filepath = os.path.abspath(filepath) if abspath else filepath
       # 不符合扩展名要求忽略
-      if exts and ext(_name) not in exts:
+      if exts and extension(_name) not in exts:
         continue
       # 仅需要当前目录时，dirpath和root不相同的过滤掉
       if not recursive and dirpath != root:
         continue
       yield filepath
+
+
+def dir_iter_list(root,
+                  exts: (list, str) = None,
+                  abspath=False,
+                  recursive=False,
+                  reverse=False):
+  """
+  文件夹中的文件路径列表
+  Args:
+    root: 文件目录
+    exts: 文件扩展名，不指定则返回所有文件
+    abspath: 是否返回绝对路径
+    recursive: 是否循环遍历更深层级的文件，默认只返回当前目录下的文件
+  """
+  path_list = []
+  for p in dir_iter(root, exts, abspath, recursive):
+    path_list.append(p)
+  return sorted(path_list, reverse=reverse)

@@ -23,12 +23,12 @@ def geocode(*,
             key_amap=None):
   """
   Args:
-      address: 地址或项目名称关键词
-      city: 城市
-      source: 接口选择。baidu/amap：百度或高德的地理编码接口，baidu_poi/amap_poi：百度或高德的地点检索接口
-      srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-      key_baidu: 百度接口的key，公共key失效后可自行传入
-      key_amap: 高德接口的key，公共key失效后可自行传入
+    address: 地址或项目名称关键词
+    city: 城市
+    source: 接口选择。baidu/amap：百度或高德的地理编码接口，baidu_poi/amap_poi：百度或高德的地点检索接口
+    srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
+    key_baidu: 百度接口的key，公共key失效后可自行传入
+    key_amap: 高德接口的key，公共key失效后可自行传入
   """
   if source == 'baidu':
     return get_address_baidu(city=city, address=address, srs=srs, key=key_baidu)
@@ -52,13 +52,13 @@ def geocode_best_poi(city,
   """
   获取最优的地点检索结果
   Args:
-      city: 城市
-      keywords: POI名称
-      sig: 解析结果相似度，默认为80，范围0-100
-      address_geocode: 是否使用地理编码补全，默认False
-      srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-      key_baidu: 百度接口的key，公共key失效后可自行传入
-      key_amap: 高德接口的key，公共key失效后可自行传入
+    city: 城市
+    keywords: POI名称
+    sig: 解析结果相似度，默认为80，范围0-100
+    address_geocode: 是否使用地理编码补全，默认False
+    srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
+    key_baidu: 百度接口的key，公共key失效后可自行传入
+    key_amap: 高德接口的key，公共key失效后可自行传入
   """
   if is_empty(keywords):
     return None, None, None, None, None
@@ -125,16 +125,16 @@ def geocode_df(df: pd.DataFrame,
   """
   对dataframe进行geocoding
   Args:
-      df:
-      by: 项目名称所在的列
-      city: 城市，list表示城市列如['城市']， str表示全部使用该城市如'上海'
-      address_type: 'poi'或'address'，不同的地理类型对应不同的接口，精确度不同
-      sig: 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效
-      address_geocode: poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效
-      with_detail: 是否返回详情信息，包括返回值、得分、接口来源等
-      srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-      key_baidu: 百度接口的key，公共key失效后可自行传入
-      key_amap: 高德接口的key，公共key失效后可自行传入
+    df:
+    by: 项目名称所在的列
+    city: 城市，list表示城市列如['城市']， str表示全部使用该城市如'上海'
+    address_type: 'poi'或'address'，不同的地理类型对应不同的接口，精确度不同
+    sig: 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效
+    address_geocode: poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效
+    with_detail: 是否返回详情信息，包括返回值、得分、接口来源等
+    srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
+    key_baidu: 百度接口的key，公共key失效后可自行传入
+    key_amap: 高德接口的key，公共key失效后可自行传入
   """
   assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
 
