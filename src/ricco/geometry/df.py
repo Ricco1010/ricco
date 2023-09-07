@@ -10,10 +10,13 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 from tqdm import tqdm
 
+from ..etl.transformer import split_list_to_row
 from ..util.decorator import progress
 from ..util.util import ensure_list
 from ..util.util import first_notnull_value
+from ..util.util import is_empty
 from ..util.util import not_empty
+from .util import ensure_multi_geom
 from .util import geojson_dumps
 from .util import geojson_loads
 from .util import get_epsg
@@ -122,9 +125,14 @@ def shapely2lnglat(df,
   """
   shapely格式提取面内点转为经纬度。
   Args:
+    df: 要转换的DataFrame
+    geometry: 输入的geometry列名
+    lng: 输出的经度列名
+    lat: 输出的纬度列名
     within: 范围的点是否再面内
       - False(default): 直接返回中心点；
       - True: 返回面内的一个点
+    delete: 是否删除geometry
   """
 
   df = df.copy()
@@ -278,13 +286,13 @@ def split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
   根据所给边界划分固定边长的栅格
 
   Args:
-      df: 边界文件，GeoDataFrame格式
-      step: 栅格边长，单位：米
-      city: 所属城市，用于投影
+    df: 边界文件，GeoDataFrame格式
+    step: 栅格边长，单位：米
+    city: 所属城市，用于投影
   """
 
-  def get_xxyy(df):
-    bounds_dict = df.bounds.T.to_dict()[0]
+  def get_xxyy(_df):
+    bounds_dict = _df.bounds.T.to_dict()[0]
     minx = bounds_dict['minx']
     miny = bounds_dict['miny']
     maxx = bounds_dict['maxx']
@@ -293,19 +301,19 @@ def split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
     yy = maxy - miny
     return [xx, yy, minx, miny, maxx, maxy]
 
-  def get_lnglat(df, i, j):
-    _lng = df.loc[(df['i'] == i) &
-                  (df['j'] == j), 'lng'].reset_index(drop=True)[0]
-    _lat = df.loc[(df['i'] == i) &
-                  (df['j'] == j), 'lat'].reset_index(drop=True)[0]
-    return (_lng, _lat)
+  def get_lnglat(_df, _i, _j):
+    _lng = _df.loc[(_df['i'] == _i) &
+                   (_df['j'] == _j), 'lng'].reset_index(drop=True)[0]
+    _lat = _df.loc[(_df['i'] == _i) &
+                   (_df['j'] == _j), 'lat'].reset_index(drop=True)[0]
+    return _lng, _lat
 
-  def get_lnglat_sets(df, i, j):
-    A = get_lnglat(df, i, j)
-    B = get_lnglat(df, i, j + 1)
-    C = get_lnglat(df, i + 1, j + 1)
-    D = get_lnglat(df, i + 1, j)
-    return Polygon((A, B, C, D, A))
+  def get_lnglat_sets(_df, _i, _j):
+    a = get_lnglat(_df, _i, _j)
+    b = get_lnglat(_df, _i, _j + 1)
+    c = get_lnglat(_df, _i + 1, _j + 1)
+    d = get_lnglat(_df, _i + 1, _j)
+    return Polygon((a, b, c, d, a))
 
   # 融合
   if not isinstance(df, gpd.GeoDataFrame):
@@ -348,7 +356,7 @@ def split_grids(df: gpd.GeoDataFrame, step: int, city: str = None):
   # 组合坐标集并转为Polygon
   tqdm.pandas(desc='lnglats2shapelyPolygon')
   df_res['geometry'] = df_res.progress_apply(
-      lambda df: get_lnglat_sets(df_temp, df['i'], df['j']), axis=1)
+      lambda r: get_lnglat_sets(df_temp, r['i'], r['j']), axis=1)
 
   # 生成grid_id列
   df_res['grid_id'] = df_res['i'].astype(str) + '-' + df_res['j'].astype(str)
@@ -411,17 +419,21 @@ def mark_tags_v2(
 ):
   """
   使用面数据通过空间关联（sjoin）给数据打标签
-
   Args:
-      point_df: 点数据
-      polygon_df: 面数据
-      col_list: 面数据中要关联到结果中的列，若为空则全部关联
-      predicate: 关联方法，默认'intersects'
-      drop_geometry: 结果是否删除geometry，默认删除
-      geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
-      warning_message: 是否输出警告信息
+    point_df: 点数据
+    polygon_df: 面数据
+    col_list: 面数据中要关联到结果中的列，若为空则全部关联
+    predicate: 关联方法，默认'intersects'
+    drop_geometry: 结果是否删除geometry，默认删除
+    geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
+    warning_message: 是否输出警告信息
+    point_lng: 指定点数据的经度列名
+    point_lat: 指定点数据的经度列名
+    point_geometry: 指定点数据的geometry列名
+    polygon_geometry: 指定面数据的geometry列名
   """
   point_df = point_df.copy()
+  assert point_df.index.is_unique, 'point_df索引列必须唯一'
   if not col_list:
     col_list = polygon_df.columns.to_list()
   else:
@@ -473,6 +485,7 @@ def nearest_neighbor(
     epsg: 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取
   """
   # 将两个数据集都转为shapely格式
+  assert df.index.is_unique, 'df索引列必须唯一'
   df_left = _ensure_geometry(df)
   df_target = _ensure_geometry(df_target)
   # 投影
@@ -496,6 +509,7 @@ def get_area(
     epsg: 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取
   """
   # 将数据集转为shapely格式
+  assert df.index.is_unique, 'df索引列必须唯一'
   df_left = _ensure_geometry(df)
   # 投影
   df_left = projection(df_left, epsg=epsg)
@@ -514,7 +528,6 @@ def buffer(df: pd.DataFrame,
            geo_format='wkb') -> pd.DataFrame:
   """
   获得一定半径的缓冲区
-
   Args:
     df: pd.DataFrame, 包含地理信息的DataFrame
     radius: numeric, 缓冲区半径（单位米）
@@ -523,28 +536,25 @@ def buffer(df: pd.DataFrame,
     geometry: str, geometry字段名，默认"geometry"
     buffer_geometry: 输出的缓冲区geometry字段名，默认"buffer_geometry"
     geo_format: str, 输出的缓冲区geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
-
-  Returns: 包含缓冲区geometry的DataFrame
-
+  Returns:
+    包含缓冲区geometry的DataFrame
   Examples:
-    >>> df = pd.DataFrame({'id': [1, 2, 3],
+    >>> df_example = pd.DataFrame({'id': [1, 2, 3],
     >>>                    'lng': [116.18601, 116.18366, 116.18529],
     >>>                    'lat': [40.02894, 40.03550, 40.03565]})
-
-    >>> df
+    >>> df_example
         id        lng       lat
     0   1  116.18601  40.02894
     1   2  116.18366  40.03550
     2   3  116.18529  40.03565
-
-    >>> buffer(df=df, radius=1500, city='北京', geo_type='point')
+    >>> buffer(df=df_example, radius=1500, city='北京', geo_type='point')
         id        lng       lat                                    buffer_geometry
     0   1  116.18601  40.02894  0103000020E6100000010000004100000092A0207A070D...
     1   2  116.18366  40.03550  0103000020E6100000010000004100000071178800E10C...
     2   3  116.18529  40.03565  0103000020E610000001000000410000008A2570B5FB0C...
-
   """
   df = df.copy()
+  assert df.index.is_unique, 'df索引列必须唯一'
   if geo_type == 'point':
     df_buffer = _ensure_geometry(df, True)
   elif geo_type in ['line', 'polygon']:
@@ -575,8 +585,8 @@ def spatial_agg(point_df: pd.DataFrame,
     by: Union[str, List[str]], 空间统计单位字段；
     agg: dict, 空间统计操作。格式为{'被统计字段名': '操作名', ...}的字典。如{'poi':'sum'};
     polygon_geometry: str, 面数据geometry字段名，默认"geometry";
-
-  Returns: pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame
+  Returns:
+    pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame
   """
 
   polygon_df = polygon_df[[by, polygon_geometry]]
@@ -584,3 +594,22 @@ def spatial_agg(point_df: pd.DataFrame,
                           drop_geometry=True, polygon_geometry=polygon_geometry)
   df_grouped = point_df.groupby(by=by, as_index=False).agg(agg)
   return df_grouped
+
+
+def split_multi_to_rows(df, geometry='geometry', geometry_format=None):
+  """将多部件要素拆解为多行的单部件要素"""
+
+  def to_geoms(geometry):
+    if is_empty(geometry):
+      return []
+    return [i for i in geometry.geoms]
+
+  lo = df.shape[0]
+  if not geometry_format:
+    geometry_format = infer_geom_format(df[geometry])
+  df = auto2shapely(df)
+  df[geometry] = df[geometry].apply(ensure_multi_geom).apply(to_geoms)
+  df = split_list_to_row(df, geometry)
+  df = gpd.GeoDataFrame(df, geometry=geometry)
+  print(f'Rows: {lo} --> {df.shape[0]}')
+  return auto2x(df, geometry_format, geometry)

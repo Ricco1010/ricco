@@ -79,9 +79,7 @@ def process_by_dict(input_dict: dict):
 
 def is_std_hao(string):
   """
-  检查号相关的字符串是否为标准格式，
-
-  仅检查是否为"xx号、xx号"的形式，不检查重复值和顺序
+  检查号相关的字符串是否为标准格式，仅检查是否为"xx号、xx号"的形式，不检查重复值和顺序
   """
   ls = string.split('、')
   return all([re.match('^\d+号$', i) for i in ls])

@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 from shapely.geometry import Point
 
-from ricco.util.util import eval
+from ricco.util.util import eval_
 from ricco.util.util import extract_num
-from ricco.util.util import fix_empty_str
+from ricco.util.util import fix_str
 from ricco.util.util import get_shortest_element
 from ricco.util.util import house_type_format
 from ricco.util.util import interchange_dict
@@ -14,11 +14,11 @@ from ricco.util.util import list2dict
 from ricco.util.util import pinyin
 from ricco.util.util import relstrip
 from ricco.util.util import rerstrip
+from ricco.util.util import rstrip_d0
 from ricco.util.util import segment
 from ricco.util.util import sort_by_list
 from ricco.util.util import to_bool
 from ricco.util.util import to_float
-from ricco.util.util import to_int_str
 from ricco.util.util import union_list
 from ricco.util.util import union_list_v2
 from ricco.util.util import union_str
@@ -93,9 +93,9 @@ def test_list2dict():
 
 
 def test_eval():
-  assert eval(None) == None
-  assert eval('[1]') == [1]
-  assert eval("{'a':1}") == {'a': 1}
+  assert eval_(None) == None
+  assert eval_('[1]') == [1]
+  assert eval_("{'a':1}") == {'a': 1}
 
 
 def test_union_str():
@@ -120,19 +120,19 @@ def test_union_list():
 def test_sort_by_list():
   src_list = [1, 2, 3, 4, 5]
   by_list = [4, 5, 3, 6]
-  assert sort_by_list(src_list, by_list, filter=False) == [4, 5, 3, 1, 2]
-  assert sort_by_list(src_list, by_list, filter=True) == [4, 5, 3]
+  assert sort_by_list(src_list, by_list, filter_=False) == [4, 5, 3, 1, 2]
+  assert sort_by_list(src_list, by_list, filter_=True) == [4, 5, 3]
 
 
 def test_fix_empty_str():
-  assert fix_empty_str(1) == 1
-  assert fix_empty_str('a') == 'a'
-  assert fix_empty_str(' a ') == 'a'
-  assert fix_empty_str('\na\n') == 'a'
-  assert fix_empty_str('') == None
-  assert fix_empty_str(' ') == None
-  assert fix_empty_str(' \n') == None
-  assert fix_empty_str(' ') == None
+  assert fix_str(1) == 1
+  assert fix_str('a') == 'a'
+  assert fix_str(' a ') == 'a'
+  assert fix_str('\na\n') == 'a'
+  assert fix_str('') == None
+  assert fix_str(' ') == None
+  assert fix_str(' \n') == None
+  assert fix_str(' ') == None
 
 
 def test_is_digit():
@@ -154,12 +154,13 @@ def test_is_empty():
   assert is_empty(Point()) == True
 
 
-def test_to_int_str():
-  assert to_int_str(0) == '0'
-  assert to_int_str(1.0) == '1'
-  assert to_int_str('a') == 'a'
-  assert to_int_str(None) == None
-  assert to_int_str(np.nan) == None
+def test_rstrip_d0():
+  assert rstrip_d0('') == ''
+  assert rstrip_d0(0) == 0
+  assert rstrip_d0(1.0) == '1'
+  assert rstrip_d0('a') == 'a'
+  assert not rstrip_d0(None)
+  assert not rstrip_d0(np.nan)
 
 
 def test_to_bool():

@@ -1,17 +1,18 @@
 from .util import get_shortest_element
+from .util import is_empty
+from .util import re_fast
 
 
 def get_single_list(start, length, step):
   """
-  获取单个起点的位置端点列表，如果起始位置不是零，则会返回0到起始位置的列表，如：
-
-  >>> get_single_list(0, 7, 3) == [[0, 3], [3, 6], [6, 7]]
-  >>> get_single_list(1, 7, 3) == [[0, 1], [1, 4], [4, 7]]
-
-  :param start: 起始位置
-  :param length: 总长度
-  :param step: 步长
-  :return:
+  获取单个起点的位置端点列表，如果起始位置不是零，则会返回0到起始位置的列表
+  Args:
+    start: 起始位置
+    length: 总长度
+    step: 步长
+  Examples:
+    >>> get_single_list(0, 7, 3) == [[0, 3], [3, 6], [6, 7]]
+    >>> get_single_list(1, 7, 3) == [[0, 1], [1, 4], [4, 7]]
   """
   if start > 0:
     res = [[0, start]]
@@ -27,13 +28,13 @@ def get_single_list(start, length, step):
 
 def get_breaks(length, step):
   """
-  通过长度和步长获所有可能的取端点列表的列表，如：
-
-  >>> get_breaks(10, 3) == [
-  >>>   [[0, 3], [3, 6], [6, 9], [9, 10]],
-  >>>   [[0, 1], [1, 4], [4, 7], [7, 10]],
-  >>>   [[0, 2], [2, 5], [5, 8], [8, 10]]
-  >>> ]
+  通过长度和步长获所有可能的取端点列表的列表
+  Examples:
+    >>> get_breaks(10, 3) == [
+    >>>   [[0, 3], [3, 6], [6, 9], [9, 10]],
+    >>>   [[0, 1], [1, 4], [4, 7], [7, 10]],
+    >>>   [[0, 2], [2, 5], [5, 8], [8, 10]]
+    >>> ]
   """
   res = []
   for start in range(0, step):
@@ -44,10 +45,9 @@ def get_breaks(length, step):
 def get_list_by_position(string: str, breaks: list):
   """
   按照位置信息将字符串拆解为多个字符串的列表
-
-  :param string: 需要拆分的字符串
-  :param breaks: 位置集合列表的列表（左闭右开），[[1, 5], [5, 10], [10, 15]]
-  :return:
+  Args:
+    string: 需要拆分的字符串
+    breaks: 位置集合列表的列表（左闭右开），[[1, 5], [5, 10], [10, 15]]
   """
   res = []
   for brk in breaks:
@@ -82,9 +82,7 @@ def drop_repeat_string(string,
                        min_length=3,
                        max_length=None):
   """
-  删除连续重复的字符串
-
-  按照step从大到小删除重复字符，返回去重后最短的字符串"""
+  删除连续重复的字符串，按照step从大到小删除重复字符，返回去重后最短的字符串"""
   if len(string) < min_length * 2:
     return string
   _list = []
@@ -95,3 +93,23 @@ def drop_repeat_string(string,
     _list.append(str_drop)
     string = get_shortest_element(_list)
   return string
+
+
+def extract_city(string: str):
+  """从字符串中提取城市、区县"""
+  from ..resource.city_id import CITI_LIST
+
+  if is_empty(string):
+    return
+  if not isinstance(string, str):
+    return
+  for pattern in [
+    '(?:自治区|省|新疆|西藏|广西|内蒙古|宁夏)([\\u4e00-\\u9fa5]{2,4}?市)',
+    '^([\\u4e00-\\u9fa5]{2,3}?市)',
+    '^([\\u4e00-\\u9fa5]{2,3}?[区县])',
+  ]:
+    if res := re_fast(pattern, string, warning=False):
+      return res
+  for city in CITI_LIST:
+    if city in string:
+      return city

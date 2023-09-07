@@ -25,11 +25,8 @@ class PhoneNumber:
 
   @staticmethod
   def not_valid(id_number) -> bool:
-    """判断手机号是否有效"""
-    string = str(id_number)
-    if not re.match(Pattern.phone_number, string):
-      return True
-    return False
+    """判断手机号是否无效"""
+    return not PhoneNumber.is_valid(id_number)
 
   def format_phone_number(self, id_number) -> str:
     """对手机号进行校验并转为字符串格式"""

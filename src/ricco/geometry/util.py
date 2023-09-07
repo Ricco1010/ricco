@@ -18,6 +18,9 @@ from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
 from shapely.geos import WKTReadingError
 
+from ..util.decorator import check_null
+from ..util.decorator import check_shapely
+from ..util.decorator import check_str
 from ..util.util import ensure_list
 from ..util.util import first_notnull_value
 from ..util.util import is_empty
@@ -82,62 +85,44 @@ def projection_lnglat(lnglat, crs_from, crs_to):
   return transformer.transform(xx=lnglat[1], yy=lnglat[0])
 
 
+@check_str
 def wkb_loads(x: str, hex=True):
-  if is_empty(x):
-    return
-  if not isinstance(x, str):
-    warnings.warn(f'Type error:【{x}】')
-    return
   try:
     return wkb.loads(x, hex=hex)
   except (AttributeError, WKBReadingError) as e:
     warnings.warn(f'{e}, 【{x}】')
 
 
-def wkb_dumps(x: BaseGeometry, hex=True, srid=4326) -> (str, None):
-  if is_empty(x):
-    return
-  if not isinstance(x, BaseGeometry):
-    warnings.warn(f'TypeError:【{x}】')
-    return
+@check_shapely
+def wkb_dumps(x: BaseGeometry, hex=True, srid=4326):
   try:
     return wkb.dumps(x, hex=hex, srid=srid)
   except AttributeError as e:
     warnings.warn(f'{e}, 【{x}】')
 
 
+@check_str
 def wkt_loads(x: str):
-  if is_empty(x):
-    return
-  if not isinstance(x, str):
-    warnings.warn(f'Type error:【{x}】')
-    return
   try:
     return wkt.loads(x)
   except (AttributeError, WKTReadingError, TypeError) as e:
     warnings.warn(f'{e}, 【{x}】')
 
 
-def wkt_dumps(x: BaseGeometry) -> (str, None):
-  if is_empty(x):
-    return
-  if not isinstance(x, BaseGeometry):
-    warnings.warn(f'TypeError:【{x}】')
-    return
+@check_shapely
+def wkt_dumps(x: BaseGeometry):
   try:
     return wkt.dumps(x)
   except AttributeError as e:
     warnings.warn(f'{e}, 【{x}】')
 
 
-def geojson_loads(x: BaseGeometry):
+@check_null
+def geojson_loads(x: (str, dict)):
   """geojson文本形式转为shapely格式"""
   from simplejson.errors import JSONDecodeError
-
-  if is_empty(x):
-    return
   if not isinstance(x, (str, dict)):
-    warnings.warn(f'Type error:【{x}】')
+    warnings.warn(f'TypeError:【{x}】')
     return
   try:
     geom = shape(geojson.loads(x)) if isinstance(x, str) else shape(x)
@@ -148,13 +133,9 @@ def geojson_loads(x: BaseGeometry):
     warnings.warn(f'{e}, 【{x}】')
 
 
-def geojson_dumps(x) -> (str, None):
+@check_shapely
+def geojson_dumps(x: BaseGeometry):
   """shapely转为geojson文本格式"""
-  if is_empty(x):
-    return
-  if not isinstance(x, BaseGeometry):
-    warnings.warn(f'TypeError:【{x}】')
-    return
   try:
     geom = geojson.Feature(geometry=x)
     return json.dumps(geom.geometry)
@@ -243,23 +224,24 @@ def ensure_multi_geom(geom):
   return geom
 
 
-def multiline2multipolygon(multiline_shapely):
+def multiline2multipolygon(multiline_shapely: MultiLineString, force=False):
   """multiline转为multipolygon，直接首尾相连"""
   coords = []
-  for line in multiline_shapely:
-    lngs = line.xy[0]
-    lats = line.xy[1]
+  for line in multiline_shapely.geoms:
+    lngs, lats = line.xy
     for i in range(len(lngs)):
       lng, lat = lngs[i], lats[i]
       point = Point((lng, lat))
-      if len(coords) >= 1:
-        if point != coords[-1]:
-          coords.append(point)
-      else:
-        coords.append(point)
+      if coords and point == coords[-1]:
+        continue
+      coords.append(point)
+  if len(coords) <= 2:
+    return
+  if not force and coords[0].distance(coords[-1]) >= 0.000001:
+    return
   try:
     return MultiPolygon([Polygon(coords)])
-  except ValueError as e:
+  except Exception as e:
     warnings.warn(f'{e}，{multiline_shapely}')
     return
 

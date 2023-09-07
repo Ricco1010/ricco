@@ -1,5 +1,8 @@
 import time
+import warnings
 
+import pandas as pd
+from shapely.geometry.base import BaseGeometry
 from tqdm import tqdm
 
 
@@ -40,7 +43,46 @@ def timer(func):
     start_time = time.time()
     result = func(*args, **kwargs)
     end_time = time.time()
-    print(f'costs：{end_time - start_time:.2f} s')
+    print(f'Costs：{end_time - start_time:.2f} s')
     return result
+
+  return wrapper
+
+
+def check_null(func):
+  """检查第一个参数是否非空，若为空则直接返回空值"""
+
+  def wrapper(*args, **kwargs):
+    if pd.isna(args[0]):
+      return
+    return func(*args, **kwargs)
+
+  return wrapper
+
+
+def check_str(func):
+  """检查第一个参数是否是字符串，若非字符串则警告并返回空值"""
+
+  def wrapper(*args, **kwargs):
+    if pd.isna(args[0]):
+      return
+    if not isinstance(args[0], str):
+      warnings.warn(f'TypeError:【{args[0]}】')
+      return
+    return func(*args, **kwargs)
+
+  return wrapper
+
+
+def check_shapely(func):
+  """检查第一个参数是否是shapely格式，若非shapely格式则警告并返回空值"""
+
+  def wrapper(*args, **kwargs):
+    if pd.isna(args[0]):
+      return
+    if not isinstance(args[0], BaseGeometry):
+      warnings.warn(f'TypeError:【{args[0]}】')
+      return
+    return func(*args, **kwargs)
 
   return wrapper
