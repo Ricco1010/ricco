@@ -42,7 +42,7 @@ def test_best_unique():
       best_unique(input_df,
                   key_cols=['k'],
                   value_cols=['v1'],
-                  filter=True,
+                  filter_cols=True,
                   drop_if_null='all'),
       res_df3
   )

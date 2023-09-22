@@ -253,8 +253,7 @@ def auto2x(df, geometry_format: str, geometry='geometry'):
     geometry_format: 要转换为的geometry类型，支持shapely,wkb,wkt,geojson
     geometry: geometry列的列名，默认为“geometry”
   """
-  __geom_format = infer_geom_format(df[geometry])
-  if __geom_format == geometry_format:
+  if infer_geom_format(df[geometry]) == geometry_format:
     return df
   df = auto2shapely(df, geometry=geometry)
   return shapely2x(df, geometry_format=geometry_format, geometry=geometry)
@@ -400,7 +399,7 @@ def _ensure_geometry(_df,
         delete=False,
     )[[geometry]]
 
-  raise KeyError(f'文件中必须有["lng", "lat"]列或"{geometry}"列')
+  raise KeyError(f'文件中必须有{lng},{lat}列或{geometry}列')
 
 
 def mark_tags_v2(
@@ -538,20 +537,6 @@ def buffer(df: pd.DataFrame,
     geo_format: str, 输出的缓冲区geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
   Returns:
     包含缓冲区geometry的DataFrame
-  Examples:
-    >>> df_example = pd.DataFrame({'id': [1, 2, 3],
-    >>>                    'lng': [116.18601, 116.18366, 116.18529],
-    >>>                    'lat': [40.02894, 40.03550, 40.03565]})
-    >>> df_example
-        id        lng       lat
-    0   1  116.18601  40.02894
-    1   2  116.18366  40.03550
-    2   3  116.18529  40.03565
-    >>> buffer(df=df_example, radius=1500, city='北京', geo_type='point')
-        id        lng       lat                                    buffer_geometry
-    0   1  116.18601  40.02894  0103000020E6100000010000004100000092A0207A070D...
-    1   2  116.18366  40.03550  0103000020E6100000010000004100000071178800E10C...
-    2   3  116.18529  40.03565  0103000020E610000001000000410000008A2570B5FB0C...
   """
   df = df.copy()
   assert df.index.is_unique, 'df索引列必须唯一'
@@ -599,10 +584,10 @@ def spatial_agg(point_df: pd.DataFrame,
 def split_multi_to_rows(df, geometry='geometry', geometry_format=None):
   """将多部件要素拆解为多行的单部件要素"""
 
-  def to_geoms(geometry):
-    if is_empty(geometry):
+  def to_geoms(x):
+    if is_empty(x):
       return []
-    return [i for i in geometry.geoms]
+    return [i for i in x.geoms]
 
   lo = df.shape[0]
   if not geometry_format:

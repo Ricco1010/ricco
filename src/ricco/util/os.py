@@ -142,7 +142,8 @@ def rm_scratch_file(dir_path, days, rm_hidden_file=False):
 def dir_iter(root,
              exts: (list, str) = None,
              abspath=False,
-             recursive=False):
+             recursive=False,
+             ignore_hidden_files=True):
   """
   文件夹中的文件路径生成器，用于遍历文件夹中的文件
   Args:
@@ -150,12 +151,15 @@ def dir_iter(root,
     exts: 文件扩展名，不指定则返回所有文件
     abspath: 是否返回绝对路径
     recursive: 是否循环遍历更深层级的文件，默认只返回当前目录下的文件
+    ignore_hidden_files: 是否忽略隐藏文件
   """
   if exts:
     exts = ensure_list(exts)
 
   for dirpath, _, filenames in os.walk(root):
     for _name in filenames:
+      if ignore_hidden_files and _name.startswith('.'):
+        continue
       filepath = os.path.join(dirpath, _name)
       filepath = os.path.abspath(filepath) if abspath else filepath
       # 不符合扩展名要求忽略
@@ -179,8 +183,15 @@ def dir_iter_list(root,
     exts: 文件扩展名，不指定则返回所有文件
     abspath: 是否返回绝对路径
     recursive: 是否循环遍历更深层级的文件，默认只返回当前目录下的文件
+    reverse: 路径列表是否倒序
   """
   path_list = []
-  for p in dir_iter(root, exts, abspath, recursive):
+  for p in dir_iter(root, exts, abspath, recursive, ignore_hidden_files=True):
     path_list.append(p)
   return sorted(path_list, reverse=reverse)
+
+
+def single_ext(path_list):
+  ext_list = list(set([extension(p) for p in path_list]))
+  if len(ext_list) == 1:
+    return ext_list[0]
