@@ -3,7 +3,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-
+from .graph import query_from_graph
 from ..util.assertion import assert_series_unique
 from ..util.decorator import progress
 from ..util.decorator import timer
@@ -18,7 +18,7 @@ from ..util.util import to_float
 def best_unique(df: pd.DataFrame,
                 key_cols: (list, str),
                 value_cols: (str, list) = None,
-                filter=False,
+                filter_cols=False,
                 drop_if_null=None) -> pd.DataFrame:
   """
   优化的去重函数：
@@ -27,7 +27,7 @@ def best_unique(df: pd.DataFrame,
     df:
     key_cols: 按照哪些列去重
     value_cols: 优先去除那些列的空值，该列表是有顺序的
-    filter:
+    filter_cols: 是否只保留key_cols和value_cols里面的列，默认False
     drop_if_null: 如何处理value_cols内值为空的列；'all'：都为空时删除该列，'any'：任意一列为空时就删除，None：保留空白
   """
   warnings.warn('即将弃用，请使用keep_best_unique', DeprecationWarning)
@@ -44,7 +44,7 @@ def best_unique(df: pd.DataFrame,
         how='all')
   df = df.sort_values(value_cols, na_position='first')
   df = df.drop_duplicates(key_cols, keep='last', ignore_index=True)
-  if filter:
+  if filter_cols:
     df = df[key_cols + value_cols]
   return df
 
@@ -367,3 +367,59 @@ def df_iter(df: pd.DataFrame, *, chunksize: int = None, parts: int = None):
       yield df.iloc[low:, :]
     else:
       yield df.iloc[low: high, :]
+
+
+def create_columns(df: pd.DataFrame, columns: list, value=None):
+  """
+  创建新的列，默认为空
+  Args:
+    df: DataFrame
+    columns: 列名
+    value: 值，默认为空
+  """
+  columns = ensure_list(columns)
+  for c in columns:
+    if c not in df:
+      df[c] = value
+  return df
+
+
+@progress
+def expand_graph(df: pd.DataFrame,
+                 start_level,
+                 c_key='id',
+                 c_level_type='level_type',
+                 c_parent_key='parent_id',
+                 c_info=None):
+  """
+  将图数据展开为宽表
+  Args:
+    df: 要展开的图数据
+    start_level: 开始展开的层级，一般是最低层级
+    c_key: 关键列
+    c_level_type: 层级类型列
+    c_parent_key: 父级关键列
+    c_info: 要保留的其他列
+  """
+  assert start_level in df[c_level_type].unique(), 'start_level不在level_type中'
+  df_base = df.copy()
+  graph_df = df.copy()
+  graph_df[c_level_type] = graph_df[c_level_type].apply(
+      lambda lp: f'{lp}_{c_key}'
+  )
+  df = df[df[c_level_type] == start_level]
+  df = df[[c_key]].reset_index(drop=True)
+  df['extra'] = df[c_key].progress_apply(
+      lambda x: query_from_graph(
+          key=x, graph_df=graph_df, c_key=c_key,
+          c_level_type=c_level_type, c_parent_key=c_parent_key)
+  )
+  df = expand_dict(df, 'extra')
+  if c_info:
+    c_info = ensure_list(c_info)
+    for level_type in df_base[c_level_type].unique():
+      df_level = df_base[[c_key, *c_info]]
+      df_level.columns = [f'{level_type}_{c}' for c in df_level]
+      if f'{level_type}_{c_key}' in df_level:
+        df = df.merge(df_level, on=f'{level_type}_{c_key}', how='left')
+  return df

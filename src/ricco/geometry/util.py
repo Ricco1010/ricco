@@ -22,7 +22,6 @@ from ..util.decorator import check_null
 from ..util.decorator import check_shapely
 from ..util.decorator import check_str
 from ..util.util import ensure_list
-from ..util.util import first_notnull_value
 from ..util.util import is_empty
 from ..util.util import is_hex
 from ..util.util import not_empty
@@ -208,11 +207,16 @@ def _infer_geom_format(x):
   return GeomFormat.unknown
 
 
-def infer_geom_format(series: (str, list, tuple, pd.Series)):
+def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
   """推断geometry格式"""
-  if isinstance(series, pd.Series):
-    series = series.unique().tolist()
-  return _infer_geom_format(first_notnull_value(series))
+  if is_empty(series):
+    return GeomFormat.unknown
+  assert isinstance(series, (str, list, tuple, pd.Series, BaseGeometry))
+  if isinstance(series, (list, tuple, pd.Series)):
+    for i in series:
+      if not_empty(i):
+        return _infer_geom_format(i)
+  return _infer_geom_format(series)
 
 
 def ensure_multi_geom(geom):
@@ -274,7 +278,7 @@ def ensure_lnglat(lnglat) -> tuple:
     geom = geojson_loads(lnglat)
   else:
     raise ValueError('未知的地理类型')
-  return (geom.x, geom.y)
+  return geom.x, geom.y
 
 
 def distance(

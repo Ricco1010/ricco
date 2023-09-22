@@ -61,7 +61,7 @@ class Docx:
     self.add_title(text, 4)
 
   def add_normal_p(self, text: str):
-    '''添加普通段落'''
+    """添加普通段落"""
     self.doc.add_paragraph(text)
 
   def add_paragraph_color(self, text: str, rgb: (list, tuple)):

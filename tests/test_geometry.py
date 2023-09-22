@@ -3,7 +3,9 @@ from pandas.testing import assert_frame_equal
 from shapely.geometry import Point
 
 from ricco.geometry.df import mark_tags_v2
+from ricco.geometry.util import GeomFormat
 from ricco.geometry.util import get_epsg
+from ricco.geometry.util import infer_geom_format
 from ricco.geometry.util import is_geojson
 from ricco.geometry.util import is_shapely
 from ricco.geometry.util import is_wkb
@@ -274,3 +276,14 @@ def test_is_xxx():
   assert is_wkb('0101000020E6100000000000000000F03F000000000000F03F') is True
   assert is_shapely(Point(1, 1)) is True
   assert is_geojson('{"type": "Point", "coordinates": [1.0, 1.0]}') is True
+
+
+def test_infer_geom_format():
+  assert infer_geom_format(None) == GeomFormat.unknown
+  assert infer_geom_format(
+      '0101000020E61000009A9999999999F13F9A9999999999F13F') == GeomFormat.wkb
+  assert infer_geom_format(Point(1.1, 1.1)) == GeomFormat.shapely
+  assert infer_geom_format('POINT (1.1 1.1)') == GeomFormat.wkt
+  assert infer_geom_format(['POINT (1.1 1.1)']) == GeomFormat.wkt
+  assert infer_geom_format(('POINT (1.1 1.1)',)) == GeomFormat.wkt
+  assert infer_geom_format(pd.Series(['POINT (1.1 1.1)'])) == GeomFormat.wkt

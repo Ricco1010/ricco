@@ -4,6 +4,12 @@ from ..geometry.coord_trans import gcj2bd
 from ..geometry.coord_trans import gcj2wgs
 from ..geometry.util import is_empty
 
+DEFAULT_RES = {
+  'rv': None, 'score': -1,
+  'lng': None, 'lat': None,
+  'source': None
+}
+
 
 class MapUrls:
   # 百度地理编码
@@ -36,29 +42,36 @@ def gcj2xx(lnglat, srs):
 def error_baidu(js):
   if js['status'] != 0:
     warnings.warn(
-        '接口错误，状态码【%s】，错误原因请查阅：'
-        'https://lbsyun.baidu.com/index.php?title=webapi/appendix' % js[
-          'status']
-    )
+        f'接口错误，状态码【{js["status"]}】，错误原因请查阅：https://lbsyun.baidu.com/index.php?title=webapi/appendix')
 
 
 def error_amap(js):
   if js['status'] != '1':
     warnings.warn(
-        '接口错误，状态码【%s】，错误原因请查阅：'
-        'https://lbs.amap.com/api/webservice/guide/tools/info' % js['infocode']
-    )
+        f'接口错误，状态码【{js["infocode"]}】，错误原因请查阅：https://lbs.amap.com/api/webservice/guide/tools/info')
 
 
 def fix_address(string):
   if is_empty(string):
     return ''
-  return str(string)
+  string = str(string)
+  for _ in ['&', '%', '#', '@', '$', '|']:
+    string = string.replace(_, '')
+  return string
+
+
+def fix_city(string):
+  if is_empty(string):
+    return '中国'
+  return str(string).rstrip('市')
 
 
 def rv_score(city, keywords, rv):
   from fuzzywuzzy import fuzz
+  if not all([keywords, rv]):
+    return -1
+  city = fix_address(city)
   return max(
-      fuzz.ratio(rv, keywords.lstrip(city)),
-      fuzz.partial_ratio(rv, keywords.lstrip(city))
+      fuzz.ratio(rv.lstrip(city), keywords.lstrip(city)),
+      fuzz.partial_ratio(rv.lstrip(city), keywords.lstrip(city))
   )

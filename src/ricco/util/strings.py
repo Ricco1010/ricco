@@ -1,3 +1,7 @@
+from ..resource.bd_region import cities
+from ..resource.bd_region import regions
+from ..resource.patterns import AddressPattern
+from ..util.district import District
 from .util import get_shortest_element
 from .util import is_empty
 from .util import re_fast
@@ -95,21 +99,62 @@ def drop_repeat_string(string,
   return string
 
 
-def extract_city(string: str):
-  """从字符串中提取城市、区县"""
-  from ..resource.city_id import CITI_LIST
-
+def extract_possible_region(string: str) -> list:
+  """从字符串中提取可能的城市、区县"""
   if is_empty(string):
-    return
+    return []
   if not isinstance(string, str):
-    return
-  for pattern in [
-    '(?:自治区|省|新疆|西藏|广西|内蒙古|宁夏)([\\u4e00-\\u9fa5]{2,4}?市)',
-    '^([\\u4e00-\\u9fa5]{2,3}?市)',
-    '^([\\u4e00-\\u9fa5]{2,3}?[区县])',
-  ]:
+    return []
+  ds = District()
+  ls = []
+  city_num, region_num = 0, 0
+  # 根据正则表达式提取城市和区县
+  for pattern in [*AddressPattern.cities, *AddressPattern.regions]:
     if res := re_fast(pattern, string, warning=False):
-      return res
-  for city in CITI_LIST:
-    if city in string:
-      return city
+      if ds.is_city(res):
+        ls.append(res)
+        city_num += 1
+      if ds.is_region(res):
+        ls.append(res)
+        region_num += 1
+  # 没提取出区县时，按照字符串匹配尝试提取
+  if region_num == 0:
+    for cr in regions():
+      if cr in string:
+        ls.append(cr)
+        break
+  # 没提取出城市时，按照字符串匹配尝试提取
+  if city_num == 0:
+    for cr in cities():
+      if cr in string:
+        ls.append(cr)
+        break
+  return list(set(ls))
+
+
+def get_city_and_region(string) -> tuple:
+  """从字符串中提取城市、区县"""
+  ds = District()
+  city_list, region_list = [], []
+  ls = extract_possible_region(string)
+  for i in ls:
+    if ds.is_city(i):
+      city_list.append(i)
+    if ds.is_region(i):
+      region_list.append(i)
+  if region_list and not city_list:
+    for r in region_list:
+      if _city := ds.city(r, warning=False):
+        city_list.append(_city)
+  return (
+    city_list[0] if city_list else None,
+    region_list[0] if region_list else None,
+    city_list,
+    region_list
+  )
+
+
+def extract_city(string: str):
+  """从字符串中提取城市（可能包含县级市）"""
+  res = get_city_and_region(string)
+  return res[0] if res[0] else res[1]

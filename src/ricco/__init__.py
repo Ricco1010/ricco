@@ -1,4 +1,4 @@
-__version__ = '1.2.5'
+__version__ = '1.2.6'
 
 from .etl import file
 from .etl import load
@@ -17,6 +17,7 @@ from .etl.transformer import table2dict
 from .etl.transformer import update_df
 from .geocode.geocode import geocode
 from .geocode.geocode import geocode_df
+from .geocode.geocode import geocode_v2
 from .geometry import coord_trans
 from .geometry import df as geom
 from .geometry.coord_trans import coord_trans_geom
@@ -47,6 +48,7 @@ from .util.assertion import assert_not_null
 from .util.assertion import assert_series_digit
 from .util.assertion import assert_series_unique
 from .util.assertion import assert_values_in
+from .util.district import District
 from .util.dt import DT
 from .util.dt import auto2date
 from .util.dt import excel2date
@@ -62,6 +64,7 @@ from .util.os import path_name
 from .util.os import split_path
 from .util.phone_number import PhoneNumber
 from .util.strings import drop_repeat_string
+from .util.strings import get_city_and_region
 from .util.util import and_
 from .util.util import ensure_list
 from .util.util import extract_num

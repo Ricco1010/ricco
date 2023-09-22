@@ -3,7 +3,7 @@ import warnings
 
 from ..geometry.df import mark_tags_v2
 from .strings import drop_repeat_string
-from .util import union_str
+from .util import union_str_v2
 
 
 def make_building_address(
@@ -13,7 +13,7 @@ def make_building_address(
     c_lu=None,
     c_nong=None,
     c_xiaoqu=None,
-    c_dst='楼宇地址'):
+    c_dst: str = '楼宇地址'):
   """
   根据【路弄号】或【小区地址和号】生成新版楼宇地址，格式为xx路xx弄xx号
 
@@ -32,18 +32,18 @@ def make_building_address(
     warnings.warn(f'原数据中已存在{c_dst}列，已替换')
   if all([c_lu, c_nong]):
     df[c_dst] = df.apply(
-        lambda r: union_str([r[c_lu], r[c_nong], r[c_hao]]), axis=1)
+        lambda r: union_str_v2(r[c_lu], r[c_nong], r[c_hao]), axis=1)
   elif c_xiaoqu:
     df[c_dst] = df.apply(
         lambda r: drop_repeat_string(
-            union_str(
-                [r[c_xiaoqu].split('[')[0], r[c_hao]]
+            union_str_v2(
+                r[c_xiaoqu].split('[')[0], r[c_hao]
             )
         ),
         axis=1
     )
   else:
-    raise KeyError('[lu, nong] 和 [xiaoqu]不能同时缺失')
+    raise KeyError('lu,nong和xiaoqu不能同时缺失')
   return df
 
 
@@ -73,7 +73,8 @@ class BuildingAddress:
   def __init__(self, building: str):
     self.building = building
 
-  def is_valid(self, building):
+  @staticmethod
+  def is_valid(building):
     if re.match('^.*路(\d+弄)?\d+-?\d*号楼?$', building):
       return True
     return False
@@ -120,4 +121,4 @@ class BuildingAddress:
 
   @property
   def std(self):
-    return union_str([self.road, self.lane, self.num])
+    return union_str_v2(self.road, self.lane, self.num)

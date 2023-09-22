@@ -1,10 +1,14 @@
+import warnings
+
 import requests
 
 from ..util.util import is_empty
+from .util import DEFAULT_RES
 from .util import MapKeys
 from .util import MapUrls
 from .util import error_baidu
 from .util import fix_address
+from .util import fix_city
 from .util import gcj2xx
 from .util import rv_score
 
@@ -22,7 +26,6 @@ def address_json(city: str, address: str, key=None):
   error_baidu(js)
   if js['status'] == 0:
     return js['result']
-  return
 
 
 def place_json(city: str, keywords: str, key=None):
@@ -36,7 +39,6 @@ def place_json(city: str, keywords: str, key=None):
   error_baidu(js)
   if js['status'] == 0 and len(js['results']) >= 1:
     return js['results'][0]
-  return
 
 
 def get_baidu(*,
@@ -47,77 +49,63 @@ def get_baidu(*,
               with_detail=True,
               key=None):
   """脉策geocode服务"""
+  assert source in ('baidu', 'baidu_poi')
   if is_empty(address):
     return
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
   req = requests.get(url)
   if req.status_code == 200:
     return req.json()['result'][0]['extra']
-  elif req.status_code in (400, 403):
+  if req.status_code in (400, 403):
     if source == 'baidu':
       return address_json(city=city, address=address, key=key)
-    elif source == 'baidu_poi':
+    if source == 'baidu_poi':
       return place_json(city=city, keywords=address, key=key)
-    else:
-      raise ValueError('source参数错误')
   else:
-    return
+    warnings.warn(f'Unexpected status_code：{req.status_code}，{city}|{address}')
 
 
-def get_address_baidu(city: str, address: str, srs='wgs84', key=None):
+def get_address_baidu(city: str, address: str, srs='wgs84', key=None) -> dict:
   if is_empty(address):
-    return {
-      'rv': None,
-      'score': 0,
-      'lng': None,
-      'lat': None,
-    }
-  city = city.rstrip('市')
+    return DEFAULT_RES
+  result = DEFAULT_RES.copy()
+  source = 'baidu'
+  city = fix_city(city)
   address = fix_address(address)
-  res = get_baidu(city=city, address=address, source='baidu', key=key)
-  if res:
-    lnglat = [res['location']['lng'], res['location']['lat']]
-    if res['precise'] == 1:
-      score = 100
+  address_dict = get_baidu(city=city, address=address, source=source, key=key)
+  if address_dict:
+    if address_dict['precise'] == 1:
+      result['score'] = 100
+    elif _score := address_dict.get('comprehension'):
+      result['score'] = _score
     else:
-      score = res.get('comprehension') if res.get('comprehension') else res.get(
-          'confidence')
-    latlng = gcj2xx(lnglat, srs=srs)
-    lng = latlng[1]
-    lat = latlng[0]
-  else:
-    score, lng, lat = 0, None, None
-  return {
-    'rv': None,
-    'score': score,
-    'lng': lng,
-    'lat': lat,
-  }
+      result['score'] = address_dict.get('confidence')
+    latlng = gcj2xx(
+        [address_dict['location']['lng'], address_dict['location']['lat']],
+        srs=srs
+    )
+    result['lng'] = latlng[1]
+    result['lat'] = latlng[0]
+    result['source'] = source
+  return result
 
 
-def get_place_baidu(city: str, keywords: str, srs='wgs84', key=None):
+def get_place_baidu(city: str, keywords: str, srs='wgs84', key=None) -> dict:
   if is_empty(keywords):
-    return {
-      'rv': None,
-      'score': 0,
-      'lng': None,
-      'lat': None,
-    }
-  city = city.rstrip('市')
+    return DEFAULT_RES
+  result = DEFAULT_RES.copy()
+  source = 'baidu_poi'
+  city = fix_city(city)
   keywords = fix_address(keywords)
-  res = get_baidu(city=city, address=keywords, source='baidu_poi', key=key)
-  if res:
-    rv = res['name']
-    lnglat = [res['location']['lng'], res['location']['lat']]
-    latlng = gcj2xx(lnglat, srs=srs)
-    lng = latlng[1]
-    lat = latlng[0]
-    score = rv_score(city, keywords, rv)
-  else:
-    rv, lng, lat, score = None, None, None, 0
-  return {
-    'rv': rv,
-    'score': score,
-    'lng': lng,
-    'lat': lat,
-  }
+  poi_dict = get_baidu(city=city, address=keywords, source=source, key=key)
+  if poi_dict:
+    result['rv'] = poi_dict['name']
+    latlng = gcj2xx(
+        [poi_dict['location']['lng'], poi_dict['location']['lat']],
+        srs=srs
+    )
+    result['lng'] = latlng[1]
+    result['lat'] = latlng[0]
+    result['score'] = rv_score(city, keywords, poi_dict['name'])
+    result['source'] = source
+  return result

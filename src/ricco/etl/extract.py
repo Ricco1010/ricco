@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from ..util.os import dir_iter
 from ..util.os import extension
+from ..util.util import ensure_list
 
 
 def max_grid():
@@ -29,6 +30,7 @@ def rdxls(
     sheet_contains: str = None,
     errors='raise',
     dtype=None,
+    columns=None,
 ) -> pd.DataFrame:
   """
   读取excel文件
@@ -42,7 +44,8 @@ def rdxls(
   assert errors in ('coerce', 'raise'), '可选参数为coerce和raise'
   if sheet_name == 0:
     if sheet_contains is not None:
-      df = pd.read_excel(filename, sheet_name=None, dtype=dtype)
+      df = pd.read_excel(filename, sheet_name=None, dtype=dtype,
+                         usecols=columns)
       sheet_list = [i for i in df.keys() if sheet_contains in i]
       if len(sheet_list) != 0:
         sheet_name = sheet_list[0]
@@ -60,7 +63,8 @@ def rdxls(
           raise ValueError(f'没有包含{sheet_contains}的sheet，请检查')
   else:
     print(f"sheet:  <'{sheet_name}'>")
-  return pd.read_excel(filename, sheet_name=sheet_name, dtype=dtype)
+  return pd.read_excel(filename, sheet_name=sheet_name, dtype=dtype,
+                       usecols=columns)
 
 
 def rdf(
@@ -71,7 +75,7 @@ def rdf(
     encoding: str = 'utf-8-sig',
     info: bool = False,
     dtype=None,
-    columns=None,
+    columns: list = None,
 ) -> pd.DataFrame:
   """
   常用文件读取函数，支持.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml'
@@ -82,8 +86,11 @@ def rdf(
     encoding: 编码
     info: 是否打印数据集情况（shape & columns）
     dtype: 指定读取列的类型
+    columns: 指定读取的列名
   """
   max_grid()
+  if columns:
+    columns = ensure_list(columns)
   ex = extension(file_path)
   if ex == '.csv':
     try:
@@ -101,7 +108,7 @@ def rdf(
   elif ex in ('.xls', '.xlsx'):
     df = rdxls(
         file_path, sheet_name=sheet_name, sheet_contains=sheet_contains,
-        dtype=dtype
+        dtype=dtype, columns=columns
     )
   elif ex == '.shp':
     try:
@@ -138,22 +145,25 @@ def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
   return pd.DataFrame(records)
 
 
-def rdf_by_dir(dir_path, exts=None, ignore_index=True,
-               info=False) -> pd.DataFrame:
+def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
+               columns=None, info=False) -> pd.DataFrame:
   """
   从文件夹中读取所有文件并拼接成一个DataFrame
   Args:
     dir_path: 文件夹路径
     exts: 要读取的文件扩展名
     ignore_index: 是否忽略索引
+    recursive: 是否循环遍历更深层级的文件夹
+    columns: 指定列名
     info: 是否打印基本信息（列名、行列数）
   """
   path_list = []
-  for p in dir_iter(dir_path, exts=exts):
+  for p in dir_iter(dir_path, exts=exts, ignore_hidden_files=True,
+                    recursive=recursive):
     path_list.append(p)
   dfs = []
   for filename in tqdm(path_list):
-    dfs.append(rdf(filename))
+    dfs.append(rdf(filename, columns=columns))
   df = pd.concat(dfs, ignore_index=ignore_index)
   if info:
     print(f'shape: {df.shape}')

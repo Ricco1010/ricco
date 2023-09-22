@@ -269,6 +269,7 @@ def fuzz_match(string: str, string_set: (list, pd.Series, tuple)):
   Returns: 字符串及相似度组成的列表
   """
   from fuzzywuzzy import fuzz
+  string_set = [str(i) for i in string_set if not_empty(i)]
   if is_empty(string) or is_empty(string_set):
     return None, None, None
   if string in string_set:
@@ -396,8 +397,7 @@ def random_name():
   from ..resource.names import FirstName
   from ..resource.names import LastName
   c = [random.choice(FirstName)]
-  l = random.randint(1, 2)
-  for i in range(l):
+  for i in range(random.randint(1, 2)):
     c.append(random.choice(LastName))
   return ''.join(c)
 

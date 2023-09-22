@@ -20,12 +20,11 @@ def auto2date(string, errors='raise'):
     string = string.split(_hour)[0]
   if ('年' in string) & ('月' in string) & ('日' in string):
     return pd.to_datetime(string, format='%Y年%m月%d日')
-  elif ('年' in string) & ('月' in string):
+  if ('年' in string) & ('月' in string):
     return pd.to_datetime(string, format='%Y年%m月')
-  elif '年' in string:
+  if '年' in string:
     return pd.to_datetime(string, format='%Y年')
-  else:
-    return pd.to_datetime(string, errors=errors)
+  return pd.to_datetime(string, errors=errors)
 
 
 def is_valid_date(string, na=False):

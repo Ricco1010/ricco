@@ -25,91 +25,92 @@ class SRS:
   gcj02 = 'gcj02'
 
 
-def outOfChina(lat, lng):
+def out_of_china(lat, lng):
   return not (72.004 <= lng <= 137.8347 and 0.8293 <= lat <= 55.8271)
 
 
 def transform(x, y):
   xy = x * y
-  absX = math.sqrt(abs(x))
-  xPi = x * math.pi
-  yPi = y * math.pi
-  d = 20.0 * math.sin(6.0 * xPi) + 20.0 * math.sin(2.0 * xPi)
+  abs_x = math.sqrt(abs(x))
+  xpi = x * math.pi
+  ypi = y * math.pi
+  d = 20.0 * math.sin(6.0 * xpi) + 20.0 * math.sin(2.0 * xpi)
 
   lat = d
   lng = d
 
-  lat += 20.0 * math.sin(yPi) + 40.0 * math.sin(yPi / 3.0)
-  lng += 20.0 * math.sin(xPi) + 40.0 * math.sin(xPi / 3.0)
+  lat += 20.0 * math.sin(ypi) + 40.0 * math.sin(ypi / 3.0)
+  lng += 20.0 * math.sin(xpi) + 40.0 * math.sin(xpi / 3.0)
 
-  lat += 160.0 * math.sin(yPi / 12.0) + 320 * math.sin(yPi / 30.0)
-  lng += 150.0 * math.sin(xPi / 12.0) + 300.0 * math.sin(xPi / 30.0)
+  lat += 160.0 * math.sin(ypi / 12.0) + 320 * math.sin(ypi / 30.0)
+  lng += 150.0 * math.sin(xpi / 12.0) + 300.0 * math.sin(xpi / 30.0)
 
   lat *= 2.0 / 3.0
   lng *= 2.0 / 3.0
 
-  lat += -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * xy + 0.2 * absX
-  lng += 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * xy + 0.1 * absX
+  lat += -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * xy + 0.2 * abs_x
+  lng += 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * xy + 0.1 * abs_x
 
   return lat, lng
 
 
 def delta(lat, lng):
   ee = 0.00669342162296594323
-  dLat, dLng = transform(lng - 105.0, lat - 35.0)
-  radLat = lat / 180.0 * math.pi
-  magic = math.sin(radLat)
+  d_lat, d_lng = transform(lng - 105.0, lat - 35.0)
+  rad_lat = lat / 180.0 * math.pi
+  magic = math.sin(rad_lat)
   magic = 1 - ee * magic * magic
-  sqrtMagic = math.sqrt(magic)
-  dLat = (dLat * 180.0) / ((earthR * (1 - ee)) / (magic * sqrtMagic) * math.pi)
-  dLng = (dLng * 180.0) / (earthR / sqrtMagic * math.cos(radLat) * math.pi)
-  return dLat, dLng
+  sqrt_magic = math.sqrt(magic)
+  d_lat = (d_lat * 180.0) / (
+        (earthR * (1 - ee)) / (magic * sqrt_magic) * math.pi)
+  d_lng = (d_lng * 180.0) / (earthR / sqrt_magic * math.cos(rad_lat) * math.pi)
+  return d_lat, d_lng
 
 
-def wgs2gcj(wgsLat, wgsLng):
-  if outOfChina(wgsLat, wgsLng):
-    return wgsLat, wgsLng
-  dlat, dlng = delta(wgsLat, wgsLng)
-  return wgsLat + dlat, wgsLng + dlng
+def wgs2gcj(wgs_lat, wgs_lng):
+  if out_of_china(wgs_lat, wgs_lng):
+    return wgs_lat, wgs_lng
+  dlat, dlng = delta(wgs_lat, wgs_lng)
+  return wgs_lat + dlat, wgs_lng + dlng
 
 
-def gcj2wgs(gcjLat, gcjLng):
-  if outOfChina(gcjLat, gcjLng):
-    return gcjLat, gcjLng
-  dlat, dlng = delta(gcjLat, gcjLng)
-  return gcjLat - dlat, gcjLng - dlng
+def gcj2wgs(gcj_lat, gcj_lng):
+  if out_of_china(gcj_lat, gcj_lng):
+    return gcj_lat, gcj_lng
+  dlat, dlng = delta(gcj_lat, gcj_lng)
+  return gcj_lat - dlat, gcj_lng - dlng
 
 
-def gcj2bd(gcjLat, gcjLng):
-  if outOfChina(gcjLat, gcjLng):
-    return gcjLat, gcjLng
-  x = gcjLng
-  y = gcjLat
+def gcj2bd(gcj_lat, gcj_lng):
+  if out_of_china(gcj_lat, gcj_lng):
+    return gcj_lat, gcj_lng
+  x = gcj_lng
+  y = gcj_lat
   z = math.hypot(x, y) + 0.00002 * math.sin(y * x_pi)
   theta = math.atan2(y, x) + 0.000003 * math.cos(x * x_pi)
-  bdLng = z * math.cos(theta) + 0.0065
-  bdLat = z * math.sin(theta) + 0.006
-  return bdLat, bdLng
+  bd_lng = z * math.cos(theta) + 0.0065
+  bd_lat = z * math.sin(theta) + 0.006
+  return bd_lat, bd_lng
 
 
-def bd2gcj(bdLat, bdLng):
-  if outOfChina(bdLat, bdLng):
-    return bdLat, bdLng
-  x = bdLng - 0.0065
-  y = bdLat - 0.006
+def bd2gcj(bd_lat, bd_lng):
+  if out_of_china(bd_lat, bd_lng):
+    return bd_lat, bd_lng
+  x = bd_lng - 0.0065
+  y = bd_lat - 0.006
   z = math.hypot(x, y) - 0.00002 * math.sin(y * x_pi)
   theta = math.atan2(y, x) - 0.000003 * math.cos(x * x_pi)
-  gcjLng = z * math.cos(theta)
-  gcjLat = z * math.sin(theta)
-  return gcjLat, gcjLng
+  gcj_lng = z * math.cos(theta)
+  gcj_lat = z * math.sin(theta)
+  return gcj_lat, gcj_lng
 
 
-def wgs2bd(wgsLat, wgsLng):
-  return gcj2bd(*wgs2gcj(wgsLat, wgsLng))
+def wgs2bd(wgs_lat, wgs_lng):
+  return gcj2bd(*wgs2gcj(wgs_lat, wgs_lng))
 
 
-def bd2wgs(bdLat, bdLng):
-  return gcj2wgs(*bd2gcj(bdLat, bdLng))
+def bd2wgs(bd_lat, bd_lng):
+  return gcj2wgs(*bd2gcj(bd_lat, bd_lng))
 
 
 _fn_mapping = {

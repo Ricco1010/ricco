@@ -139,7 +139,7 @@ def fix_contains(gdf: gpd.GeoDataFrame,
   else:
     contains_res.loc[contains_res['is_contains'], geo_col] = Polygon()
   contains_res = contains_res.groupby('index').agg(
-      {geo_col: lambda df: unary_union(df.values)})
+      {geo_col: lambda r: unary_union(r.values)})
   res = gdf.drop(geo_col, axis=1).join(contains_res, how='left')
   return contains_num, gpd.GeoDataFrame(res, crs=4326, geometry=geo_col)
 
@@ -188,7 +188,7 @@ def fix_overlap(gdf: gpd.GeoDataFrame,
     intersects = (
       intersects
       .groupby(['overlap_index_1', 'index_1'])
-      .agg({geo_col: lambda df: unary_union(df.values)})
+      .agg({geo_col: lambda r: unary_union(r.values)})
       .reset_index()
       .rename(columns={'overlap_index_1': 'overlap_index',
                        'index_1': 'index',
@@ -207,7 +207,7 @@ def fix_overlap(gdf: gpd.GeoDataFrame,
         axis=1)
 
     res = intersects.groupby('index').agg(
-        {geo_col: lambda df: unary_union(df.values)})
+        {geo_col: lambda r: unary_union(r.values)})
     gdf_clear = gdf.drop(geo_col, axis=1).join(res, how='left')
     return gpd.GeoDataFrame(gdf_clear, geometry=geo_col, crs=4326)
 
@@ -242,6 +242,9 @@ def topology_check(gdf: gpd.GeoDataFrame,
   2. 检查面数据是否自相交并修复
   3. 检查面数据是否重叠并修复
   Args:
+    gdf: 要进行拓扑检查的GeoDataFrame
+    is_fix: 是否修复
+    geo_col: geometry列的列名
     fill_intersects: 是否填满相交的区域，如果为True的话，两个面相交的区域会随机分配到其中一个面内
     keep_contains: fill_intersects为True时才有效，即是否保留被包含的面
   """

@@ -1,12 +1,14 @@
-import logging
+import warnings
 
 import requests
 
 from ..util.util import is_empty
+from .util import DEFAULT_RES
 from .util import MapKeys
 from .util import MapUrls
 from .util import error_amap
 from .util import fix_address
+from .util import fix_city
 from .util import gcj2xx
 from .util import rv_score
 
@@ -24,7 +26,6 @@ def address_json(city: str, address: str, key=None):
   error_amap(js)
   if js['status'] == '1' and int(js['count']) >= 1:
     return js['geocodes'][0]
-  return
 
 
 def place_json(city: str, keywords: str, key=None):
@@ -38,7 +39,6 @@ def place_json(city: str, keywords: str, key=None):
   error_amap(js)
   if js['status'] == '1' and int(js['count']) >= 1:
     return js['pois'][0]
-  return
 
 
 def get_amap(*,
@@ -49,6 +49,7 @@ def get_amap(*,
              disable_cache=False,
              key=None):
   """脉策geocode服务"""
+  assert source in ('amap', 'amap_poi')
   if is_empty(address):
     return
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
@@ -57,69 +58,50 @@ def get_amap(*,
     try:
       return req.json()['result'][0]['extra']
     except Exception as e:
-      logging.warning(f'{e}，{req}')
+      warnings.warn(f'{e}，{req}')
       return
-  elif req.status_code in (400, 403):
+  if req.status_code in (400, 403):
     if source == 'amap':
       return address_json(city=city, address=address, key=key)
-    elif source == 'amap_poi':
+    if source == 'amap_poi':
       return place_json(city=city, keywords=address, key=key)
-    else:
-      raise ValueError('source参数错误')
   else:
-    return
+    warnings.warn(f'Unexpected status_code：{req.status_code}，{city}|{address}')
 
 
-def get_address_amap(city: str, address: str, srs: str = 'wgs84', key=None):
+def get_address_amap(city: str, address: str,
+                     srs: str = 'wgs84', key=None) -> dict:
   if is_empty(address):
-    return {
-      'rv': None,
-      'score': 0,
-      'lng': None,
-      'lat': None,
-    }
-  city = city.rstrip('市')
-  address = fix_address(address).replace('|', '')
-  address_dict = get_amap(city=city, address=address, source='amap', key=key)
+    return DEFAULT_RES
+  result = DEFAULT_RES.copy()
+  source = 'amap'
+  city = fix_city(city)
+  address = fix_address(address)
+  address_dict = get_amap(city=city, address=address, source=source, key=key)
   if address_dict:
-    rv = address_dict['formatted_address']
-    lnglat = address_dict['location'].split(',')
-    latlng = gcj2xx(lnglat, srs=srs)
-    lng = latlng[1]
-    lat = latlng[0]
-  else:
-    rv, lng, lat = None, None, None
-  return {
-    'rv': rv,
-    'score': 0,
-    'lng': lng,
-    'lat': lat,
-  }
+    result['rv'] = address_dict['formatted_address']
+    latlng = gcj2xx(address_dict['location'].split(','), srs=srs)
+    result['lng'] = latlng[1]
+    result['lat'] = latlng[0]
+    result['score'] = rv_score(city, address, address_dict['formatted_address'])
+    result['source'] = source
+  return result
 
 
-def get_place_amap(city: str, keywords: str, srs='wgs84', key=None):
+def get_place_amap(city: str, keywords: str,
+                   srs: str = 'wgs84', key=None) -> dict:
   if is_empty(keywords):
-    return {
-      'rv': None,
-      'score': 0,
-      'lng': None,
-      'lat': None,
-    }
-  city = city.rstrip('市')
+    return DEFAULT_RES
+  result = DEFAULT_RES.copy()
+  source = 'amap_poi'
+  city = fix_city(city)
   keywords = fix_address(keywords)
-  res = get_amap(city=city, address=keywords, source='amap_poi', key=key)
-  if res:
-    rv = res['name']
-    lnglat = res['location'].split(',')
-    latlng = gcj2xx(lnglat, srs=srs)
-    lng = latlng[1]
-    lat = latlng[0]
-    score = rv_score(city, keywords, rv)
-  else:
-    rv, lng, lat, score = None, None, None, 0
-  return {
-    'rv': rv,
-    'score': score,
-    'lng': lng,
-    'lat': lat,
-  }
+  poi_dict = get_amap(city=city, address=keywords, source='amap_poi', key=key)
+  if poi_dict:
+    result['rv'] = poi_dict['name']
+    latlng = gcj2xx(poi_dict['location'].split(','), srs=srs)
+    result['lng'] = latlng[1]
+    result['lat'] = latlng[0]
+    result['score'] = rv_score(city, keywords, poi_dict['name'])
+    result['source'] = source
+  return result

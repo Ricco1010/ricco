@@ -60,6 +60,7 @@ def assert_values_in(df: pd.DataFrame,
     df: 要检查的dataframe
     col: 列名
     enums: 指定的enum值，当传入dict时，包含在key和value中的值都通过
+    skip_if_not_exists: 当列不存在时是否跳过
   """
   if skip_column(df, col, skip_if_not_exists):
     return

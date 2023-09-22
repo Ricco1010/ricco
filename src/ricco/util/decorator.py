@@ -1,5 +1,6 @@
 import time
 import warnings
+from functools import wraps
 
 import pandas as pd
 from shapely.geometry.base import BaseGeometry
@@ -86,3 +87,15 @@ def check_shapely(func):
     return func(*args, **kwargs)
 
   return wrapper
+
+
+def singleton(fn):
+  @wraps(fn)
+  def decorator(*args, **kwargs):
+    instance = getattr(fn, '__singleinstance', None)
+    if instance is None:
+      instance = fn(*args, **kwargs)
+      setattr(fn, '__singleinstance', instance)
+    return instance
+
+  return decorator
