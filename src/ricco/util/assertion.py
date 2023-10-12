@@ -2,11 +2,11 @@ import warnings
 
 import pandas as pd
 
+from .base import ensure_list
+from .base import not_empty
 from .util import and_
-from .util import ensure_list
 from .util import is_digit
 from .util import is_unique_series
-from .util import not_empty
 
 
 def skip_column(df: pd.DataFrame, col: str, skip_if_not_exists: bool = True):

@@ -1,8 +1,8 @@
 import pandas as pd
 
 from ..util.assertion import assert_not_null
+from ..util.base import is_empty
 from ..util.decorator import singleton
-from ..util.util import is_empty
 
 
 @singleton

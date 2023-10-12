@@ -2,9 +2,9 @@ import os
 
 import pandas as pd
 
+from ..util.base import ensure_list
 from ..util.decorator import print_doc
 from ..util.docx import Docx
-from ..util.util import ensure_list
 from .extract import rdf
 from .stat import describe_auto
 from .stat import suspect_series_type

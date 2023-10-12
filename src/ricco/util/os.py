@@ -3,7 +3,7 @@ import logging
 import os
 import zipfile
 
-from .util import ensure_list
+from .base import ensure_list
 
 
 def ext(filepath):
@@ -76,16 +76,16 @@ def ensure_dirpath_exist(filepath):
     os.makedirs(p)
 
 
-def dir2zip(filepath, delete_exist=False, delete_origin=False):
+def dir2zip(filepath, overwrite=False, delete_origin=False):
   """压缩文件夹"""
-  zfn = filepath + '.zip'
-  if delete_exist:
-    if os.path.exists(zfn):
+  zfn = f'{filepath}.zip'
+  if os.path.exists(zfn):
+    if overwrite:
       os.remove(zfn)
-      print(f'文件已存在，delete {zfn}')
-  print(f'saving {zfn}')
+    else:
+      raise FileExistsError(f'目标文件{zfn}已存在')
   z = zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED)
-  for dirpath, dirnames, filenames in os.walk(filepath):
+  for dirpath, _, filenames in os.walk(filepath):
     for filename in filenames:
       filepath_out = os.path.join(dirpath, filename)
       filepath_in = os.path.join(os.path.split(dirpath)[-1], filename)
@@ -106,7 +106,7 @@ def get_file_counts(dir_path):
   return num
 
 
-def rm_scratch_file(dir_path, days, rm_hidden_file=False):
+def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False):
   """删除指定天数前修改过的文件"""
   dirs = [
     '/bin', '/sbin', '/usr', '/etc', '/dev', '/Applications', '/Library',
@@ -119,18 +119,15 @@ def rm_scratch_file(dir_path, days, rm_hidden_file=False):
     raise ValueError('不可指定根目录')
   timeline = datetime.datetime.now() - datetime.timedelta(days)
   # 删除过期文件
-  for dirpath, dirnames, filenames in os.walk(dir_path):
-    for filename in filenames:
-      if not rm_hidden_file:
-        continue
-      full_path = os.path.join(dirpath, filename)
-      m_time = os.path.getmtime(full_path)
-      m_time = datetime.datetime.fromtimestamp(m_time)
-      if m_time <= timeline:
-        os.remove(full_path)
-        logging.warning(f'已删除文件：{full_path}')
+  for file in dir_iter(dir_path, abspath=True, recursive=recursive,
+                       ignore_hidden_files=not rm_hidden_file):
+    m_time = os.path.getmtime(file)
+    m_time = datetime.datetime.fromtimestamp(m_time)
+    if m_time <= timeline:
+      os.remove(file)
+      logging.warning(f'已删除文件：{file}')
   # 删除空文件夹
-  for dirpath, dirnames, filenames in os.walk(dir_path):
+  for dirpath, dirnames, _ in os.walk(dir_path):
     for dirname in dirnames:
       dir_full_path = os.path.join(dirpath, dirname)
       num = get_file_counts(dir_full_path)

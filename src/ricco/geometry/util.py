@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 import warnings
 from typing import List
 
@@ -18,13 +19,14 @@ from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
 from shapely.geos import WKTReadingError
 
+from ..util.base import ensure_list
+from ..util.base import is_empty
+from ..util.base import not_empty
 from ..util.decorator import check_null
 from ..util.decorator import check_shapely
 from ..util.decorator import check_str
-from ..util.util import ensure_list
-from ..util.util import is_empty
 from ..util.util import is_hex
-from ..util.util import not_empty
+from ..util.util import isinstance_in_list
 
 
 class GeomFormat:
@@ -54,18 +56,18 @@ def get_epsg_by_lng(lng):
   lng = ensure_list(lng)
   lng = [i for i in lng if not_empty(i)]
   lng = np.median(lng)
-  key = min(lng_epsg_mapping.keys(), key=lambda x: abs(x - lng))
+  key = min(lng_epsg_mapping, key=lambda x: abs(x - lng))
   return lng_epsg_mapping.get(key)
 
 
 def get_lng_by_city(city: str):
   """获取城市所在的经度"""
   from ..resource.epsg_code import CITY_POINT
-  if city in CITY_POINT.keys():
+  if city in CITY_POINT:
     return CITY_POINT[city]['lng']
   else:
     city += '市'
-    if city in CITY_POINT.keys():
+    if city in CITY_POINT:
       return CITY_POINT[city]['lng']
     else:
       warnings.warn(f'请补充{city}的epsg信息，默认返回经度120.0')
@@ -116,7 +118,7 @@ def wkt_dumps(x: BaseGeometry):
     warnings.warn(f'{e}, 【{x}】')
 
 
-@check_null
+@check_null()
 def geojson_loads(x: (str, dict)):
   """geojson文本形式转为shapely格式"""
   from simplejson.errors import JSONDecodeError
@@ -128,7 +130,7 @@ def geojson_loads(x: (str, dict)):
     if geom.is_empty:
       return
     return geom
-  except (JSONDecodeError, AttributeError, GeometryTypeError) as e:
+  except (JSONDecodeError, AttributeError, GeometryTypeError, ValueError) as e:
     warnings.warn(f'{e}, 【{x}】')
 
 
@@ -262,23 +264,31 @@ def get_inner_point(polygon: Polygon, within=True):
   return polygon.representative_point()
 
 
+def is_valid_lnglat(lng, lat):
+  """判断经纬度是否有效"""
+  return -180 <= lng <= 180 and -90 <= lat <= 90
+
+
+def _auto2shapely(x) -> BaseGeometry:
+  """自动识别地理格式并转换为shapely格式"""
+  geom_format = infer_geom_format(x)
+  if geom_format == 'shapely':
+    return x
+  if geom_format in ('wkb', 'wkt', 'geojson'):
+    return getattr(sys.modules[__name__], f'{geom_format}_loads')(x)
+  warnings.warn(f'未知的地理格式, {x}')
+
+
 def ensure_lnglat(lnglat) -> tuple:
+  if is_empty(lnglat):
+    return np.nan, np.nan
   if isinstance(lnglat, (list, tuple)):
-    if all([isinstance(i, (float, int)) for i in lnglat]):
-      return lnglat
-    else:
-      raise TypeError('数据类型错误，经度和纬度都应该为数值型')
-  if is_shapely(lnglat):
-    geom = lnglat
-  elif is_wkt(lnglat):
-    geom = wkt_loads(lnglat)
-  elif is_wkb(lnglat):
-    geom = wkb_loads(lnglat)
-  elif is_geojson(lnglat):
-    geom = geojson_loads(lnglat)
-  else:
-    raise ValueError('未知的地理类型')
-  return geom.x, geom.y
+    assert isinstance_in_list(lnglat, (float, int)), '数据类型错误，经度和纬度都应该为数值型'
+    assert is_valid_lnglat(*lnglat), '经纬度超出范围'
+    return tuple(lnglat)
+  if geom := _auto2shapely(lnglat):
+    return geom.centroid.x, geom.centroid.y
+  raise ValueError('未知的地理类型')
 
 
 def distance(

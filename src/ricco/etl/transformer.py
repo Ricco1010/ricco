@@ -3,16 +3,19 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from .graph import query_from_graph
+
 from ..util.assertion import assert_series_unique
+from ..util.base import ensure_list
+from ..util.base import is_empty
 from ..util.decorator import progress
 from ..util.decorator import timer
 from ..util.util import and_
-from ..util.util import ensure_list
 from ..util.util import fuzz_match
-from ..util.util import is_empty
 from ..util.util import list2dict
 from ..util.util import to_float
+from ..util.util import to_str_list
+from ..util.util import valid_cpus
+from .graph import query_from_graph
 
 
 def best_unique(df: pd.DataFrame,
@@ -186,7 +189,7 @@ def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
   return series.apply(trans)
 
 
-@progress
+@timer
 def fuzz_df(df: pd.DataFrame,
             col: str,
             target_series: (list, pd.Series),
@@ -199,18 +202,20 @@ def fuzz_df(df: pd.DataFrame,
     target_series: 从何处匹配， list/pd.Series
     c_dst: 关联后输出的列名，默认为原列名+"_target"后缀
   """
-  if not c_dst:
-    c_dst = f'{col}_target'
+  from pandarallel import pandarallel
+  pandarallel.initialize(nb_workers=valid_cpus(), progress_bar=True)
 
-  df_temp = df[[col]].drop_duplicates(ignore_index=True)
+  target_series = to_str_list(target_series)
+  _df = df[df[col].notna()][[col]].drop_duplicates(ignore_index=True)
 
-  df_temp[[
+  c_dst = c_dst if c_dst else f'{col}_target'
+  _df[[
     c_dst, 'normal_score', 'partial_score'
-  ]] = df_temp.progress_apply(
+  ]] = _df.parallel_apply(
       lambda r: fuzz_match(r[col], target_series),
       result_type='expand',
       axis=1)
-  return df.merge(df_temp, on=col, how='left')
+  return df.merge(_df, on=col, how='left')
 
 
 def series_to_float(series: pd.Series, rex_method: str = 'mean') -> pd.Series:

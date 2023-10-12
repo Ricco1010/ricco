@@ -1,14 +1,16 @@
 import datetime as dt
 import re
 from datetime import datetime
+from datetime import timedelta
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
+
 from .decorator import check_null
 from .decorator import to_str
 
 
-@check_null
+@check_null()
 def auto2date(string, errors='raise'):
   """自动检查格式并输出日期"""
   if string in ['', None]:
@@ -18,9 +20,9 @@ def auto2date(string, errors='raise'):
   if '时' in string:
     _hour = re.findall('\d+时', string)[0]
     string = string.split(_hour)[0]
-  if ('年' in string) & ('月' in string) & ('日' in string):
+  if all([i in string for i in ['年', '月', '日']]):
     return pd.to_datetime(string, format='%Y年%m月%d日')
-  if ('年' in string) & ('月' in string):
+  if all([i in string for i in ['年', '月']]):
     return pd.to_datetime(string, format='%Y年%m月')
   if '年' in string:
     return pd.to_datetime(string, format='%Y年')
@@ -38,6 +40,7 @@ def is_valid_date(string, na=False):
     return False
 
 
+@check_null()
 def excel2date(dates, date_type='str'):
   """
   excel的数字样式时间格式转日期格式
@@ -46,10 +49,6 @@ def excel2date(dates, date_type='str'):
     date_type: 返回日期类型，str or date
   """
   from xlrd import xldate_as_datetime
-
-  if pd.isna(dates):
-    return
-
   dates = str(dates)
   if re.match('^\d{4,5}$', dates):
     _date = datetime.strftime(xldate_as_datetime(int(dates), 0), '%Y-%m-%d')
@@ -140,3 +139,11 @@ class DT:
 
   def date_move(self, years=0, months=0, days=0):
     return self.date + relativedelta(years=years, months=months, days=days)
+
+  @property
+  @to_str
+  def monday_of_this_week(self):
+    weekday = self.date.isoweekday()
+    if weekday == 1:
+      return self.date
+    return self.date - timedelta(weekday - 1)

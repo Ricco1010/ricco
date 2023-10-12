@@ -1,4 +1,4 @@
-__version__ = '1.2.6'
+__version__ = '1.2.7'
 
 from .etl import file
 from .etl import load
@@ -48,6 +48,9 @@ from .util.assertion import assert_not_null
 from .util.assertion import assert_series_digit
 from .util.assertion import assert_series_unique
 from .util.assertion import assert_values_in
+from .util.base import ensure_list
+from .util.base import is_empty
+from .util.base import not_empty
 from .util.district import District
 from .util.dt import DT
 from .util.dt import auto2date

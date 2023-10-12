@@ -2,7 +2,8 @@ import warnings
 
 from ..geometry.coord_trans import gcj2bd
 from ..geometry.coord_trans import gcj2wgs
-from ..geometry.util import is_empty
+from ..util.base import is_empty
+from ..util.decorator import check_null
 
 DEFAULT_RES = {
   'rv': None, 'score': -1,
@@ -51,9 +52,8 @@ def error_amap(js):
         f'接口错误，状态码【{js["infocode"]}】，错误原因请查阅：https://lbs.amap.com/api/webservice/guide/tools/info')
 
 
+@check_null(default_rv='')
 def fix_address(string):
-  if is_empty(string):
-    return ''
   string = str(string)
   for _ in ['&', '%', '#', '@', '$', '|']:
     string = string.replace(_, '')

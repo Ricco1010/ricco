@@ -2,7 +2,7 @@ import warnings
 
 import requests
 
-from ..util.util import is_empty
+from ..util.base import is_empty
 from .util import DEFAULT_RES
 from .util import MapKeys
 from .util import MapUrls
