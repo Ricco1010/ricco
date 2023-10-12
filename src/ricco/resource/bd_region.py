@@ -1,8 +1,8 @@
 import pandas as pd
 
 from ..resource import P_BD_REGION
+from ..util.base import not_empty
 from ..util.decorator import singleton
-from ..util.util import not_empty
 from ..util.util import rstrip_d0
 
 EX = ['新城区']

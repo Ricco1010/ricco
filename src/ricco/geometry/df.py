@@ -11,11 +11,11 @@ from shapely.geometry import Polygon
 from tqdm import tqdm
 
 from ..etl.transformer import split_list_to_row
+from ..util.base import ensure_list
+from ..util.base import is_empty
+from ..util.base import not_empty
 from ..util.decorator import progress
-from ..util.util import ensure_list
 from ..util.util import first_notnull_value
-from ..util.util import is_empty
-from ..util.util import not_empty
 from .util import ensure_multi_geom
 from .util import geojson_dumps
 from .util import geojson_loads

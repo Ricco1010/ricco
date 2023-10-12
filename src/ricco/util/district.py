@@ -1,8 +1,8 @@
 import warnings
 
 from ..resource.bd_region import get_bd_region
+from .base import not_empty
 from .decorator import singleton
-from .util import not_empty
 
 
 class District:

@@ -2,8 +2,8 @@ from ..resource.bd_region import cities
 from ..resource.bd_region import regions
 from ..resource.patterns import AddressPattern
 from ..util.district import District
+from .base import is_empty
 from .util import get_shortest_element
-from .util import is_empty
 from .util import re_fast
 
 

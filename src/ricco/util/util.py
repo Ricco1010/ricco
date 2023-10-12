@@ -2,26 +2,21 @@ import builtins
 import datetime
 import json
 import logging
+import os
 import random
 import re
 import uuid
 import warnings
 from ast import literal_eval
+from itertools import chain
 
 import numpy as np
 import pandas as pd
-from shapely.geometry.base import BaseGeometry
 
-
-def ensure_list(val):
-  """将标量值和Collection类型都统一转换为LIST类型"""
-  if val is None:
-    return []
-  if isinstance(val, list):
-    return val
-  if isinstance(val, (set, tuple)):
-    return list(val)
-  return [val]
+from .base import ensure_list
+from .base import is_empty
+from .base import not_empty
+from .decorator import check_null
 
 
 def to_json_string(string, errors='raise'):
@@ -54,9 +49,8 @@ def rerstrip(string, kwd):
 def get_shortest_element(elements: list):
   """获取列表中长度最短的元素"""
 
+  @check_null(default_rv=np.inf)
   def condition(string):
-    if is_empty(string):
-      return np.inf
     string = str(string)
     return len(string)
 
@@ -107,18 +101,18 @@ def first_notnull_value(series):
   warnings.warn('所有值均为空值')
 
 
+@check_null()
 def pinyin(word: str) -> str:
   """将中文转换为汉语拼音"""
   import pypinyin
-  if isinstance(word, str):
-    s = ''
-    for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
-      s += ''.join(i)
-  else:
-    raise TypeError('输入参数必须为字符串')
+  assert isinstance(word, str), '输入参数必须为字符串'
+  s = ''
+  for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
+    s += ''.join(i)
   return s
 
 
+@check_null(default_rv=False)
 def is_valid_uuid(uuid_to_test, version=4):
   """判断一个字符是否是uuid"""
   try:
@@ -197,14 +191,13 @@ def to_float(string,
                      multi_warning=multi_warning)
 
 
+@check_null()
 def house_type_format(x):
   """
   通过正则表达式将户型统一修改为1房，2房···5房及以上，目前只支持9室以下户型，
   其中5室及以上的类别为“5房及以上”
   """
   from ..resource import UTIL_CN_NUM
-  if is_empty(x):
-    return
   if re.match('^[1-4][室房]$', x) or x == '5房及以上':
     return x
   exp = ''.join(UTIL_CN_NUM.keys())
@@ -260,17 +253,27 @@ def segment(x,
     raise TypeError('gap参数数据类型错误')
 
 
-def fuzz_match(string: str, string_set: (list, pd.Series, tuple)):
+def to_str_list(series: (list, pd.Series, tuple)):
+  """将列表中的元素保留为字符串、唯一、非空"""
+  return list(set([str(i) for i in series if not_empty(i)]))
+
+
+@check_null(default_rv=(None, None, None))
+def fuzz_match(string: str,
+               string_set: (list, pd.Series, tuple),
+               fix_string_set: bool = False):
   """
   为某一字符串从某一集合中匹配相似度最高的元素
   Args:
     string: 输入的字符串
     string_set: 要去匹配的集合
+    fix_string_set: 是否修复string_set中的异常数据，使用该选项会降低性能
   Returns: 字符串及相似度组成的列表
   """
   from fuzzywuzzy import fuzz
-  string_set = [str(i) for i in string_set if not_empty(i)]
-  if is_empty(string) or is_empty(string_set):
+  if fix_string_set:
+    string_set = to_str_list(string_set)
+  if is_empty(string_set):
     return None, None, None
   if string in string_set:
     return string, 100, 100
@@ -311,32 +314,10 @@ def remove_null_in_dict(dic: dict) -> dict:
   }
 
 
-def is_empty(x) -> bool:
-  """
-  判断是否为空值，以下值认为是空白
-    - 空白列表、字典, 如：[], {}，
-    - 空白Dataframe、series, 如：pd.DataFrame()
-    - 空白shapely格式的geometry，如：Point(np.nan, np.nan)
-  """
-  if isinstance(x, (list, dict, tuple)):
-    return False if x else True
-  if isinstance(x, (pd.DataFrame, pd.Series)):
-    return x.empty
-  if isinstance(x, BaseGeometry):
-    return x.is_empty
-  return pd.isna(x)
-
-
-def not_empty(x) -> bool:
-  """判断是否非空"""
-  return not is_empty(x)
-
-
+@check_null()
 def union_str(strings: list, sep='') -> (str, None):
   """连接字符串"""
   warnings.warn('方法即将停用，请使用union_str_v2', DeprecationWarning)
-  if is_empty(strings):
-    return
   if strings := [i for i in strings if not_empty(i)]:
     return sep.join(strings)
 
@@ -352,11 +333,10 @@ def union_str_v2(*strings, sep='') -> str:
     return sep.join(strings)
 
 
+@check_null(default_rv=[])
 def union_list(s) -> list:
   """合并列表"""
   warnings.warn('方法即将停用，请使用union_list_v2', DeprecationWarning)
-  if is_empty(s):
-    return []
   lis = s[0]
   for i in s[1:]:
     lis.extend(i)
@@ -365,21 +345,19 @@ def union_list(s) -> list:
 
 def union_list_v2(*lists) -> list:
   """合并列表"""
-  res = ensure_list(lists[0])
-  for i in lists[1:]:
-    res.extend(ensure_list(i))
-  return res
+  lists = [ensure_list(i) for i in lists]
+  return list(chain(*lists))
 
 
+@check_null()
 def eval_(x: str):
   """将文本型的列表、字典等转为真正的类型"""
-  return literal_eval(x) if not_empty(x) else None
+  return literal_eval(x)
 
 
+@check_null(default_rv={})
 def list2dict(x: list):
   """列表转为字典，key为元素的顺序"""
-  if is_empty(x):
-    return {}
   return {i: j for i, j in enumerate(x)}
 
 
@@ -436,10 +414,9 @@ def to_int_str(x):
   return rstrip_d0(x)
 
 
+@check_null()
 def rstrip_d0(x):
   """删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -> '130'"""
-  if is_empty(x):
-    return
   _x = str(x)
   if re.match('^\d+\.0$', _x):
     return _x[:-2]
@@ -452,6 +429,7 @@ def fix_empty_str(x: str) -> (str, None):
   return fix_str(x)
 
 
+@check_null()
 def fix_str(x: str) -> (str, None):
   """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
   if isinstance(x, str):
@@ -518,10 +496,9 @@ def is_unique_series(df: pd.DataFrame,
   return not df.duplicated(subset=key_cols, keep=False).any()
 
 
+@check_null(default_rv=False)
 def is_digit(x) -> bool:
   """判断一个值是否能通过float方法转为数值型"""
-  if is_empty(x):
-    return False
   if isinstance(x, (float, int)):
     return True
   if isinstance(x, str):
@@ -530,10 +507,24 @@ def is_digit(x) -> bool:
   return False
 
 
+@check_null(default_rv=False)
 def is_hex(string) -> bool:
   """判断一个字符串是否是十六进制"""
-  if is_empty(string):
-    return False
   if re.match('^[0-9a-fA-F]+$', str(string)):
     return True
   return False
+
+
+def valid_cpus():
+  num = os.cpu_count()
+  if num >= 4:
+    return num - 2
+  if num >= 2:
+    return num - 1
+  return 1
+
+
+def isinstance_in_list(value: list, types: (str, list)):
+  """检查列表内的元素类型"""
+  assert isinstance(value, (list, tuple))
+  return all([isinstance(v, types) for v in value])

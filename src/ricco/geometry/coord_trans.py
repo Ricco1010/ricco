@@ -6,7 +6,8 @@ from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import transform as sh_transform
 from tqdm import tqdm
 
-from ..util.util import is_empty
+from ..util.base import is_empty
+from ..util.decorator import check_null
 from .df import _ensure_geometry
 from .df import shapely2x
 from .util import infer_geom_format
@@ -62,7 +63,7 @@ def delta(lat, lng):
   magic = 1 - ee * magic * magic
   sqrt_magic = math.sqrt(magic)
   d_lat = (d_lat * 180.0) / (
-        (earthR * (1 - ee)) / (magic * sqrt_magic) * math.pi)
+      (earthR * (1 - ee)) / (magic * sqrt_magic) * math.pi)
   d_lng = (d_lng * 180.0) / (earthR / sqrt_magic * math.cos(rad_lat) * math.pi)
   return d_lat, d_lng
 
@@ -160,6 +161,7 @@ def coord_transform_geojson(obj: dict, from_srs: SRS, to_srs: SRS):
       lambda c: _coord_transform(c[0], c[1], from_srs, to_srs), obj)
 
 
+@check_null()
 def _coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
                               from_srs: SRS,
                               to_srs: SRS):

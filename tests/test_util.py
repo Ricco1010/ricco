@@ -9,7 +9,6 @@ from ricco.util.util import get_shortest_element
 from ricco.util.util import house_type_format
 from ricco.util.util import interchange_dict
 from ricco.util.util import is_digit
-from ricco.util.util import is_empty
 from ricco.util.util import list2dict
 from ricco.util.util import pinyin
 from ricco.util.util import relstrip
@@ -142,16 +141,6 @@ def test_is_digit():
   assert is_digit('a') == False
   assert is_digit(None) == False
   assert is_digit(np.nan) == False
-
-
-def test_is_empty():
-  assert is_empty(1) == False
-  assert is_empty(None) == True
-  assert is_empty(np.nan) == True
-  assert is_empty([]) == True
-  assert is_empty({}) == True
-  assert is_empty(pd.DataFrame()) == True
-  assert is_empty(Point()) == True
 
 
 def test_rstrip_d0():

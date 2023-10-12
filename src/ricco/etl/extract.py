@@ -1,13 +1,17 @@
 import csv
+import json
 import warnings
 
 import geopandas as gpd
 import pandas as pd
 from tqdm import tqdm
 
+from ..geometry.util import wkt_loads
+from ..util.base import ensure_list
+from ..util.exception import UnknownFileTypeError
 from ..util.os import dir_iter
 from ..util.os import extension
-from ..util.util import ensure_list
+from ..util.os import path_name
 
 
 def max_grid():
@@ -25,46 +29,34 @@ def max_grid():
 
 
 def rdxls(
-    filename,
+    file_path,
     sheet_name=0,
     sheet_contains: str = None,
-    errors='raise',
     dtype=None,
-    columns=None,
+    columns: (list, str) = None,
+    nrows: int = None
 ) -> pd.DataFrame:
   """
   读取excel文件
-  Args
-    filename: 文件名
+  Args:
+    file_path: 文件名
     sheet_name: sheet表的名称
     sheet_contains: sheet表包含的字符串
-    errors: 当没有对应sheet时，raise: 抛出错误, coerce: 返回空的dataframe
     dtype: 指定读取列的类型
+    columns: 指定读取的列
+    nrows: 指定读取的行数
   """
-  assert errors in ('coerce', 'raise'), '可选参数为coerce和raise'
-  if sheet_name == 0:
-    if sheet_contains is not None:
-      df = pd.read_excel(filename, sheet_name=None, dtype=dtype,
-                         usecols=columns)
-      sheet_list = [i for i in df.keys() if sheet_contains in i]
-      if len(sheet_list) != 0:
-        sheet_name = sheet_list[0]
-        if len(sheet_list) == 1:
-          print(f"sheet:  <'{sheet_name}'>")
-        elif len(sheet_list) >= 2:
-          warnings.warn(
-              f"包含'{sheet_contains}'的sheet有{sheet_list}，所读取的sheet为:{sheet_name}")
-        return df[sheet_name]
-      else:
-        if errors == 'coerce':
-          warnings.warn(f'没有包含{sheet_contains}的sheet，请检查')
-          return pd.DataFrame()
-        else:
-          raise ValueError(f'没有包含{sheet_contains}的sheet，请检查')
-  else:
-    print(f"sheet:  <'{sheet_name}'>")
-  return pd.read_excel(filename, sheet_name=sheet_name, dtype=dtype,
-                       usecols=columns)
+  if sheet_contains:
+    assert not sheet_name, 'sheet_name和sheet_contains不能同时指定'
+    dataset = pd.read_excel(file_path, sheet_name=None, dtype=dtype,
+                            usecols=columns, nrows=1)
+    sheets = [i for i in dataset if sheet_contains in i]
+    assert len(sheets) == 1, f'0个或多个sheet包含{sheet_contains}'
+    sheet_name = sheets[0]
+    print(f'通关关键字"{sheet_contains}"匹配到唯一的sheet_name"{sheet_name}"')
+  return pd.read_excel(
+      file_path, sheet_name=sheet_name, dtype=dtype, usecols=columns,
+      nrows=nrows)
 
 
 def rdf(
@@ -75,7 +67,8 @@ def rdf(
     encoding: str = 'utf-8-sig',
     info: bool = False,
     dtype=None,
-    columns: list = None,
+    columns: (list, str) = None,
+    nrows: int = None,
 ) -> pd.DataFrame:
   """
   常用文件读取函数，支持.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml'
@@ -87,6 +80,7 @@ def rdf(
     info: 是否打印数据集情况（shape & columns）
     dtype: 指定读取列的类型
     columns: 指定读取的列名
+    nrows: 指定读取的行数
   """
   max_grid()
   if columns:
@@ -95,50 +89,53 @@ def rdf(
   if ex == '.csv':
     try:
       df = pd.read_csv(
-          file_path, engine='python', encoding=encoding,
-          dtype=dtype, usecols=columns,
-      )
+          file_path, engine='python', dtype=dtype, usecols=columns, nrows=nrows,
+          encoding=encoding)
     except UnicodeDecodeError:
-      df = pd.read_csv(file_path, engine='python', dtype=dtype, usecols=columns)
-  elif ex in ('.parquet', '.feather'):
-    _t = ex.strip('.')
-    df = getattr(pd, f'read_{_t}')(file_path, columns=columns)
+      df = pd.read_csv(
+          file_path, engine='python', dtype=dtype, usecols=columns, nrows=nrows)
+  elif ex == '.feather':
+    df = pd.read_feather(file_path, columns=columns)
+  elif ex == '.parquet':
+    df = pd.read_parquet(file_path, columns=columns)
   elif ex == '.pickle':
     df = pd.read_pickle(file_path)
   elif ex in ('.xls', '.xlsx'):
     df = rdxls(
         file_path, sheet_name=sheet_name, sheet_contains=sheet_contains,
-        dtype=dtype, columns=columns
+        dtype=dtype, columns=columns, nrows=nrows
     )
   elif ex == '.shp':
     try:
-      df = gpd.GeoDataFrame.from_file(file_path)
-    except UnicodeEncodeError:
-      df = gpd.GeoDataFrame.from_file(file_path, encoding='GBK')
+      df = gpd.GeoDataFrame.from_file(file_path, encoding=encoding, rows=nrows)
+    except ValueError as e:
+      warnings.warn(f'常规读取方式读取失败，尝试其他方式读取，{e}')
+      df = read_shapefile(file_path, encoding=encoding)
+    finally:
+      warnings.warn(f'请检查输出结果并指定正确的encoding，当前为"{encoding}"')
   elif ex in ('.kml', '.ovkml'):
     df = read_kml(file_path)
   elif ex == '.json':
     df = read_line_json(file_path, encoding=encoding)
   else:
-    raise Exception('未知文件格式')
-  if columns:
-    df = df[columns]
+    raise UnknownFileTypeError('未知文件格式')
+  df = df[columns] if columns else df
+  df = df.head(nrows) if nrows else df
   if info:
     print(f'shape: {df.shape}')
     print(f'columns: {df.columns.tolist()}')
   return df
 
 
-def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
+def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:
   """
   逐行读取json格式的文件
   Args:
-    filename: 文件名
+    file_path: 文件名
     encoding: 文件编码，默认为utf-8
   """
-  import json
   records = []
-  with open(filename, 'r', encoding=encoding) as file:
+  with open(file_path, 'r', encoding=encoding) as file:
     for line in file:
       row = json.loads(line)
       records.append(row)
@@ -146,7 +143,7 @@ def read_line_json(filename, encoding='utf-8') -> pd.DataFrame:
 
 
 def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
-               columns=None, info=False) -> pd.DataFrame:
+               columns: (list, str) = None, info=False) -> pd.DataFrame:
   """
   从文件夹中读取所有文件并拼接成一个DataFrame
   Args:
@@ -157,12 +154,13 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
     columns: 指定列名
     info: 是否打印基本信息（列名、行列数）
   """
+  desc = dir_path if len(dir_path) <= 23 else f'...{dir_path[-20:]}'
   path_list = []
   for p in dir_iter(dir_path, exts=exts, ignore_hidden_files=True,
                     recursive=recursive):
     path_list.append(p)
   dfs = []
-  for filename in tqdm(path_list):
+  for filename in tqdm(path_list, desc=desc):
     dfs.append(rdf(filename, columns=columns))
   df = pd.concat(dfs, ignore_index=ignore_index)
   if info:
@@ -192,9 +190,9 @@ def kml_df_create_level(gdf_dict) -> dict:
         'O2远郊安居': 2}
   """
   level_dict = {}
-  for i in gdf_dict.keys():
+  for i in gdf_dict:
     level_dict[i] = 0
-  for k in range(1, len(gdf_dict.keys())):
+  for k in range(1, len(gdf_dict)):
     for j in list(gdf_dict.keys())[k:]:
       sample = list(gdf_dict.keys())[k - 1]
       if set(gdf_dict[j]['name']) <= set(gdf_dict[sample]['name']):
@@ -213,7 +211,7 @@ def get_kml_df_with_level(gdf_dict) -> gpd.GeoDataFrame:
   level_dict_new = {}
   for k, v in level_dict.items():
     columns_name = f'level_{v}'
-    if columns_name not in level_dict_new.keys():
+    if columns_name not in level_dict_new:
       level_dict_new[columns_name] = []
     gdf_dict[k][columns_name] = k
     level_dict_new[columns_name].append(gdf_dict[k])
@@ -249,3 +247,24 @@ def read_kml(file_path, keep_level=True) -> gpd.GeoDataFrame:
     data_all = gpd.GeoDataFrame.from_features(features[0]['features'])
     data_all = data_all[['name', 'geometry']]
   return data_all
+
+
+def read_shapefile(file_path, encoding='utf-8') -> gpd.GeoDataFrame:
+  """读取shapefile文件，分别读取dbf中的属性表和shp中的geometry进行拼接"""
+  from osgeo import ogr
+  from simpledbf import Dbf5
+
+  filename = path_name(file_path)
+  # 读取.dbf文件
+  df = Dbf5(f'{filename}.dbf', codec=encoding).to_dataframe()
+  df = gpd.GeoDataFrame(df)
+  # 读取并转换shp文件中的geometry
+  geoms = []
+  driver = ogr.GetDriverByName('ESRI Shapefile')
+  data_source = driver.Open(f'{filename}.shp', 0)  # 0表示只读模式
+  layer = data_source.GetLayer()
+  for i, feature in enumerate(layer):
+    geom_wkt = feature.GetGeometryRef().ExportToWkt()
+    geoms.append(wkt_loads(geom_wkt))
+  df['geometry'] = geoms
+  return gpd.GeoDataFrame(df)

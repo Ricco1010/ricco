@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from ..etl.transformer import create_columns
-from ..util.util import is_empty
+from ..util.base import is_empty
 from .amap import get_address_amap
 from .amap import get_place_amap
 from .baidu import get_address_baidu

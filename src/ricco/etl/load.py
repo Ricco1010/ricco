@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 from ..geometry.df import auto2shapely
+from ..util.exception import UnknownFileTypeError
 from ..util.os import ensure_dirpath_exist
 from ..util.os import extension
 from .transformer import df_iter
@@ -40,18 +41,18 @@ def to_file(df: pd.DataFrame, filepath, index=False, log=True):
   if log:
     print(f'Saving: {filepath}, Rows：{df.shape[0]}')
   df = df.copy()
-  exts = extension(filepath)
-  if exts == '.csv':
+  ex = extension(filepath)
+  if ex == '.csv':
     df.to_csv(filepath, index=index)
-  elif exts == '.parquet':
+  elif ex == '.parquet':
     df.to_parquet(filepath, index=index)
-  elif exts in ('.xlsx', '.xls'):
+  elif ex in ('.xlsx', '.xls'):
     df.to_excel(filepath, index=index)
-  elif exts == '.shp':
+  elif ex == '.shp':
     df = auto2shapely(df)
     df.to_file(filepath)
   else:
-    raise ValueError(f'不支持的文件扩展名：{exts}')
+    raise UnknownFileTypeError(f'不支持的文件扩展名：{ex}')
 
 
 def to_parts_file(df, dirpath,
