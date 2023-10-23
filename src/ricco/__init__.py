@@ -34,7 +34,6 @@ from .geometry.util import wkb_loads
 from .geometry.util import wkt_dumps
 from .geometry.util import wkt_loads
 from .local import Rc
-from .local import Ricco
 from .util import coord_trans
 from .util import dt
 from .util import geom
