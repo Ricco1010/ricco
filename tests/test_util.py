@@ -1,6 +1,4 @@
 import numpy as np
-import pandas as pd
-from shapely.geometry import Point
 
 from ricco.util.util import eval_
 from ricco.util.util import extract_num
@@ -18,10 +16,9 @@ from ricco.util.util import segment
 from ricco.util.util import sort_by_list
 from ricco.util.util import to_bool
 from ricco.util.util import to_float
-from ricco.util.util import union_list
 from ricco.util.util import union_list_v2
-from ricco.util.util import union_str
 from ricco.util.util import union_str_v2
+from ricco.util.util import remove_null_in_dict
 
 
 def test_relstrip():
@@ -54,7 +51,6 @@ def test_extract_num():
   assert extract_num(string) == ['13', '35.3']
   assert extract_num(string, num_type='int') == [13, 35]
   assert extract_num(string, num_type='float') == [13.0, 35.3]
-  assert extract_num(string, num_type='str', join_list=True) == '1335.3'
 
 
 def test_to_float():
@@ -98,20 +94,13 @@ def test_eval():
 
 
 def test_union_str():
-  assert union_str(['abc', 'def']) == 'abcdef'
   assert union_str_v2('abc', 'def') == 'abcdef'
-  assert union_str(['abc', 'def'], sep='|') == 'abc|def'
   assert union_str_v2('abc', 'def', sep='|') == 'abc|def'
-  assert union_str(['abc', None]) == 'abc'
   assert union_str_v2('abc', None) == 'abc'
-  assert union_str([]) == None
 
 
 def test_union_list():
-  assert union_list([]) == []
-  assert union_list([[1, 2, 3]]) == [1, 2, 3]
   assert union_list_v2([1, 2, 3]) == [1, 2, 3]
-  assert union_list([[1, 2, 3], [4, 5]]) == [1, 2, 3, 4, 5]
   assert union_list_v2([1, 2, 3], [4, 5]) == [1, 2, 3, 4, 5]
   assert union_list_v2([1, 2, 3], 4, 5) == [1, 2, 3, 4, 5]
 
@@ -135,12 +124,12 @@ def test_fix_empty_str():
 
 
 def test_is_digit():
-  assert is_digit(1) == True
-  assert is_digit('1') == True
-  assert is_digit('1.1') == True
-  assert is_digit('a') == False
-  assert is_digit(None) == False
-  assert is_digit(np.nan) == False
+  assert is_digit(1) is True
+  assert is_digit('1') is True
+  assert is_digit('1.1') is True
+  assert is_digit('a') is False
+  assert is_digit(None) is False
+  assert is_digit(np.nan) is False
 
 
 def test_rstrip_d0():
@@ -153,16 +142,20 @@ def test_rstrip_d0():
 
 
 def test_to_bool():
-  assert to_bool(1) == True
-  assert to_bool('是') == True
-  assert to_bool('0') == False
-  assert to_bool('否') == False
-  assert to_bool(None) == False
-  assert to_bool(None, na=True) == True
-  assert to_bool(123) == False
-  assert to_bool(123, other=True) == True
+  assert to_bool(1) is True
+  assert to_bool('是') is True
+  assert to_bool('0') is False
+  assert to_bool('否') is False
+  assert to_bool(None) is False
+  assert to_bool(None, na=True) is True
+  assert to_bool(123) is False
+  assert to_bool(123, other=True) is True
   assert to_bool(123, other='abc') == 'abc'
 
 
 def test_interchange_dict():
   assert interchange_dict({1: 2}) == {2: 1}
+
+
+def test_remove_null_in_dict():
+  assert remove_null_in_dict({1: 2, 3: None, 4: None}) == {1: 2}

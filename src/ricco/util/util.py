@@ -2,7 +2,6 @@ import builtins
 import datetime
 import json
 import logging
-import os
 import random
 import re
 import uuid
@@ -33,7 +32,7 @@ def to_json_string(string, errors='raise'):
       if errors == 'ignore':
         return string
 
-  return json.dumps(string)
+  return json.dumps(string, ensure_ascii=False)
 
 
 def relstrip(string, kwd):
@@ -137,6 +136,7 @@ def per2float(string: str) -> float:
   return float(string)
 
 
+@check_null()
 def extract_num(string: str,
                 num_type: str = 'str',
                 method: str = 'list',
@@ -153,32 +153,22 @@ def extract_num(string: str,
     ignore_pct: 是否忽略百分号，默认True
     multi_warning: 当有多个值的时候是否输出警告信息
   """
+  assert num_type in ('float', 'int', 'str')
   string = str(string)
-  if ignore_pct:
-    lis = re.findall(r"\d+\.?\d*", string)
-  else:
-    lis = re.findall(r"\d+\.?\d*%?", string)
-  lis2 = [getattr(builtins, num_type)(per2float(i)) for i in lis]
-  if len(lis2) > 0:
-    if method != 'list':
-      if join_list:
-        raise ValueError(
-            "计算结果无法join，只有在method='list'的情况下, 才能使用join_list=True")
-      if multi_warning & (len(lis2) >= 2):
-        warnings.warn(f'有多个值进行了{method}运算')
-      res = getattr(np, method)(lis2)
-    else:
-      if num_type == 'str':
-        res = ['{:g}'.format(float(j)) for j in lis2]
-      else:
-        res = lis2
-      if join_list:
-        res = ''.join(res)
-  else:
-    res = None
-  return res
+  ls = re.findall(r'\d+\.?\d*' if ignore_pct else r'\d+\.?\d*%?', string)
+  if not ls:
+    return
+  if method == 'list':
+    return ls if num_type == 'str' else [
+      getattr(builtins, num_type)(per2float(i)) for i in ls
+    ]
+  if multi_warning and len(ls) >= 2:
+    warnings.warn(f'有多个值进行了"{method}"运算')
+  ls = [float(per2float(i)) for i in ls]
+  return getattr(np, method)(ls)
 
 
+@check_null()
 def to_float(string,
              rex_method: str = 'mean',
              ignore_pct: bool = False,
@@ -201,7 +191,7 @@ def house_type_format(x):
   if re.match('^[1-4][室房]$', x) or x == '5房及以上':
     return x
   exp = ''.join(UTIL_CN_NUM.keys())
-  if res_num := re_fast(f'([{exp}\d])[室房]', str(x)):
+  if res_num := re_fast(fr'([{exp}\d+])[室房]', str(x)):
     for ori, dst in UTIL_CN_NUM.items():
       res_num = res_num.replace(ori, dst)
     if int(res_num) <= 4:
@@ -210,8 +200,9 @@ def house_type_format(x):
       return '5房及以上'
 
 
-def segment(x,
-            gap: (list, float, int),
+@check_null()
+def segment(x: (int, float),
+            gap: (list, tuple, set, float, int),
             sep: str = '-',
             unit: str = '',
             bottom: str = '以下',
@@ -233,24 +224,22 @@ def segment(x,
       if _x >= lis[i]:
         return lis[i], lis[i + 1]
 
+  assert isinstance(gap, (list, tuple, set, int, float))
+
   x = to_float(x)
-  if x is None:
-    return ''
-  elif isinstance(gap, list):
+  if isinstance(gap, (list, tuple, set)):
     gap = sorted(list(set(gap)))
     if x < gap[0]:
       return f'{gap[0]}{unit}{bottom}'
-    elif x >= gap[-1]:
+    if x >= gap[-1]:
       return f'{gap[-1]}{unit}{top}'
-    else:
-      return f'{between_list(x, gap)[0]}{sep}{between_list(x, gap)[1]}{unit}'
-  elif isinstance(gap, (int, float)):
+    return f'{between_list(x, gap)[0]}{sep}{between_list(x, gap)[1]}{unit}'
+
+  if isinstance(gap, (int, float)):
     if x >= 0:
       return f'{int(x / gap) * gap}{sep}{int(x / gap) * gap + gap}{unit}'
     else:
       return f'{int(x / gap) * gap - gap}{sep}{int(x / gap) * gap}{unit}'
-  else:
-    raise TypeError('gap参数数据类型错误')
 
 
 def to_str_list(series: (list, pd.Series, tuple)):
@@ -258,27 +247,39 @@ def to_str_list(series: (list, pd.Series, tuple)):
   return list(set([str(i) for i in series if not_empty(i)]))
 
 
-@check_null(default_rv=(None, None, None))
+@check_null(default_rv=(None, None, None, None))
 def fuzz_match(string: str,
                string_set: (list, pd.Series, tuple),
-               fix_string_set: bool = False):
+               fix_string_set: bool = False,
+               valid_score: int = 0):
   """
   为某一字符串从某一集合中匹配相似度最高的元素
   Args:
     string: 输入的字符串
     string_set: 要去匹配的集合
     fix_string_set: 是否修复string_set中的异常数据，使用该选项会降低性能
+    valid_score: 相似度大于该值的才返回
   Returns: 字符串及相似度组成的列表
   """
   from fuzzywuzzy import fuzz
+  w = 0.3
+
+  def score(x, string):
+    return fuzz.partial_ratio(x, string) + fuzz.ratio(x, string) * w
+
   if fix_string_set:
     string_set = to_str_list(string_set)
   if is_empty(string_set):
-    return None, None, None
+    return None, None, None, None
   if string in string_set:
-    return string, 100, 100
-  max_s = max(string_set, key=lambda x: fuzz.ratio(x, string))
-  return max_s, fuzz.ratio(string, max_s), fuzz.partial_ratio(string, max_s)
+    return string, 100, 100, 100.0
+  max_s = max(string_set, key=lambda x: score(x, string))
+
+  ratio = fuzz.ratio(string, max_s)
+  p_ratio = fuzz.partial_ratio(string, max_s)
+  if ratio < valid_score and p_ratio < valid_score:
+    return None, None, None, None
+  return max_s, ratio, p_ratio, round((ratio * w + p_ratio) / (1 + w), 2)
 
 
 def get_city_id_by_name(city: str):
@@ -314,14 +315,6 @@ def remove_null_in_dict(dic: dict) -> dict:
   }
 
 
-@check_null()
-def union_str(strings: list, sep='') -> (str, None):
-  """连接字符串"""
-  warnings.warn('方法即将停用，请使用union_str_v2', DeprecationWarning)
-  if strings := [i for i in strings if not_empty(i)]:
-    return sep.join(strings)
-
-
 def union_str_v2(*strings, sep='') -> str:
   """
   连接字符串，空白字符串会被忽略
@@ -331,16 +324,6 @@ def union_str_v2(*strings, sep='') -> str:
   """
   if strings := [i for i in strings if not_empty(i) and i != '']:
     return sep.join(strings)
-
-
-@check_null(default_rv=[])
-def union_list(s) -> list:
-  """合并列表"""
-  warnings.warn('方法即将停用，请使用union_list_v2', DeprecationWarning)
-  lis = s[0]
-  for i in s[1:]:
-    lis.extend(i)
-  return lis
 
 
 def union_list_v2(*lists) -> list:
@@ -408,25 +391,13 @@ def random_by_prob(mapping: dict):
   )
 
 
-def to_int_str(x):
-  """将由数字转成的字符串转为int格式的，针对手机号等场景，如：'130.0' -> '130'"""
-  warnings.warn('即将弃用，请使用 rstrip_d0', DeprecationWarning)
-  return rstrip_d0(x)
-
-
 @check_null()
 def rstrip_d0(x):
   """删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -> '130'"""
   _x = str(x)
-  if re.match('^\d+\.0$', _x):
+  if re.match(r'^\d+\.0$', _x):
     return _x[:-2]
   return x
-
-
-def fix_empty_str(x: str) -> (str, None):
-  """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
-  warnings.warn('即将弃用，请使用fix_str', DeprecationWarning)
-  return fix_str(x)
 
 
 @check_null()
@@ -513,15 +484,6 @@ def is_hex(string) -> bool:
   if re.match('^[0-9a-fA-F]+$', str(string)):
     return True
   return False
-
-
-def valid_cpus():
-  num = os.cpu_count()
-  if num >= 4:
-    return num - 2
-  if num >= 2:
-    return num - 1
-  return 1
 
 
 def isinstance_in_list(value: list, types: (str, list)):

@@ -1,10 +1,11 @@
 import os
 import shutil
-import warnings
 
 import pandas as pd
 from tqdm import tqdm
 
+from ..util.base import ensure_ext
+from ..util.base import warn_
 from ..util.os import dir_iter_list
 from ..util.os import ensure_dir
 from ..util.os import ensure_dirpath_exist
@@ -35,6 +36,7 @@ def split2x_by_parts(
     fn: 处理函数
   """
   # 创建目标目录
+  to_ext = ensure_ext(to_ext)
   full_path = os.path.abspath(filename)
   dirpath = path_name(full_path)
   # 读取文件并分批保存
@@ -51,6 +53,7 @@ def split2x_by_chunksize(
     to_ext='.csv',
     log=True,
     fn=None,
+    **kwargs,
 ):
   """
   将文件拆分为多个文件，放置在与文件同名目录下
@@ -61,6 +64,7 @@ def split2x_by_chunksize(
     log: 是否输出文件保存信息
     fn: 处理函数
   """
+  to_ext = ensure_ext(to_ext)
   dirpath = path_name(os.path.abspath(filepath))
   ext = extension(filepath)
   if ext == '.csv':
@@ -70,7 +74,7 @@ def split2x_by_chunksize(
       if fn:
         _df = fn(_df)
       savefile = os.path.join(dirpath, f'part_{str(i).zfill(6)}{to_ext}')
-      to_file(_df, savefile, log=log)
+      to_file(_df, savefile, log=log, **kwargs)
   else:
     df = rdf(filepath)
     if fn:
@@ -100,6 +104,7 @@ def split2x(
     fn: 处理函数
   """
   assert any([chunksize, parts]), 'chunksize 和 parts必须指定一个'
+  to_ext = ensure_ext(to_ext)
   if chunksize:
     split2x_by_chunksize(filename, chunksize=chunksize, to_ext=to_ext, log=log,
                          fn=fn)
@@ -111,7 +116,8 @@ def file_to_x(filepath, to_ext,
               to_dir=None,
               delete=False,
               overwrite=False,
-              log=True):
+              log=True,
+              **kwargs):
   """
   文件格式转换，整体读取并转换，将文件整体加载到内存中再保存为另一种文件格式
   Args:
@@ -122,22 +128,21 @@ def file_to_x(filepath, to_ext,
     overwrite: 是否覆盖原文件，默认不覆盖
     log: 是否输出文件保存、删除日志
   """
+  to_ext = ensure_ext(to_ext)
   dirpath, filename, ex = split_path(filepath)
   if not to_dir:
     to_dir = dirpath
   to_file_path = os.path.join(to_dir, f'{filename}{to_ext}')
   if not overwrite and os.path.exists(to_file_path):
-    if log:
-      warnings.warn(f'文件{filepath}已存在，已跳过')
+    warn_(f'文件{filepath}已存在，已跳过', log, 'logging')
     return
   if ex == to_ext:
     ensure_dirpath_exist(to_file_path)
     shutil.copyfile(filepath, to_file_path)
-  to_file(rdf(filepath, dtype=str), to_file_path, log=log)
+  to_file(rdf(filepath, dtype=str), to_file_path, log=log, **kwargs)
   if delete:
     os.remove(filepath)
-    if log:
-      print(f'Deleted: {filepath}')
+    warn_(f'Deleted: {filepath}', log, 'logging')
 
 
 def dir_file_to_x(from_dir, to_dir,
@@ -149,7 +154,7 @@ def dir_file_to_x(from_dir, to_dir,
   assert from_dir != to_dir, 'from_dir and to_dir must be different'
   assert to_ext is not None, 'to_ext must be specified'
   assert from_ext != to_ext, 'from_ext and to_dir must be different'
-
+  to_ext, from_ext = ensure_ext(to_ext), ensure_ext(from_ext)
   path_list = dir_iter_list(from_dir, exts=from_ext, recursive=recursive)
   print(len(path_list))
   for f in tqdm(path_list):
@@ -160,7 +165,8 @@ def reshape_files(from_dir, to_dir,
                   from_ext=None, to_ext=None,
                   chunksize: int = 100000,
                   func=None,
-                  log=False):
+                  log=False,
+                  **kwargs):
   """
   将文件拆分成小文件，并保存到to_dir中
   Args:
@@ -194,9 +200,11 @@ def reshape_files(from_dir, to_dir,
     while df.shape[0] > chunksize:
       to_file(df[df.index < chunksize],
               os.path.join(to_dir, f'part_{str(n).zfill(6)}{to_ext}'),
-              log=log)
+              log=log, **kwargs)
       df = df[df.index >= chunksize].reset_index(drop=True)
       n += 1
-  to_file(df, os.path.join(to_dir, f'part_{str(n).zfill(6)}{to_ext}'), log=log)
+  to_file(df, os.path.join(to_dir, f'part_{str(n).zfill(6)}{to_ext}'),
+          log=log,
+          **kwargs)
   print(f'输入文件总数: {len(path_list)}, 输入数据量: {total_lines}')
   print(f'输出文件总数: {n}, 输出数据量: {after_lines}')

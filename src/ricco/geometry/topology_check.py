@@ -11,7 +11,6 @@ from shapely.ops import unary_union
 from shapely.validation import make_valid
 
 import warnings
-
 warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 _desc = '''
@@ -40,11 +39,16 @@ def topology_check(gdf: gpd.GeoDataFrame,
     raise ValueError('存在空数据')
   if not all([isinstance(geo, (Polygon, MultiPolygon)) for geo in geo_data]):
     raise ValueError('存在非面类型的地理数据')
-  for geo in tqdm(geo_data, desc='topology_check'):
+  for index, geo in tqdm(geo_data.items(),
+                         desc='topology_check',
+                         total=len(geo_data)):
     if not geo.is_valid:
       return False
-    if len([True for i in geo_data if geo.intersects(i)]) > 1:
-      return False
+    for i, g in geo_data.items():
+      if i == index:
+        continue
+      if geo.intersects(g):
+        return False
   return True
 
 
@@ -90,8 +94,7 @@ def series_geometry_fix_topology(series: pd.Series,
     if not x.is_valid:
       valid_res = make_valid(x)
       if isinstance(valid_res, GeometryCollection):
-        return unary_union([i for i in valid_res.geoms if
-                            isinstance(i, (Polygon, MultiPolygon))])
+        return unary_union([i for i in valid_res.geoms if isinstance(i, (Polygon, MultiPolygon))])
       return valid_res
     return x
 
@@ -136,8 +139,7 @@ def series_geometry_fix_topology(series: pd.Series,
             continue
           geo = geo.difference(geo_ser.loc[i].buffer(1e-7))
         if isinstance(geo, GeometryCollection):
-          geo = unary_union(
-              [i for i in geo.geoms if isinstance(i, (Polygon, MultiPolygon))])
+          geo = unary_union([i for i in geo.geoms if isinstance(i, (Polygon, MultiPolygon))])
         res_geo.append(geo)
         res_index.append(index)
     intersect_res = pd.Series(res_geo, index=res_index)
@@ -146,9 +148,8 @@ def series_geometry_fix_topology(series: pd.Series,
         raise ValueError('mutual inclusion geometry')
       contains_res = fix_intersects(pd.Series(contains_geo,
                                               index=contains_index))
-      return intersect_res.append(contains_res)
+      return pd.concat([intersect_res, contains_res])
     else:
       return intersect_res
-
   res = fix_intersects(series)
   return res

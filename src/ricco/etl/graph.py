@@ -2,6 +2,7 @@ import pandas as pd
 
 from ..util.assertion import assert_not_null
 from ..util.base import is_empty
+from ..util.decorator import run_once
 from ..util.decorator import singleton
 
 
@@ -37,10 +38,15 @@ def query_from_graph(key,
     c_parent_key: 父节点字段名
     max_depth: 最大深度
   """
-  assert isinstance(graph_df, pd.DataFrame)
-  assert graph_df[c_key].is_unique
-  assert_not_null(graph_df, c_level_type), f'{c_level_type}不能为空'
-  assert graph_df[graph_df[c_key] == graph_df[c_parent_key]].empty, '父子不能相同'
+
+  @run_once
+  def asserts():
+    assert isinstance(graph_df, pd.DataFrame)
+    assert graph_df[c_key].is_unique
+    assert_not_null(graph_df, c_level_type), f'{c_level_type}不能为空'
+    assert graph_df[graph_df[c_key] == graph_df[c_parent_key]].empty, '父子不能相同'
+
+  asserts()
   # 构造查询字典
   c_parent_type = 'parent_type'
   graph_dict = get_graph_dict(graph_df=graph_df, c_key=c_key,

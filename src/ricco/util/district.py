@@ -1,7 +1,6 @@
-import warnings
-
 from ..resource.bd_region import get_bd_region
 from .base import not_empty
+from .base import warn_
 from .decorator import singleton
 
 
@@ -75,8 +74,7 @@ class District:
     if ls:
       if len(ls) == 1:
         return ls[0]
-      if warning:
-        warnings.warn(f'"{name}"匹配到多个城市{ls}')
+      warn_(f'"{name}"匹配到多个城市{ls}', warning)
       if not if_not_unique:
         return
       if if_not_unique == 'first':
