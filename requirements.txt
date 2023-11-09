@@ -6,7 +6,7 @@ kml2geojson==5.1.0
 numpy==1.23.5
 openpyxl==3.0.10
 pandas==1.5.2
-pyarrow==10.0.1
+pyarrow==14.0.1
 pypinyin==0.47.1
 pyproj==3.4.0
 python-docx==0.8.11
