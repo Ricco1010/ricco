@@ -43,40 +43,33 @@ def crs_sh2000():
   return CRS_SH2000
 
 
-def get_epsg_by_lng(lng):
-  """通过经度获取epsg代码"""
-  lng_epsg_mapping = {
-    # 中央经线和epsg代码的对应关系
-    75: 4534, 78: 4535, 81: 4536, 84: 4537, 87: 4538,
-    90: 4539, 93: 4540, 96: 4541, 99: 4542,
-    102: 4543, 105: 4544, 108: 4545, 111: 4546,
-    114: 4547, 117: 4548, 120: 4549, 123: 4550,
-    126: 4551, 129: 4552, 132: 4553, 135: 4554,
-  }
+def epsg_from_lnglat(lng, lat=0):
+  """根据经纬度确定EPSG代码"""
+  # 计算 UTM 区域代码
   lng = ensure_list(lng)
   lng = [i for i in lng if not_empty(i)]
   lng = np.median(lng)
-  key = min(lng_epsg_mapping, key=lambda x: abs(x - lng))
-  return lng_epsg_mapping.get(key)
+  utm_band = str(int((np.floor((lng + 180) / 6) % 60) + 1)).zfill(2)
+  return int(f'326{utm_band}' if lat >= 0 else f'327{utm_band}')
 
 
-def get_lng_by_city(city: str):
+def lng_from_city(city: str):
   """获取城市所在的经度"""
   from ..resource.epsg_code import CITY_POINT
+  assert len(city) >= 2, '城市名称过短'
   if city in CITY_POINT:
     return CITY_POINT[city]['lng']
   else:
-    city += '市'
-    if city in CITY_POINT:
-      return CITY_POINT[city]['lng']
-    else:
-      warnings.warn(f'请补充{city}的epsg信息，默认返回经度120.0')
-      return 120.0
+    for _c in CITY_POINT.keys():
+      if city in _c:
+        return CITY_POINT[_c]['lng']
+  warnings.warn(f'请补充"{city}"的epsg信息，默认返回经度113.0')
+  return 113.0
 
 
 def get_epsg(city: str):
   """根据城市查询epsg代码，用于投影"""
-  return get_epsg_by_lng(get_lng_by_city(city))
+  return epsg_from_lnglat(lng_from_city(city))
 
 
 def projection_lnglat(lnglat, crs_from, crs_to):
@@ -269,14 +262,22 @@ def is_valid_lnglat(lng, lat):
   return -180 <= lng <= 180 and -90 <= lat <= 90
 
 
-def _auto2shapely(x) -> BaseGeometry:
+def auto_loads(x) -> BaseGeometry:
   """自动识别地理格式并转换为shapely格式"""
   geom_format = infer_geom_format(x)
+  assert geom_format != GeomFormat.unknown, '未知的地理格式'
   if geom_format == 'shapely':
     return x
-  if geom_format in ('wkb', 'wkt', 'geojson'):
-    return getattr(sys.modules[__name__], f'{geom_format}_loads')(x)
-  warnings.warn(f'未知的地理格式, {x}')
+  return getattr(sys.modules[__name__], f'{geom_format}_loads')(x)
+
+
+def dumps2x(x: BaseGeometry, geom_format):
+  """转换geometry格式"""
+  assert geom_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
+  x = auto_loads(x)
+  if geom_format == 'shapely':
+    return x
+  return getattr(sys.modules[__name__], f'{geom_format}_dumps')(x)
 
 
 def ensure_lnglat(lnglat) -> tuple:
@@ -286,7 +287,7 @@ def ensure_lnglat(lnglat) -> tuple:
     assert isinstance_in_list(lnglat, (float, int)), '数据类型错误，经度和纬度都应该为数值型'
     assert is_valid_lnglat(*lnglat), '经纬度超出范围'
     return tuple(lnglat)
-  if geom := _auto2shapely(lnglat):
+  if geom := auto_loads(lnglat):
     return geom.centroid.x, geom.centroid.y
   raise ValueError('未知的地理类型')
 
@@ -308,7 +309,7 @@ def distance(
   """
   p1, p2 = ensure_lnglat(p1), ensure_lnglat(p2)
   if not epsg_to:
-    epsg_to = get_epsg(city) if city else get_epsg_by_lng([p1[0], p2[0]])
+    epsg_to = get_epsg(city) if city else epsg_from_lnglat([p1[0], p2[0]])
   p1 = projection_lnglat(p1, epsg_from, epsg_to)
   p2 = projection_lnglat(p2, epsg_from, epsg_to)
   return Point(p1).distance(Point(p2))

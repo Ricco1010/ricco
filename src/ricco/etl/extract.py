@@ -1,6 +1,7 @@
 import csv
 import json
-import warnings
+import logging
+import sys
 
 import geopandas as gpd
 import pandas as pd
@@ -14,9 +15,66 @@ from ..util.os import extension
 from ..util.os import path_name
 
 
+def rdf(
+    file_path: str,
+    *,
+    sheet_name=0,
+    sheet_contains: str = None,
+    encoding: str = None,
+    info: bool = False,
+    dtype=None,
+    columns: (list, str) = None,
+    nrows: int = None,
+) -> pd.DataFrame:
+  """
+  常用文件读取函数，支持
+  .csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml/
+  .geojson/.shp/.json等
+
+  Args:
+    file_path: 文件路径
+    sheet_name: 数据所在sheet的名称，仅对.xlsx/.xls生效
+    sheet_contains: 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效
+    encoding: 编码
+    info: 是否打印数据集情况（shape & columns）
+    dtype: 指定读取列的类型
+    columns: 指定读取的列名
+    nrows: 指定读取的行数
+  """
+  if columns:
+    columns = ensure_list(columns)
+  ex = extension(file_path)
+  if ex == '.csv':
+    df = read_csv(
+        file_path, dtype=dtype, columns=columns, nrows=nrows, encoding=encoding)
+  elif ex in ('.xls', '.xlsx'):
+    df = rdxls(
+        file_path, sheet_name=sheet_name, sheet_contains=sheet_contains,
+        dtype=dtype, columns=columns, nrows=nrows)
+  elif ex in ('.shp', '.dbf', '.shx', '.geojson'):
+    df = read_shapefile(file_path, encoding=encoding, nrows=nrows)
+  elif ex == '.parquet':
+    df = pd.read_parquet(file_path, columns=columns)
+  elif ex == '.feather':
+    df = pd.read_feather(file_path, columns=columns)
+  elif ex == '.pickle':
+    df = pd.read_pickle(file_path)
+  elif ex in ('.kml', '.ovkml'):
+    df = read_kml(file_path)
+  elif ex == '.json':
+    df = read_line_json(file_path, encoding=encoding)
+  else:
+    raise UnknownFileTypeError('未知的文件扩展名')
+  df = df[columns] if columns else df
+  df = df.head(nrows) if nrows else df
+  if info:
+    print(f'shape: {df.shape}')
+    print(f'columns: {df.columns.tolist()}')
+  return df
+
+
 def max_grid():
   """防止单个单元格文件过大而报错"""
-  import sys
   maxint = sys.maxsize
   decrement = True
   while decrement:
@@ -30,6 +88,7 @@ def max_grid():
 
 def rdxls(
     file_path,
+    *,
     sheet_name=0,
     sheet_contains: str = None,
     dtype=None,
@@ -59,72 +118,22 @@ def rdxls(
       nrows=nrows)
 
 
-def rdf(
-    file_path: str,
-    *,
-    sheet_name=0,
-    sheet_contains: str = None,
-    encoding: str = 'utf-8-sig',
-    info: bool = False,
-    dtype=None,
-    columns: (list, str) = None,
-    nrows: int = None,
-) -> pd.DataFrame:
-  """
-  常用文件读取函数，支持.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml'
-  Args:
-    file_path: 文件路径
-    sheet_name: 数据所在sheet的名称，仅对.xlsx/.xls生效
-    sheet_contains: 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效
-    encoding: 编码
-    info: 是否打印数据集情况（shape & columns）
-    dtype: 指定读取列的类型
-    columns: 指定读取的列名
-    nrows: 指定读取的行数
-  """
+def read_csv(file_path: str,
+             *,
+             encoding: str = None,
+             dtype=None,
+             columns: (list, str) = None,
+             nrows: int = None):
   max_grid()
-  if columns:
-    columns = ensure_list(columns)
-  ex = extension(file_path)
-  if ex == '.csv':
+  encodings = [encoding] if encoding else ['utf-8', 'gbk', 'utf-8-sig']
+  for encode in encodings:
     try:
-      df = pd.read_csv(
-          file_path, engine='python', dtype=dtype, usecols=columns, nrows=nrows,
-          encoding=encoding)
+      return pd.read_csv(
+          file_path, engine='python', dtype=dtype, usecols=columns,
+          nrows=nrows, encoding=encode)
     except UnicodeDecodeError:
-      df = pd.read_csv(
-          file_path, engine='python', dtype=dtype, usecols=columns, nrows=nrows)
-  elif ex == '.feather':
-    df = pd.read_feather(file_path, columns=columns)
-  elif ex == '.parquet':
-    df = pd.read_parquet(file_path, columns=columns)
-  elif ex == '.pickle':
-    df = pd.read_pickle(file_path)
-  elif ex in ('.xls', '.xlsx'):
-    df = rdxls(
-        file_path, sheet_name=sheet_name, sheet_contains=sheet_contains,
-        dtype=dtype, columns=columns, nrows=nrows
-    )
-  elif ex == '.shp':
-    try:
-      df = gpd.GeoDataFrame.from_file(file_path, encoding=encoding, rows=nrows)
-    except ValueError as e:
-      warnings.warn(f'常规读取方式读取失败，尝试其他方式读取，{e}')
-      df = read_shapefile(file_path, encoding=encoding)
-    finally:
-      warnings.warn(f'请检查输出结果并指定正确的encoding，当前为"{encoding}"')
-  elif ex in ('.kml', '.ovkml'):
-    df = read_kml(file_path)
-  elif ex == '.json':
-    df = read_line_json(file_path, encoding=encoding)
-  else:
-    raise UnknownFileTypeError('未知文件格式')
-  df = df[columns] if columns else df
-  df = df.head(nrows) if nrows else df
-  if info:
-    print(f'shape: {df.shape}')
-    print(f'columns: {df.columns.tolist()}')
-  return df
+      pass
+  raise Exception(f'使用encoding{encodings}无法读取文件，请指定')
 
 
 def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:
@@ -167,11 +176,6 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
     print(f'shape: {df.shape}')
     print(f'columns: {df.columns.tolist()}')
   return df
-
-
-def read_parquet_by_dir(dir_path, ignore_index=True) -> pd.DataFrame:
-  """从文件夹中读取所有的parquet文件并拼接成一个DataFrame"""
-  return rdf_by_dir(dir_path, exts=['.parquet'], ignore_index=ignore_index)
 
 
 def kml_df_create_level(gdf_dict) -> dict:
@@ -249,7 +253,7 @@ def read_kml(file_path, keep_level=True) -> gpd.GeoDataFrame:
   return data_all
 
 
-def read_shapefile(file_path, encoding='utf-8') -> gpd.GeoDataFrame:
+def read_shapefile_with_driver(file_path, encoding='utf-8') -> gpd.GeoDataFrame:
   """读取shapefile文件，分别读取dbf中的属性表和shp中的geometry进行拼接"""
   from osgeo import ogr
   from simpledbf import Dbf5
@@ -268,3 +272,20 @@ def read_shapefile(file_path, encoding='utf-8') -> gpd.GeoDataFrame:
     geoms.append(wkt_loads(geom_wkt))
   df['geometry'] = geoms
   return gpd.GeoDataFrame(df)
+
+
+def read_shapefile(file_path, **kwargs):
+  """读取shapefile或geojson文件"""
+  encoding = kwargs.get('encoding', 'utf-8')
+  nrows = kwargs.get('nrows', None)
+  try:
+    df = gpd.GeoDataFrame.from_file(file_path, encoding=encoding, rows=nrows)
+  except ValueError as e:
+    if extension(file_path) != '.geojson':
+      logging.warning(f'常规读取方式读取失败，尝试其他方式读取，{e}')
+      df = read_shapefile_with_driver(file_path, encoding=encoding)
+    else:
+      raise ValueError(f'文件读取失败，{e}')
+  finally:
+    logging.warning(f'请检查输出结果并指定正确的encoding，当前为"{encoding}"')
+  return df

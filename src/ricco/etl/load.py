@@ -22,20 +22,25 @@ def to_csv_by_line(data: list, filename: str):
     csv_write.writerow(data)
 
 
-def to_sheets(data: dict, filename: str):
+def to_sheets(data: dict, filename: str, index=False):
   """
   将多个dataframe保存到不同的sheet中
   Args:
-      data: 要保存的数据集，格式为：{sheet_name: DataFrame}
-      filename: 要保存的文件名
+    data: 要保存的数据集，格式为：{sheet_name: DataFrame}
+    filename: 要保存的文件名
+    index: 是否保存index
   """
   assert isinstance(data, dict), 'data must be dict'
   with pd.ExcelWriter(filename) as writer:
-    for sheet_name, data in data.items():
-      data.to_excel(writer, sheet_name)
+    for sheet_name, _df in data.items():
+      _df.to_excel(writer, sheet_name, index=index)
 
 
-def to_file(df: pd.DataFrame, filepath, index=False, log=True):
+def to_file(df: pd.DataFrame, filepath,
+            *,
+            index=False,
+            log=True,
+            encoding=None):
   """将df保存为文件"""
   ensure_dirpath_exist(filepath)
   if log:
@@ -43,14 +48,15 @@ def to_file(df: pd.DataFrame, filepath, index=False, log=True):
   df = df.copy()
   ex = extension(filepath)
   if ex == '.csv':
-    df.to_csv(filepath, index=index)
+    df.to_csv(filepath, index=index, encoding=encoding)
   elif ex == '.parquet':
     df.to_parquet(filepath, index=index)
   elif ex in ('.xlsx', '.xls'):
     df.to_excel(filepath, index=index)
-  elif ex == '.shp':
+  elif ex in ('.shp', '.geojson'):
     df = auto2shapely(df)
-    df.to_file(filepath)
+    df.to_file(filepath, encoding=encoding,
+               driver='GeoJSON' if ex == '.geojson' else None)
   else:
     raise UnknownFileTypeError(f'不支持的文件扩展名：{ex}')
 
@@ -59,7 +65,7 @@ def to_parts_file(df, dirpath,
                   chunksize=None,
                   parts=None,
                   to_ext='.csv',
-                  log=True):
+                  **kwargs):
   """
   将df保存为多个文件
   Args:
@@ -68,8 +74,7 @@ def to_parts_file(df, dirpath,
     chunksize: 拆分保存的文件大小
     parts: 拆分保存的文件数量
     to_ext: 文件扩展名
-    log: 是否打印日志
   """
   for i, _df in enumerate(df_iter(df, chunksize=chunksize, parts=parts)):
     savefile = os.path.join(dirpath, f'part_{str(i).zfill(6)}{to_ext}')
-    to_file(_df, savefile, log=log)
+    to_file(_df, savefile, **kwargs)

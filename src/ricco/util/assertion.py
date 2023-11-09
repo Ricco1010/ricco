@@ -97,8 +97,8 @@ def assert_series_unique(df: pd.DataFrame,
     df = df.drop_duplicates()
     ls = df.astype(str).to_dict('records')
     ls = [','.join(list(i.values())) for i in ls]
-    info = '\n-->'.join(ls)
-    raise AssertionError(f'{text}{columns}列中存在重复值:\n-->{info}')
+    info = '\n->'.join(ls)
+    raise AssertionError(f'{text}{columns}列中存在重复值:\n->{info}')
 
 
 def assert_series_digit(df: pd.DataFrame, col: str):

@@ -1,5 +1,4 @@
 from ricco.util.strings import drop_repeat_string
-from ricco.util.strings import extract_city
 from ricco.util.strings import get_breaks
 from ricco.util.strings import get_city_and_region
 from ricco.util.strings import get_single_list

@@ -195,7 +195,7 @@ def coord_trans_x2y(df,
     c_lat: 纬度列名
   """
   df = df.copy()
-  tqdm.pandas(desc=f'{srs_from}-->{srs_to}')
+  tqdm.pandas(desc=f'{srs_from}->{srs_to}')
   df[[c_lng, c_lat]] = df.progress_apply(
       lambda r: _coord_transform(r[c_lng], r[c_lat], srs_from, srs_to),
       axis=1, result_type='expand'
@@ -223,7 +223,7 @@ def coord_trans_geom(df,
   if not geometry_format:
     geometry_format = infer_geom_format(df[c_geometry])
   df_temp = _ensure_geometry(df)
-  tqdm.pandas(desc=f'{srs_from}-->{srs_to}')
+  tqdm.pandas(desc=f'{srs_from}->{srs_to}')
   df_temp[c_geometry] = df_temp[c_geometry].progress_apply(
       lambda x: _coord_transform_geometry(x, srs_from, srs_to)
   )

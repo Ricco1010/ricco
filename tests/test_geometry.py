@@ -1,6 +1,10 @@
+import warnings
+
 import pandas as pd
 from pandas.testing import assert_frame_equal
+from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
+from shapely.geometry import Polygon
 
 from ricco.geometry.df import mark_tags_v2
 from ricco.geometry.util import GeomFormat
@@ -10,151 +14,144 @@ from ricco.geometry.util import is_geojson
 from ricco.geometry.util import is_shapely
 from ricco.geometry.util import is_wkb
 from ricco.geometry.util import is_wkt
-from ricco.geometry.util import wkb_loads
+
+point_name = '点位A'
+point_lng = 121.505563
+point_lat = 31.31038
+point_shapely = Point(point_lng, point_lat)
+point_wkb = '0101000020E610000054C4E9245B605E401D554D10754F3F40'
+
+polygon_name = '板块B'
+p1 = Point(121.4952839926596653, 31.3133866150263032)
+p2 = Point(121.5195342448080282, 31.3134999823890041)
+p3 = Point(121.5116388138760612, 31.2944240039077783)
+polygon_shapely = MultiPolygon([Polygon([p1, p2, p3, p1])])
+polygon_wkb = '0106000020E6100000010000000103000000010000000400000028ADA1BBB25F5E40C88AEE1A3A503F4090A68F0C40615E4048A8EB8841503F40903DB9B0BE605E40F8F01B5F5F4B3F4028ADA1BBB25F5E40C88AEE1A3A503F40'
+polygon_wkt = 'MULTIPOLYGON (((121.4952839926596653 31.3133866150263032, 121.5195342448080282 31.3134999823890041, 121.5116388138760612 31.2944240039077783, 121.4952839926596653 31.3133866150263032)))'
+
+point_df = pd.DataFrame({
+  'name': [point_name], 'lng': [point_lng], 'lat': [point_lat],
+  'geometry_shapely': [point_shapely], 'geometry_wkb': [point_wkb],
+})
+point_df['geometry_shapely'] = point_df['geometry_shapely'].astype('geometry')
+
+polygon_df = pd.DataFrame({
+  '板块': [polygon_name], 'geometry_wkb': [polygon_wkb],
+  'geometry_shapely': [polygon_shapely],
+})
+polygon_df['geometry_shapely'] = polygon_df['geometry_shapely'].astype(
+    'geometry')
+
+res_df = pd.DataFrame({
+  'name': [point_name], 'lng': [point_lng], 'lat': [point_lat],
+  'geometry_shapely': [point_shapely], 'geometry_wkb': [point_wkb],
+  '板块': [polygon_name]
+})
+res_df['geometry_shapely'] = res_df['geometry_shapely'].astype('geometry')
 
 
 def test_get_epsg():
-  assert get_epsg('郑州') == 4547
-  assert get_epsg('郑州市') == 4547
-  assert get_epsg('一个没有的市') == 4549
+  assert get_epsg('郑州') == 32649
+  assert get_epsg('郑州市') == 32649
+  assert get_epsg('上海') == 32651
+  # test warning
+  with warnings.catch_warnings(record=True) as w:
+    warnings.simplefilter("always")
+    city = '一个没有的市'
+    assert get_epsg(city) == 32649
+    assert len(w) == 1
+    assert issubclass(w[-1].category, UserWarning)
+    assert f'请补充"{city}"的epsg信息，默认返回经度113.0' in str(w[-1].message)
 
 
 def test_mark_tags_v2():
   """测试空间连接打标签的方法"""
-  geom_polygon = '0106000020E6100000010000000103000000010000000400000028ADA1BBB25F5E40C88AEE1A3A503F4090A68F0C40615E4048A8EB8841503F40903DB9B0BE605E40F8F01B5F5F4B3F4028ADA1BBB25F5E40C88AEE1A3A503F40'
-  geom_point = '0101000020E610000054C4E9245B605E401D554D10754F3F40'
-  point = pd.DataFrame({
-    'name': ['脉策科技'],
-    'lng': [121.505563],
-    'lat': [31.310380],
-    'geometry_shapely': [Point(121.505563, 31.31038)],
-    'geometry_wkb': [geom_point],
-  })
-  point['geometry_shapely'] = point['geometry_shapely'].astype('geometry')
-  polygon = pd.DataFrame({
-    '板块': ['五角场板块'],
-    'geometry_wkb': [geom_polygon],
-    'geometry_shapely': [wkb_loads(geom_polygon)],
-  })
-  polygon['geometry_shapely'] = polygon['geometry_shapely'].astype('geometry')
-
-  res = pd.DataFrame({
-    'name': ['脉策科技'],
-    'lng': [121.505563],
-    'lat': [31.310380],
-    'geometry_shapely': [Point(121.505563, 31.31038)],
-    'geometry_wkb': [geom_point],
-    '板块': ['五角场板块']
-  })
-  res['geometry_shapely'] = res['geometry_shapely'].astype('geometry')
 
   # lnglat -- wkb
-  assert_frame_equal(
-      mark_tags_v2(
-          point[['name', 'lng', 'lat']],
-          polygon[['板块', 'geometry_wkb']].rename(
-              columns={'geometry_wkb': 'geometry'}),
-          col_list=['板块'],
-      ),
-      res[['name', 'lng', 'lat', 'geometry_wkb', '板块']].rename(
-          columns={'geometry_wkb': 'geometry'})
-  )
+  df1 = pd.DataFrame(point_df[['name', 'lng', 'lat']])
+  df2 = pd.DataFrame(polygon_df[[
+    '板块', 'geometry_wkb']].rename(columns={'geometry_wkb': 'geometry'}))
+  df3 = pd.DataFrame(res_df[[
+    'name', 'lng', 'lat', 'geometry_wkb', '板块'
+  ]].rename(columns={'geometry_wkb': 'geometry'}))
+  assert_frame_equal(mark_tags_v2(df1, df2, '板块'), df3)
 
   # wkb -- wkb, with lnglat
   assert_frame_equal(
       mark_tags_v2(
-          point[['name', 'lng', 'lat', 'geometry_wkb']].rename(
+          point_df[['name', 'lng', 'lat', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
-          polygon[['板块', 'geometry_wkb']].rename(
+          polygon_df[['板块', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
           col_list=['板块'],
       ),
-      res[['name', 'lng', 'lat', 'geometry_wkb', '板块']].rename(
+      res_df[['name', 'lng', 'lat', 'geometry_wkb', '板块']].rename(
           columns={'geometry_wkb': 'geometry'})
   )
 
   # wkb -- wkb, no lnglat
   assert_frame_equal(
       mark_tags_v2(
-          point[['name', 'geometry_wkb']].rename(
+          point_df[['name', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
-          polygon[['板块', 'geometry_wkb']].rename(
+          polygon_df[['板块', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
           col_list=['板块'],
       ),
-      res[['name', 'geometry_wkb', '板块']].rename(
+      res_df[['name', 'geometry_wkb', '板块']].rename(
           columns={'geometry_wkb': 'geometry'})
   )
 
   # drop_geometry
   assert_frame_equal(
       mark_tags_v2(
-          point[['name', 'lng', 'lat']],
-          polygon[['板块', 'geometry_wkb']].rename(
+          point_df[['name', 'lng', 'lat']],
+          polygon_df[['板块', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
           col_list=['板块'],
           drop_geometry=True
       ),
-      res[['name', 'lng', 'lat', '板块']]
+      res_df[['name', 'lng', 'lat', '板块']]
   )
   # shapely -- shapely, no lnglat
   assert_frame_equal(
       mark_tags_v2(
-          point[['name', 'geometry_shapely']].rename(
+          point_df[['name', 'geometry_shapely']].rename(
               columns={'geometry_shapely': 'geometry'}),
-          polygon[['板块', 'geometry_shapely']].rename(
+          polygon_df[['板块', 'geometry_shapely']].rename(
               columns={'geometry_shapely': 'geometry'}),
           col_list=['板块'],
       ),
-      res[['name', 'geometry_wkb', '板块']].rename(
+      res_df[['name', 'geometry_wkb', '板块']].rename(
           columns={'geometry_wkb': 'geometry'})
   )
 
   # shapely -- shapely, no lnglat, return shapely
   assert_frame_equal(
       mark_tags_v2(
-          point[['name', 'geometry_shapely']].rename(
+          point_df[['name', 'geometry_shapely']].rename(
               columns={'geometry_shapely': 'geometry'}),
-          polygon[['板块', 'geometry_shapely']].rename(
+          polygon_df[['板块', 'geometry_shapely']].rename(
               columns={'geometry_shapely': 'geometry'}),
           col_list=['板块'],
           geometry_format='shapely'
       ),
-      res[['name', 'geometry_shapely', '板块']].rename(
+      res_df[['name', 'geometry_shapely', '板块']].rename(
           columns={'geometry_shapely': 'geometry'})
   )
 
 
 def test_mark_tags_v22():
   """测试空间连接打标签的方法"""
-  geom_polygon = '0106000020E6100000010000000103000000010000000400000028ADA1BBB25F5E40C88AEE1A3A503F4090A68F0C40615E4048A8EB8841503F40903DB9B0BE605E40F8F01B5F5F4B3F4028ADA1BBB25F5E40C88AEE1A3A503F40'
-  geom_point = '0101000020E610000054C4E9245B605E401D554D10754F3F40'
-  point = pd.DataFrame({
-    'name': ['脉策科技'],
-    'lng2': [121.505563],
-    'lat2': [31.310380],
-    'geometry_shapely2': [Point(121.505563, 31.31038)],
-    'geometry_wkb2': [geom_point],
-  })
-  point['geometry_shapely2'] = point['geometry_shapely2'].astype('geometry')
-  polygon = pd.DataFrame({
-    '板块': ['五角场板块'],
-    'geometry_wkb2': [geom_polygon],
-    'geometry_shapely2': [wkb_loads(geom_polygon)],
-  })
-  polygon['geometry_shapely2'] = polygon['geometry_shapely2'].astype(
-      'geometry')
-
-  res = pd.DataFrame({
-    'name': ['脉策科技'],
-    'lng2': [121.505563],
-    'lat2': [31.310380],
-    'geometry_shapely2': [Point(121.505563, 31.31038)],
-    'geometry_wkb2': [geom_point],
-    '板块': ['五角场板块']
-  })
-  res['geometry_shapely2'] = res['geometry_shapely2'].astype('geometry')
-
+  mapping = {
+    'lng': 'lng2',
+    'lat': 'lat2',
+    'geometry_wkb': 'geometry_wkb2',
+    'geometry_shapely': 'geometry_shapely2',
+  }
+  point = point_df.rename(columns=mapping)
+  polygon = polygon_df.rename(columns=mapping)
+  res = res_df.rename(columns=mapping)
   # lnglat -- wkb
   assert_frame_equal(
       mark_tags_v2(

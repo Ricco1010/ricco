@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from ..etl.transformer import create_columns
-from ..util.base import is_empty
+from ..util.decorator import check_null
 from .amap import get_address_amap
 from .amap import get_place_amap
 from .baidu import get_address_baidu
@@ -32,93 +32,91 @@ def geocode(*,
   """
   assert source in ('baidu', 'baidu_poi', 'amap', 'amap_poi')
   if source == 'baidu':
-    return get_address_baidu(city=city, address=address, srs=srs, key=key_baidu)
+    return get_address_baidu(address=address, city=city, srs=srs, key=key_baidu)
   if source == 'baidu_poi':
-    return get_place_baidu(city=city, keywords=address, srs=srs, key=key_baidu)
+    return get_place_baidu(address=address, city=city, srs=srs, key=key_baidu)
   if source == 'amap':
-    return get_address_amap(city=city, address=address, srs=srs, key=key_amap)
+    return get_address_amap(address=address, city=city, srs=srs, key=key_amap)
   if source == 'amap_poi':
-    return get_place_amap(city=city, keywords=address, srs=srs, key=key_amap)
+    return get_place_amap(address=address, city=city, srs=srs, key=key_amap)
 
 
-def geocode_best_poi(city,
-                     keywords,
-                     sig=80,
-                     address_geocode=False,
-                     srs='wgs84',
-                     key_baidu=None,
-                     key_amap=None):
+@check_null(default_rv=DEFAULT_RES)
+def geocode_best_poi(
+    address,
+    city,
+    sig=80,
+    address_geocode=False,
+    srs='wgs84',
+    key_baidu=None,
+    key_amap=None):
   """
   获取最优的地点检索结果
   Args:
+    address: POI名称
     city: 城市
-    keywords: POI名称
     sig: 解析结果相似度，默认为80，范围0-100
     address_geocode: 是否使用地理编码补全，默认False
     srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
     key_baidu: 百度接口的key，公共key失效后可自行传入
     key_amap: 高德接口的key，公共key失效后可自行传入
   """
-  if is_empty(keywords):
-    return DEFAULT_RES
   try:
-    ar = get_place_amap(city, keywords, srs=srs, key=key_amap)
+    ar = get_place_amap(address, city, srs=srs, key=key_amap)
     if ar['score'] >= 90:
       return ar
-    br = get_place_baidu(city, keywords, srs=srs, key=key_baidu)
+    br = get_place_baidu(address, city, srs=srs, key=key_baidu)
     if br['score'] >= sig or ar['score'] >= sig:
       return br if br['score'] > ar['score'] else ar
     if address_geocode:
-      br = get_address_baidu(city, keywords, srs=srs, key=key_baidu)
+      br = get_address_baidu(address, city, srs=srs, key=key_baidu)
       if br['score'] >= 90:
         return br
-      return get_address_amap(city, keywords, srs=srs, key=key_amap)
-  except Exception as e:
-    warnings.warn(f'结果获取失败：【{city}】：【{keywords}】,{e}')
-    return DEFAULT_RES
-
-
-def geocode_best_address(city, address, srs='wgs84', key_baidu=None,
-                         key_amap=None):
-  """获取最优的地理编码结果"""
-  if is_empty(address):
-    return DEFAULT_RES
-  try:
-    br = get_address_baidu(city, address, srs=srs, key=key_baidu)
-    if br['score'] >= 90:
-      return br
-    return get_address_amap(city, address, srs=srs, key=key_amap)
+      return get_address_amap(address, city, srs=srs, key=key_amap)
   except Exception as e:
     warnings.warn(f'结果获取失败：【{city}】：【{address}】,{e}')
     return DEFAULT_RES
 
 
-def geocode_best(city, address,
-                 address_type: str,
-                 sig: int = 80,
-                 srs: str = 'wgs84',
-                 address_geocode: bool = False,
-                 key_baidu=None, key_amap=None):
+@check_null(default_rv=DEFAULT_RES)
+def geocode_best_address(address, city, srs='wgs84', key_baidu=None,
+                         key_amap=None):
+  """获取最优的地理编码结果"""
+  try:
+    br = get_address_baidu(address, city, srs=srs, key=key_baidu)
+    if br['score'] >= 90:
+      return br
+    return get_address_amap(address, city, srs=srs, key=key_amap)
+  except Exception as e:
+    warnings.warn(f'结果获取失败：【{city}】：【{address}】,{e}')
+    return DEFAULT_RES
+
+
+def geocode_best(
+    address,
+    city,
+    address_type: str,
+    sig: int = 80,
+    srs: str = 'wgs84',
+    address_geocode: bool = False,
+    **kwargs):
   assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
   if address_type == 'poi':
     return geocode_best_poi(
-        city, address, sig=sig, address_geocode=address_geocode, srs=srs,
-        key_baidu=key_baidu, key_amap=key_amap
+        address, city, sig=sig, address_geocode=address_geocode, srs=srs,
+        **kwargs
     )
-  return geocode_best_address(
-      city, address, srs=srs, key_baidu=key_baidu, key_amap=key_amap
-  )
+  return geocode_best_address(address, city, srs=srs, **kwargs)
 
 
+@check_null(default_rv=DEFAULT_RES)
 def geocode_with_memory_cache(
-    city, address, address_type: str,
+    address, city, address_type: str,
     sig: int = 80, srs: str = 'wgs84',
     address_geocode: bool = False,
     key_baidu=None, key_amap=None,
     ignore_existing=True, lng=None, lat=None, memory_cache: bool = True):
   """geocoding（使用内存加速）"""
-  if not all([city, address]):
-    return DEFAULT_RES
   if memory_cache:
     global __GLOBAL_CACHE
     if '__GLOBAL_CACHE' not in globals():
@@ -133,7 +131,7 @@ def geocode_with_memory_cache(
     rv['lat'] = lat
     return rv
   res = geocode_best(
-      city=city, address=address, sig=sig,
+      address=address, city=city, sig=sig,
       address_type=address_type, address_geocode=address_geocode,
       srs=srs, key_baidu=key_baidu, key_amap=key_amap
   )
@@ -152,8 +150,7 @@ def geocode_df(df: pd.DataFrame,
                address_geocode: bool = False,
                with_detail: bool = True,
                srs: str = 'wgs84',
-               key_baidu=None,
-               key_amap=None):
+               **kwargs):
   """
   对dataframe进行geocoding
   Args:
@@ -188,9 +185,10 @@ def geocode_df(df: pd.DataFrame,
     try:
       _address, _city = _df[by][i], _df[__c_city][i]
       rv = geocode_best(
-          city=_city, address=_address, sig=sig,
+          address=_address, city=_city, sig=sig,
           address_type=address_type, address_geocode=address_geocode,
-          srs=srs, key_baidu=key_baidu, key_amap=key_amap
+          srs=srs,
+          **kwargs
       )
       for c in base_cols:
         _df.loc[(_df[__c_city] == _city) & (_df[by] == _address), c] = rv[c]
@@ -210,9 +208,8 @@ def geocode_v2(df: pd.DataFrame,
                with_detail: bool = True,
                srs: str = 'wgs84',
                ignore_existing: bool = True,
-               key_baidu=None,
-               key_amap=None,
-               memory_cache: bool = True):
+               memory_cache: bool = True,
+               **kwargs):
   """
   对dataframe进行geocoding
   Args:
@@ -246,11 +243,11 @@ def geocode_v2(df: pd.DataFrame,
     _lng, _lat = df['lng'][i], df['lat'][i]
     try:
       rv = geocode_with_memory_cache(
-          city=_city, address=_address, sig=sig,
+          address=_address, city=_city, sig=sig,
           address_type=address_type, address_geocode=address_geocode,
-          srs=srs, key_baidu=key_baidu, key_amap=key_amap,
+          srs=srs,
           ignore_existing=ignore_existing, lng=_lng, lat=_lat,
-          memory_cache=memory_cache,
+          memory_cache=memory_cache, **kwargs
       )
       for c in base_cols:
         df.loc[(df[__c_city] == _city) & (df[by] == _address), c] = rv[c]

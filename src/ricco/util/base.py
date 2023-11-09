@@ -1,3 +1,6 @@
+import logging
+import warnings
+
 import pandas as pd
 from shapely.geometry.base import BaseGeometry
 
@@ -11,6 +14,12 @@ def ensure_list(val):
   if isinstance(val, (set, tuple)):
     return list(val)
   return [val]
+
+
+def ensure_ext(ext: str):
+  if isinstance(ext, str) and ext != '' and not ext.startswith('.'):
+    return '.' + ext
+  return ext
 
 
 def is_empty(x) -> bool:
@@ -59,3 +68,11 @@ def second_to_desc(second):
   if d == 0:
     return f'{h}h {m}m {second:.0f}s'
   return f'{d}d {h}h {m}m {second:.0f}s'
+
+
+def warn_(msg, if_or_not=True, mode='warning'):
+  if if_or_not:
+    if mode == 'warning':
+      warnings.warn(msg)
+    if mode == 'logging':
+      logging.warning(msg)

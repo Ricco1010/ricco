@@ -26,10 +26,10 @@ from .df import wkt2lnglat
 from .df import wkt2shapely
 from .df import wkt2wkb
 from .util import distance
+from .util import epsg_from_lnglat
 from .util import geojson_dumps
 from .util import geojson_loads
 from .util import get_epsg
-from .util import get_epsg_by_lng
 from .util import get_inner_point
 from .util import infer_geom_format
 from .util import is_geojson

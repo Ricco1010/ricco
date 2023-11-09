@@ -72,7 +72,7 @@ def ensure_dirpath_exist(filepath):
     return
   undefined_dirs = find_undefined_dirs(dir_path)
   for p in undefined_dirs:
-    logging.warning(f'目录：{p}不存在，已创建')
+    logging.warning(f'目录："{p}"不存在，已创建')
     os.makedirs(p)
 
 

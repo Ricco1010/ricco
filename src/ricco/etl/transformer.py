@@ -1,4 +1,3 @@
-import warnings
 from datetime import datetime
 
 import numpy as np
@@ -7,49 +6,15 @@ import pandas as pd
 from ..util.assertion import assert_series_unique
 from ..util.base import ensure_list
 from ..util.base import is_empty
+from ..util.decorator import check_null
+from ..util.decorator import process_multi
 from ..util.decorator import progress
 from ..util.decorator import timer
 from ..util.util import and_
 from ..util.util import fuzz_match
-from ..util.util import list2dict
 from ..util.util import to_float
 from ..util.util import to_str_list
-from ..util.util import valid_cpus
 from .graph import query_from_graph
-
-
-def best_unique(df: pd.DataFrame,
-                key_cols: (list, str),
-                value_cols: (str, list) = None,
-                filter_cols=False,
-                drop_if_null=None) -> pd.DataFrame:
-  """
-  优化的去重函数：
-    为保证数据的完整性，去重时优先去除指定列中的空值
-  Args:
-    df:
-    key_cols: 按照哪些列去重
-    value_cols: 优先去除那些列的空值，该列表是有顺序的
-    filter_cols: 是否只保留key_cols和value_cols里面的列，默认False
-    drop_if_null: 如何处理value_cols内值为空的列；'all'：都为空时删除该列，'any'：任意一列为空时就删除，None：保留空白
-  """
-  warnings.warn('即将弃用，请使用keep_best_unique', DeprecationWarning)
-  key_cols = ensure_list(key_cols)
-  if not value_cols:
-    value_cols = [i for i in df.columns if i not in key_cols]
-  value_cols = ensure_list(value_cols)
-  if drop_if_null:
-    df = df.dropna(
-        subset=value_cols,
-        how=drop_if_null
-    ).dropna(
-        subset=key_cols,
-        how='all')
-  df = df.sort_values(value_cols, na_position='first')
-  df = df.drop_duplicates(key_cols, keep='last', ignore_index=True)
-  if filter_cols:
-    df = df[key_cols + value_cols]
-  return df
 
 
 def keep_best_unique(df: pd.DataFrame,
@@ -86,7 +51,7 @@ def table2dict(df: pd.DataFrame,
     df:
     key_col: 生成key的列
     value_col: 生成value的列
-    orient: 生成dict的方式，默认'dict',还有 ‘list’, ‘series’, ‘split’, ‘records’, ‘index’
+    orient: 生成dict的方式，默认 'dict',还有 ‘list’, ‘series’, ‘split’, ‘records’, ‘index’
   """
   if not all([key_col, value_col]):
     columns = df.columns.tolist()
@@ -117,21 +82,6 @@ def round_by_columns(df, columns: list):
   return df
 
 
-def standard(series: (pd.Series, list),
-             q: float = 0.01,
-             min_score: float = 0,
-             minus: bool = False) -> (pd.Series, list):
-  if minus:
-    series = 1 / (series + 1)
-  max_ = series.quantile(1 - q)
-  min_ = series.quantile(q)
-  series = series.apply(
-      lambda x: (x - min_) / (max_ - min_) * (100 - min_score) + min_score)
-  series[series >= 100] = 100
-  series[series <= min_score] = min_score
-  return series
-
-
 def update_df(df: pd.DataFrame,
               new_df: pd.DataFrame,
               on: (str, list) = None,
@@ -147,7 +97,7 @@ def update_df(df: pd.DataFrame,
 
       * True: 默认值；使用 `other` DataFrame中的值覆盖原DataFrame中相应位置的值.
       * False: 只更新原DataFrame中重叠位置数据为 *空* 的值.
-    errors: （可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为'ignore'
+    errors: （可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为 'ignore'
 
       * 'ignore': 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，
         使用other中的值替换df中的值。
@@ -162,38 +112,41 @@ def update_df(df: pd.DataFrame,
   return df
 
 
-def date_to(series: pd.Series, mode: str = 'first') -> pd.Series:
+def convert_date(df: pd.DataFrame,
+                 columns: (str, list),
+                 mode: str = 'first') -> pd.DataFrame:
   """
   将日期转为当月的第一天或最后一天
   Args:
-    series: pd.Series
+    df: 要处理的DataFrame
+    columns: 要转换的列
     mode: 'first' or 'last'
   """
-  from pandas.tseries.offsets import MonthEnd
 
+  @check_null()
   def trans(x):
-    if x is not pd.NaT:
-      y = int(x.year)
-      m = int(x.month)
-      d = int(x.day)
-      return datetime(y, m, d)
-    else:
-      return
+    return datetime(x.year, x.month, x.day)
 
+  from pandas.tseries.offsets import MonthEnd
   assert mode in ('first', 'last'), "可选参数为first or last"
-  series = pd.to_datetime(series)
-  if mode == 'first':
-    series = series.apply(lambda x: x.replace(day=1))
-  else:
-    series = pd.to_datetime(series, format="%Y%m") + MonthEnd(1)
-  return series.apply(trans)
+  columns = ensure_list(columns)
+  for c in columns:
+    df[c] = pd.to_datetime(df[c])
+    if mode == 'first':
+      df[c] = df[c].apply(lambda x: x.replace(day=1))
+    else:
+      df[c] = pd.to_datetime(df[c], format="%Y%m") + MonthEnd(1)
+    df[c] = df[c].apply(trans)
+  return df
 
 
 @timer
+@process_multi
 def fuzz_df(df: pd.DataFrame,
             col: str,
             target_series: (list, pd.Series),
-            c_dst=None) -> pd.DataFrame:
+            c_dst: str = None,
+            valid_score=0) -> pd.DataFrame:
   """
   模糊匹配。为DataFrame中的某一列从某个集合中模糊匹配匹配相似度最高的元素
   Args:
@@ -201,31 +154,35 @@ def fuzz_df(df: pd.DataFrame,
     col: 要匹配的列
     target_series: 从何处匹配， list/pd.Series
     c_dst: 关联后输出的列名，默认为原列名+"_target"后缀
+    valid_score: 相似度大于该值的才返回
   """
-  from pandarallel import pandarallel
-  pandarallel.initialize(nb_workers=valid_cpus(), progress_bar=True)
-
   target_series = to_str_list(target_series)
   _df = df[df[col].notna()][[col]].drop_duplicates(ignore_index=True)
 
   c_dst = c_dst if c_dst else f'{col}_target'
   _df[[
-    c_dst, 'normal_score', 'partial_score'
+    c_dst, 'normal_score', 'partial_score', 'weight_score'
   ]] = _df.parallel_apply(
-      lambda r: fuzz_match(r[col], target_series),
+      lambda r: fuzz_match(r[col], target_series, valid_score=valid_score),
       result_type='expand',
       axis=1)
   return df.merge(_df, on=col, how='left')
 
 
-def series_to_float(series: pd.Series, rex_method: str = 'mean') -> pd.Series:
+def convert_to_float(df: pd.DataFrame,
+                     columns: (list, str),
+                     rex_method: str = 'mean') -> pd.DataFrame:
   """
-  pandas.Series: str --> float
+  提取字符串中的数值信息并转为float类型
   Args:
-    series: 要转换的pandas列
+    df: 要转换的DataFrame
+    columns: 要转换的列
     rex_method: 计算mean,max,min， 默认为mean
   """
-  return series.apply(lambda x: to_float(x, rex_method=rex_method))
+  columns = ensure_list(columns)
+  for c in columns:
+    df[c] = df[c].apply(lambda x: to_float(x, rex_method=rex_method))
+  return df
 
 
 def filter_by_df(df: pd.DataFrame, sizer: pd.DataFrame) -> pd.DataFrame:
@@ -246,7 +203,7 @@ def filter_by_df(df: pd.DataFrame, sizer: pd.DataFrame) -> pd.DataFrame:
 
 @timer
 @progress
-def expand_dict(df, c_src):
+def expand_dict(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
   return pd.concat(
       [
@@ -259,21 +216,24 @@ def expand_dict(df, c_src):
   )
 
 
-@progress
+@timer
+def split_to_rows(df: pd.DataFrame, column: str, delimiter: str = '|'):
+  """
+  含有多值的列分拆成多行
+
+  Args:
+    column: 存在多值的列
+    delimiter: 多个值之间的分割符
+  """
+  df = df.copy()
+  df[column] = df[column].str.split(delimiter)
+  return df.explode(column, ignore_index=True)
+
+
 @timer
 def split_list_to_row(df: pd.DataFrame, column):
   """将列表列中列表的元素拆成多行"""
-  if pd.__version__ >= '1.3.0':
-    return df.explode(column, ignore_index=True)
-  df[column] = df[column].progress_apply(list2dict)
-  return df.drop(columns=column).join(
-      expand_dict(
-          df[[column]], column
-      ).stack(
-      ).reset_index(
-          level=1, drop=True
-      ).rename(column)
-  )
+  return df.explode(column, ignore_index=True)
 
 
 def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
@@ -281,28 +241,7 @@ def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
   df = pd.DataFrame()
   df[c_key] = data.keys()
   df[c_value] = data.values()
-  if as_index:
-    df.set_index(c_key, inplace=True)
-  return df
-
-
-def is_unique(df: pd.DataFrame, key_cols: (str, list) = None):
-  """判断是否唯一"""
-  warnings.warn(
-      '方法即将停用，请使用"ricco.util.util.is_unique_series"方法替代',
-      DeprecationWarning
-  )
-  if not key_cols:
-    key_cols = df.columns.to_list()
-  key_cols = ensure_list(key_cols)
-  return not df.duplicated(subset=key_cols, keep=False).any()
-
-
-def one_line(df, key_cols, key_value, value_cols):
-  """获取一行重置索引后的数据"""
-  cond = and_(*[df[c] == key_value[c] for c in key_cols])
-  df = df[cond][[*key_cols, *value_cols]]
-  return df.reset_index(drop=True)
+  return df.set_index(c_key) if as_index else df
 
 
 @timer

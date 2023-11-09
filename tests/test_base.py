@@ -6,10 +6,10 @@ from ricco.util.base import is_empty
 
 
 def test_is_empty():
-  assert is_empty(1) == False
-  assert is_empty(None) == True
-  assert is_empty(np.nan) == True
-  assert is_empty([]) == True
-  assert is_empty({}) == True
-  assert is_empty(pd.DataFrame()) == True
-  assert is_empty(Point()) == True
+  assert is_empty(1) is False
+  assert is_empty(None) is True
+  assert is_empty(np.nan) is True
+  assert is_empty([]) is True
+  assert is_empty({}) is True
+  assert is_empty(pd.DataFrame()) is True
+  assert is_empty(Point()) is True

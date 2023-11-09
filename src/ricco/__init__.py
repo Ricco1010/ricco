@@ -1,4 +1,4 @@
-__version__ = '1.2.7'
+__version__ = '1.3.0'
 
 from .etl import file
 from .etl import load
@@ -13,6 +13,7 @@ from .etl.load import to_file
 from .etl.transformer import expand_dict
 from .etl.transformer import is_changed
 from .etl.transformer import keep_best_unique
+from .etl.transformer import split_to_rows
 from .etl.transformer import table2dict
 from .etl.transformer import update_df
 from .geocode.geocode import geocode
@@ -34,9 +35,7 @@ from .geometry.util import wkb_loads
 from .geometry.util import wkt_dumps
 from .geometry.util import wkt_loads
 from .local import Rc
-from .util import coord_trans
 from .util import dt
-from .util import geom
 from .util import id_number
 from .util import os
 from .util import phone_number
@@ -79,7 +78,5 @@ from .util.util import pinyin
 from .util.util import re_fast
 from .util.util import rstrip_d0
 from .util.util import segment
-from .util.util import union_list
 from .util.util import union_list_v2
-from .util.util import union_str
 from .util.util import union_str_v2

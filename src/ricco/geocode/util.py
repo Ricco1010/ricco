@@ -2,7 +2,6 @@ import warnings
 
 from ..geometry.coord_trans import gcj2bd
 from ..geometry.coord_trans import gcj2wgs
-from ..util.base import is_empty
 from ..util.decorator import check_null
 
 DEFAULT_RES = {
@@ -21,7 +20,7 @@ class MapUrls:
   amap = 'https://restapi.amap.com/v3/geocode/geo'
   # 高德地点检索
   amap_poi = 'https://restapi.amap.com/v3/place/text'
-  # 脉策geocode服务
+  # MC geocode服务
   mdt = 'https://geocode.idatatlas.com/geocode'
 
 
@@ -60,18 +59,17 @@ def fix_address(string):
   return string
 
 
+@check_null(default_rv='中国')
 def fix_city(string):
-  if is_empty(string):
-    return '中国'
   return str(string).rstrip('市')
 
 
-def rv_score(city, keywords, rv):
+def rv_score(city, address, rv):
   from fuzzywuzzy import fuzz
-  if not all([keywords, rv]):
+  if not all([address, rv]):
     return -1
   city = fix_address(city)
   return max(
-      fuzz.ratio(rv.lstrip(city), keywords.lstrip(city)),
-      fuzz.partial_ratio(rv.lstrip(city), keywords.lstrip(city))
+      fuzz.ratio(rv.lstrip(city), address.lstrip(city)),
+      fuzz.partial_ratio(rv.lstrip(city), address.lstrip(city))
   )
