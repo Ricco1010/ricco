@@ -25,8 +25,8 @@ class MapUrls:
 
 
 class MapKeys:
-  amap = '7c14855824549a84c543e48990239f3d'
-  baidu = '9Fy1lMHbwpr07WVBFPLw9vpntGUSOUMN'
+  amap = '7c14855824549a84c543e48990239f3d'  # noqa
+  baidu = '9Fy1lMHbwpr07WVBFPLw9vpntGUSOUMN'  # noqa
 
 
 def gcj2xx(lnglat, srs):

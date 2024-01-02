@@ -1,10 +1,14 @@
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
+from .base import ensure_list
+from .base import is_empty
+from .base import not_empty
 from .etl import file
 from .etl import load
 from .etl import transformer
 from .etl.extract import rdf
 from .etl.extract import rdf_by_dir
+from .etl.extract import read_all_sheets
 from .etl.file import file_to_x
 from .etl.file import reshape_files
 from .etl.file import split2x
@@ -28,6 +32,7 @@ from .geometry.df import auto2shapely
 from .geometry.df import auto2x
 from .geometry.df import get_area
 from .geometry.df import mark_tags_v2
+from .geometry.df import nearest_kdtree
 from .geometry.df import nearest_neighbor
 from .geometry.df import shapely2x
 from .geometry.util import wkb_dumps

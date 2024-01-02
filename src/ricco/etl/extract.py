@@ -7,8 +7,8 @@ import geopandas as gpd
 import pandas as pd
 from tqdm import tqdm
 
+from ..base import ensure_list
 from ..geometry.util import wkt_loads
-from ..util.base import ensure_list
 from ..util.exception import UnknownFileTypeError
 from ..util.os import dir_iter
 from ..util.os import extension
@@ -116,6 +116,30 @@ def rdxls(
   return pd.read_excel(
       file_path, sheet_name=sheet_name, dtype=dtype, usecols=columns,
       nrows=nrows)
+
+
+def read_all_sheets(file_path, sheet_names=None, ignore_diff_columns=False):
+  """
+  读取并合并所有sheet表
+  Args:
+    file_path: Excel文件路径
+    sheet_names: 要读取并合并的sheet列表，默认读取全部的sheet
+    ignore_diff_columns: 如果每个sheet中的字段名不一致，是否要忽略
+  """
+  assert extension(file_path) in ('.xlsx', '.xls'), '必须是Excel文件'
+  data = pd.read_excel(file_path, sheet_name=None)
+  if not sheet_names:
+    sheet_names = list(data.keys())
+  dfs = []
+  columns = set(data[sheet_names[0]].columns)
+  for sheet_name in sheet_names:
+    _df = data[sheet_name]
+    assert 'sheet_name' not in _df
+    if not ignore_diff_columns:
+      assert set(_df.columns) == columns, f'sheet: "{sheet_name}", 列名不一致'
+    _df['sheet_name'] = sheet_name
+    dfs.append(_df)
+  return pd.concat(dfs, ignore_index=True)
 
 
 def read_csv(file_path: str,

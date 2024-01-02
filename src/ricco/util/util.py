@@ -12,9 +12,9 @@ from itertools import chain
 import numpy as np
 import pandas as pd
 
-from .base import ensure_list
-from .base import is_empty
-from .base import not_empty
+from ..base import ensure_list
+from ..base import is_empty
+from ..base import not_empty
 from .decorator import check_null
 
 
@@ -140,7 +140,7 @@ def per2float(string: str) -> float:
 def extract_num(string: str,
                 num_type: str = 'str',
                 method: str = 'list',
-                join_list: bool = False,
+                join_list: bool = False,  # noqa
                 ignore_pct: bool = True,
                 multi_warning=False):
   """
@@ -264,8 +264,8 @@ def fuzz_match(string: str,
   from fuzzywuzzy import fuzz
   w = 0.3
 
-  def score(x, string):
-    return fuzz.partial_ratio(x, string) + fuzz.ratio(x, string) * w
+  def score(x, s):
+    return fuzz.partial_ratio(x, s) + fuzz.ratio(x, s) * w
 
   if fix_string_set:
     string_set = to_str_list(string_set)
@@ -391,6 +391,23 @@ def random_by_prob(mapping: dict):
   )
 
 
+def make_ramdom_lnglat(
+    df: pd.DataFrame,
+    lng_range: (tuple, list) = (72, 138),
+    lat_range: (tuple, list) = (0, 56),
+):
+  """
+  Args:
+    df: 输入的dataframe
+    lng_range: 城市的经度范围
+    lat_range: 城市的纬度范围
+  """
+  length = df.shape[0]
+  df['lng'] = np.random.uniform(*lng_range, length)
+  df['lat'] = np.random.uniform(*lat_range, length)
+  return df
+
+
 @check_null()
 def rstrip_d0(x):
   """删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -> '130'"""
@@ -416,8 +433,8 @@ def interchange_dict(dic: dict) -> dict:
 
 
 def to_bool(x,
-            na: bool = False,
-            other: (bool, str) = False,
+            na=False,
+            other=False,
             t_list: list = None,
             f_list: list = None):
   """
@@ -428,7 +445,7 @@ def to_bool(x,
     other: 无法判断的值如何处理
       - 'raise'：抛出异常
       - 'coerce'：返回传入的值
-      - 除'raise'和'coerce'之外的其他值：直接返回该值
+      - 除 'raise' 和 'coerce' 之外的其他值：直接返回该值
     t_list:指定为True的类别
     f_list:指定为False的类别
   """

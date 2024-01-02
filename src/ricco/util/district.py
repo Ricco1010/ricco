@@ -1,16 +1,18 @@
+from functools import lru_cache
+
+from ..base import not_empty
+from ..base import warn_
 from ..resource.bd_region import get_bd_region
-from .base import not_empty
-from .base import warn_
-from .decorator import singleton
 
 
 class District:
   def __init__(self):
+    """自动转换行政区划"""
     self.df = get_bd_region()
     self.city_list = self.city_list()
     self.region_list = self.region_list()
 
-  @singleton
+  @lru_cache()
   def city_list(self):
     city_list = [
       *self.df['城市名称'].unique().tolist(),
@@ -18,7 +20,7 @@ class District:
     ]
     return [c for c in city_list if not_empty(c)]
 
-  @singleton
+  @lru_cache()
   def region_list(self):
     region_list = [
       *self.df['区县名称'].unique().tolist(),

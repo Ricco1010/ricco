@@ -3,7 +3,7 @@ import logging
 import os
 import zipfile
 
-from .base import ensure_list
+from ..base import ensure_list
 
 
 def ext(filepath):
@@ -72,8 +72,8 @@ def ensure_dirpath_exist(filepath):
     return
   undefined_dirs = find_undefined_dirs(dir_path)
   for p in undefined_dirs:
-    logging.warning(f'目录："{p}"不存在，已创建')
     os.makedirs(p)
+    logging.warning(f'Created: "{p}"')
 
 
 def dir2zip(filepath, overwrite=False, delete_origin=False):
@@ -83,7 +83,7 @@ def dir2zip(filepath, overwrite=False, delete_origin=False):
     if overwrite:
       os.remove(zfn)
     else:
-      raise FileExistsError(f'目标文件{zfn}已存在')
+      raise FileExistsError(f'"{zfn}"已存在')
   z = zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED)
   for dirpath, _, filenames in os.walk(filepath):
     for filename in filenames:
@@ -92,8 +92,8 @@ def dir2zip(filepath, overwrite=False, delete_origin=False):
       z.write(filepath_out, arcname=filepath_in)
   z.close()
   if delete_origin:
-    print(f'delete {filepath}')
     remove_dir(filepath)
+    logging.warning(f'Deleted:"{filepath}"')
 
 
 def get_file_counts(dir_path):
@@ -106,7 +106,8 @@ def get_file_counts(dir_path):
   return num
 
 
-def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False):
+def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False,
+                    exts=None):
   """删除指定天数前修改过的文件"""
   dirs = [
     '/bin', '/sbin', '/usr', '/etc', '/dev', '/Applications', '/Library',
@@ -120,12 +121,12 @@ def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False):
   timeline = datetime.datetime.now() - datetime.timedelta(days)
   # 删除过期文件
   for file in dir_iter(dir_path, abspath=True, recursive=recursive,
-                       ignore_hidden_files=not rm_hidden_file):
+                       ignore_hidden_files=not rm_hidden_file, exts=exts):
     m_time = os.path.getmtime(file)
     m_time = datetime.datetime.fromtimestamp(m_time)
     if m_time <= timeline:
       os.remove(file)
-      logging.warning(f'已删除文件：{file}')
+      logging.warning(f'Deleted:"{file}"')
   # 删除空文件夹
   for dirpath, dirnames, _ in os.walk(dir_path):
     for dirname in dirnames:
@@ -133,7 +134,7 @@ def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False):
       num = get_file_counts(dir_full_path)
       if num == 0:
         remove_dir(dir_full_path)
-        logging.warning(f'已删除空文件夹：{dir_full_path}')
+        logging.warning(f'Deleted:"{dir_full_path}"')
 
 
 def dir_iter(root,

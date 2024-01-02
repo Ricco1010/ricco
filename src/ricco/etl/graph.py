@@ -1,12 +1,10 @@
+import warnings
+
 import pandas as pd
 
-from ..util.assertion import assert_not_null
-from ..util.base import is_empty
-from ..util.decorator import run_once
-from ..util.decorator import singleton
+from ..base import is_empty
 
 
-@singleton
 def get_graph_dict(graph_df: (pd.DataFrame, dict),
                    c_key='id',
                    c_level_type='level_type',
@@ -22,7 +20,7 @@ def get_graph_dict(graph_df: (pd.DataFrame, dict),
 
 
 def query_from_graph(key,
-                     graph_df: (pd.DataFrame, dict),
+                     graph_data: (pd.DataFrame, dict),
                      c_key='id',
                      c_level_type='level_type',
                      c_parent_key='parent_id',
@@ -32,27 +30,26 @@ def query_from_graph(key,
   从图数据中查询全部父级节点
   Args:
     key: 要查询的节点
-    graph_df: 要查询的数据集
+    graph_data: 要查询的数据集
     c_key: 子节点关键列的字段名
     c_level_type: 等级类型字段名
     c_parent_key: 父节点字段名
     max_depth: 最大深度
   """
 
-  @run_once
-  def asserts():
-    assert isinstance(graph_df, pd.DataFrame)
-    assert graph_df[c_key].is_unique
-    assert_not_null(graph_df, c_level_type), f'{c_level_type}不能为空'
-    assert graph_df[graph_df[c_key] == graph_df[c_parent_key]].empty, '父子不能相同'
-
-  asserts()
   # 构造查询字典
   c_parent_type = 'parent_type'
-  graph_dict = get_graph_dict(graph_df=graph_df, c_key=c_key,
-                              c_level_type=c_level_type,
-                              c_parent_key=c_parent_key,
-                              c_parent_type=c_parent_type)
+  if isinstance(graph_data, pd.DataFrame):
+    warnings.warn(
+        'graph_data 是一个 DataFrame, '
+        '请使用 ricco.etl.graph.get_graph_dict 函数构造查询字典后传入，以提高查询效率')
+    graph_dict = get_graph_dict(
+        graph_df=graph_data, c_key=c_key, c_level_type=c_level_type,
+        c_parent_key=c_parent_key, c_parent_type=c_parent_type)
+  elif isinstance(graph_data, dict):
+    graph_dict = graph_data
+  else:
+    raise TypeError('graph_data 类型错误，请传入 DataFrame 或 dict')
   level_type = graph_dict[c_level_type].get(key)
   if not level_type:
     return {}

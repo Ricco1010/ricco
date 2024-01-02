@@ -11,6 +11,7 @@ from .df import lnglat2shapely
 from .df import lnglat2wkb
 from .df import lnglat2wkt
 from .df import mark_tags_v2
+from .df import nearest_kdtree
 from .df import nearest_neighbor
 from .df import projection
 from .df import shapely2geojson
@@ -25,6 +26,7 @@ from .df import wkb2wkt
 from .df import wkt2lnglat
 from .df import wkt2shapely
 from .df import wkt2wkb
+from .util import _projection_lnglat
 from .util import distance
 from .util import epsg_from_lnglat
 from .util import geojson_dumps
@@ -36,7 +38,6 @@ from .util import is_geojson
 from .util import is_shapely
 from .util import is_wkb
 from .util import is_wkt
-from .util import projection_lnglat
 from .util import wkb_dumps
 from .util import wkb_loads
 from .util import wkt_dumps

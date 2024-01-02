@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from ..util.base import ensure_list
+from ..base import ensure_list
 
 
 def standard_e(df: pd.DataFrame, columns: list):

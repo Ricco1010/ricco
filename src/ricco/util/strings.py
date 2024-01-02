@@ -1,8 +1,9 @@
+from ..base import is_empty
 from ..resource.bd_region import cities
 from ..resource.bd_region import regions
 from ..resource.patterns import AddressPattern
 from ..util.district import District
-from .base import is_empty
+from .decorator import check_null
 from .util import get_shortest_element
 from .util import re_fast
 
@@ -82,6 +83,7 @@ def drop_repeat_string_by_step(string, step):
   return get_shortest_element(_list)
 
 
+@check_null()
 def drop_repeat_string(string,
                        min_length=3,
                        max_length=None):

@@ -6,9 +6,9 @@ from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import transform as sh_transform
 from tqdm import tqdm
 
-from ..util.base import is_empty
+from ..base import is_empty
 from ..util.decorator import check_null
-from .df import _ensure_geometry
+from .df import ensure_geometry
 from .df import shapely2x
 from .util import infer_geom_format
 
@@ -165,10 +165,10 @@ def coord_transform_geojson(obj: dict, from_srs: SRS, to_srs: SRS):
 def _coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
                               from_srs: SRS,
                               to_srs: SRS):
-  """对Geomery内的所有点进行坐标转换，返回转换后的Geometry
+  """对Geometry内的所有点进行坐标转换，返回转换后的Geometry
 
   该方法可以支持所有的Shapely Geometry形状，包括Point, Line, Polygon,
-  MultiPloygon等，返回的Geometry和输入的形状保持一致
+  MultiPolygon等，返回的Geometry和输入的形状保持一致
   Args:
     geo: 输入的shapely Geometry
     from_srs: 输入的坐标格式
@@ -222,7 +222,7 @@ def coord_trans_geom(df,
   df = df.copy()
   if not geometry_format:
     geometry_format = infer_geom_format(df[c_geometry])
-  df_temp = _ensure_geometry(df)
+  df_temp = ensure_geometry(df)
   tqdm.pandas(desc=f'{srs_from}->{srs_to}')
   df_temp[c_geometry] = df_temp[c_geometry].progress_apply(
       lambda x: _coord_transform_geometry(x, srs_from, srs_to)

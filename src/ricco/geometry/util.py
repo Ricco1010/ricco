@@ -1,7 +1,7 @@
-import json
 import re
 import sys
 import warnings
+from ast import literal_eval
 from typing import List
 
 import geojson
@@ -17,16 +17,19 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
+from shapely.geometry.geo import ShapelyDeprecationWarning
 from shapely.geos import WKTReadingError
 
-from ..util.base import ensure_list
-from ..util.base import is_empty
-from ..util.base import not_empty
+from ..base import ensure_list
+from ..base import is_empty
+from ..base import not_empty
 from ..util.decorator import check_null
 from ..util.decorator import check_shapely
 from ..util.decorator import check_str
 from ..util.util import is_hex
 from ..util.util import isinstance_in_list
+
+warnings.simplefilter('ignore', category=ShapelyDeprecationWarning)
 
 
 class GeomFormat:
@@ -72,9 +75,11 @@ def get_epsg(city: str):
   return epsg_from_lnglat(lng_from_city(city))
 
 
-def projection_lnglat(lnglat, crs_from, crs_to):
+def _projection_lnglat(lnglat: (tuple, list), crs_from, crs_to):
   """对经纬度进行投影"""
   from pyproj import Transformer
+  if any([is_empty(i) for i in lnglat]):
+    return np.nan, np.nan
   transformer = Transformer.from_crs(crs_from, crs_to)
   return transformer.transform(xx=lnglat[1], yy=lnglat[0])
 
@@ -89,10 +94,7 @@ def wkb_loads(x: str, hex=True):
 
 @check_shapely
 def wkb_dumps(x: BaseGeometry, hex=True, srid=4326):
-  try:
-    return wkb.dumps(x, hex=hex, srid=srid)
-  except AttributeError as e:
-    warnings.warn(f'{e}, 【{x}】')
+  return wkb.dumps(x, hex=hex, srid=srid)
 
 
 @check_str
@@ -105,36 +107,36 @@ def wkt_loads(x: str):
 
 @check_shapely
 def wkt_dumps(x: BaseGeometry):
-  try:
-    return wkt.dumps(x)
-  except AttributeError as e:
-    warnings.warn(f'{e}, 【{x}】')
+  return wkt.dumps(x)
 
 
 @check_null()
-def geojson_loads(x: (str, dict)):
+def geojson_loads(x: (str, dict), warning=True):
   """geojson文本形式转为shapely格式"""
   from simplejson.errors import JSONDecodeError
-  if not isinstance(x, (str, dict)):
-    warnings.warn(f'TypeError:【{x}】')
-    return
-  try:
-    geom = shape(geojson.loads(x)) if isinstance(x, str) else shape(x)
-    if geom.is_empty:
-      return
-    return geom
-  except (JSONDecodeError, AttributeError, GeometryTypeError, ValueError) as e:
-    warnings.warn(f'{e}, 【{x}】')
+  _shape_e = (AttributeError, GeometryTypeError)
+  _x = x
+  if isinstance(x, str):
+    try:
+      return shape(geojson.loads(x))
+    except (*_shape_e, JSONDecodeError):
+      try:
+        return shape(literal_eval(x))
+      except (*_shape_e, ValueError, SyntaxError):
+        pass
+  if isinstance(x, dict):
+    try:
+      return shape(x)
+    except _shape_e:
+      pass
+  if warning:
+    warnings.warn(f'无法转换:"{_x}"')
 
 
 @check_shapely
 def geojson_dumps(x: BaseGeometry):
   """shapely转为geojson文本格式"""
-  try:
-    geom = geojson.Feature(geometry=x)
-    return json.dumps(geom.geometry)
-  except TypeError as e:
-    warnings.warn(f'{e}, 【{x}】')
+  return geojson.dumps(x)
 
 
 def is_shapely(x, na=False) -> bool:
@@ -174,21 +176,14 @@ def is_wkt(x, na=False) -> bool:
 
 def is_geojson(x, na=False) -> bool:
   """判断是否为geojson格式"""
-  from simplejson.errors import JSONDecodeError
-
   if is_empty(x):
     return na
-  if not isinstance(x, (str, dict)):
-    return False
-  try:
-    geom = shape(geojson.loads(x)) if isinstance(x, str) else shape(x)
-    if geom.is_empty:
-      return False
+  if geojson_loads(x, warning=False):
     return True
-  except (JSONDecodeError, AttributeError, GeometryTypeError, TypeError):
-    return False
+  return False
 
 
+@check_null(default_rv=GeomFormat.unknown)
 def _infer_geom_format(x):
   """推断geometry格式"""
   if is_shapely(x):
@@ -202,10 +197,9 @@ def _infer_geom_format(x):
   return GeomFormat.unknown
 
 
+@check_null(default_rv=GeomFormat.unknown)
 def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
   """推断geometry格式"""
-  if is_empty(series):
-    return GeomFormat.unknown
   assert isinstance(series, (str, list, tuple, pd.Series, BaseGeometry))
   if isinstance(series, (list, tuple, pd.Series)):
     for i in series:
@@ -214,7 +208,8 @@ def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
   return _infer_geom_format(series)
 
 
-def ensure_multi_geom(geom):
+@check_shapely
+def ensure_multi_geom(geom: BaseGeometry):
   """将LineString和Polygon转为multi格式"""
   if geom.geom_type == 'LineString':
     return MultiLineString([geom])
@@ -310,8 +305,8 @@ def distance(
   p1, p2 = ensure_lnglat(p1), ensure_lnglat(p2)
   if not epsg_to:
     epsg_to = get_epsg(city) if city else epsg_from_lnglat([p1[0], p2[0]])
-  p1 = projection_lnglat(p1, epsg_from, epsg_to)
-  p2 = projection_lnglat(p2, epsg_from, epsg_to)
+  p1 = _projection_lnglat(p1, epsg_from, epsg_to)
+  p2 = _projection_lnglat(p2, epsg_from, epsg_to)
   return Point(p1).distance(Point(p2))
 
 
