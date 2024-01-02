@@ -18,7 +18,7 @@ def auto2date(string, errors='raise'):
   string = str(string)
 
   if '时' in string:
-    _hour = re.findall('\d+时', string)[0]
+    _hour = re.findall(r'\d+时', string)[0]
     string = string.split(_hour)[0]
   if all([i in string for i in ['年', '月', '日']]):
     return pd.to_datetime(string, format='%Y年%m月%d日')

@@ -1,22 +1,27 @@
 import sys
+import warnings
 from typing import List
 from typing import Union
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.geometry import Point
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 
+from ..base import agg_parser
+from ..base import ensure_list
+from ..base import is_empty
+from ..base import not_empty
+from ..base import warn_
 from ..etl.transformer import dict2df
 from ..etl.transformer import split_list_to_row
-from ..util.base import ensure_list
-from ..util.base import is_empty
-from ..util.base import not_empty
-from ..util.base import warn_
+from ..util.assertion import assert_not_null
+from ..util.assertion import assert_series_unique
 from ..util.decorator import process_multi
 from ..util.decorator import progress
+from ..util.decorator import timer
+from ..util.kdtree import kdtree_nearest
 from ..util.util import first_notnull_value
 from .util import ensure_multi_geom
 from .util import epsg_from_lnglat
@@ -50,7 +55,22 @@ def projection(
       df_temp = gdf.bounds
       lng = np.mean([df_temp['minx'].min(), df_temp['maxx'].max()])
       epsg = epsg_from_lnglat(lng)
+      print(f'从数据集中自动获取的epsg code为：{epsg}')
   return gdf.to_crs(epsg=epsg, crs=crs)
+
+
+@timer()
+def projection_lnglat(df: pd.DataFrame) -> pd.DataFrame:
+  """直接对经纬度进行投影变换"""
+
+  df = df.copy()
+  df_temp = lnglat2shapely(df[['lng', 'lat']])
+  df_temp = projection(df_temp)
+  df_temp = shapely2lnglat(df_temp[['geometry']])[['lng', 'lat']]
+  df.update(df_temp)
+  if 'geometry' in df:
+    warnings.warn('仅对lng, lat列进行投影变换，未对geometry进行投影变换')
+  return df
 
 
 @progress
@@ -108,17 +128,15 @@ def lnglat2shapely(df,
                    geometry='geometry',
                    delete=True,
                    epsg_code: int = 4326) -> gpd.GeoDataFrame:
-  df = df.copy()
-  df[geometry] = df.progress_apply(
-      lambda d: Point(d[lng], d[lat])
-      if not_empty(d[lng]) and not_empty(d[lat])
-      else None,
-      axis=1
+  df = gpd.GeoDataFrame(
+      df,
+      geometry=gpd.points_from_xy(df[lng], df[lat]),
+      crs=epsg_code
   )
-  df = gpd.GeoDataFrame(df, crs=epsg_code, geometry=geometry)
+  df.rename(columns={'geometry': geometry}, inplace=True)
   if delete:
     del df[lng], df[lat]
-  return df
+  return gpd.GeoDataFrame(df, geometry=geometry)
 
 
 def shapely2lnglat(df,
@@ -271,11 +289,13 @@ def distance_gdf(df: gpd.GeoDataFrame, df_target: gpd.GeoDataFrame,
                  c_dst: str = '最小距离',
                  left_geometry='geometry'):
   """计算一个数据集中的每个元素到另一个数据集之间的最短距离"""
-  df = df.copy()
-  df[c_dst] = df[left_geometry].parallel_apply(
+  assert df.index.is_unique, 'df 索引列必须唯一'
+  df_target = auto2shapely(df_target)
+  df_dis = auto2shapely(df[[left_geometry]], geometry=left_geometry)
+  df_dis[c_dst] = df_dis[left_geometry].parallel_apply(
       lambda p: distance_min(p, df_target) if not_empty(p) else np.nan
   )
-  return df
+  return df.join(df_dis[[c_dst]])
 
 
 def split_grids(df: gpd.GeoDataFrame, step: int, geometry_format='wkb'):
@@ -333,30 +353,43 @@ def split_grids(df: gpd.GeoDataFrame, step: int, geometry_format='wkb'):
   return auto2x(df_res, geometry_format=geometry_format).reset_index(drop=True)
 
 
-def _ensure_geometry(_df,
-                     ensure_point=False,
-                     warning=False,
-                     geometry='geometry',
-                     lng='lng',
-                     lat='lat'):
+def ensure_geometry(df,
+                    ensure_point=False,
+                    warning=False,
+                    geometry='geometry',
+                    lng='lng',
+                    lat='lat'):
   """转换并仅保留geometry列"""
-  if geometry in _df:
-    _df = auto2shapely(_df[[geometry]], geometry=geometry)[[geometry]]
+  if geometry in df:
+    if lng in df and lat in df:
+      if not df[df[lng].notna() & df[geometry].isna()].empty:
+        warn_(f'存在“{geometry}”为空但经纬度不为空的行', warning)
+    df = auto2shapely(df[[geometry]], geometry=geometry)[[geometry]]
     if ensure_point:
-      geom = first_notnull_value(_df[geometry])
+      geom = first_notnull_value(df[geometry])
       if geom.geom_type not in ['point', 'Point']:
         warn_('非点数据，提取面内点', warning)
-        _df = shapely2central_shapely(_df, within=True, geometry=geometry)
-    return _df
-  if lng in _df and lat in _df:
+        df = shapely2central_shapely(df, within=True, geometry=geometry)
+    return df
+  if lng in df and lat in df:
     return lnglat2shapely(
-        _df[[lng, lat]],
+        df[[lng, lat]],
         lng=lng, lat=lat,
         geometry=geometry,
         delete=False,
     )[[geometry]]
 
   raise KeyError(f'文件中必须有{lng},{lat}列或{geometry}列')
+
+
+def ensure_lnglat(df, lng='lng', lat='lat', geometry='geometry'):
+  if lng in df and lat in df:
+    return df
+  if geometry in df:
+    df_temp = auto2shapely(df[[geometry]])
+    df_temp = shapely2lnglat(df_temp, within=True)
+    return df.join(df_temp[[lng, lat]])
+  raise AssertionError('无可转为经纬度的列')
 
 
 def mark_tags_v2(
@@ -380,7 +413,7 @@ def mark_tags_v2(
     point_df: 点数据
     polygon_df: 面数据
     col_list: 面数据中要关联到结果中的列，若为空则全部关联
-    predicate: 关联方法，默认'intersects'
+    predicate: 关联方法，默认 'intersects'
     drop_geometry: 结果是否删除geometry，默认删除
     geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
     warning: 是否输出警告信息
@@ -408,8 +441,8 @@ def mark_tags_v2(
     point_df.rename(columns=cols_mapping, inplace=True)
 
   # 转换为shapely格式
-  df = _ensure_geometry(point_df, True, warning,
-                        lng=point_lng, lat=point_lat, geometry=point_geometry)
+  df = ensure_geometry(point_df, True, warning,
+                       lng=point_lng, lat=point_lat, geometry=point_geometry)
   polygon_df = auto2shapely(polygon_df, geometry=polygon_geometry)
   # 空间关联
   df = df.sjoin(
@@ -447,15 +480,119 @@ def nearest_neighbor(
   """
   # 将两个数据集都转为shapely格式
   assert df.index.is_unique, 'df索引列必须唯一'
-  df_left = _ensure_geometry(df)
-  df_target = _ensure_geometry(df_target)
+  df_left = ensure_geometry(df)
+  df_target = ensure_geometry(df_target)
   # 投影
   df_left = projection(df_left, epsg=epsg)
   df_target = projection(df_target, epsg=epsg)
   # 计算最短距离
-  df_left = distance_gdf(df_left, df_target, c_dst)
+  df_left = distance_gdf(df_left, df_target, c_dst=c_dst)
   # 将距离合并到原来的数据集上
   return df.join(df_left[[c_dst]], how='left')
+
+
+@progress
+def nearest_kdtree(
+    df: pd.DataFrame,
+    df_poi: pd.DataFrame,
+    /, *,
+    c_count: str = 'count',
+    c_min_distance: str = 'min_distance',
+    agg: dict = None,
+    limit: int = None,
+    r: (int, float) = None,
+    keep_origin: bool = False,
+    leaf_size=2,
+):
+  """
+  KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
+  同时可进行其他运算
+  Args:
+    df: 基础数据集，统计该数据及周边的其他数据集的信息
+    df_poi: 被统计的数据集
+    c_count: 计数列字段名，默认“count”
+    c_min_distance: 最短距离字段名，默认“min_distance”
+    agg: 计算 df_poi 中的其他字段，格式如: {'面积': ['sum', 'mean']}，即计算面积的和、均值
+    limit: 限制符合条件的 df_poi 中的个数，由近及远
+    r: 限制查询半径
+    keep_origin: 是否保留匹配后原始的索引信息
+    leaf_size: KDTree 叶子节点大小
+  """
+  assert df.index.is_unique and df_poi.index.is_unique, '数据集索引必须唯一'
+  # 确保数据中有经纬度
+  df_temp = ensure_lnglat(df)
+  df_poi = ensure_lnglat(df_poi)
+
+  df_temp = df_temp[df_temp.lng.notna() & df_temp.lat.notna()]
+  df_poi = df_poi[df_poi.lng.notna() & df_poi.lat.notna()]
+  assert not df_temp.empty and not df_poi.empty, '筛选后数据集为空，请检查经纬度列'
+  # 投影
+  df_temp = projection_lnglat(df_temp)[['lng', 'lat']]
+  df_poi = projection_lnglat(df_poi)
+  # 计算（范围内）的一个点或多个点
+  data_tree = df_poi[['lng', 'lat']].values
+  data_query = df_temp[['lng', 'lat']].values
+  df_temp['ind_list'], df_temp['dist_list'] = kdtree_nearest(
+      data_tree, data_query, limit=limit, r=r, leaf_size=leaf_size,
+  )
+  # 统计数量
+  if c_count:
+    assert c_count not in df, f'"{c_count}"已存在，请更换列名'
+    df_temp[c_count] = df_temp['ind_list'].progress_apply(lambda x: len(x))
+  # 计算最短距离
+  if c_min_distance:
+    assert c_min_distance not in df, f'"{c_min_distance}"已存在，请更换列名'
+    df_temp[c_min_distance] = df_temp['dist_list'].progress_apply(
+        lambda x: min(x) if len(x) > 0 else None
+    )
+  # 计算其他字段
+  if agg:
+    for c_src, func, c_dst in agg_parser(agg):
+      df_temp[c_dst] = df_temp['ind_list'].progress_apply(
+          lambda x: getattr(df_poi.loc[x][c_src], func)()
+      )
+  # 保留关联内容
+  if not keep_origin:
+    del df_temp['ind_list'], df_temp['dist_list']
+  del df_temp['lng'], df_temp['lat']
+  return df.join(df_temp)
+
+
+def get_neighbors(
+    df: (pd.DataFrame, gpd.GeoDataFrame),
+    key_col,
+    res_type='dict',
+) -> (dict, pd.DataFrame):
+  """
+  获取数据集中每个点的邻居面(相邻标准：至少有一个点相同且不重叠)
+  Args:
+    df:
+    key_col: 关键列，必须唯一
+    res_type: 返回类型，可返回dict或Dataframe
+  """
+  if not key_col:
+    key_col = 'index'
+    df = df.reset_index()
+  assert_series_unique(df, key_col)
+  assert_not_null(df, key_col)
+  if isinstance(res_type, str):
+    res_type = res_type.lower()
+  res = {}
+  df = auto2shapely(df.copy())
+  for key in df[key_col].unique():
+    neighbors = []
+    v = df[df[key_col] == key].geometry.squeeze()
+    for _, row in df.iterrows():
+      if v.touches(row['geometry']):
+        neighbors.append(row[key_col])
+      if neighbors:
+        res[key] = neighbors
+  if res_type in (dict, 'dict'):
+    return res
+  if res_type in (pd.DataFrame, 'df', 'dataframe'):
+    df = dict2df(res)
+    return df.explode('value')
+  raise ValueError(f'错误的res_type:{res_type}')
 
 
 def get_area(
@@ -471,11 +608,12 @@ def get_area(
   """
   # 将数据集转为shapely格式
   assert df.index.is_unique, 'df索引列必须唯一'
-  df_left = _ensure_geometry(df)
+  assert c_dst not in df, f'"{c_dst}"列已存在，请指定不同的c_dst'
+  df_left = ensure_geometry(df)
   # 投影
   df_left = projection(df_left, epsg=epsg)
   # 计算面积
-  df_left[c_dst] = df_left.area
+  df_left[c_dst] = df_left.area.round(2)
   # 将面积合并到原来的数据集上
   return df.join(df_left[[c_dst]], how='left')
 
@@ -503,7 +641,7 @@ def buffer(df: pd.DataFrame,
   df = df.copy()
   assert df.index.is_unique, 'df索引列必须唯一'
   if geo_type == 'point':
-    df_buffer = _ensure_geometry(df, True)
+    df_buffer = ensure_geometry(df, True)
   elif geo_type in ['line', 'polygon']:
     df_buffer = auto2shapely(df, geometry=geometry)[[geometry]]
   else:

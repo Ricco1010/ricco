@@ -4,8 +4,8 @@ import shutil
 import pandas as pd
 from tqdm import tqdm
 
-from ..util.base import ensure_ext
-from ..util.base import warn_
+from ..base import ensure_ext
+from ..base import warn_
 from ..util.os import dir_iter_list
 from ..util.os import ensure_dir
 from ..util.os import ensure_dirpath_exist

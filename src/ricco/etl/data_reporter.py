@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from ..util.base import ensure_list
+from ..base import ensure_list
 from ..util.decorator import print_doc
 from ..util.docx import Docx
 from .extract import rdf

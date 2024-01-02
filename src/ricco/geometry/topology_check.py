@@ -1,16 +1,15 @@
-from shapely.errors import ShapelyDeprecationWarning
-from tqdm import tqdm
+import warnings
 
 import geopandas as gpd
 import pandas as pd
+from shapely.errors import ShapelyDeprecationWarning
 from shapely.geometry import GeometryCollection
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
-
 from shapely.validation import make_valid
+from tqdm import tqdm
 
-import warnings
 warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 _desc = '''
@@ -25,7 +24,7 @@ def topology_check(gdf: gpd.GeoDataFrame,
   """
   判断整列geometry是否规范, 仅支持面数据
   检查geometry是否有空值
-  检查每个geometr是否存在拓扑问题
+  检查每个geometry是否存在拓扑问题
   检查整列geometry之间是否存在拓扑问题
   Args:
     gdf: 需要进行拓扑修复的GeoDataFrame

@@ -1,9 +1,10 @@
+import re
 import warnings
 
 import pandas as pd
 
-from .base import ensure_list
-from .base import not_empty
+from ..base import ensure_list
+from ..base import not_empty
 from .util import and_
 from .util import is_digit
 from .util import is_unique_series
@@ -107,3 +108,11 @@ def assert_series_digit(df: pd.DataFrame, col: str):
   rv = [i for i in values if not is_digit(i) and not_empty(i)]
   if rv:
     raise AssertionError(f'"{col}"列应为数值型，{rv}无法转换为数值型')
+
+
+def assert_series_not_like(df: pd.DataFrame, col: str, pattern):
+  """检查并输出符合正则表达式pattern的值"""
+  values = df[col].unique().tolist()
+  rv = [i for i in values if re.match(pattern, str(i)) and not_empty(i)]
+  if rv:
+    raise AssertionError(f'异常的"{col}": {rv}')

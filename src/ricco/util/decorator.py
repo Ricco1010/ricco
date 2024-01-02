@@ -5,8 +5,8 @@ from functools import wraps
 from shapely.geometry.base import BaseGeometry
 from tqdm import tqdm
 
-from .base import is_empty
-from .base import second_to_desc
+from ..base import is_empty
+from ..base import second_to_desc
 
 
 def to_str(func):
@@ -26,7 +26,9 @@ def progress(func):
   @wraps(func)
   def wrapper(*args, **kwargs):
     tqdm.pandas(desc=func.__name__)
-    return func(*args, **kwargs)
+    __rv = func(*args, **kwargs)
+    tqdm.pandas()
+    return __rv
 
   return wrapper
 
@@ -37,7 +39,7 @@ def process_multi(func):
   @run_once
   def init_pandarallel():
     from pandarallel import pandarallel
-    pandarallel.initialize(progress_bar=True)
+    pandarallel.initialize()
 
   @wraps(func)
   def wrapper(*args, **kwargs):
@@ -58,20 +60,24 @@ def print_doc(func):
   return wrapper
 
 
-def timer(func):
+def timer(desc=None):
   """函数运行时间统计"""
 
-  @wraps(func)
-  def wrapper(*args, **kwargs):
-    start_time = time.time()
-    result = func(*args, **kwargs)
-    end_time = time.time()
-    duration = end_time - start_time
-    desc = second_to_desc(duration)
-    print(f'Costs：{duration:.2f} s ({desc})')
-    return result
+  def _timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+      start_time = time.time()
+      result = func(*args, **kwargs)
+      end_time = time.time()
+      duration = end_time - start_time
+      time_desc = second_to_desc(duration)
+      title = desc if desc else func.__name__
+      print(f'Costs：{duration:.2f} s ({time_desc})，function: {title} ')
+      return result
 
-  return wrapper
+    return wrapper
+
+  return _timer
 
 
 def check_null(default_rv=None):
@@ -80,8 +86,14 @@ def check_null(default_rv=None):
   def _check_null(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-      if is_empty(args[0]):
-        return default_rv
+      if len(args) > 0:
+        if is_empty(args[0]):
+          return default_rv
+      elif len(kwargs) > 0:
+        if is_empty(list(kwargs.values())[0]):
+          return default_rv
+      else:
+        raise ValueError('No args or kwargs')
       return func(*args, **kwargs)
 
     return wrapper
@@ -112,25 +124,11 @@ def check_shapely(func):
     if is_empty(args[0]):
       return
     if not isinstance(args[0], BaseGeometry):
-      warnings.warn(f'TypeError:【{args[0]}】')
+      warnings.warn(f'输入值不是shapely格式:【{args[0]}】')
       return
     return func(*args, **kwargs)
 
   return wrapper
-
-
-def singleton(func):
-  """运行一次后将结果保存，下次直接获取"""
-
-  @wraps(func)
-  def decorator(*args, **kwargs):
-    instance = getattr(func, '__single_instance', None)
-    if instance is None:
-      instance = func(*args, **kwargs)
-      setattr(func, '__single_instance', instance)
-    return instance
-
-  return decorator
 
 
 def run_once(func):

@@ -75,7 +75,7 @@ def geocode_best_poi(
       return get_address_amap(address, city, srs=srs, key=key_amap)
   except Exception as e:
     warnings.warn(f'结果获取失败：【{city}】：【{address}】,{e}')
-    return DEFAULT_RES
+  return DEFAULT_RES
 
 
 @check_null(default_rv=DEFAULT_RES)
@@ -89,7 +89,7 @@ def geocode_best_address(address, city, srs='wgs84', key_baidu=None,
     return get_address_amap(address, city, srs=srs, key=key_amap)
   except Exception as e:
     warnings.warn(f'结果获取失败：【{city}】：【{address}】,{e}')
-    return DEFAULT_RES
+  return DEFAULT_RES
 
 
 def geocode_best(
@@ -157,7 +157,7 @@ def geocode_df(df: pd.DataFrame,
     df:
     by: 项目名称所在的列
     city: 城市，list表示城市列如['城市']， str表示全部使用该城市如'上海'
-    address_type: 'poi'或'address'，不同的地理类型对应不同的接口，精确度不同
+    address_type: 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同
     sig: 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效
     address_geocode: poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效
     with_detail: 是否返回详情信息，包括返回值、得分、接口来源等
@@ -180,7 +180,7 @@ def geocode_df(df: pd.DataFrame,
   if with_detail:
     base_cols.extend(['rv', 'score', 'source'])
   _df = create_columns(_df, base_cols)
-  for i in tqdm(_df.index):
+  for i in tqdm(_df.index, desc='Geocoding'):
     _address = None
     try:
       _address, _city = _df[by][i], _df[__c_city][i]
@@ -216,7 +216,7 @@ def geocode_v2(df: pd.DataFrame,
     df:
     by: 项目名称所在的列
     city: 城市，list表示城市列如['城市']， str表示全部使用该城市如'上海'
-    address_type: 'poi'或'address'，不同的地理类型对应不同的接口，精确度不同
+    address_type: 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同
     sig: 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效
     address_geocode: poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效
     with_detail: 是否返回详情信息，包括返回值、得分、接口来源等
@@ -238,7 +238,7 @@ def geocode_v2(df: pd.DataFrame,
     base_cols.extend(['rv', 'score', 'source'])
   df = create_columns(df, base_cols)
 
-  for i in tqdm(df.index):
+  for i in tqdm(df.index, desc='Geocoding'):
     _address, _city = df[by][i], df[__c_city][i]
     _lng, _lat = df['lng'][i], df['lat'][i]
     try:

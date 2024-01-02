@@ -13,7 +13,8 @@ def make_building_address(
     c_lu=None,
     c_nong=None,
     c_xiaoqu=None,
-    c_dst: str = '楼宇地址'):
+    c_dst: str = '楼宇地址',
+):
   """
   根据【路弄号】或【小区地址和号】生成新版楼宇地址，格式为xx路xx弄xx号
 

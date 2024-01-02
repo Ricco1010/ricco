@@ -22,7 +22,7 @@ RES_PRE = {
 
 def drop_repeat_hao(string: str):
   """将重复的xx号中间的部分全部删掉"""
-  ls = re.findall('\d+号', string)
+  ls = re.findall(r'\d+号', string)
   if len(ls) >= 2:
     _df = pd.DataFrame({'号': ls})
     _df = pd.DataFrame(_df['号'].value_counts()).reset_index(names='name')
@@ -150,7 +150,7 @@ def extra_process(string):
     return res
 
   # 直接提取xx号，仅提取第一个
-  if pre_str := re.findall('^\d+号', string):
+  if pre_str := re.findall(r'^\d+号', string):
     pre_str = pre_str[0]
     sub_str = relstrip(string, pre_str).lstrip('号')
     res['号'] = pre_str
@@ -197,7 +197,7 @@ def pre_process(string: str):
   return string
 
 
-def formated(res):
+def formatted(res):
   """拼接为标准的地址"""
   res['format'] = (
       (res['路'] or '') +
@@ -225,5 +225,5 @@ def main(string):
   # 对extra进行再次提取
   res = extract_extra(res)
   # 生成标准列
-  res = formated(res)
+  res = formatted(res)
   return res

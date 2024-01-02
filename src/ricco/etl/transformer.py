@@ -3,17 +3,20 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+from ..base import ensure_list
+from ..base import is_empty
+from ..util.assertion import assert_not_null
 from ..util.assertion import assert_series_unique
-from ..util.base import ensure_list
-from ..util.base import is_empty
 from ..util.decorator import check_null
 from ..util.decorator import process_multi
 from ..util.decorator import progress
+from ..util.decorator import run_once
 from ..util.decorator import timer
 from ..util.util import and_
 from ..util.util import fuzz_match
 from ..util.util import to_float
 from ..util.util import to_str_list
+from .graph import get_graph_dict
 from .graph import query_from_graph
 
 
@@ -140,7 +143,7 @@ def convert_date(df: pd.DataFrame,
   return df
 
 
-@timer
+@timer()
 @process_multi
 def fuzz_df(df: pd.DataFrame,
             col: str,
@@ -201,7 +204,7 @@ def filter_by_df(df: pd.DataFrame, sizer: pd.DataFrame) -> pd.DataFrame:
   return df[cond]
 
 
-@timer
+@timer()
 @progress
 def expand_dict(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
@@ -216,12 +219,13 @@ def expand_dict(df: pd.DataFrame, c_src: str):
   )
 
 
-@timer
+@timer()
 def split_to_rows(df: pd.DataFrame, column: str, delimiter: str = '|'):
   """
   含有多值的列分拆成多行
 
   Args:
+    df:
     column: 存在多值的列
     delimiter: 多个值之间的分割符
   """
@@ -230,7 +234,7 @@ def split_to_rows(df: pd.DataFrame, column: str, delimiter: str = '|'):
   return df.explode(column, ignore_index=True)
 
 
-@timer
+@timer()
 def split_list_to_row(df: pd.DataFrame, column):
   """将列表列中列表的元素拆成多行"""
   return df.explode(column, ignore_index=True)
@@ -244,7 +248,7 @@ def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
   return df.set_index(c_key) if as_index else df
 
 
-@timer
+@timer()
 def is_changed(df_old: pd.DataFrame,
                df_new: pd.DataFrame,
                key_cols: (str, list) = None,
@@ -345,19 +349,39 @@ def expand_graph(df: pd.DataFrame,
     c_parent_key: 父级关键列
     c_info: 要保留的其他列
   """
+
+  @run_once
+  def asserts(_df, c_id, c_type, c_parent_id):
+    assert isinstance(_df, pd.DataFrame)
+    assert _df[c_id].is_unique
+    assert_not_null(_df, c_type), f'{c_type}不能为空'
+    assert _df[_df[c_id] == _df[c_parent_id]].empty, '父子不能相同'
+
   assert start_level in df[c_level_type].unique(), 'start_level不在level_type中'
   df_base = df.copy()
+
+  # 构造查询字典
   graph_df = df.copy()
+  asserts(graph_df, c_id=c_key, c_type=c_level_type,
+          c_parent_id=c_parent_key)
   graph_df[c_level_type] = graph_df[c_level_type].apply(
       lambda lp: f'{lp}_{c_key}'
   )
+  # 事先将Dataframe转为字典，提高查询性能
+  graph_dict = get_graph_dict(graph_df=graph_df, c_key=c_key,
+                              c_level_type=c_level_type,
+                              c_parent_key=c_parent_key,
+                              c_parent_type='parent_type')
+  # 将索引列提取出来作为基础底表
   df = df[df[c_level_type] == start_level]
   df = df[[c_key]].reset_index(drop=True)
+  # 将索引列逐个传入查询
   df['extra'] = df[c_key].progress_apply(
       lambda x: query_from_graph(
-          key=x, graph_df=graph_df, c_key=c_key,
+          key=x, graph_data=graph_dict, c_key=c_key,
           c_level_type=c_level_type, c_parent_key=c_parent_key)
   )
+  # 展开最终结果
   df = expand_dict(df, 'extra')
   if c_info:
     c_info = ensure_list(c_info)
