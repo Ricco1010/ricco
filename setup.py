@@ -29,11 +29,10 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=[
-      'geojson',
-      'numpy',
-      'pandarallel',
-      'pandas',
-      'requests',
+      'geojson<3.0.0',
+      'numpy>=1.0.0',
+      'pandas<2.0.0',
+      'requests>=2.7',
       'tqdm>=4.62.0',
     ],
     classifiers=[
