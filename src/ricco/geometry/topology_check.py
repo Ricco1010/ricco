@@ -19,13 +19,13 @@ _desc = '''
 '''
 
 
-def topology_check(gdf: gpd.GeoDataFrame,
-                   geo_col='geometry'):
+def topology_check(gdf: gpd.GeoDataFrame, geo_col='geometry'):
   """
-  判断整列geometry是否规范, 仅支持面数据
-  检查geometry是否有空值
-  检查每个geometry是否存在拓扑问题
+  判断整列geometry是否规范, 仅支持面数据，
+  检查geometry是否有空值，
+  检查每个geometry是否存在拓扑问题，
   检查整列geometry之间是否存在拓扑问题
+
   Args:
     gdf: 需要进行拓扑修复的GeoDataFrame
     geo_col: geometry列列名
@@ -57,6 +57,7 @@ def fix_polygon_topology(gdf: gpd.GeoDataFrame,
                          keep_contains=False) -> gpd.GeoDataFrame:
   """
   修复面地理数据的拓扑问题,index不能重复
+
   Args:
     gdf: 需要进行拓扑修复的GeoDataFrame
     geo_col: geometry列列名
@@ -82,9 +83,6 @@ def series_geometry_fix_topology(series: pd.Series,
     series: series的index不能重复, 如果keep_contains=True,geometry不能相互包含
     fill_intersects: 是否填满相交的区域，如果为True的话，两个面相交的区域会分配到更靠后的面内
     keep_contains: fill_intersects为True时才有效，即是否强制保留被包含的面
-
-  Returns:
-
   """
   if any(series.index.duplicated()):
     raise ValueError('duplicated index')
@@ -93,7 +91,8 @@ def series_geometry_fix_topology(series: pd.Series,
     if not x.is_valid:
       valid_res = make_valid(x)
       if isinstance(valid_res, GeometryCollection):
-        return unary_union([i for i in valid_res.geoms if isinstance(i, (Polygon, MultiPolygon))])
+        return unary_union([i for i in valid_res.geoms if
+                            isinstance(i, (Polygon, MultiPolygon))])
       return valid_res
     return x
 
@@ -138,7 +137,8 @@ def series_geometry_fix_topology(series: pd.Series,
             continue
           geo = geo.difference(geo_ser.loc[i].buffer(1e-7))
         if isinstance(geo, GeometryCollection):
-          geo = unary_union([i for i in geo.geoms if isinstance(i, (Polygon, MultiPolygon))])
+          geo = unary_union(
+              [i for i in geo.geoms if isinstance(i, (Polygon, MultiPolygon))])
         res_geo.append(geo)
         res_index.append(index)
     intersect_res = pd.Series(res_geo, index=res_index)
@@ -150,5 +150,6 @@ def series_geometry_fix_topology(series: pd.Series,
       return pd.concat([intersect_res, contains_res])
     else:
       return intersect_res
+
   res = fix_intersects(series)
   return res

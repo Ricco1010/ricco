@@ -26,6 +26,7 @@ def keep_best_unique(df: pd.DataFrame,
                      ) -> pd.DataFrame:
   """
   优化的去重函数，为保证数据的完整性，去重时优先去除指定列中的空值
+
   Args:
     df: 要去重的Dataframe
     subset: 按照哪些列去重
@@ -50,6 +51,7 @@ def table2dict(df: pd.DataFrame,
                orient: str = 'dict') -> dict:
   """
   DataFrame转字典
+
   Args:
     df:
     key_col: 生成key的列
@@ -92,6 +94,7 @@ def update_df(df: pd.DataFrame,
               errors: str = 'ignore') -> pd.DataFrame:
   """
   根据某一列更新dataframe里的数据
+
   Args:
     df: 待升级的数据集
     new_df: 用于更新的DataFrame
@@ -120,6 +123,7 @@ def convert_date(df: pd.DataFrame,
                  mode: str = 'first') -> pd.DataFrame:
   """
   将日期转为当月的第一天或最后一天
+
   Args:
     df: 要处理的DataFrame
     columns: 要转换的列
@@ -152,6 +156,7 @@ def fuzz_df(df: pd.DataFrame,
             valid_score=0) -> pd.DataFrame:
   """
   模糊匹配。为DataFrame中的某一列从某个集合中模糊匹配匹配相似度最高的元素
+
   Args:
     df: 输入的dataframe
     col: 要匹配的列
@@ -177,6 +182,7 @@ def convert_to_float(df: pd.DataFrame,
                      rex_method: str = 'mean') -> pd.DataFrame:
   """
   提取字符串中的数值信息并转为float类型
+
   Args:
     df: 要转换的DataFrame
     columns: 要转换的列
@@ -256,6 +262,7 @@ def is_changed(df_old: pd.DataFrame,
                c_res: str = 'is_changed') -> pd.DataFrame:
   """
   判断新旧数据集中的每一条数据是否变化
+
   Args:
     df_old: 原始数据集
     df_new: 修改后的数据集
@@ -297,6 +304,7 @@ def is_changed(df_old: pd.DataFrame,
 def df_iter(df: pd.DataFrame, *, chunksize: int = None, parts: int = None):
   """
   DataFrame切片生成器
+
   Args:
     df: 要切片的DataFrame
     chunksize: 每次返回的大小，与parts必须指定一个
@@ -320,6 +328,7 @@ def df_iter(df: pd.DataFrame, *, chunksize: int = None, parts: int = None):
 def create_columns(df: pd.DataFrame, columns: list, value=None):
   """
   创建新的列，默认为空
+
   Args:
     df: DataFrame
     columns: 列名
@@ -341,6 +350,7 @@ def expand_graph(df: pd.DataFrame,
                  c_info=None):
   """
   将图数据展开为宽表
+
   Args:
     df: 要展开的图数据
     start_level: 开始展开的层级，一般是最低层级

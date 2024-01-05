@@ -27,10 +27,17 @@ class SRS:
 
 
 def out_of_china(lat, lng):
+  """
+  判断经纬度是否在国外（简易矩形判断，并非精确国界）
+
+  Args:
+    lat: 纬度
+    lng: 经度
+  """
   return not (72.004 <= lng <= 137.8347 and 0.8293 <= lat <= 55.8271)
 
 
-def transform(x, y):
+def _transform(x, y):
   xy = x * y
   abs_x = math.sqrt(abs(x))
   xpi = x * math.pi
@@ -55,9 +62,9 @@ def transform(x, y):
   return lat, lng
 
 
-def delta(lat, lng):
+def _delta(lat, lng):
   ee = 0.00669342162296594323
-  d_lat, d_lng = transform(lng - 105.0, lat - 35.0)
+  d_lat, d_lng = _transform(lng - 105.0, lat - 35.0)
   rad_lat = lat / 180.0 * math.pi
   magic = math.sin(rad_lat)
   magic = 1 - ee * magic * magic
@@ -68,21 +75,21 @@ def delta(lat, lng):
   return d_lat, d_lng
 
 
-def wgs2gcj(wgs_lat, wgs_lng):
+def _wgs2gcj(wgs_lat, wgs_lng):
   if out_of_china(wgs_lat, wgs_lng):
     return wgs_lat, wgs_lng
-  dlat, dlng = delta(wgs_lat, wgs_lng)
+  dlat, dlng = _delta(wgs_lat, wgs_lng)
   return wgs_lat + dlat, wgs_lng + dlng
 
 
-def gcj2wgs(gcj_lat, gcj_lng):
+def _gcj2wgs(gcj_lat, gcj_lng):
   if out_of_china(gcj_lat, gcj_lng):
     return gcj_lat, gcj_lng
-  dlat, dlng = delta(gcj_lat, gcj_lng)
+  dlat, dlng = _delta(gcj_lat, gcj_lng)
   return gcj_lat - dlat, gcj_lng - dlng
 
 
-def gcj2bd(gcj_lat, gcj_lng):
+def _gcj2bd(gcj_lat, gcj_lng):
   if out_of_china(gcj_lat, gcj_lng):
     return gcj_lat, gcj_lng
   x = gcj_lng
@@ -94,7 +101,7 @@ def gcj2bd(gcj_lat, gcj_lng):
   return bd_lat, bd_lng
 
 
-def bd2gcj(bd_lat, bd_lng):
+def _bd2gcj(bd_lat, bd_lng):
   if out_of_china(bd_lat, bd_lng):
     return bd_lat, bd_lng
   x = bd_lng - 0.0065
@@ -106,21 +113,21 @@ def bd2gcj(bd_lat, bd_lng):
   return gcj_lat, gcj_lng
 
 
-def wgs2bd(wgs_lat, wgs_lng):
-  return gcj2bd(*wgs2gcj(wgs_lat, wgs_lng))
+def _wgs2bd(wgs_lat, wgs_lng):
+  return _gcj2bd(*_wgs2gcj(wgs_lat, wgs_lng))
 
 
-def bd2wgs(bd_lat, bd_lng):
-  return gcj2wgs(*bd2gcj(bd_lat, bd_lng))
+def _bd2wgs(bd_lat, bd_lng):
+  return _gcj2wgs(*_bd2gcj(bd_lat, bd_lng))
 
 
 _fn_mapping = {
-  (SRS.bd09, SRS.wgs84): bd2wgs,
-  (SRS.gcj02, SRS.wgs84): gcj2wgs,
-  (SRS.wgs84, SRS.bd09): wgs2bd,
-  (SRS.gcj02, SRS.bd09): gcj2bd,
-  (SRS.wgs84, SRS.gcj02): wgs2gcj,
-  (SRS.bd09, SRS.gcj02): bd2gcj,
+  (SRS.bd09, SRS.wgs84): _bd2wgs,
+  (SRS.gcj02, SRS.wgs84): _gcj2wgs,
+  (SRS.wgs84, SRS.bd09): _wgs2bd,
+  (SRS.gcj02, SRS.bd09): _gcj2bd,
+  (SRS.wgs84, SRS.gcj02): _wgs2gcj,
+  (SRS.bd09, SRS.gcj02): _bd2gcj,
 }
 
 
@@ -128,6 +135,7 @@ def _coord_transform(lng: float, lat: float, from_srs: (SRS, str),
                      to_srs: (SRS, str)):
   """
   坐标系转换
+
   Args:
     lng: 输入的经度
     lat: 输入的纬度
@@ -149,13 +157,12 @@ def _coord_transform(lng: float, lat: float, from_srs: (SRS, str),
 
 
 def coord_transform_geojson(obj: dict, from_srs: SRS, to_srs: SRS):
-  """对GeoJSON格式内的所有坐标点执行坐标系转换
-
-  Examples:
-    point_bd09 = Point([1, 2])
-    geojson = mapping(point_bd09)
-    transformed = coord_transform(geojson, SRS.bd09, SRS.wgs84)
-    point_wgs84 = shape(transformed)
+  """
+  对GeoJSON格式内的所有坐标点执行坐标系转换
+  Args:
+    obj: GeoJson格式的坐标
+    from_srs: 输入坐标的格式
+    to_srs: 输出坐标的格式
   """
   return geojson.utils.map_tuples(
       lambda c: _coord_transform(c[0], c[1], from_srs, to_srs), obj)
@@ -165,10 +172,11 @@ def coord_transform_geojson(obj: dict, from_srs: SRS, to_srs: SRS):
 def _coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
                               from_srs: SRS,
                               to_srs: SRS):
-  """对Geometry内的所有点进行坐标转换，返回转换后的Geometry
+  """
+  对Geometry内的所有点进行坐标转换，返回转换后的Geometry；
+  该方法可以支持所有的Shapely Geometry形状，包括Point, Line, Polygon, MultiPolygon等，
+  返回的Geometry和输入的形状保持一致
 
-  该方法可以支持所有的Shapely Geometry形状，包括Point, Line, Polygon,
-  MultiPolygon等，返回的Geometry和输入的形状保持一致
   Args:
     geo: 输入的shapely Geometry
     from_srs: 输入的坐标格式
@@ -187,6 +195,7 @@ def coord_trans_x2y(df,
                     c_lat: str = 'lat'):
   """
   经纬度类型坐标坐标批量转换工具
+
   Args:
     df: 输入的dataframe，必须要有geometry列
     srs_from: 当前坐标系，可选wgs84,bd09,gcj02
@@ -210,6 +219,7 @@ def coord_trans_geom(df,
                      geometry_format=None):
   """
   geometry类型坐标批量转换工具
+
   Args:
     df: 输入的dataframe，必须要有geometry列
     srs_from: 当前坐标系，可选wgs84,bd09,gcj02
@@ -241,6 +251,7 @@ def coord_transformer(df,
                       geometry_format=None):
   """
   坐标转换工具，优先转geometry列
+
   Args:
     df: 输入的dataframe，必须要有geometry列
     srs_from: 当前坐标系，可选wgs84,bd09,gcj02

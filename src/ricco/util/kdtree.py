@@ -20,6 +20,16 @@ def filter_by_limit(ls, n: int):
 
 @timer()
 def kdtree_query_radius(xy_tree, xy_query, r, limit: int = None, leaf_size=2):
+  """
+  使用kdtree查询半径为r的点
+
+  Args:
+    xy_tree: 要构造数的点集
+    xy_query: 查询的点集
+    r: 查询半径
+    limit: 数量限制
+    leaf_size: kdtree叶子节点的大小
+  """
   from sklearn.neighbors import KDTree
   tree = KDTree(xy_tree, leaf_size=leaf_size)
   ind, dist = tree.query_radius(xy_query, r=r,
@@ -34,6 +44,16 @@ def kdtree_query_radius(xy_tree, xy_query, r, limit: int = None, leaf_size=2):
 
 @timer()
 def kdtree_query(xy_tree, xy_query, limit: int = None, r=None, leaf_size=2):
+  """
+  使用kdtree查询最近的一个或多个点
+
+  Args:
+    xy_tree: 要构造数的点集
+    xy_query: 查询的点集
+    limit: 数量限制
+    r: 半径限制
+    leaf_size: kdtree叶子节点的大小
+  """
   from sklearn.neighbors import KDTree
   tree = KDTree(xy_tree, leaf_size=leaf_size)
   dist, ind = tree.query(
@@ -53,6 +73,7 @@ def kdtree_nearest(xy_tree,
                    limit: int = None,
                    r: float = None,
                    leaf_size=2):
+  """使用kdtree查询最近点"""
   if limit or not (r or limit):
     return kdtree_query(xy_tree, xy_query, limit, leaf_size)
   return kdtree_query_radius(xy_tree, xy_query, r, limit, leaf_size)

@@ -11,18 +11,19 @@ from .stat import suspect_series_type
 
 
 class DataReporter(Docx):
-  """数据检测并生成报告"""
+  """
+  数据检测并生成描述性统计报告，方便排查数据问题
+
+  Args:
+    data: 待检测的数据，文件路径或Dataframe
+    only: 要检测的列
+    exclude: 要排除的列，如果only有值，则以only为准
+  """
 
   def __init__(
       self, data: (str, pd.DataFrame),
       only: list = None,
       exclude: list = None):
-    """
-    Args:
-      data: 待检测的数据，文件路径或Dataframe
-      only: 要检测的列
-      exclude: 要排除的列，如果only有值，则以only为准
-    """
     self.set_default_style()
     self.doc.add_heading('数据检测报告', 0)
     if isinstance(data, str):

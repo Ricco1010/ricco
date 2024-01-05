@@ -42,6 +42,7 @@ def projection(
     crs=None) -> gpd.GeoDataFrame:
   """
   投影变换
+
   Args:
     gdf: 输入的GeomDataFrame格式的数据
     epsg: epsg code, 第一优先级
@@ -62,7 +63,6 @@ def projection(
 @timer()
 def projection_lnglat(df: pd.DataFrame) -> pd.DataFrame:
   """直接对经纬度进行投影变换"""
-
   df = df.copy()
   df_temp = lnglat2shapely(df[['lng', 'lat']])
   df_temp = projection(df_temp)
@@ -77,6 +77,7 @@ def projection_lnglat(df: pd.DataFrame) -> pd.DataFrame:
 def wkb2shapely(df,
                 geometry='geometry',
                 epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  """将wkb格式的geometry列转换为shapely格式"""
   df = df.copy()
   df[geometry] = df[geometry].progress_apply(wkb_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
@@ -84,6 +85,7 @@ def wkb2shapely(df,
 
 @progress
 def shapely2wkb(df, geometry='geometry'):
+  """将shapely格式的geometry列转换为wkb格式"""
   df = pd.DataFrame(df).copy()
   df[geometry] = df[geometry].progress_apply(wkb_dumps)
   return df
@@ -93,6 +95,7 @@ def shapely2wkb(df, geometry='geometry'):
 def wkt2shapely(df,
                 geometry='geometry',
                 epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  """将wkt格式的geometry列转换为shapely格式"""
   df = df.copy()
   df[geometry] = df[geometry].progress_apply(wkt_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
@@ -100,6 +103,7 @@ def wkt2shapely(df,
 
 @progress
 def shapely2wkt(df, geometry='geometry'):
+  """将shapely格式的geometry列转换为wkt格式"""
   df = pd.DataFrame(df).copy()
   df[geometry] = df[geometry].progress_apply(wkt_dumps)
   return df
@@ -109,6 +113,7 @@ def shapely2wkt(df, geometry='geometry'):
 def geojson2shapely(df,
                     geometry='geometry',
                     epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  """将geojson格式的geometry列转换为shapely格式"""
   df = df.copy()
   df[geometry] = df[geometry].progress_apply(geojson_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
@@ -116,6 +121,7 @@ def geojson2shapely(df,
 
 @progress
 def shapely2geojson(df, geometry='geometry'):
+  """将shapely格式的geometry列转换为geojson格式"""
   df = pd.DataFrame(df).copy()
   df[geometry] = df[geometry].progress_apply(geojson_dumps)
   return df
@@ -128,6 +134,7 @@ def lnglat2shapely(df,
                    geometry='geometry',
                    delete=True,
                    epsg_code: int = 4326) -> gpd.GeoDataFrame:
+  """将经纬度坐标转换为shapely格式的geometry"""
   df = gpd.GeoDataFrame(
       df,
       geometry=gpd.points_from_xy(df[lng], df[lat]),
@@ -147,6 +154,7 @@ def shapely2lnglat(df,
                    delete=False):
   """
   shapely格式提取面内点转为经纬度。
+
   Args:
     df: 要转换的DataFrame
     geometry: 输入的geometry列名
@@ -247,6 +255,7 @@ def shapely2x(df: (gpd.GeoDataFrame, pd.DataFrame),
               geometry='geometry'):
   """
   将shapely转为指定的格式
+
   Args:
     df: 要转换的GeoDataFrame
     geometry_format: 支持wkb,wkt,shapely,geojson
@@ -262,6 +271,7 @@ def shapely2x(df: (gpd.GeoDataFrame, pd.DataFrame),
 def auto2x(df, geometry_format: str, geometry='geometry'):
   """
   将geometry转为指定格式
+
   Args:
     df: 要转换的Dataframe
     geometry_format: 要转换为的geometry类型，支持shapely,wkb,wkt,geojson
@@ -277,6 +287,7 @@ def auto2x(df, geometry_format: str, geometry='geometry'):
 def distance_min(geometry: BaseGeometry, gdf: gpd.GeoDataFrame) -> float:
   """
   计算单个geometry到数据集gdf中元素的最短距离
+
   Args:
     geometry: 单个geometry，shapely格式
     gdf: 数据集，GeoDataFrame格式
@@ -383,6 +394,7 @@ def ensure_geometry(df,
 
 
 def ensure_lnglat(df, lng='lng', lat='lat', geometry='geometry'):
+  """自动提取点或转换为点的经纬度"""
   if lng in df and lat in df:
     return df
   if geometry in df:
@@ -409,6 +421,7 @@ def mark_tags_v2(
 ):
   """
   使用面数据通过空间关联（sjoin）给数据打标签
+
   Args:
     point_df: 点数据
     polygon_df: 面数据
@@ -507,6 +520,7 @@ def nearest_kdtree(
   """
   KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
   同时可进行其他运算
+
   Args:
     df: 基础数据集，统计该数据及周边的其他数据集的信息
     df_poi: 被统计的数据集
@@ -565,6 +579,7 @@ def get_neighbors(
 ) -> (dict, pd.DataFrame):
   """
   获取数据集中每个点的邻居面(相邻标准：至少有一个点相同且不重叠)
+
   Args:
     df:
     key_col: 关键列，必须唯一
@@ -601,6 +616,7 @@ def get_area(
     epsg: int = None) -> pd.DataFrame:
   """
   计算面积（单位：平方米）
+
   Args:
     df: 要计算的面数据
     c_dst: 输出面积的列名，默认为“area”
@@ -627,6 +643,7 @@ def buffer(df: pd.DataFrame,
            geo_format='wkb') -> pd.DataFrame:
   """
   获得一定半径的缓冲区
+
   Args:
     df: pd.DataFrame, 包含地理信息的DataFrame
     radius: numeric, 缓冲区半径（单位米）
@@ -664,6 +681,7 @@ def spatial_agg(point_df: pd.DataFrame,
                 polygon_geometry: str = 'geometry') -> pd.DataFrame:
   """
   对面数据覆盖范围内的点数据进行空间统计
+
   Args:
     point_df: pd.DataFrame, 点数据dataframe;
     polygon_df: pd.DataFrame, 面数据dataframe;
