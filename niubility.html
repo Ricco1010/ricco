@@ -122,6 +122,28 @@
 <p class="admonition-title">备注</p>
 <p>自动识别文件类型并选择合适的方法读取，日常使用中99%以上的数据都可以用这一个方法读取</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>常用文件读取函数，支持
+.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml/
+.geojson/.shp/.json等</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> – 文件路径</p></li>
+<li><p><strong>sheet_name</strong> – 数据所在sheet的名称，仅对.xlsx/.xls生效</p></li>
+<li><p><strong>sheet_contains</strong> – 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效</p></li>
+<li><p><strong>encoding</strong> – 编码</p></li>
+<li><p><strong>info</strong> – 是否打印数据集情况（shape &amp; columns）</p></li>
+<li><p><strong>dtype</strong> – 指定读取列的类型</p></li>
+<li><p><strong>columns</strong> – 指定读取的列名</p></li>
+<li><p><strong>nrows</strong> – 指定读取的行数</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">rdf</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">rdf</span><span class="p">(</span><span class="s1">&#39;/path/test.csv&#39;</span><span class="p">)</span>
 </pre></div>
@@ -133,6 +155,28 @@
 <p class="admonition-title">备注</p>
 <p>自动识别文件类型并选择合适的方法读取整个文件夹的数据</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>常用文件读取函数，支持
+.csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml/
+.geojson/.shp/.json等</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> – 文件路径</p></li>
+<li><p><strong>sheet_name</strong> – 数据所在sheet的名称，仅对.xlsx/.xls生效</p></li>
+<li><p><strong>sheet_contains</strong> – 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效</p></li>
+<li><p><strong>encoding</strong> – 编码</p></li>
+<li><p><strong>info</strong> – 是否打印数据集情况（shape &amp; columns）</p></li>
+<li><p><strong>dtype</strong> – 指定读取列的类型</p></li>
+<li><p><strong>columns</strong> – 指定读取的列名</p></li>
+<li><p><strong>nrows</strong> – 指定读取的行数</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">rdf_by_dir</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">rdf_by_dir</span><span class="p">(</span><span class="s1">&#39;/path_dir/&#39;</span><span class="p">,</span> <span class="n">exts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.csv&#39;</span><span class="p">])</span>
 </pre></div>
@@ -144,6 +188,23 @@
 <p class="admonition-title">备注</p>
 <p>根据扩展名自动识别文件类型，并保存至对应的文件类型</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>根据文件扩展名，将Dataframe保存为文件</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 要保存的Dataframe</p></li>
+<li><p><strong>filepath</strong> – 文件路径，包含扩展名</p></li>
+<li><p><strong>index</strong> – 是否保存索引，默认不保存</p></li>
+<li><p><strong>log</strong> – 是否打印保存信息</p></li>
+<li><p><strong>encoding</strong> – 保存文件的编码</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">to_file</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
@@ -160,6 +221,24 @@
 <p class="admonition-title">备注</p>
 <p>将文件拆分为多个文件，放置在与文件同名目录下；可按数据量和文件数量进行拆分；可自定义文件类型</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>将文件拆分为多个文件，放置在与文件同名目录下</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – 输入的文件路径</p></li>
+<li><p><strong>chunksize</strong> – 每份文件的数据量</p></li>
+<li><p><strong>parts</strong> – 输出的文件个数</p></li>
+<li><p><strong>to_ext</strong> – 输出的文件扩展名</p></li>
+<li><p><strong>log</strong> – 是否输出文件保存信息</p></li>
+<li><p><strong>fn</strong> – 处理函数</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">split2x</span>
 <span class="n">split2x</span><span class="p">(</span><span class="s1">&#39;/path/test.csv&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">split2x</span><span class="p">(</span><span class="s1">&#39;/path/test.csv&#39;</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -172,6 +251,25 @@
 <p class="admonition-title">备注</p>
 <p>将文件夹的文件大小进行统一拆分，并可传入自定义处理函数</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">reshape_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>将文件拆分成小文件，并保存到to_dir中</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_dir</strong> – 读取的目录</p></li>
+<li><p><strong>to_dir</strong> – 保存的目录</p></li>
+<li><p><strong>from_ext</strong> – 读取的扩展名，默认为None，全部读取</p></li>
+<li><p><strong>to_ext</strong> – 保存的扩展名，默认为None，若读取文件的扩展名唯一，则使用读文文件的扩展名，反之需要指定</p></li>
+<li><p><strong>chunksize</strong> – 每个文件的大小</p></li>
+<li><p><strong>func</strong> – 自定义处理函数</p></li>
+<li><p><strong>log</strong> – 是否打印日志</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">reshape_files</span>
 
 <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
@@ -195,6 +293,24 @@
 <p class="admonition-title">备注</p>
 <p>批量转换可使用 <cite>dir_file_to_x()</cite></p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">file_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>文件格式转换，整体读取并转换，将文件整体加载到内存中再保存为另一种文件格式</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – 待转换的文件路径</p></li>
+<li><p><strong>to_ext</strong> – 要保存的文件扩展名</p></li>
+<li><p><strong>to_dir</strong> – 要写入的文件路径，默认存放在原目录</p></li>
+<li><p><strong>delete</strong> – 是否删除原文件，默认不删除</p></li>
+<li><p><strong>overwrite</strong> – 是否覆盖原文件，默认不覆盖</p></li>
+<li><p><strong>log</strong> – 是否输出文件保存、删除日志</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">file_to_x</span>
 <span class="c1"># 将csv转为Excel文件，保存在相同目录下</span>
 <span class="n">file_to_x</span><span class="p">(</span><span class="s1">&#39;/path/test.csv&#39;</span><span class="p">,</span> <span class="n">to_ext</span><span class="o">=</span><span class="s1">&#39;.xlsx&#39;</span><span class="p">)</span>
@@ -210,6 +326,12 @@
 <p class="admonition-title">备注</p>
 <p>将带有地理信息的数据，自动转为 shapely 格式的GeoDataframe，地理格式可以为wkb/wkt/geojson等</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">auto2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span></dt>
+<dd><p>自动识别地理格式并转换为shapely格式</p>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">auto2shapely</span>
 <span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">rdf</span>
 
@@ -220,6 +342,21 @@
 </section>
 <section id="id10">
 <h3>shapely转为任意格式<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">(&lt;class</span> <span class="pre">'geopandas.geodataframe.GeoDataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry='geometry'</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>将shapely转为指定的格式</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 要转换的GeoDataFrame</p></li>
+<li><p><strong>geometry_format</strong> – 支持wkb,wkt,shapely,geojson</p></li>
+<li><p><strong>geometry</strong> – geometry列的列名，默认“geometry”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">rdf</span>
 <span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">shapely2x</span>
 
@@ -231,6 +368,21 @@
 </section>
 <section id="id11">
 <h3>shapely转为任意格式<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">auto2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>将geometry转为指定格式</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 要转换的Dataframe</p></li>
+<li><p><strong>geometry_format</strong> – 要转换为的geometry类型，支持shapely,wkb,wkt,geojson</p></li>
+<li><p><strong>geometry</strong> – geometry列的列名，默认为“geometry”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">rdf</span>
 <span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">auto2x</span>
 
@@ -249,6 +401,28 @@
 <p class="admonition-title">备注</p>
 <p>根据经纬度自动获取 epsg code 进行投影，也可以指定城市和 epsg code 进行投影，该方法是对geometry列进行投影；如需要对经纬度进行投影，请使用`projection_lnglat()`方法</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span></dt>
+<dd><p>投影变换</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> – 输入的GeomDataFrame格式的数据</p></li>
+<li><p><strong>epsg</strong> – epsg code, 第一优先级</p></li>
+<li><p><strong>city</strong> – 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取</p></li>
+<li><p><strong>crs</strong> – 投影坐标系，第二优先级</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>直接对经纬度进行投影变换</p>
+</dd></dl>
+
 </section>
 <section id="id14">
 <h3>面积计算<a class="headerlink" href="#id14" title="此标题的永久链接"></a></h3>
@@ -256,6 +430,21 @@
 <p class="admonition-title">备注</p>
 <p>自动地理转换、投影、计算面积，新增面积列`area`，不改变原数据</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">get_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'area'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>计算面积（单位：平方米）</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 要计算的面数据</p></li>
+<li><p><strong>c_dst</strong> – 输出面积的列名，默认为“area”</p></li>
+<li><p><strong>epsg</strong> – 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="id15">
 <h3>近邻分析<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h3>
@@ -263,6 +452,44 @@
 <p class="admonition-title">备注</p>
 <p>计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,同时可进行其他统计</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_kdtree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_poi:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_count:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_min_distance:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_origin:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size=2</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
+同时可进行其他运算</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 基础数据集，统计该数据及周边的其他数据集的信息</p></li>
+<li><p><strong>df_poi</strong> – 被统计的数据集</p></li>
+<li><p><strong>c_count</strong> – 计数列字段名，默认“count”</p></li>
+<li><p><strong>c_min_distance</strong> – 最短距离字段名，默认“min_distance”</p></li>
+<li><p><strong>agg</strong> – 计算 df_poi 中的其他字段，格式如: {‘面积’: [‘sum’, ‘mean’]}，即计算面积的和、均值</p></li>
+<li><p><strong>limit</strong> – 限制符合条件的 df_poi 中的个数，由近及远</p></li>
+<li><p><strong>r</strong> – 限制查询半径</p></li>
+<li><p><strong>keep_origin</strong> – 是否保留匹配后原始的索引信息</p></li>
+<li><p><strong>leaf_size</strong> – KDTree 叶子节点大小</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – </p></li>
+<li><p><strong>df_target</strong> – </p></li>
+<li><p><strong>c_dst</strong> – 输出最短距离的列名，默认为“min_distance”</p></li>
+<li><p><strong>epsg</strong> – 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="buffer">
 <h3>buffer计算<a class="headerlink" href="#buffer" title="此标题的永久链接"></a></h3>
@@ -270,6 +497,28 @@
 <p class="admonition-title">备注</p>
 <p>生成指定半径的buffer的geometry列</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'buffer_geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wkb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>获得一定半径的缓冲区</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – pd.DataFrame, 包含地理信息的DataFrame</p></li>
+<li><p><strong>radius</strong> – numeric, 缓冲区半径（单位米）</p></li>
+<li><p><strong>city</strong> – str, 可选, 投影城市，可提高数据精度</p></li>
+<li><p><strong>geo_type</strong> – str, 地理数据类型，可选point, line或polygon(包括multipolygon)，默认point</p></li>
+<li><p><strong>geometry</strong> – str, geometry字段名，默认”geometry”</p></li>
+<li><p><strong>buffer_geometry</strong> – 输出的缓冲区geometry字段名，默认”buffer_geometry”</p></li>
+<li><p><strong>geo_format</strong> – str, 输出的缓冲区geometry格式，支持wkb,wkt,shapely,geojson，默认wkb</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>包含缓冲区geometry的DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="id16">
 <h3>空间统计<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
@@ -277,9 +526,53 @@
 <p class="admonition-title">备注</p>
 <p>对面数据覆盖范围内的点数据进行空间统计</p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">spatial_agg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span></dt>
+<dd><p>对面数据覆盖范围内的点数据进行空间统计</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point_df</strong> – pd.DataFrame, 点数据dataframe;</p></li>
+<li><p><strong>polygon_df</strong> – pd.DataFrame, 面数据dataframe;</p></li>
+<li><p><strong>by</strong> – Union[str, List[str]], 空间统计单位字段；</p></li>
+<li><p><strong>agg</strong> – dict, 空间统计操作。格式为{‘被统计字段名’: ‘操作名’, …}的字典。如{‘poi’:’sum’};</p></li>
+<li><p><strong>polygon_geometry</strong> – str, 面数据geometry字段名，默认”geometry”;</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="id17">
 <h3>空间连接打标签<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">mark_tags_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate='intersects'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_geometry=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format='wkb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message=None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>使用面数据通过空间关联（sjoin）给数据打标签</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point_df</strong> – 点数据</p></li>
+<li><p><strong>polygon_df</strong> – 面数据</p></li>
+<li><p><strong>col_list</strong> – 面数据中要关联到结果中的列，若为空则全部关联</p></li>
+<li><p><strong>predicate</strong> – 关联方法，默认 ‘intersects’</p></li>
+<li><p><strong>drop_geometry</strong> – 结果是否删除geometry，默认删除</p></li>
+<li><p><strong>geometry_format</strong> – 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb</p></li>
+<li><p><strong>warning</strong> – 是否输出警告信息</p></li>
+<li><p><strong>point_lng</strong> – 指定点数据的经度列名</p></li>
+<li><p><strong>point_lat</strong> – 指定点数据的经度列名</p></li>
+<li><p><strong>point_geometry</strong> – 指定点数据的geometry列名</p></li>
+<li><p><strong>polygon_geometry</strong> – 指定面数据的geometry列名</p></li>
+<li><p><strong>warning_message</strong> – 是否输出警告信息，已弃用</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">rdf</span>
 <span class="kn">from</span> <span class="nn">ricco</span> <span class="kn">import</span> <span class="n">mark_tags_v2</span>
 

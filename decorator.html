@@ -55,7 +55,17 @@
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">地理处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat.html">统计分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_reporter.html">数据报告</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">装饰器</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">装饰器</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.check_null"><code class="docutils literal notranslate"><span class="pre">check_null()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.check_shapely"><code class="docutils literal notranslate"><span class="pre">check_shapely()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.check_str"><code class="docutils literal notranslate"><span class="pre">check_str()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.print_doc"><code class="docutils literal notranslate"><span class="pre">print_doc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.process_multi"><code class="docutils literal notranslate"><span class="pre">process_multi()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.progress"><code class="docutils literal notranslate"><span class="pre">progress()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.run_once"><code class="docutils literal notranslate"><span class="pre">run_once()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.util.decorator.timer"><code class="docutils literal notranslate"><span class="pre">timer()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -82,8 +92,89 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="id1">
-<h1>装饰器<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+  <section id="module-ricco.util.decorator">
+<span id="id1"></span><h1>装饰器<a class="headerlink" href="#module-ricco.util.decorator" title="此标题的永久链接"></a></h1>
+<p><strong>Functions:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.decorator.check_null" title="ricco.util.decorator.check_null"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_null</span></code></a>([default_rv])</p></td>
+<td><p>检查第一个参数是否非空，若为空则直接返回空值</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.decorator.check_shapely" title="ricco.util.decorator.check_shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_shapely</span></code></a>(func)</p></td>
+<td><p>检查第一个参数是否是shapely格式，若非shapely格式则警告并返回空值</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.decorator.check_str" title="ricco.util.decorator.check_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_str</span></code></a>(func)</p></td>
+<td><p>检查第一个参数是否是字符串，若非字符串则警告并返回空值</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.decorator.print_doc" title="ricco.util.decorator.print_doc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_doc</span></code></a>(func)</p></td>
+<td><p>打印docstring</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.decorator.process_multi" title="ricco.util.decorator.process_multi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_multi</span></code></a>(func)</p></td>
+<td><p>多线程处理apply任务（parallel_apply）</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.decorator.progress" title="ricco.util.decorator.progress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">progress</span></code></a>(func)</p></td>
+<td><p>tqdm进度条（progress_apply）</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.decorator.run_once" title="ricco.util.decorator.run_once"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_once</span></code></a>(func)</p></td>
+<td><p>在一次执行中只运行一次，注：除第一次运行外，后续的不会执行也无返回值</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.decorator.timer" title="ricco.util.decorator.timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timer</span></code></a>([desc])</p></td>
+<td><p>函数运行时间统计</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.check_null">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">check_null</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.check_null" title="永久链接至目标"></a></dt>
+<dd><p>检查第一个参数是否非空，若为空则直接返回空值</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.check_shapely">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">check_shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.check_shapely" title="永久链接至目标"></a></dt>
+<dd><p>检查第一个参数是否是shapely格式，若非shapely格式则警告并返回空值</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.check_str">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">check_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.check_str" title="永久链接至目标"></a></dt>
+<dd><p>检查第一个参数是否是字符串，若非字符串则警告并返回空值</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.print_doc">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">print_doc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.print_doc" title="永久链接至目标"></a></dt>
+<dd><p>打印docstring</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.process_multi">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">process_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.process_multi" title="永久链接至目标"></a></dt>
+<dd><p>多线程处理apply任务（parallel_apply）</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.progress">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.progress" title="永久链接至目标"></a></dt>
+<dd><p>tqdm进度条（progress_apply）</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.run_once">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">run_once</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.run_once" title="永久链接至目标"></a></dt>
+<dd><p>在一次执行中只运行一次，注：除第一次运行外，后续的不会执行也无返回值</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.decorator.timer">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.decorator.</span></span><span class="sig-name descname"><span class="pre">timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.decorator.timer" title="永久链接至目标"></a></dt>
+<dd><p>函数运行时间统计</p>
+</dd></dl>
+
 </section>
 
 

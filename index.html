@@ -97,43 +97,70 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="util.html">工具集</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id2">基础工具一</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id3">基础工具二</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id4">时间和日期</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id5">文件路径</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id6">字符串处理</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id7">数据校验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.base">基础工具一</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.util">基础工具二</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.dt">时间和日期</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.os">文件路径</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.strings">字符串处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.assertion">数据校验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="util.html#id8">行政区划工具</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#id9">随机工具</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html#kdtree">Kdtree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.random">随机工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#module-ricco.util.kdtree">Kdtree</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="etl.html">数据读取、处理与保存</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="etl.html#extract">数据读取（Extract）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl.html#transform">数据处理（Transform）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl.html#load">数据保存（Load）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl.html#file">文件操作（File）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl.html#id2">数据标准化（熵值法）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl.html#graph">图数据处理（Graph）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl.html#module-ricco.etl.extract">数据读取（Extract）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl.html#module-ricco.etl.transformer">数据处理（Transform）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl.html#module-ricco.etl.load">数据保存（Load）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl.html#module-ricco.etl.file">文件操作（File）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl.html#module-ricco.etl.entropy">数据标准化（熵值法）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl.html#module-ricco.etl.graph">图数据处理（Graph）</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="geocode.html">Geocoding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geocode.html">Geocoding</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode"><code class="docutils literal notranslate"><span class="pre">geocode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode_best"><code class="docutils literal notranslate"><span class="pre">geocode_best()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode_best_address"><code class="docutils literal notranslate"><span class="pre">geocode_best_address()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode_best_poi"><code class="docutils literal notranslate"><span class="pre">geocode_best_poi()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode_df"><code class="docutils literal notranslate"><span class="pre">geocode_df()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode_v2"><code class="docutils literal notranslate"><span class="pre">geocode_v2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geocode.html#ricco.geocode.geocode.geocode_with_memory_cache"><code class="docutils literal notranslate"><span class="pre">geocode_with_memory_cache()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coord_trans.html#ricco.geometry.coord_trans.SRS"><code class="docutils literal notranslate"><span class="pre">SRS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coord_trans.html#ricco.geometry.coord_trans.coord_trans_geom"><code class="docutils literal notranslate"><span class="pre">coord_trans_geom()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coord_trans.html#ricco.geometry.coord_trans.coord_trans_x2y"><code class="docutils literal notranslate"><span class="pre">coord_trans_x2y()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coord_trans.html#ricco.geometry.coord_trans.coord_transform_geojson"><code class="docutils literal notranslate"><span class="pre">coord_transform_geojson()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coord_trans.html#ricco.geometry.coord_trans.coord_transformer"><code class="docutils literal notranslate"><span class="pre">coord_transformer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coord_trans.html#ricco.geometry.coord_trans.out_of_china"><code class="docutils literal notranslate"><span class="pre">out_of_china()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">地理处理</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#id2">基础地理处理工具</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#geodataframe">基于GeoDataframe处理</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#id3">拓扑处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#module-ricco.geometry.util">基础地理处理工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#module-ricco.geometry.df">基于GeoDataframe处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#module-ricco.geometry.topology_check">拓扑处理</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="stat.html">统计分析</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="stat.html#id2">描述性统计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stat.html#module-ricco.etl.stat">描述性统计</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_reporter.html">数据报告</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_reporter.html#id2">数据校验</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="decorator.html">装饰器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decorator.html">装饰器</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.check_null"><code class="docutils literal notranslate"><span class="pre">check_null()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.check_shapely"><code class="docutils literal notranslate"><span class="pre">check_shapely()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.check_str"><code class="docutils literal notranslate"><span class="pre">check_str()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.print_doc"><code class="docutils literal notranslate"><span class="pre">print_doc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.process_multi"><code class="docutils literal notranslate"><span class="pre">process_multi()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.progress"><code class="docutils literal notranslate"><span class="pre">progress()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.run_once"><code class="docutils literal notranslate"><span class="pre">run_once()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="decorator.html#ricco.util.decorator.timer"><code class="docutils literal notranslate"><span class="pre">timer()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

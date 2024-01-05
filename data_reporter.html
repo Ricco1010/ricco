@@ -56,7 +56,16 @@
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">地理处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat.html">统计分析</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">数据报告</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">数据校验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">数据校验</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter"><code class="docutils literal notranslate"><span class="pre">DataReporter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.basic"><code class="docutils literal notranslate"><span class="pre">DataReporter.basic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.col_by_col"><code class="docutils literal notranslate"><span class="pre">DataReporter.col_by_col()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.examine_all"><code class="docutils literal notranslate"><span class="pre">DataReporter.examine_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.preprocess"><code class="docutils literal notranslate"><span class="pre">DataReporter.preprocess()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="decorator.html">装饰器</a></li>
@@ -90,6 +99,67 @@
 <h1>数据报告<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
 <section id="id2">
 <h2>数据校验<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ricco.etl.data_reporter.DataReporter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.etl.data_reporter.</span></span><span class="sig-name descname"><span class="pre">DataReporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only:</span> <span class="pre">~typing.Optional[list]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude:</span> <span class="pre">~typing.Optional[list]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.data_reporter.DataReporter" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">Docx</span></code></p>
+<p>数据检测并生成描述性统计报告，方便排查数据问题</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – 待检测的数据，文件路径或Dataframe</p></li>
+<li><p><strong>only</strong> – 要检测的列</p></li>
+<li><p><strong>exclude</strong> – 要排除的列，如果only有值，则以only为准</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.basic" title="ricco.etl.data_reporter.DataReporter.basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic</span></code></a>()</p></td>
+<td><p>基础信息描述</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.col_by_col" title="ricco.etl.data_reporter.DataReporter.col_by_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">col_by_col</span></code></a>()</p></td>
+<td><p>逐列检测</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.examine_all" title="ricco.etl.data_reporter.DataReporter.examine_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examine_all</span></code></a>(file_path)</p></td>
+<td><p>整套流程</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.data_reporter.DataReporter.preprocess" title="ricco.etl.data_reporter.DataReporter.preprocess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocess</span></code></a>()</p></td>
+<td><p>数据预处理</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.etl.data_reporter.DataReporter.basic">
+<span class="sig-name descname"><span class="pre">basic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.data_reporter.DataReporter.basic" title="永久链接至目标"></a></dt>
+<dd><p>基础信息描述</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.etl.data_reporter.DataReporter.col_by_col">
+<span class="sig-name descname"><span class="pre">col_by_col</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.data_reporter.DataReporter.col_by_col" title="永久链接至目标"></a></dt>
+<dd><p>逐列检测</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.etl.data_reporter.DataReporter.examine_all">
+<span class="sig-name descname"><span class="pre">examine_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.data_reporter.DataReporter.examine_all" title="永久链接至目标"></a></dt>
+<dd><p>整套流程</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.etl.data_reporter.DataReporter.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.data_reporter.DataReporter.preprocess" title="永久链接至目标"></a></dt>
+<dd><p>数据预处理</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
