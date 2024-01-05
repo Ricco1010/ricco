@@ -2,7 +2,6 @@ import builtins
 import datetime
 import json
 import logging
-import random
 import re
 import uuid
 import warnings
@@ -19,7 +18,7 @@ from .decorator import check_null
 
 
 def to_json_string(string, errors='raise'):
-  """将字符串转为接送格式的字符串"""
+  """将字符串转为json格式的字符串"""
   assert errors in ('raise', 'coerce', 'ignore'), '参数错误'
   if not isinstance(string, (list, dict)):
     try:
@@ -36,12 +35,12 @@ def to_json_string(string, errors='raise'):
 
 
 def relstrip(string, kwd):
-  """通过正则变大是删除左侧字符串"""
+  """通过正则表达式删除左侧字符串"""
   return re.sub(f'^{kwd}', '', string)
 
 
 def rerstrip(string, kwd):
-  """通过正则变大是删除右侧字符串"""
+  """通过正则表达式删除右侧字符串"""
   return re.sub(f'{kwd}$', '', string)
 
 
@@ -57,6 +56,7 @@ def get_shortest_element(elements: list):
 
 
 def and_(*conditions):
+  """对多个条件执行and操作"""
   if len(conditions) < 1:
     raise Exception('最少一个条件')
   res = conditions[0]
@@ -66,6 +66,7 @@ def and_(*conditions):
 
 
 def or_(*conditions):
+  """对多个条件执行or操作"""
   cond = []
   for c in conditions:
     if isinstance(c, (list, tuple)):
@@ -145,6 +146,7 @@ def extract_num(string: str,
                 multi_warning=False):
   """
   提取字符串中的数值，默认返回所有数字组成的列表
+
   Args:
     string: 输入的字符串
     num_type:  输出的数字类型，int/float/str，默认为str
@@ -209,6 +211,7 @@ def segment(x: (int, float),
             top: str = '以上') -> str:
   """
   区间段划分工具
+
   Args:
     x: 数值
     gap: 间隔，固定间隔或列表
@@ -254,6 +257,7 @@ def fuzz_match(string: str,
                valid_score: int = 0):
   """
   为某一字符串从某一集合中匹配相似度最高的元素
+
   Args:
     string: 输入的字符串
     string_set: 要去匹配的集合
@@ -294,6 +298,7 @@ def get_city_id_by_name(city: str):
 def sort_by_list(src_list, by_list, filter_=False) -> list:
   """
   根据一个列表对另一个列表进行筛选或排序，参照列表中不存在的元素按照原始顺序排列在后
+
   Args:
     src_list: 要进行排序的列表
     by_list: 参照的列表
@@ -318,9 +323,10 @@ def remove_null_in_dict(dic: dict) -> dict:
 def union_str_v2(*strings, sep='') -> str:
   """
   连接字符串，空白字符串会被忽略
+
   Examples:
-    >>> union_str_v2('a', 'b', sep='-') # 'a-b'
-    >>> union_str_v2('a', 'b', 'c') # 'abc'
+    >>> union_str_v2('a', 'b', sep='-')  # 'a-b'
+    >>> union_str_v2('a', 'b', 'c')  # 'abc'
   """
   if strings := [i for i in strings if not_empty(i) and i != '']:
     return sep.join(strings)
@@ -351,61 +357,6 @@ def re_fast(pattern, string, warning=True):
       if warning and len(ls) >= 2:
         warnings.warn('匹配到多个值，默认返回第一个')
       return ls[0]
-
-
-def random_name():
-  """随机生成中文名字，仅生成2或3字名字"""
-  from ..resource.names import FirstName
-  from ..resource.names import LastName
-  c = [random.choice(FirstName)]
-  for i in range(random.randint(1, 2)):
-    c.append(random.choice(LastName))
-  return ''.join(c)
-
-
-def random_date():
-  """获取随机日期"""
-  now = datetime.datetime.now()
-  tsp = int(datetime.datetime.timestamp(now))
-  tsp = random.randrange(-946800000, tsp)
-  return datetime.datetime.fromtimestamp(tsp).strftime("%Y%m%d")
-
-
-def random_room_number(unit=False):
-  """生成随机的房间号"""
-  floor = random.randint(1, 17)
-  room = random.randint(1, 4)
-  room = str(room).zfill(2)
-  if unit:
-    _u = random.randint(1, 6)
-    _unit = f'{_u}单元'
-    return f'{_unit}{floor}{room}'
-  return f'{floor}{room}'
-
-
-def random_by_prob(mapping: dict):
-  """根据概率生成随机值"""
-  return np.random.choice(
-      list(mapping.keys()),
-      p=np.array(list(mapping.values())).ravel()
-  )
-
-
-def make_ramdom_lnglat(
-    df: pd.DataFrame,
-    lng_range: (tuple, list) = (72, 138),
-    lat_range: (tuple, list) = (0, 56),
-):
-  """
-  Args:
-    df: 输入的dataframe
-    lng_range: 城市的经度范围
-    lat_range: 城市的纬度范围
-  """
-  length = df.shape[0]
-  df['lng'] = np.random.uniform(*lng_range, length)
-  df['lat'] = np.random.uniform(*lat_range, length)
-  return df
 
 
 @check_null()
@@ -439,6 +390,7 @@ def to_bool(x,
             f_list: list = None):
   """
   将常见的布尔类型的代替值转为布尔类型
+
   Args:
     x: 输入值
     na: 空值返回真还是假
@@ -474,7 +426,7 @@ def to_bool(x,
 def is_unique_series(df: pd.DataFrame,
                      key_cols: (str, list) = None,
                      ignore_na=False):
-  """判断是否唯一"""
+  """判断Dataframe中的某一列或某几列的组合是否唯一"""
   df = df.copy()
   if not key_cols:
     key_cols = df.columns.tolist()
@@ -497,13 +449,19 @@ def is_digit(x) -> bool:
 
 @check_null(default_rv=False)
 def is_hex(string) -> bool:
-  """判断一个字符串是否是十六进制"""
+  """判断一个字符串是否是十六进制格式"""
   if re.match('^[0-9a-fA-F]+$', str(string)):
     return True
   return False
 
 
 def isinstance_in_list(value: list, types: (str, list)):
-  """检查列表内的元素类型"""
+  """
+  检查列表内的元素类型是否满足多个类型之一
+
+  Args:
+    value: 要检查的值
+    types: 类型类别
+  """
   assert isinstance(value, (list, tuple))
   return all([isinstance(v, types) for v in value])

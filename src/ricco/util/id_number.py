@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 
 from ..resource.patterns import Pattern
+from .random import random_date
 from .util import physical_age
-from .util import random_date
 
 
 def get_check_code(id_number) -> str:

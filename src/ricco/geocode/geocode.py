@@ -52,6 +52,7 @@ def geocode_best_poi(
     key_amap=None):
   """
   获取最优的地点检索结果
+
   Args:
     address: POI名称
     city: 城市
@@ -100,6 +101,18 @@ def geocode_best(
     srs: str = 'wgs84',
     address_geocode: bool = False,
     **kwargs):
+  """
+  获取最优的geocoding结果
+
+  Args:
+    address: 地址
+    city: 城市
+    address_type: 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同
+    sig: 得分
+    srs: 坐标系
+    address_geocode: 是否使用地址编码进行补充
+    **kwargs:
+  """
   assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
   if address_type == 'poi':
     return geocode_best_poi(
@@ -153,6 +166,7 @@ def geocode_df(df: pd.DataFrame,
                **kwargs):
   """
   对dataframe进行geocoding
+
   Args:
     df:
     by: 项目名称所在的列
@@ -211,7 +225,8 @@ def geocode_v2(df: pd.DataFrame,
                memory_cache: bool = True,
                **kwargs):
   """
-  对dataframe进行geocoding
+  对dataframe进行geocoding，添加内存缓存机制，支持仅对经纬度为空的数据进行geocoding
+
   Args:
     df:
     by: 项目名称所在的列

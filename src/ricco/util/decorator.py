@@ -9,17 +9,6 @@ from ..base import is_empty
 from ..base import second_to_desc
 
 
-def to_str(func):
-  @wraps(func)
-  def wrapper(self):
-    if self.dst_format:
-      return func(self).strftime(self.dst_format)
-    else:
-      return func(self)
-
-  return wrapper
-
-
 def progress(func):
   """tqdm进度条（progress_apply）"""
 

@@ -66,9 +66,11 @@ def wvalue(df, columns: list):
 def entropy(df, columns: list = None):
   """
   采用熵值法计算的总分评价
+
   Args:
     df: 非负数化处理后的数据，默认其中数值量纲都是越大越好
     columns: 需要用熵值法计算权重的指标合集
+
   Returns:
     用过熵值法得到的总分, 权重
   """
@@ -107,11 +109,13 @@ class EntropyClass:
   def __init__(self, df, cols, neg_cols, key):
     """
     熵值法计算器-输出结果需要后续再进行rescale处理
+
     Args:
       df: 为原始待计算df
       cols: 需要参与计算的列名list
       neg_cols: cols中需要负向处理的列名
       key: 计算结果的列名
+
     Returns:
       entropy_res: 单独计算结果列
       entropy_df: 包含计算结果的df
@@ -132,6 +136,7 @@ def rescale(
     score_range: tuple = (0, 100)) -> pd.DataFrame:
   """
   归一化处理
+
   Args:
     df: 为原始待计算df
     key: 需要参与计算的列名

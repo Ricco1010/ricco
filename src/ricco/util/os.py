@@ -7,18 +7,18 @@ from ..base import ensure_list
 
 
 def ext(filepath):
-  """扩展名"""
-  return os.path.splitext(filepath)[1]
+  """获取文件扩展名"""
+  return extension(filepath)
 
 
 def extension(filepath):
-  """扩展名"""
+  """获取文件扩展名"""
   return os.path.splitext(filepath)[1]
 
 
 def fn(filepath):
   """路径及文件名（不含扩展名）"""
-  return os.path.splitext(filepath)[0]
+  return path_name(filepath)
 
 
 def path_name(filepath):
@@ -36,6 +36,7 @@ def split_path(filepath, abspath=False):
 
 
 def ensure_dir(dirpath: str):
+  """确保路径为文件夹格式（以斜杠“/”结尾）"""
   if not dirpath.endswith('/'):
     return dirpath + '/'
   return dirpath
@@ -77,7 +78,14 @@ def ensure_dirpath_exist(filepath):
 
 
 def dir2zip(filepath, overwrite=False, delete_origin=False):
-  """压缩文件夹"""
+  """
+  压缩文件夹
+
+  Args:
+    filepath: 文件夹路径
+    overwrite: 是否覆盖已有文件
+    delete_origin: 是否删除原文件
+  """
   zfn = f'{filepath}.zip'
   if os.path.exists(zfn):
     if overwrite:
@@ -97,7 +105,7 @@ def dir2zip(filepath, overwrite=False, delete_origin=False):
 
 
 def get_file_counts(dir_path):
-  """获取文件夹中文件的数量"""
+  """统计文件夹中文件的数量"""
   num = 0
   for dirpath, dirnames, filenames in os.walk(dir_path):
     for filename in filenames:
@@ -144,6 +152,7 @@ def dir_iter(root,
              ignore_hidden_files=True):
   """
   文件夹中的文件路径生成器，用于遍历文件夹中的文件
+
   Args:
     root: 文件目录
     exts: 文件扩展名，不指定则返回所有文件
@@ -176,6 +185,7 @@ def dir_iter_list(root,
                   reverse=False):
   """
   文件夹中的文件路径列表
+
   Args:
     root: 文件目录
     exts: 文件扩展名，不指定则返回所有文件

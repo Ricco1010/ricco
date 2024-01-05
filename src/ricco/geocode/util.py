@@ -1,7 +1,7 @@
 import warnings
 
-from ..geometry.coord_trans import gcj2bd
-from ..geometry.coord_trans import gcj2wgs
+from ..geometry.coord_trans import _gcj2bd
+from ..geometry.coord_trans import _gcj2wgs
 from ..util.decorator import check_null
 
 DEFAULT_RES = {
@@ -32,9 +32,9 @@ class MapKeys:
 def gcj2xx(lnglat, srs):
   assert srs in ('wgs84', 'bd09', 'gcj02'), '可选参数为bd09,wgs84,gcj02'
   if srs == 'wgs84':
-    return gcj2wgs(float(lnglat[1]), float(lnglat[0]))
+    return _gcj2wgs(float(lnglat[1]), float(lnglat[0]))
   elif srs == 'bd09':
-    return gcj2bd(float(lnglat[1]), float(lnglat[0]))
+    return _gcj2bd(float(lnglat[1]), float(lnglat[0]))
   else:
     return float(lnglat[1]), float(lnglat[0])
 

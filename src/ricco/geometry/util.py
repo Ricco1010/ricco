@@ -33,10 +33,15 @@ warnings.simplefilter('ignore', category=ShapelyDeprecationWarning)
 
 
 class GeomFormat:
+  #: wkb
   wkb = 'wkb'
+  #: wkt
   wkt = 'wkt'
+  #: shapely
   shapely = 'shapely'
+  #: geojson
   geojson = 'geojson'
+  #: unknown
   unknown = 'unknown'
 
 
@@ -47,8 +52,7 @@ def crs_sh2000():
 
 
 def epsg_from_lnglat(lng, lat=0):
-  """根据经纬度确定EPSG代码"""
-  # 计算 UTM 区域代码
+  """根据经纬度计算 UTM 区域 EPSG 代码"""
   lng = ensure_list(lng)
   lng = [i for i in lng if not_empty(i)]
   lng = np.median(lng)
@@ -86,6 +90,7 @@ def _projection_lnglat(lnglat: (tuple, list), crs_from, crs_to):
 
 @check_str
 def wkb_loads(x: str, hex=True):
+  """将文本形式的WKB转换为Shapely几何对象"""
   try:
     return wkb.loads(x, hex=hex)
   except (AttributeError, WKBReadingError) as e:
@@ -94,11 +99,13 @@ def wkb_loads(x: str, hex=True):
 
 @check_shapely
 def wkb_dumps(x: BaseGeometry, hex=True, srid=4326):
+  """将Shapely几何对象转换为文本形式的WKB"""
   return wkb.dumps(x, hex=hex, srid=srid)
 
 
 @check_str
 def wkt_loads(x: str):
+  """将文本形式的WKT转换为Shapely几何对象"""
   try:
     return wkt.loads(x)
   except (AttributeError, WKTReadingError, TypeError) as e:
@@ -107,12 +114,13 @@ def wkt_loads(x: str):
 
 @check_shapely
 def wkt_dumps(x: BaseGeometry):
+  """将Shapely几何对象转换为文本形式的WKT"""
   return wkt.dumps(x)
 
 
 @check_null()
 def geojson_loads(x: (str, dict), warning=True):
-  """geojson文本形式转为shapely格式"""
+  """geojson文本形式转为shapely几个对象"""
   from simplejson.errors import JSONDecodeError
   _shape_e = (AttributeError, GeometryTypeError)
   _x = x
@@ -276,6 +284,7 @@ def dumps2x(x: BaseGeometry, geom_format):
 
 
 def ensure_lnglat(lnglat) -> tuple:
+  """确保经纬度是tuple类型，如果是geometry会自动提取经纬度"""
   if is_empty(lnglat):
     return np.nan, np.nan
   if isinstance(lnglat, (list, tuple)):
@@ -295,6 +304,7 @@ def distance(
     epsg_to: (str, int) = None):
   """
   计算两个点（经度，纬度）之间的距离，单位：米
+
   Args:
     p1: 点位1，经纬度或geometry
     p2: 点位2，经纬度或geometry
@@ -313,6 +323,7 @@ def distance(
 def get_geoms(geo: BaseGeometry) -> List:
   """
   将geo中包含的LineString、Point、Polygon取出存放到list中
+
   Args:
     geo: geometry类型的数据
 

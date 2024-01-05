@@ -28,6 +28,7 @@ def split2x_by_parts(
 ):
   """
   将文件拆分为多个文件，放置在与文件同名目录下
+
   Args:
     filename: 文件路径
     parts: 输出的文件个数
@@ -57,6 +58,7 @@ def split2x_by_chunksize(
 ):
   """
   将文件拆分为多个文件，放置在与文件同名目录下
+
   Args:
     filepath: 输入的文件路径
     chunksize: 每份文件的数据量
@@ -95,6 +97,7 @@ def split2x(
 ):
   """
   将文件拆分为多个文件，放置在与文件同名目录下
+
   Args:
     filename: 输入的文件路径
     chunksize: 每份文件的数据量
@@ -120,6 +123,7 @@ def file_to_x(filepath, to_ext,
               **kwargs):
   """
   文件格式转换，整体读取并转换，将文件整体加载到内存中再保存为另一种文件格式
+
   Args:
     filepath: 待转换的文件路径
     to_ext: 要保存的文件扩展名
@@ -169,6 +173,7 @@ def reshape_files(from_dir, to_dir,
                   **kwargs):
   """
   将文件拆分成小文件，并保存到to_dir中
+
   Args:
     from_dir: 读取的目录
     to_dir: 保存的目录

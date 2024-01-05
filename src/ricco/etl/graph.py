@@ -5,12 +5,23 @@ import pandas as pd
 from ..base import is_empty
 
 
-def get_graph_dict(graph_df: (pd.DataFrame, dict),
-                   c_key='id',
-                   c_level_type='level_type',
-                   c_parent_key='parent_id',
-                   c_parent_type='parent_type'
-                   ):
+def get_graph_dict(
+    graph_df: pd.DataFrame,
+    c_key='id',
+    c_level_type='level_type',
+    c_parent_key='parent_id',
+    c_parent_type='parent_type'
+) -> dict:
+  """
+  将图结构的Dataframe转为字典格式，提高查询效率
+
+  Args:
+    graph_df: 图结构的数据
+    c_key: 索引列
+    c_level_type: 层级分类列
+    c_parent_key: 对应的父级索引列
+    c_parent_type: 对应的父级类型列
+  """
   graph_df = graph_df[[c_key, c_level_type, c_parent_key]]
   df_temp = graph_df[[c_key, c_level_type]]
   df_temp.columns = [c_parent_key, c_parent_type]
@@ -19,15 +30,17 @@ def get_graph_dict(graph_df: (pd.DataFrame, dict),
   return graph_df.set_index(c_key).to_dict()
 
 
-def query_from_graph(key,
-                     graph_data: (pd.DataFrame, dict),
-                     c_key='id',
-                     c_level_type='level_type',
-                     c_parent_key='parent_id',
-                     max_depth=10,
-                     ) -> dict:
+def query_from_graph(
+    key,
+    graph_data: (pd.DataFrame, dict),
+    c_key='id',
+    c_level_type='level_type',
+    c_parent_key='parent_id',
+    max_depth=10,
+) -> dict:
   """
-  从图数据中查询全部父级节点
+  从图数据中查询全部当前节点的全部父级节点
+
   Args:
     key: 要查询的节点
     graph_data: 要查询的数据集

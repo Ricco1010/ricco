@@ -73,7 +73,7 @@ def rdf(
   return df
 
 
-def max_grid():
+def _max_grid():
   """防止单个单元格文件过大而报错"""
   maxint = sys.maxsize
   decrement = True
@@ -97,6 +97,7 @@ def rdxls(
 ) -> pd.DataFrame:
   """
   读取excel文件
+
   Args:
     file_path: 文件名
     sheet_name: sheet表的名称
@@ -121,6 +122,7 @@ def rdxls(
 def read_all_sheets(file_path, sheet_names=None, ignore_diff_columns=False):
   """
   读取并合并所有sheet表
+
   Args:
     file_path: Excel文件路径
     sheet_names: 要读取并合并的sheet列表，默认读取全部的sheet
@@ -147,22 +149,25 @@ def read_csv(file_path: str,
              encoding: str = None,
              dtype=None,
              columns: (list, str) = None,
-             nrows: int = None):
-  max_grid()
+             nrows: int = None,
+             **kwargs):
+  """读取csv文件，基于 `pd.read_csv`，加入编码尝试"""
+  _max_grid()
   encodings = [encoding] if encoding else ['utf-8', 'gbk', 'utf-8-sig']
   for encode in encodings:
     try:
       return pd.read_csv(
           file_path, engine='python', dtype=dtype, usecols=columns,
-          nrows=nrows, encoding=encode)
+          nrows=nrows, encoding=encode, **kwargs)
     except UnicodeDecodeError:
       pass
-  raise Exception(f'使用encoding{encodings}无法读取文件，请指定')
+  raise Exception(f'使用encoding{encodings}均无法读取文件，请指定')
 
 
 def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:
   """
   逐行读取json格式的文件
+
   Args:
     file_path: 文件名
     encoding: 文件编码，默认为utf-8
@@ -179,6 +184,7 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
                columns: (list, str) = None, info=False) -> pd.DataFrame:
   """
   从文件夹中读取所有文件并拼接成一个DataFrame
+
   Args:
     dir_path: 文件夹路径
     exts: 要读取的文件扩展名
@@ -202,20 +208,14 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
   return df
 
 
-def kml_df_create_level(gdf_dict) -> dict:
+def kml_df_create_level(gdf_dict: dict) -> dict:
   """
-  读取 dict {level: gpd.GeoDataFrame} 字典, 并根据[name]列包含关系提取
-  分辨文件夹层级
+  读取 dict {level: gpd.GeoDataFrame} 字典, 并根据[name]列包含关系提取分辨文件夹层级
+
   Args:
     gdf_dict: {dict} {level: gpd.GeoDataFrame} key为文件夹名称, value为对应数据
-  Returns: dict: 文件夹层级字典
-      example:
-        {'板块名称': 0,
-        'T顶豪': 1,
-        'TOP1城区顶级': 2,
-        'O远郊': 1,
-        'O1远郊品质': 2,
-        'O2远郊安居': 2}
+  Returns:
+    文件夹层级字典，如:{'板块名称': 0, 'T顶豪': 1, 'O1远郊品质': 2}
   """
   level_dict = {}
   for i in gdf_dict:
@@ -228,12 +228,13 @@ def kml_df_create_level(gdf_dict) -> dict:
   return level_dict
 
 
-def get_kml_df_with_level(gdf_dict) -> gpd.GeoDataFrame:
+def get_kml_df_with_level(gdf_dict: dict) -> gpd.GeoDataFrame:
   """
   从中gdf_dict读取数据以及文件夹名称,并构造文件夹层级,按照指定层级合并所
   有数据,并打上层级标签
+
   Args:
-    gdf_dict{dict}:{level: gpd.GeoDataFrame} key为文件夹名称, value为对应数据
+    gdf_dict: GeoDataFrame组成的字典，key为文件夹名称, value为对应数据：{level: gpd.GeoDataFrame}
   """
   level_dict = kml_df_create_level(gdf_dict)
   level_dict_new = {}
@@ -255,6 +256,7 @@ def read_kml(file_path, keep_level=True) -> gpd.GeoDataFrame:
   """
   读取kml类文件,将其转换成DataFrame, 根据separate_folders选择是否拆分,
   输出仅保留[name, geometry]字段,暂时只支持polygon和multipolygon数据
+
   Args:
     file_path: kml or ovkml文件路径
     keep_level: 是否保留文件夹层级标签

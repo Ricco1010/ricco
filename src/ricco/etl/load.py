@@ -13,6 +13,7 @@ from .transformer import df_iter
 def to_csv_by_line(data: list, filename: str):
   """
   逐行写入csv文件
+
   Args:
     data: 要写入的数据列表
     filename: 文件名
@@ -25,6 +26,7 @@ def to_csv_by_line(data: list, filename: str):
 def to_sheets(data: dict, filename: str, index=False):
   """
   将多个dataframe保存到不同的sheet中
+
   Args:
     data: 要保存的数据集，格式为：{sheet_name: DataFrame}
     filename: 要保存的文件名
@@ -41,7 +43,16 @@ def to_file(df: pd.DataFrame, filepath,
             index=False,
             log=True,
             encoding=None):
-  """将df保存为文件"""
+  """
+  根据文件扩展名，将Dataframe保存为文件
+
+  Args:
+    df: 要保存的Dataframe
+    filepath: 文件路径，包含扩展名
+    index: 是否保存索引，默认不保存
+    log: 是否打印保存信息
+    encoding: 保存文件的编码
+  """
   ensure_dirpath_exist(filepath)
   if log:
     print(f'Saving: {filepath}, Rows：{df.shape[0]}')
@@ -67,7 +78,8 @@ def to_parts_file(df, dirpath,
                   to_ext='.csv',
                   **kwargs):
   """
-  将df保存为多个文件
+  将Dataframe保存为多个文件
+
   Args:
     df: 要拆分保存的DataFrame
     dirpath: 文件保存的目录

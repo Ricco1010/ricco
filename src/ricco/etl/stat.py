@@ -33,7 +33,7 @@ skew_skurt = '''偏度（Skewness）
 '''
 
 
-def describe_series(df: pd.DataFrame, col):
+def describe_series(df: pd.DataFrame, col: str):
   """数值型列的描述性统计"""
   length = df.shape[0]
   df_desc = pd.DataFrame(df[col].describe().reset_index())
@@ -61,7 +61,8 @@ def describe_series(df: pd.DataFrame, col):
   return df_desc
 
 
-def describe_object(df, col):
+def describe_object(df: pd.DataFrame, col: str):
+  """对文本列或枚举列进行描述统计"""
   desc = pd.DataFrame(df[col].value_counts().reset_index())
   if desc.shape[0] > 20:
     name = f'{col}_Top15'
@@ -74,7 +75,8 @@ def describe_object(df, col):
   return desc
 
 
-def describe_date(df: pd.DataFrame, col):
+def describe_date(df: pd.DataFrame, col: str):
+  """对日期列进行描述统计"""
   df = df[df[col].notna()].reset_index(drop=True)
   year_num = df[col].unique().shape[0]
   if year_num >= 3:
@@ -93,6 +95,7 @@ def describe_date(df: pd.DataFrame, col):
 
 
 def describe_auto(df: pd.DataFrame, col: str):
+  """自动识别列的类型进行描述性统计"""
   _num = df[col].unique().shape[0]
   if df[col].dtype in (float, int) and _num > 10:
     return describe_series(df, col)
@@ -106,7 +109,8 @@ def describe_auto(df: pd.DataFrame, col: str):
   return describe_object(df, col)
 
 
-def suspect_series_type(df, col):
+def suspect_series_type(df: pd.DataFrame, col: str):
+  """推断混合类型列的类型"""
   _r = 0.95
   length = df[df[col].notna()].shape[0]
   digit_num = df[df[col].apply(is_digit)].shape[0]

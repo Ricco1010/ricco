@@ -12,6 +12,8 @@ dist/
 
 # sphinx
 doc/_build/
+doc/source/_build/
+doc/build/
 
 cov_html/
 .coverage

@@ -19,6 +19,12 @@ def ensure_list(val):
 
 
 def ensure_ext(ext: str):
+  """
+  规范文件扩展名，保持扩展名为点(.)开头
+
+  Examples:
+    >>> ensure_ext('csv')  # '.csv'
+  """
   if isinstance(ext, str) and ext != '' and not ext.startswith('.'):
     return '.' + ext
   return ext
@@ -26,10 +32,12 @@ def ensure_ext(ext: str):
 
 def is_empty(x) -> bool:
   """
-  判断是否为空值，以下值认为是空白
-    - 空白列表、字典, 如：[], {}，
-    - 空白Dataframe、series, 如：pd.DataFrame()
-    - 空白shapely格式的geometry，如：Point(np.nan, np.nan)
+  判断变量是否为空值
+
+  以下值认为是空白：
+    - 空白列表、字典, 如：`[]`, `{}`
+    - 空白Dataframe、Series, 如：`pd.DataFrame()`
+    - 空白shapely格式的geometry，如：`Point(np.nan, np.nan)`
   """
   if isinstance(x, (list, dict, tuple)):
     return False if x else True
@@ -41,7 +49,7 @@ def is_empty(x) -> bool:
 
 
 def not_empty(x) -> bool:
-  """判断是否非空"""
+  """判断是否非空，对`is_empty`取反"""
   return not is_empty(x)
 
 
@@ -61,7 +69,15 @@ def second_to_dhms(second):
 
 
 def second_to_desc(second):
-  """将秒转为时间描述"""
+  """
+  将秒转为时间描述
+
+  Examples:
+    >>> second_to_desc(123)  # '2m 3s'
+    >>> second_to_desc(1234)  # '20m 40s'
+    >>> second_to_desc(123456)  # '1d 10h 17m 36s'
+
+  """
   d, h, m, second = second_to_dhms(second)
   if d + h + m == 0:
     return f'{second:.2f}s'
