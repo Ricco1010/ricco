@@ -6,6 +6,10 @@ pip install ricco -U # 或
 pip install ricco --upgrade
 ```
 
+# 文档
+
+[Document](https://ricco1010.github.io/ricco/)
+
 # 便捷方法介绍
 
 ## 数据读写
