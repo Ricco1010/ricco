@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geocoding &mdash; ricco 1.3.2 文档</title>
+  <title>Geocoding &mdash; ricco 1.3.4 文档</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -57,8 +57,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_address"><code class="docutils literal notranslate"><span class="pre">geocode_best_address()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_poi"><code class="docutils literal notranslate"><span class="pre">geocode_best_poi()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_df"><code class="docutils literal notranslate"><span class="pre">geocode_df()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_v2"><code class="docutils literal notranslate"><span class="pre">geocode_v2()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_with_memory_cache"><code class="docutils literal notranslate"><span class="pre">geocode_with_memory_cache()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a></li>
@@ -102,12 +100,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode" title="ricco.geocode.geocode.geocode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode</span></code></a>(*, address, city, source[, srs, ...])</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">param address</dt>
-<dd class="field-odd"><p>地址或项目名称关键词</p>
-</dd>
-</dl>
-</p></td>
+<td><p>对单个地址进行地理编码的方法汇总，返回经纬度坐标，可通过参数选择geocoding方法</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best" title="ricco.geocode.geocode.geocode_best"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best</span></code></a>(address, city, address_type[, ...])</p></td>
 <td><p>获取最优的geocoding结果</p></td>
@@ -119,20 +112,15 @@
 <td><p>获取最优的地点检索结果</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_df" title="ricco.geocode.geocode.geocode_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_df</span></code></a>(df, by, city, address_type[, ...])</p></td>
-<td><p>对dataframe进行geocoding</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_v2" title="ricco.geocode.geocode.geocode_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_v2</span></code></a>(df, by, city, address_type[, ...])</p></td>
-<td><p>对dataframe进行geocoding，添加内存缓存机制，支持仅对经纬度为空的数据进行geocoding</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_with_memory_cache" title="ricco.geocode.geocode.geocode_with_memory_cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_with_memory_cache</span></code></a>(address, city, ...)</p></td>
-<td><p>geocoding（使用内存加速）</p></td>
+<td><p>基于dataframe进行geocoding</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode">
 <span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode" title="永久链接至目标"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>对单个地址进行地理编码的方法汇总，返回经纬度坐标，可通过参数选择geocoding方法</p>
+<dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>address</strong> – 地址或项目名称关键词</p></li>
@@ -192,54 +180,33 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_df">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_detail:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_df" title="永久链接至目标"></a></dt>
-<dd><p>对dataframe进行geocoding</p>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_detail:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_existing:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_df" title="永久链接至目标"></a></dt>
+<dd><p>基于dataframe进行geocoding</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – </p></li>
-<li><p><strong>by</strong> – 项目名称所在的列</p></li>
-<li><p><strong>city</strong> – 城市，list表示城市列如[‘城市’]， str表示全部使用该城市如’上海’</p></li>
+<li><p><strong>df</strong> – 数据集</p></li>
+<li><p><strong>by</strong> – 地址或名称列</p></li>
+<li><p><strong>city</strong> – 城市，如为list表示城市列，如[‘城市’]；如为str表示全部使用该城市,如 “上海”</p></li>
 <li><p><strong>address_type</strong> – ‘poi’ 或 ‘address’，不同的地理类型对应不同的接口，精确度不同</p></li>
 <li><p><strong>sig</strong> – 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效</p></li>
 <li><p><strong>address_geocode</strong> – poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效</p></li>
 <li><p><strong>with_detail</strong> – 是否返回详情信息，包括返回值、得分、接口来源等</p></li>
 <li><p><strong>srs</strong> – 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
+<li><p><strong>c_lng</strong> – 经度列名，默认为 ‘lng’</p></li>
+<li><p><strong>c_lat</strong> – 纬度列名，默认为 ‘lat’</p></li>
+<li><p><strong>ignore_existing</strong> – 是否忽略已经存在经纬的行，默认为 TRUE，即保持原有的经纬度不变</p></li>
 <li><p><strong>key_baidu</strong> – 百度接口的key，公共key失效后可自行传入</p></li>
 <li><p><strong>key_amap</strong> – 高德接口的key，公共key失效后可自行传入</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_v2">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_detail:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_existing:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_cache:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_v2" title="永久链接至目标"></a></dt>
-<dd><p>对dataframe进行geocoding，添加内存缓存机制，支持仅对经纬度为空的数据进行geocoding</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – </p></li>
-<li><p><strong>by</strong> – 项目名称所在的列</p></li>
-<li><p><strong>city</strong> – 城市，list表示城市列如[‘城市’]， str表示全部使用该城市如’上海’</p></li>
-<li><p><strong>address_type</strong> – ‘poi’ 或 ‘address’，不同的地理类型对应不同的接口，精确度不同</p></li>
-<li><p><strong>sig</strong> – 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效</p></li>
-<li><p><strong>address_geocode</strong> – poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效</p></li>
-<li><p><strong>with_detail</strong> – 是否返回详情信息，包括返回值、得分、接口来源等</p></li>
-<li><p><strong>srs</strong> – 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
-<li><p><strong>ignore_existing</strong> – 是否忽略已有的经纬度，默认True</p></li>
-<li><p><strong>key_baidu</strong> – 百度接口的key，公共key失效后可自行传入</p></li>
-<li><p><strong>key_amap</strong> – 高德接口的key，公共key失效后可自行传入</p></li>
-<li><p><strong>memory_cache</strong> – 是否使用内存缓存，默认True</p></li>
+<div class="admonition seealso">
+<p class="admonition-title">参见</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best" title="ricco.geocode.geocode.geocode_best"><code class="xref py py-func docutils literal notranslate"><span class="pre">ricco.geocode.geocode.geocode_best()</span></code></a></p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_with_memory_cache">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_with_memory_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_existing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_with_memory_cache" title="永久链接至目标"></a></dt>
-<dd><p>geocoding（使用内存加速）</p>
+</div>
 </dd></dl>
 
 </section>

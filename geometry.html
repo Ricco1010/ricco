@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>地理处理 &mdash; ricco 1.3.2 文档</title>
+  <title>地理处理 &mdash; ricco 1.3.4 文档</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -83,6 +83,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.is_wkt"><code class="docutils literal notranslate"><span class="pre">is_wkt()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.lng_from_city"><code class="docutils literal notranslate"><span class="pre">lng_from_city()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.multiline2multipolygon"><code class="docutils literal notranslate"><span class="pre">multiline2multipolygon()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.text2lnglats"><code class="docutils literal notranslate"><span class="pre">text2lnglats()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.text2shapely"><code class="docutils literal notranslate"><span class="pre">text2shapely()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.wkb_dumps"><code class="docutils literal notranslate"><span class="pre">wkb_dumps()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.wkb_loads"><code class="docutils literal notranslate"><span class="pre">wkb_loads()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.wkt_dumps"><code class="docutils literal notranslate"><span class="pre">wkt_dumps()</span></code></a></li>
@@ -244,6 +246,12 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.multiline2multipolygon" title="ricco.geometry.util.multiline2multipolygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multiline2multipolygon</span></code></a>(multiline_shapely[, ...])</p></td>
 <td><p>multiline转为multipolygon，直接首尾相连</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.text2lnglats" title="ricco.geometry.util.text2lnglats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text2lnglats</span></code></a>(text, point_sep, lnglat_sep)</p></td>
+<td><p>将一段坐标文本信息整理成经纬度列表</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.text2shapely" title="ricco.geometry.util.text2shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text2shapely</span></code></a>(text, geometry_type[, ...])</p></td>
+<td><p>文本转为shapely</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.wkb_dumps" title="ricco.geometry.util.wkb_dumps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wkb_dumps</span></code></a>(x[, hex, srid])</p></td>
 <td><p>将Shapely几何对象转换为文本形式的WKB</p></td>
@@ -456,6 +464,44 @@
 <dt class="sig sig-object py" id="ricco.geometry.util.multiline2multipolygon">
 <span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">multiline2multipolygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiline_shapely</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MultiLineString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.multiline2multipolygon" title="永久链接至目标"></a></dt>
 <dd><p>multiline转为multipolygon，直接首尾相连</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.geometry.util.text2lnglats">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">text2lnglats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lnglat_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.text2lnglats" title="永久链接至目标"></a></dt>
+<dd><p>将一段坐标文本信息整理成经纬度列表</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – 要转换为文本</p></li>
+<li><p><strong>point_sep</strong> – 点位之间的分隔符</p></li>
+<li><p><strong>lnglat_sep</strong> – 经纬度之间的分隔符</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.geometry.util.text2shapely">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">text2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">';'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lnglat_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_multi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.text2shapely" title="永久链接至目标"></a></dt>
+<dd><p>文本转为shapely</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – 坐标组成的文本</p></li>
+<li><p><strong>geometry_type</strong> – 要输出的地理类型，可选值为 ‘polygon’、’line’</p></li>
+<li><p><strong>point_sep</strong> – 点位键的分隔符，默认为分号 ‘;’</p></li>
+<li><p><strong>lnglat_sep</strong> – 经纬度的分隔符，默认为逗号 ‘,’</p></li>
+<li><p><strong>ensure_multi</strong> – 是否转为multi-geometry，默认为True</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">示例</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ss</span> <span class="o">=</span> <span class="s1">&#39;121.4737,31.2304; 121.4740,31.2304; 121.4740,31.2307&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text2shapely</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">geometry_type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">point_sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">lnglat_sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># MULTILINESTRING ((121.4737 31.2304, 121.474 31.2304, 121.474 31.2307))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
