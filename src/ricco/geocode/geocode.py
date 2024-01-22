@@ -1,10 +1,11 @@
-import logging
 import uuid
 import warnings
+from functools import lru_cache
 
 import pandas as pd
 from tqdm import tqdm
 
+from ..base import not_empty
 from ..etl.transformer import create_columns
 from ..util.decorator import check_null
 from .amap import get_address_amap
@@ -14,6 +15,7 @@ from .baidu import get_place_baidu
 from .util import DEFAULT_RES
 
 
+@lru_cache(maxsize=1024)
 def geocode(*,
             address,
             city,
@@ -22,6 +24,8 @@ def geocode(*,
             key_baidu=None,
             key_amap=None):
   """
+  对单个地址进行地理编码的方法汇总，返回经纬度坐标，可通过参数选择geocoding方法
+
   Args:
     address: 地址或项目名称关键词
     city: 城市
@@ -93,6 +97,7 @@ def geocode_best_address(address, city, srs='wgs84', key_baidu=None,
   return DEFAULT_RES
 
 
+@lru_cache(maxsize=1024)
 def geocode_best(
     address,
     city,
@@ -122,39 +127,6 @@ def geocode_best(
   return geocode_best_address(address, city, srs=srs, **kwargs)
 
 
-@check_null(default_rv=DEFAULT_RES)
-def geocode_with_memory_cache(
-    address, city, address_type: str,
-    sig: int = 80, srs: str = 'wgs84',
-    address_geocode: bool = False,
-    key_baidu=None, key_amap=None,
-    ignore_existing=True, lng=None, lat=None, memory_cache: bool = True):
-  """geocoding（使用内存加速）"""
-  if memory_cache:
-    global __GLOBAL_CACHE
-    if '__GLOBAL_CACHE' not in globals():
-      __GLOBAL_CACHE = {}
-    if city in __GLOBAL_CACHE:
-      if address in __GLOBAL_CACHE[city]:
-        return __GLOBAL_CACHE[city][address]
-
-  if ignore_existing and all([lng, lat]):
-    rv = DEFAULT_RES.copy()
-    rv['lng'] = lng
-    rv['lat'] = lat
-    return rv
-  res = geocode_best(
-      address=address, city=city, sig=sig,
-      address_type=address_type, address_geocode=address_geocode,
-      srs=srs, key_baidu=key_baidu, key_amap=key_amap
-  )
-  if memory_cache:
-    if city not in __GLOBAL_CACHE:
-      __GLOBAL_CACHE[city] = {}
-    __GLOBAL_CACHE[city][address] = res
-  return res
-
-
 def geocode_df(df: pd.DataFrame,
                by: str,
                city: (str, list),
@@ -163,110 +135,65 @@ def geocode_df(df: pd.DataFrame,
                address_geocode: bool = False,
                with_detail: bool = True,
                srs: str = 'wgs84',
-               **kwargs):
-  """
-  对dataframe进行geocoding
-
-  Args:
-    df:
-    by: 项目名称所在的列
-    city: 城市，list表示城市列如['城市']， str表示全部使用该城市如'上海'
-    address_type: 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同
-    sig: 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效
-    address_geocode: poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效
-    with_detail: 是否返回详情信息，包括返回值、得分、接口来源等
-    srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-    key_baidu: 百度接口的key，公共key失效后可自行传入
-    key_amap: 高德接口的key，公共key失效后可自行传入
-  """
-  assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
-  assert isinstance(city, (str, list))
-  assert 'lng' not in df, '原数据中不能有lng列'
-  assert 'lat' not in df, '原数据中不能有lat列'
-
-  __c_city = uuid.uuid1()
-  on = [__c_city, by]
-
-  df[__c_city] = city if isinstance(city, str) else df[city]
-
-  _df = df[on].drop_duplicates().reset_index(drop=True)
-  base_cols = ['lng', 'lat']
-  if with_detail:
-    base_cols.extend(['rv', 'score', 'source'])
-  _df = create_columns(_df, base_cols)
-  for i in tqdm(_df.index, desc='Geocoding'):
-    _address = None
-    try:
-      _address, _city = _df[by][i], _df[__c_city][i]
-      rv = geocode_best(
-          address=_address, city=_city, sig=sig,
-          address_type=address_type, address_geocode=address_geocode,
-          srs=srs,
-          **kwargs
-      )
-      for c in base_cols:
-        _df.loc[(_df[__c_city] == _city) & (_df[by] == _address), c] = rv[c]
-    except Exception as e:
-      logging.warning(f'{e},{_address}')
-  df = df.merge(_df, on=on, how='left')
-  del df[__c_city]
-  return df
-
-
-def geocode_v2(df: pd.DataFrame,
-               by: str,
-               city: (str, list),
-               address_type: str,
-               sig: int = 80,
-               address_geocode: bool = False,
-               with_detail: bool = True,
-               srs: str = 'wgs84',
+               c_lng='lng',
+               c_lat='lat',
                ignore_existing: bool = True,
-               memory_cache: bool = True,
                **kwargs):
   """
-  对dataframe进行geocoding，添加内存缓存机制，支持仅对经纬度为空的数据进行geocoding
+  基于dataframe进行geocoding
 
   Args:
-    df:
-    by: 项目名称所在的列
-    city: 城市，list表示城市列如['城市']， str表示全部使用该城市如'上海'
+    df: 数据集
+    by: 地址或名称列
+    city: 城市，如为list表示城市列，如['城市']；如为str表示全部使用该城市,如 "上海"
     address_type: 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同
     sig: 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效
     address_geocode: poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效
     with_detail: 是否返回详情信息，包括返回值、得分、接口来源等
     srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-    ignore_existing: 是否忽略已有的经纬度，默认True
+    c_lng: 经度列名，默认为 'lng'
+    c_lat: 纬度列名，默认为 'lat'
+    ignore_existing: 是否忽略已经存在经纬的行，默认为 TRUE，即保持原有的经纬度不变
     key_baidu: 百度接口的key，公共key失效后可自行传入
     key_amap: 高德接口的key，公共key失效后可自行传入
-    memory_cache: 是否使用内存缓存，默认True
+
+  See Also:
+    * :func:`ricco.geocode.geocode.geocode_best`
   """
   assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
-  assert isinstance(city, (str, list))
-  assert df.index.is_unique, 'DataFrame索引列必须唯一'
+  assert isinstance(city, (str, list)), 'city参数类型应为 str 或 list'
+  assert df.index.is_unique, 'df的index必须唯一'
 
-  __c_city = uuid.uuid1()
-  df[__c_city] = city if isinstance(city, str) else df[city]
-
-  base_cols = ['lng', 'lat']
+  __c_city = f'city-{uuid.uuid1()}'
+  # 最后要输出的列
+  base_cols = [c_lng, c_lat]
   if with_detail:
     base_cols.extend(['rv', 'score', 'source'])
-  df = create_columns(df, base_cols)
+  # 补全列，方便后续进行update
+  df = create_columns(df.copy(), base_cols)
+  # 新增临时城市列
+  df[__c_city] = city if isinstance(city, str) else df[city[0]]
 
-  for i in tqdm(df.index, desc='Geocoding'):
-    _address, _city = df[by][i], df[__c_city][i]
-    _lng, _lat = df['lng'][i], df['lat'][i]
-    try:
-      rv = geocode_with_memory_cache(
-          address=_address, city=_city, sig=sig,
-          address_type=address_type, address_geocode=address_geocode,
-          srs=srs,
-          ignore_existing=ignore_existing, lng=_lng, lat=_lat,
-          memory_cache=memory_cache, **kwargs
-      )
-      for c in base_cols:
-        df.loc[(df[__c_city] == _city) & (df[by] == _address), c] = rv[c]
-    except Exception as e:
-      logging.warning(f'{e},{_address}')
+  indexes = []
+  datas = []
+  for _data in tqdm(
+      df[[__c_city, by, c_lng, c_lat]].itertuples(),
+      desc='Geocoding', total=df.shape[0]
+  ):
+    if ignore_existing and not_empty(_data[3]) and not_empty(_data[4]):
+      # ignore_existing为TRUE时，已经存在经纬度的行不再进行geocoding
+      continue
+    rv = geocode_best(
+        address=_data[2], city=_data[1], sig=sig,
+        address_type=address_type, address_geocode=address_geocode,
+        srs=srs, **kwargs
+    )
+    rv[c_lng] = rv['lng']
+    rv[c_lat] = rv['lat']
+    datas.append(rv)
+    indexes.append(_data[0])
+  df_temp = pd.DataFrame(datas, index=indexes)
+  df.update(df_temp[base_cols])
+  # 删除临时城市列
   del df[__c_city]
   return df

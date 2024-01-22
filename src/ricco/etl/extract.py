@@ -59,10 +59,12 @@ def rdf(
     df = pd.read_feather(file_path, columns=columns)
   elif ex == '.pickle':
     df = pd.read_pickle(file_path)
+  elif ex == '.json':
+    df = pd.read_json(file_path, encoding=encoding, nrows=nrows, dtype=dtype)
   elif ex in ('.kml', '.ovkml'):
     df = read_kml(file_path)
-  elif ex == '.json':
-    df = read_line_json(file_path, encoding=encoding)
+  elif ex == '.sav':
+    df = read_sav(file_path, encoding=encoding, columns=columns, nrows=nrows)
   else:
     raise UnknownFileTypeError('未知的文件扩展名')
   df = df[columns] if columns else df
@@ -315,3 +317,14 @@ def read_shapefile(file_path, **kwargs):
   finally:
     logging.warning(f'请检查输出结果并指定正确的encoding，当前为"{encoding}"')
   return df
+
+
+def read_sav(file_path, columns=None, nrows=None, encoding=None):
+  """读取SPSS的.sav文件"""
+  import pyreadstat
+  df, meta = pyreadstat.read_sav(
+      file_path,
+      usecols=columns,
+      row_limit=nrows if nrows else 0,
+      encoding=encoding)
+  return pd.DataFrame(df, columns=meta.column_names)

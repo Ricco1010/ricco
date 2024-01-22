@@ -10,6 +10,8 @@ from shapely.ops import unary_union
 from shapely.validation import make_valid
 from tqdm import tqdm
 
+from .df import auto2shapely
+
 warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
 
 _desc = '''
@@ -33,6 +35,7 @@ def topology_check(gdf: gpd.GeoDataFrame, geo_col='geometry'):
   Returns:
     geometry数据是否规范
   """
+  gdf = auto2shapely(gdf, geometry=geo_col)
   geo_data = gdf[geo_col]
   if len(geo_data[geo_data.isnull()]):
     raise ValueError('存在空数据')
@@ -67,6 +70,7 @@ def fix_polygon_topology(gdf: gpd.GeoDataFrame,
   Returns:
     修复完拓扑问题的GeoDataFrame
   """
+  gdf = auto2shapely(gdf, geometry=geo_col)
   if topology_check(gdf, geo_col):
     return gdf
   gdf[geo_col] = series_geometry_fix_topology(gdf[geo_col],
