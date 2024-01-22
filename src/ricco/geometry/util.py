@@ -2,6 +2,7 @@ import re
 import sys
 import warnings
 from ast import literal_eval
+from itertools import groupby
 from typing import List
 
 import geojson
@@ -11,6 +12,7 @@ from shapely import wkb
 from shapely import wkt
 from shapely.errors import GeometryTypeError
 from shapely.errors import WKBReadingError
+from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
@@ -339,3 +341,64 @@ def get_geoms(geo: BaseGeometry) -> List:
   else:
     list_geo.append(geo)
   return list_geo
+
+
+def text2lnglats(text: str, point_sep: str, lnglat_sep: str):
+  """
+  将一段坐标文本信息整理成经纬度列表
+
+  Args:
+    text: 要转换为文本
+    point_sep: 点位之间的分隔符
+    lnglat_sep: 经纬度之间的分隔符
+  """
+  if point_sep != ' ' and lnglat_sep != ' ':
+    text = text.replace(' ', '')
+  assert point_sep in text, f'未找到点位分隔符“{point_sep}”'
+  assert lnglat_sep in text, f'未找到经纬度分隔符“{lnglat_sep}”'
+
+  text = text.strip().strip(',').strip(point_sep)
+  points = text.split(point_sep)
+  res = []
+  for p in points:
+    lnglat = p.split(lnglat_sep)
+    lnglat = [float(i) for i in lnglat if i != '']
+    res.append(lnglat)
+  return [i for i, _ in groupby(res)]
+
+
+def text2shapely(
+    text: str,
+    geometry_type: str,
+    point_sep: str = ';',
+    lnglat_sep: str = ',',
+    ensure_multi: bool = True):
+  """
+  文本转为shapely
+
+  Args:
+    text: 坐标组成的文本
+    geometry_type: 要输出的地理类型，可选值为 'polygon'、'line'
+    point_sep: 点位键的分隔符，默认为分号 ';'
+    lnglat_sep: 经纬度的分隔符，默认为逗号 ','
+    ensure_multi: 是否转为multi-geometry，默认为True
+
+  Examples:
+    >>> ss = '121.4737,31.2304; 121.4740,31.2304; 121.4740,31.2307'
+    >>> text2shapely(ss, geometry_type='line', point_sep=';', lnglat_sep=',')
+    >>> # MULTILINESTRING ((121.4737 31.2304, 121.474 31.2304, 121.474 31.2307))
+  """
+
+  geometry_type = geometry_type.lower()
+  assert geometry_type in ('linestring', 'polygon', 'line')
+
+  points = text2lnglats(text, point_sep=point_sep, lnglat_sep=lnglat_sep)
+
+  if geometry_type == 'polygon':
+    res = Polygon(points)
+  else:
+    res = LineString(points)
+
+  if ensure_multi:
+    return ensure_multi_geom(res)
+  return res

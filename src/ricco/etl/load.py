@@ -64,10 +64,15 @@ def to_file(df: pd.DataFrame, filepath,
     df.to_parquet(filepath, index=index)
   elif ex in ('.xlsx', '.xls'):
     df.to_excel(filepath, index=index)
+  if ex == 'json':
+    df.to_json(filepath, orient='records')
   elif ex in ('.shp', '.geojson'):
     df = auto2shapely(df)
     df.to_file(filepath, encoding=encoding,
                driver='GeoJSON' if ex == '.geojson' else None)
+  if ex in ('.sav', '.zsav'):
+    import pyreadstat
+    pyreadstat.write_sav(df, filepath)
   else:
     raise UnknownFileTypeError(f'不支持的文件扩展名：{ex}')
 

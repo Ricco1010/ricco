@@ -1,3 +1,4 @@
+import warnings
 from datetime import datetime
 
 import numpy as np
@@ -14,6 +15,7 @@ from ..util.decorator import run_once
 from ..util.decorator import timer
 from ..util.util import and_
 from ..util.util import fuzz_match
+from ..util.util import or_
 from ..util.util import to_float
 from ..util.util import to_str_list
 from .graph import get_graph_dict
@@ -194,20 +196,22 @@ def convert_to_float(df: pd.DataFrame,
   return df
 
 
-def filter_by_df(df: pd.DataFrame, sizer: pd.DataFrame) -> pd.DataFrame:
+def filter_by_df(df: pd.DataFrame, df_sizer: pd.DataFrame) -> pd.DataFrame:
   """根据一个dataframe筛选另一个dataframe"""
-  sizer = sizer.drop_duplicates()
-  cond = False
-  for i in sizer.index:
-    _cond = True
-    for c in sizer:
-      value = sizer[c][i]
-      if pd.isna(value):
-        _cond = _cond & df[c].isna()
-      else:
-        _cond = _cond & (df[c] == value)
-    cond = cond | _cond
-  return df[cond]
+
+  def _is_eq(series: pd.Series, value):
+    """整合空和非空的判断条件"""
+    return series.isna() if pd.isna(value) else (series == value)
+
+  df_sizer = df_sizer.drop_duplicates()
+  for c in df_sizer:
+    if df_sizer[c].dtypes != df[c].dtypes:
+      warnings.warn(f'两个数据集"{c}"列类型不一致')
+  return df[or_(*[
+    and_(
+        *[_is_eq(df[c], df_sizer[c][i]) for c in df_sizer]
+    ) for i in df_sizer.index
+  ])]
 
 
 @timer()
