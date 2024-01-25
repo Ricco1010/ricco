@@ -11,6 +11,7 @@ from .util import is_unique_series
 
 
 def skip_column(df: pd.DataFrame, col: str, skip_if_not_exists: bool = True):
+  df = df.copy().reset_index(drop=True)
   if col not in df:
     if skip_if_not_exists:
       warnings.warn(f'"{col}"列不存在，已跳过')
@@ -22,6 +23,7 @@ def skip_column(df: pd.DataFrame, col: str, skip_if_not_exists: bool = True):
 
 def assert_columns_exists(df: pd.DataFrame, columns: list):
   """检查列是否存在"""
+  df = df.copy().reset_index(drop=True)
   columns = ensure_list(columns)
   cols = [c for c in columns if c not in df]
   if cols:
@@ -32,6 +34,7 @@ def assert_not_empty_str(df: pd.DataFrame,
                          col: str,
                          skip_if_not_exists: bool = True):
   """校验是否存在空白字符串"""
+  df = df.copy().reset_index(drop=True)
   if skip_column(df, col, skip_if_not_exists):
     return
   if (df[col] == '').any():
@@ -42,6 +45,7 @@ def assert_not_null(df: pd.DataFrame,
                     col: str,
                     skip_if_not_exists: bool = True):
   """检查是否非空（空白字符串认为是空值）"""
+  df = df.copy().reset_index(drop=True)
   if skip_column(df, col, skip_if_not_exists):
     return
   if not isinstance(col, str):
@@ -64,6 +68,7 @@ def assert_values_in(df: pd.DataFrame,
     enums: 指定的enum值，当传入dict时，包含在key和value中的值都通过
     skip_if_not_exists: 当列不存在时是否跳过
   """
+  df = df.copy().reset_index(drop=True)
   if skip_column(df, col, skip_if_not_exists):
     return
   if isinstance(enums, dict):
@@ -92,6 +97,7 @@ def assert_series_unique(df: pd.DataFrame,
     text: 输出的文案
     ignore_na: 是否忽略空值，默认False，为True时，有空值的行不参与校验
   """
+  df = df.copy().reset_index(drop=True)
   columns = ensure_list(columns)
   if not is_unique_series(df, columns, ignore_na=ignore_na):
     if ignore_na:
@@ -106,6 +112,7 @@ def assert_series_unique(df: pd.DataFrame,
 
 def assert_series_digit(df: pd.DataFrame, col: str):
   """检查一列是否可以转为数值型"""
+  df = df.copy().reset_index(drop=True)
   values = df[col].unique().tolist()
   rv = [i for i in values if not is_digit(i) and not_empty(i)]
   if rv:
@@ -114,6 +121,7 @@ def assert_series_digit(df: pd.DataFrame, col: str):
 
 def assert_series_not_like(df: pd.DataFrame, col: str, pattern):
   """检查并输出符合正则表达式pattern的值"""
+  df = df.copy().reset_index(drop=True)
   values = df[col].unique().tolist()
   rv = [i for i in values if re.match(pattern, str(i)) and not_empty(i)]
   if rv:

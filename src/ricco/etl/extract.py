@@ -1,6 +1,7 @@
 import csv
 import json
 import logging
+import os
 import sys
 
 import geopandas as gpd
@@ -9,10 +10,17 @@ from tqdm import tqdm
 
 from ..base import ensure_list
 from ..geometry.util import wkt_loads
-from ..util.exception import UnknownFileTypeError
 from ..util.os import dir_iter
 from ..util.os import extension
 from ..util.os import path_name
+from . import ALL_EXTS
+
+
+def _df_desc(df):
+  """数据集基本信息打印"""
+  print(f'shape: {df.shape}')
+  print(f'columns: {df.columns.tolist()}')
+  return df
 
 
 def rdf(
@@ -25,6 +33,7 @@ def rdf(
     dtype=None,
     columns: (list, str) = None,
     nrows: int = None,
+    recursive: bool = True,
 ) -> pd.DataFrame:
   """
   常用文件读取函数，支持
@@ -32,7 +41,7 @@ def rdf(
   .geojson/.shp/.json等
 
   Args:
-    file_path: 文件路径
+    file_path: 文件或文件夹路径
     sheet_name: 数据所在sheet的名称，仅对.xlsx/.xls生效
     sheet_contains: 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效
     encoding: 编码
@@ -40,39 +49,44 @@ def rdf(
     dtype: 指定读取列的类型
     columns: 指定读取的列名
     nrows: 指定读取的行数
+    recursive: 是否循环遍历更深层级的文件夹，默认为True，仅当路径为文件夹时生效
   """
+  if os.path.isdir(file_path):
+    # 此部分为递归，注意避免无限递归
+    return rdf_by_dir(file_path, columns=columns, info=info,
+                      recursive=recursive)
+
   if columns:
     columns = ensure_list(columns)
+
   ex = extension(file_path)
+  assert ex in ALL_EXTS, f'未知的文件扩展名：{ex}'
+
   if ex == '.csv':
     df = read_csv(
         file_path, dtype=dtype, columns=columns, nrows=nrows, encoding=encoding)
-  elif ex in ('.xls', '.xlsx'):
+  if ex in ('.xls', '.xlsx'):
     df = rdxls(
         file_path, sheet_name=sheet_name, sheet_contains=sheet_contains,
         dtype=dtype, columns=columns, nrows=nrows)
-  elif ex in ('.shp', '.dbf', '.shx', '.geojson'):
+  if ex in ('.shp', '.dbf', '.shx', '.geojson'):
     df = read_shapefile(file_path, encoding=encoding, nrows=nrows)
-  elif ex == '.parquet':
+  if ex in ('.pa', '.parquet'):
     df = pd.read_parquet(file_path, columns=columns)
-  elif ex == '.feather':
+  if ex == '.feather':
     df = pd.read_feather(file_path, columns=columns)
-  elif ex == '.pickle':
+  if ex == '.pickle':
     df = pd.read_pickle(file_path)
-  elif ex == '.json':
+  if ex == '.json':
     df = pd.read_json(file_path, encoding=encoding, nrows=nrows, dtype=dtype)
-  elif ex in ('.kml', '.ovkml'):
+  if ex in ('.kml', '.ovkml'):
     df = read_kml(file_path)
-  elif ex == '.sav':
+  if ex in ('.sav', '.zsav'):
     df = read_sav(file_path, encoding=encoding, columns=columns, nrows=nrows)
-  else:
-    raise UnknownFileTypeError('未知的文件扩展名')
-  df = df[columns] if columns else df
+
+  df = df[columns] if columns else df  # noqa
   df = df.head(nrows) if nrows else df
-  if info:
-    print(f'shape: {df.shape}')
-    print(f'columns: {df.columns.tolist()}')
-  return df
+  return _df_desc(df) if info else df
 
 
 def _max_grid():
@@ -202,12 +216,10 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
     path_list.append(p)
   dfs = []
   for filename in tqdm(path_list, desc=desc):
+    assert os.path.isfile(filename), f'{filename} is not a file'
     dfs.append(rdf(filename, columns=columns))
   df = pd.concat(dfs, ignore_index=ignore_index)
-  if info:
-    print(f'shape: {df.shape}')
-    print(f'columns: {df.columns.tolist()}')
-  return df
+  return _df_desc(df) if info else df
 
 
 def kml_df_create_level(gdf_dict: dict) -> dict:

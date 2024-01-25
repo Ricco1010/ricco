@@ -7,6 +7,7 @@ import uuid
 import warnings
 from ast import literal_eval
 from itertools import chain
+from itertools import groupby
 
 import numpy as np
 import pandas as pd
@@ -15,6 +16,7 @@ from ..base import ensure_list
 from ..base import is_empty
 from ..base import not_empty
 from .decorator import check_null
+from .decorator import check_str
 
 
 def to_json_string(string, errors='raise'):
@@ -34,11 +36,13 @@ def to_json_string(string, errors='raise'):
   return json.dumps(string, ensure_ascii=False)
 
 
+@check_str
 def relstrip(string, kwd):
   """通过正则表达式删除左侧字符串"""
   return re.sub(f'^{kwd}', '', string)
 
 
+@check_str
 def rerstrip(string, kwd):
   """通过正则表达式删除右侧字符串"""
   return re.sub(f'{kwd}$', '', string)
@@ -57,8 +61,7 @@ def get_shortest_element(elements: list):
 
 def and_(*conditions):
   """对多个条件执行and操作"""
-  if len(conditions) < 1:
-    raise Exception('最少一个条件')
+  assert len(conditions) >= 1, '最少一个条件'
   res = conditions[0]
   for c in conditions[1:]:
     res = res & c
@@ -73,8 +76,7 @@ def or_(*conditions):
       cond.extend(list(c))
     else:
       cond.append(c)
-  if len(cond) < 1:
-    raise Exception('最少一个条件')
+  assert len(cond) >= 1, '最少一个条件'
   res = cond[0]
   for c in cond[1:]:
     res = res | c
@@ -122,16 +124,18 @@ def is_valid_uuid(uuid_to_test, version=4):
   return str(uuid_obj) == uuid_to_test
 
 
+@check_null(default_rv=uuid.uuid4())
 def get_uuid(s):
   """针对格式错误的uuid和空白值生成新的uuid"""
-  if is_empty(s) or not is_valid_uuid(s):
-    return uuid.uuid4()
-  return s
+  if is_valid_uuid(s):
+    return s
+  return uuid.uuid4()
 
 
+@check_null(default_rv=np.nan)
 def per2float(string: str) -> float:
   """带有百分号的数值字符串转小数点形式的数值，没有百分号的返回原值"""
-  if '%' in string:
+  if string.endswith('%'):
     string = string.rstrip('%')
     return float(string) / 100
   return float(string)
@@ -245,7 +249,7 @@ def segment(x: (int, float),
       return f'{int(x / gap) * gap - gap}{sep}{int(x / gap) * gap}{unit}'
 
 
-def to_str_list(series: (list, pd.Series, tuple)):
+def to_str_list(series: (list, pd.Series, tuple)) -> list:
   """将列表中的元素保留为字符串、唯一、非空"""
   return list(set([str(i) for i in series if not_empty(i)]))
 
@@ -303,6 +307,13 @@ def sort_by_list(src_list, by_list, filter_=False) -> list:
     src_list: 要进行排序的列表
     by_list: 参照的列表
     filter_: 是否根据参照列表筛选
+
+  Examples:
+    >>> a = [1, 2, 3, 4, 5]
+    >>> b = [2, 5, 4, 1]
+    >>> sort_by_list(a, b)  # [2, 5, 4, 1, 3]
+    >>> sort_by_list(a, b, filter_=True)  # [2, 5, 4, 1]
+    >>> sort_by_list(b, a)  # [1, 2, 4, 5]
   """
   res = [i for i in by_list if i in src_list]
   if not filter_:
@@ -324,16 +335,28 @@ def union_str_v2(*strings, sep='') -> str:
   """
   连接字符串，空白字符串会被忽略
 
+  Args:
+    *strings: 要连接字符串，依次传入
+    sep: 连接符，默认为空白字符串
+
   Examples:
     >>> union_str_v2('a', 'b', sep='-')  # 'a-b'
     >>> union_str_v2('a', 'b', 'c')  # 'abc'
+
   """
   if strings := [i for i in strings if not_empty(i) and i != '']:
     return sep.join(strings)
 
 
 def union_list_v2(*lists) -> list:
-  """合并列表"""
+  """
+  合并列表
+
+  Examples:
+    >>> a = [1]
+    >>> b = [2, 3]
+    >>> union_list_v2(a, b)
+  """
   lists = [ensure_list(i) for i in lists]
   return list(chain(*lists))
 
@@ -465,3 +488,13 @@ def isinstance_in_list(value: list, types: (str, list)):
   """
   assert isinstance(value, (list, tuple))
   return all([isinstance(v, types) for v in value])
+
+
+def drop_repeat_element(x: (list, tuple)):
+  """
+  删除列表中连续重复的元素
+
+  Examples:
+    >>> drop_repeat_element([1, 2, 2, 3, 4, 4, 4])  # [1, 2, 3, 4]
+  """
+  return [key for key, _ in groupby(x)]
