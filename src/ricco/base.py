@@ -53,7 +53,7 @@ def not_empty(x) -> bool:
   return not is_empty(x)
 
 
-def second_to_dhms(second):
+def second_to_dhms(second) -> tuple:
   """将秒转为天、时、分、秒"""
   d = int(second // 86400)
   second = second % 86400
@@ -68,7 +68,7 @@ def second_to_dhms(second):
   return d, h, m, second
 
 
-def second_to_desc(second):
+def second_to_desc(second) -> str:
   """
   将秒转为时间描述
 
@@ -96,7 +96,7 @@ def warn_(msg, if_or_not=True, mode='warning'):
       logging.warning(msg)
 
 
-def agg_parser(agg: dict):
+def agg_parser(agg: dict) -> list:
   """将字典形式的agg聚合参数转换为[原字段名，计算函数，储存字段名]列表形式"""
   res = []
   for c, functions in agg.items():

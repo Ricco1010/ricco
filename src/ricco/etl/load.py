@@ -2,11 +2,14 @@ import csv
 import os
 
 import pandas as pd
+from shapely.geometry.base import BaseGeometry
 
 from ..geometry.df import auto2shapely
-from ..util.exception import UnknownFileTypeError
+from ..geometry.util import wkb_dumps
 from ..util.os import ensure_dirpath_exist
 from ..util.os import extension
+from ..util.util import first_notnull_value
+from . import ALL_EXTS
 from .transformer import df_iter
 
 
@@ -38,6 +41,16 @@ def to_sheets(data: dict, filename: str, index=False):
       _df.to_excel(writer, sheet_name, index=index)
 
 
+def to_parquet(df, filepath, index):
+  """保存parquet文件，默认将shapely对象转换为wkb格式"""
+  shapely_columns = [
+    c for c in df if isinstance(first_notnull_value(df[c]), BaseGeometry)
+  ]
+  for c in shapely_columns:
+    df[c] = df[c].apply(wkb_dumps)
+  df.to_parquet(filepath, index=index)
+
+
 def to_file(df: pd.DataFrame, filepath,
             *,
             index=False,
@@ -58,23 +71,27 @@ def to_file(df: pd.DataFrame, filepath,
     print(f'Saving: {filepath}, Rows：{df.shape[0]}')
   df = df.copy()
   ex = extension(filepath)
+  assert ex in ALL_EXTS, f'不支持的文件扩展名：{ex}'
+
   if ex == '.csv':
     df.to_csv(filepath, index=index, encoding=encoding)
-  elif ex == '.parquet':
-    df.to_parquet(filepath, index=index)
-  elif ex in ('.xlsx', '.xls'):
+  if ex in ('.pa', '.parquet'):
+    to_parquet(df, filepath, index=index)
+  if ex in ('.xlsx', '.xls'):
     df.to_excel(filepath, index=index)
   if ex == 'json':
     df.to_json(filepath, orient='records')
-  elif ex in ('.shp', '.geojson'):
+  if ex in ('.shp', '.geojson'):
     df = auto2shapely(df)
     df.to_file(filepath, encoding=encoding,
                driver='GeoJSON' if ex == '.geojson' else None)
   if ex in ('.sav', '.zsav'):
     import pyreadstat
     pyreadstat.write_sav(df, filepath)
-  else:
-    raise UnknownFileTypeError(f'不支持的文件扩展名：{ex}')
+  if ex == '.feather':
+    df.to_feather(filepath, index=index)
+  if ex == '.pickle':
+    df.to_pickle(filepath)
 
 
 def to_parts_file(df, dirpath,

@@ -88,7 +88,16 @@ def drop_repeat_string(string,
                        min_length=3,
                        max_length=None):
   """
-  删除连续重复的字符串，按照step从大到小删除重复字符，返回去重后最短的字符串"""
+  删除连续重复的字符串，按照step从大到小删除重复字符，返回去重后最短的字符串
+
+  Args:
+    string: 要处理的字符串
+    min_length: 识别的最短长度，默认为3
+    max_length: 识别的最长长度，默认不限制
+
+  Examples:
+    >>> drop_repeat_string('上海市上海市杨浦区')  # '上海市杨浦区'
+  """
   if len(string) < min_length * 2:
     return string
   _list = []
