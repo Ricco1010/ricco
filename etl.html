@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>数据读取、处理与保存 &mdash; ricco 1.3.4 文档</title>
+  <title>数据读取、处理与保存 &mdash; ricco 1.3.5 文档</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.etl.load">数据保存（Load）</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.load.to_csv_by_line"><code class="docutils literal notranslate"><span class="pre">to_csv_by_line()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.load.to_file"><code class="docutils literal notranslate"><span class="pre">to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.etl.load.to_parquet"><code class="docutils literal notranslate"><span class="pre">to_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.load.to_parts_file"><code class="docutils literal notranslate"><span class="pre">to_parts_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.load.to_sheets"><code class="docutils literal notranslate"><span class="pre">to_sheets()</span></code></a></li>
 </ul>
@@ -233,14 +234,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.rdf">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf" title="永久链接至目标"></a></dt>
 <dd><p>常用文件读取函数，支持
 .csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml/
 .geojson/.shp/.json等</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>file_path</strong> – 文件路径</p></li>
+<li><p><strong>file_path</strong> – 文件或文件夹路径</p></li>
 <li><p><strong>sheet_name</strong> – 数据所在sheet的名称，仅对.xlsx/.xls生效</p></li>
 <li><p><strong>sheet_contains</strong> – 筛选sheet名称中包含此字符串的sheet，仅对.xlsx/.xls生效</p></li>
 <li><p><strong>encoding</strong> – 编码</p></li>
@@ -248,6 +249,7 @@
 <li><p><strong>dtype</strong> – 指定读取列的类型</p></li>
 <li><p><strong>columns</strong> – 指定读取的列名</p></li>
 <li><p><strong>nrows</strong> – 指定读取的行数</p></li>
+<li><p><strong>recursive</strong> – 是否循环遍历更深层级的文件夹，默认为True，仅当路径为文件夹时生效</p></li>
 </ul>
 </dd>
 </dl>
@@ -649,10 +651,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.load.to_file" title="ricco.etl.load.to_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_file</span></code></a>(df, filepath, *[, index, log, encoding])</p></td>
 <td><p>根据文件扩展名，将Dataframe保存为文件</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.load.to_parts_file" title="ricco.etl.load.to_parts_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_parts_file</span></code></a>(df, dirpath[, chunksize, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.load.to_parquet" title="ricco.etl.load.to_parquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_parquet</span></code></a>(df, filepath, index)</p></td>
+<td><p>保存parquet文件，默认将shapely对象转换为wkb格式</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.load.to_parts_file" title="ricco.etl.load.to_parts_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_parts_file</span></code></a>(df, dirpath[, chunksize, ...])</p></td>
 <td><p>将Dataframe保存为多个文件</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.load.to_sheets" title="ricco.etl.load.to_sheets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sheets</span></code></a>(data, filename[, index])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.load.to_sheets" title="ricco.etl.load.to_sheets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sheets</span></code></a>(data, filename[, index])</p></td>
 <td><p>将多个dataframe保存到不同的sheet中</p></td>
 </tr>
 </tbody>
@@ -686,6 +691,12 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.etl.load.to_parquet">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_parquet" title="永久链接至目标"></a></dt>
+<dd><p>保存parquet文件，默认将shapely对象转换为wkb格式</p>
 </dd></dl>
 
 <dl class="py function">
