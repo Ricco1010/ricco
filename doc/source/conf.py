@@ -10,7 +10,7 @@ project = 'ricco'
 copyright = '2024, wangyukang'
 author = 'wangyukang'
 
-release = '1.3.5'
+release = '1.4.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
