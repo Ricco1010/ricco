@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import zipfile
+from pathlib import Path
 
 from ..base import ensure_list
 
@@ -95,16 +96,16 @@ def dir2zip(filepath, overwrite=False, delete_origin=False):
   z = zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED)
   for dirpath, _, filenames in os.walk(filepath):
     for filename in filenames:
-      filepath_out = os.path.join(dirpath, filename)
-      filepath_in = os.path.join(os.path.split(dirpath)[-1], filename)
-      z.write(filepath_out, arcname=filepath_in)
+      filepath_out = str(os.path.join(dirpath, filename))
+      filepath_in = str(os.path.join(os.path.split(dirpath)[-1], filename))
+      z.write(filepath_out, filepath_in)
   z.close()
   if delete_origin:
     remove_dir(filepath)
     logging.warning(f'Deleted:"{filepath}"')
 
 
-def get_file_counts(dir_path):
+def count_files(dir_path):
   """统计文件夹中文件的数量"""
   num = 0
   for dirpath, dirnames, filenames in os.walk(dir_path):
@@ -139,7 +140,7 @@ def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False,
   for dirpath, dirnames, _ in os.walk(dir_path):
     for dirname in dirnames:
       dir_full_path = os.path.join(dirpath, dirname)
-      num = get_file_counts(dir_full_path)
+      num = count_files(dir_full_path)
       if num == 0:
         remove_dir(dir_full_path)
         logging.warning(f'Deleted:"{dir_full_path}"')
@@ -203,3 +204,48 @@ def single_ext(path_list):
   ext_list = list(set([extension(p) for p in path_list]))
   if len(ext_list) == 1:
     return ext_list[0]
+
+
+class OssPath:
+  def __init__(self, path, bucket=None):
+    """
+    OSS路径类，确保不同类型的地址属性统一
+
+    Args:
+      path: 路径，完整路径或bucket后的部分路径
+      bucket: 默认从完整路径中获取，当为部分路径时需指定Bucket
+    """
+
+    if path.startswith('oss://'):
+      pass
+    elif bucket:
+      path = os.path.join('oss:///', bucket, path)
+    else:
+      raise Exception('Bucket name is required')
+
+    self.parts = Path(path).parts
+
+    if bucket:
+      assert bucket == self.parts[1], 'Bucket name does not match'
+
+  @property
+  def bucket(self):
+    """Bucket"""
+    return self.parts[1]
+
+  @property
+  def driver(self):
+    """Driver"""
+    return self.parts[0]
+
+  @property
+  def path_short(self):
+    """短路径"""
+    if len(self.parts) > 2:
+      return str(os.path.join(*self.parts[2:]))
+    return ''
+
+  @property
+  def path_full(self):
+    """完整路径"""
+    return str(os.path.join(f'oss:///{self.bucket}', self.path_short))

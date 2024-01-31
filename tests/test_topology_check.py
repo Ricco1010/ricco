@@ -2,7 +2,7 @@ import geopandas as gpd
 from geopandas.testing import assert_geodataframe_equal
 from shapely.geometry import Polygon
 
-from ricco.geometry.topology_check import fix_polygon_topology
+from ricco.geometry.topology import fix_topology
 
 
 def assert_geopandas(res: gpd.GeoDataFrame, test: gpd.GeoDataFrame):
@@ -22,7 +22,7 @@ def test_fix_overlap():
   input1 = gpd.GeoDataFrame({'name': [0, 1],
                              'geometry': [polygon4, polygon1]},
                             geometry='geometry')
-  res1 = fix_polygon_topology(input1, fill_intersects=True, keep_contains=False)
+  res1 = fix_topology(input1, fill_intersects=True, keep_contains=False)
   res1.crs = None
   test1 = gpd.GeoDataFrame({'name': [0, 1],
                             'geometry': [
@@ -34,7 +34,7 @@ def test_fix_overlap():
   input2 = gpd.GeoDataFrame({'name': [0, 1],
                              'geometry': [polygon4, polygon1]},
                             geometry='geometry')
-  res2 = fix_polygon_topology(input2, fill_intersects=True, keep_contains=True)
+  res2 = fix_topology(input2, fill_intersects=True, keep_contains=True)
   res2.crs = None
 
   test2 = gpd.GeoDataFrame({'name': [0, 1],
@@ -48,7 +48,7 @@ def test_fix_overlap():
                              'geometry': [polygon2, polygon1]},
                             geometry='geometry')
 
-  res3 = fix_polygon_topology(input3, fill_intersects=False)
+  res3 = fix_topology(input3, fill_intersects=False)
   res3.crs = None
 
   test3 = gpd.GeoDataFrame({'name': [0, 1],
@@ -67,7 +67,7 @@ def test_fix_overlap():
       polygon4,
     ]
   })
-  res4 = fix_polygon_topology(input4, fill_intersects=True, keep_contains=True)
+  res4 = fix_topology(input4, fill_intersects=True, keep_contains=True)
   res4.crs = None
   test4 = gpd.GeoDataFrame({'name': [0, 1, 2],
                             'geometry': [polygon1.difference(polygon4),

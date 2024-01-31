@@ -11,7 +11,6 @@ from shapely.geometry.base import BaseGeometry
 
 from ..base import agg_parser
 from ..base import ensure_list
-from ..base import is_empty
 from ..base import not_empty
 from ..base import warn_
 from ..etl.transformer import dict2df
@@ -23,12 +22,14 @@ from ..util.decorator import progress
 from ..util.decorator import timer
 from ..util.kdtree import kdtree_nearest
 from ..util.util import first_notnull_value
-from .util import ensure_multi_geom
+from .util import GEOM_FORMATS
+from .util import auto_loads
 from .util import epsg_from_lnglat
 from .util import geojson_dumps
 from .util import geojson_loads
 from .util import get_epsg
 from .util import infer_geom_format
+from .util import split_multi_geoms
 from .util import wkb_dumps
 from .util import wkb_loads
 from .util import wkt_dumps
@@ -36,7 +37,7 @@ from .util import wkt_loads
 
 
 def projection(
-    gdf: gpd.GeoDataFrame,
+    df: gpd.GeoDataFrame,
     epsg: int = None,
     city: str = None,
     crs=None) -> gpd.GeoDataFrame:
@@ -44,20 +45,21 @@ def projection(
   投影变换
 
   Args:
-    gdf: 输入的GeomDataFrame格式的数据
+    df: 输入的GeomDataFrame格式的数据
     epsg: epsg code, 第一优先级
     city: 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取
     crs: 投影坐标系，第二优先级
   """
+  df = auto2shapely(df)
   if not epsg and not crs:
     if city:
       epsg = get_epsg(city)
     else:
-      df_temp = gdf.bounds
-      lng = np.mean([df_temp['minx'].min(), df_temp['maxx'].max()])
+      df_temp = df.bounds
+      lng = df_temp[['minx', 'maxx']].mean(axis=1).median()
       epsg = epsg_from_lnglat(lng)
       print(f'从数据集中自动获取的epsg code为：{epsg}')
-  return gdf.to_crs(epsg=epsg, crs=crs)
+  return df.to_crs(epsg=epsg, crs=crs)
 
 
 @timer()
@@ -242,12 +244,18 @@ def shapely2central_shapely(df, geometry='geometry', within=False):
 
 def auto2shapely(df, geometry='geometry') -> gpd.GeoDataFrame:
   """自动识别地理格式并转换为shapely格式"""
-  geom_format = infer_geom_format(df[geometry])
-  assert geom_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
-  if geom_format == 'shapely':
-    return gpd.GeoDataFrame(df, geometry=geometry)
-  return getattr(sys.modules[__name__],
-                 f'{geom_format}2shapely')(df, geometry=geometry)
+  if geometry in df:
+    geom_format = infer_geom_format(df[geometry])
+    assert geom_format in GEOM_FORMATS, '未知的地理格式'
+    if geom_format == 'shapely':
+      return gpd.GeoDataFrame(df, geometry=geometry)
+    return getattr(sys.modules[__name__],
+                   f'{geom_format}2shapely')(df, geometry=geometry)
+  elif 'lng' in df and 'lat' in df:
+    warn_('未找到geometry列，尝试将lng/lat列转换为shapely格式')
+    return lnglat2shapely(df, delete=False)
+  else:
+    raise KeyError(f'未找到{geometry}或lng/lat列')
 
 
 def shapely2x(df: (gpd.GeoDataFrame, pd.DataFrame),
@@ -261,7 +269,7 @@ def shapely2x(df: (gpd.GeoDataFrame, pd.DataFrame),
     geometry_format: 支持wkb,wkt,shapely,geojson
     geometry: geometry列的列名，默认“geometry”
   """
-  assert geometry_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
+  assert geometry_format in GEOM_FORMATS, '未知的地理格式'
   if geometry_format == 'shapely':
     return gpd.GeoDataFrame(df, geometry=geometry)
   return getattr(sys.modules[__name__],
@@ -277,22 +285,24 @@ def auto2x(df, geometry_format: str, geometry='geometry'):
     geometry_format: 要转换为的geometry类型，支持shapely,wkb,wkt,geojson
     geometry: geometry列的列名，默认为“geometry”
   """
-  assert geometry_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
+  assert geometry_format in GEOM_FORMATS, '未知的地理格式'
   if infer_geom_format(df[geometry]) == geometry_format:
     return df
   df = auto2shapely(df, geometry=geometry)
   return shapely2x(df, geometry_format=geometry_format, geometry=geometry)
 
 
-def distance_min(geometry: BaseGeometry, gdf: gpd.GeoDataFrame) -> float:
+def distance_min(df: gpd.GeoDataFrame, geometry: BaseGeometry) -> float:
   """
-  计算单个geometry到数据集gdf中元素的最短距离
+  计算数据集df中元素到单个geometry的最短距离
 
   Args:
+    df: 数据集，GeoDataFrame格式
     geometry: 单个geometry，shapely格式
-    gdf: 数据集，GeoDataFrame格式
   """
-  return gdf.distance(geometry).min()
+  df = auto2shapely(df)
+  geometry = auto_loads(geometry)
+  return df.distance(geometry).min()
 
 
 @process_multi
@@ -304,7 +314,7 @@ def distance_gdf(df: gpd.GeoDataFrame, df_target: gpd.GeoDataFrame,
   df_target = auto2shapely(df_target)
   df_dis = auto2shapely(df[[left_geometry]], geometry=left_geometry)
   df_dis[c_dst] = df_dis[left_geometry].parallel_apply(
-      lambda p: distance_min(p, df_target) if not_empty(p) else np.nan
+      lambda p: distance_min(df_target, p) if not_empty(p) else np.nan
   )
   return df.join(df_dis[[c_dst]])
 
@@ -480,7 +490,7 @@ def mark_tags_v2(
 def nearest_neighbor(
     df: pd.DataFrame,
     df_target: pd.DataFrame,
-    c_dst='min_distance',
+    c_dst: str = 'min_distance',
     epsg: int = None) -> pd.DataFrame:
   """
   近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）
@@ -515,7 +525,7 @@ def nearest_kdtree(
     limit: int = None,
     r: (int, float) = None,
     keep_origin: bool = False,
-    leaf_size=2,
+    leaf_size: int = 2,
 ):
   """
   KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
@@ -574,7 +584,7 @@ def nearest_kdtree(
 
 def get_neighbors(
     df: (pd.DataFrame, gpd.GeoDataFrame),
-    key_col,
+    key_col: str,
     res_type='dict',
 ) -> (dict, pd.DataFrame):
   """
@@ -613,7 +623,8 @@ def get_neighbors(
 def get_area(
     df: pd.DataFrame,
     c_dst='area',
-    epsg: int = None) -> pd.DataFrame:
+    epsg: int = None,
+    decimals=2) -> pd.DataFrame:
   """
   计算面积（单位：平方米）
 
@@ -621,6 +632,7 @@ def get_area(
     df: 要计算的面数据
     c_dst: 输出面积的列名，默认为“area”
     epsg: 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取
+    decimals: 要保留的小数位数
   """
   # 将数据集转为shapely格式
   assert df.index.is_unique, 'df索引列必须唯一'
@@ -629,7 +641,7 @@ def get_area(
   # 投影
   df_left = projection(df_left, epsg=epsg)
   # 计算面积
-  df_left[c_dst] = df_left.area.round(2)
+  df_left[c_dst] = df_left.area.round(decimals)
   # 将面积合并到原来的数据集上
   return df.join(df_left[[c_dst]], how='left')
 
@@ -693,8 +705,12 @@ def spatial_agg(point_df: pd.DataFrame,
   """
 
   polygon_df = polygon_df[[by, polygon_geometry]]
-  point_df = mark_tags_v2(polygon_df=polygon_df, point_df=point_df,
-                          drop_geometry=True, polygon_geometry=polygon_geometry)
+  point_df = mark_tags_v2(
+      point_df=point_df,
+      polygon_df=polygon_df,
+      col_list=by,
+      drop_geometry=True,
+      polygon_geometry=polygon_geometry)
   df_grouped = point_df.groupby(by=by, as_index=False).agg(agg)
   return df_grouped
 
@@ -702,16 +718,11 @@ def spatial_agg(point_df: pd.DataFrame,
 def split_multi_to_rows(df, geometry='geometry', geometry_format=None):
   """将多部件要素拆解为多行的单部件要素"""
 
-  def to_geoms(x):
-    if is_empty(x):
-      return []
-    return [i for i in x.geoms]
-
   lo = df.shape[0]
   if not geometry_format:
     geometry_format = infer_geom_format(df[geometry])
   df = auto2shapely(df)
-  df[geometry] = df[geometry].apply(ensure_multi_geom).apply(to_geoms)
+  df[geometry] = df[geometry].apply(split_multi_geoms)
   df = split_list_to_row(df, geometry)
   df = gpd.GeoDataFrame(df, geometry=geometry)
   print(f'Rows: {lo} -> {df.shape[0]}')

@@ -311,9 +311,12 @@ def sort_by_list(src_list, by_list, filter_=False) -> list:
   Examples:
     >>> a = [1, 2, 3, 4, 5]
     >>> b = [2, 5, 4, 1]
-    >>> sort_by_list(a, b)  # [2, 5, 4, 1, 3]
-    >>> sort_by_list(a, b, filter_=True)  # [2, 5, 4, 1]
-    >>> sort_by_list(b, a)  # [1, 2, 4, 5]
+    >>> sort_by_list(a, b)
+    [2, 5, 4, 1, 3]
+    >>> sort_by_list(a, b, filter_=True)
+    [2, 5, 4, 1]
+    >>> sort_by_list(b, a)
+    [1, 2, 4, 5]
   """
   res = [i for i in by_list if i in src_list]
   if not filter_:
@@ -340,8 +343,10 @@ def union_str_v2(*strings, sep='') -> str:
     sep: 连接符，默认为空白字符串
 
   Examples:
-    >>> union_str_v2('a', 'b', sep='-')  # 'a-b'
-    >>> union_str_v2('a', 'b', 'c')  # 'abc'
+    >>> union_str_v2('a', 'b', sep='-')
+    'a-b'
+    >>> union_str_v2('a', 'b', 'c')
+    'abc'
 
   """
   if strings := [i for i in strings if not_empty(i) and i != '']:
@@ -356,6 +361,7 @@ def union_list_v2(*lists) -> list:
     >>> a = [1]
     >>> b = [2, 3]
     >>> union_list_v2(a, b)
+    [1, 2, 3]
   """
   lists = [ensure_list(i) for i in lists]
   return list(chain(*lists))
@@ -495,6 +501,7 @@ def drop_repeat_element(x: (list, tuple)):
   删除列表中连续重复的元素
 
   Examples:
-    >>> drop_repeat_element([1, 2, 2, 3, 4, 4, 4])  # [1, 2, 3, 4]
+    >>> drop_repeat_element([1, 2, 2, 3, 4, 4, 4])
+    [1, 2, 3, 4]
   """
   return [key for key, _ in groupby(x)]

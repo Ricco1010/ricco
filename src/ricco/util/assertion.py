@@ -26,8 +26,7 @@ def assert_columns_exists(df: pd.DataFrame, columns: list):
   df = df.copy().reset_index(drop=True)
   columns = ensure_list(columns)
   cols = [c for c in columns if c not in df]
-  if cols:
-    raise AssertionError(f'缺失"{cols}"列')
+  assert not cols, f'缺失"{cols}"列'
 
 
 def assert_not_empty_str(df: pd.DataFrame,
@@ -37,8 +36,7 @@ def assert_not_empty_str(df: pd.DataFrame,
   df = df.copy().reset_index(drop=True)
   if skip_column(df, col, skip_if_not_exists):
     return
-  if (df[col] == '').any():
-    raise AssertionError(f'"{col}"列存在空白字符串')
+  assert '' not in df[col].values, f'"{col}"列存在空白字符串'
 
 
 def assert_not_null(df: pd.DataFrame,
@@ -78,10 +76,7 @@ def assert_values_in(df: pd.DataFrame,
   else:
     raise TypeError('enums类型错误，list or dict')
   rv = [t for t in df[col].unique().tolist() if not_empty(t) and t not in vs]
-  if rv:
-    raise AssertionError(
-        f'{rv}不是"{col}"列有效的enum值'
-    )
+  assert not rv, f'{rv}不是"{col}"列有效的enum值'
 
 
 def assert_series_unique(df: pd.DataFrame,
@@ -115,8 +110,7 @@ def assert_series_digit(df: pd.DataFrame, col: str):
   df = df.copy().reset_index(drop=True)
   values = df[col].unique().tolist()
   rv = [i for i in values if not is_digit(i) and not_empty(i)]
-  if rv:
-    raise AssertionError(f'"{col}"列应为数值型，{rv}无法转换为数值型')
+  assert not rv, f'"{col}"列应为数值型，{rv}无法转换为数值型'
 
 
 def assert_series_not_like(df: pd.DataFrame, col: str, pattern):
@@ -124,5 +118,9 @@ def assert_series_not_like(df: pd.DataFrame, col: str, pattern):
   df = df.copy().reset_index(drop=True)
   values = df[col].unique().tolist()
   rv = [i for i in values if re.match(pattern, str(i)) and not_empty(i)]
-  if rv:
-    raise AssertionError(f'异常的"{col}": {rv}')
+  assert not rv, f'异常的"{col}": {rv}'
+
+
+def assert_subset(values: (list, set, tuple), superset: (list, set, tuple)):
+  res = [i for i in values if i not in superset]
+  assert not res, f'{res}不在指定的集合中'

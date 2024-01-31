@@ -7,7 +7,6 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 
 from ricco.geometry.df import mark_tags_v2
-from ricco.geometry.util import GeomFormat
 from ricco.geometry.util import get_epsg
 from ricco.geometry.util import infer_geom_format
 from ricco.geometry.util import is_geojson
@@ -276,11 +275,11 @@ def test_is_xxx():
 
 
 def test_infer_geom_format():
-  assert infer_geom_format(None) == GeomFormat.unknown
+  assert infer_geom_format(None) == 'unknown'
   assert infer_geom_format(
-      '0101000020E61000009A9999999999F13F9A9999999999F13F') == GeomFormat.wkb
-  assert infer_geom_format(Point(1.1, 1.1)) == GeomFormat.shapely
-  assert infer_geom_format('POINT (1.1 1.1)') == GeomFormat.wkt
-  assert infer_geom_format(['POINT (1.1 1.1)']) == GeomFormat.wkt
-  assert infer_geom_format(('POINT (1.1 1.1)',)) == GeomFormat.wkt
-  assert infer_geom_format(pd.Series(['POINT (1.1 1.1)'])) == GeomFormat.wkt
+      '0101000020E61000009A9999999999F13F9A9999999999F13F') == 'wkb'
+  assert infer_geom_format(Point(1.1, 1.1)) == 'shapely'
+  assert infer_geom_format('POINT (1.1 1.1)') == 'wkt'
+  assert infer_geom_format(['POINT (1.1 1.1)']) == 'wkt'
+  assert infer_geom_format(('POINT (1.1 1.1)',)) == 'wkt'
+  assert infer_geom_format(pd.Series(['POINT (1.1 1.1)'])) == 'wkt'

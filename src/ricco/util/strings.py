@@ -96,7 +96,8 @@ def drop_repeat_string(string,
     max_length: 识别的最长长度，默认不限制
 
   Examples:
-    >>> drop_repeat_string('上海市上海市杨浦区')  # '上海市杨浦区'
+    >>> drop_repeat_string('上海市上海市杨浦区')
+    '上海市杨浦区'
   """
   if len(string) < min_length * 2:
     return string
