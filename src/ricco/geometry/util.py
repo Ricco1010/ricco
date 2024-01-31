@@ -3,7 +3,6 @@ import sys
 import warnings
 from ast import literal_eval
 from itertools import groupby
-from typing import List
 
 import geojson
 import numpy as np
@@ -12,15 +11,20 @@ from shapely import wkb
 from shapely import wkt
 from shapely.errors import GeometryTypeError
 from shapely.errors import WKBReadingError
+from shapely.geometry import GeometryCollection
 from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
+from shapely.geometry import MultiPoint
 from shapely.geometry import MultiPolygon
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
+from shapely.geometry.base import BaseMultipartGeometry
 from shapely.geometry.geo import ShapelyDeprecationWarning
 from shapely.geos import WKTReadingError
+from shapely.ops import unary_union
+from shapely.validation import make_valid
 
 from ..base import ensure_list
 from ..base import is_empty
@@ -33,18 +37,7 @@ from ..util.util import isinstance_in_list
 
 warnings.simplefilter('ignore', category=ShapelyDeprecationWarning)
 
-
-class GeomFormat:
-  #: wkb
-  wkb = 'wkb'
-  #: wkt
-  wkt = 'wkt'
-  #: shapely
-  shapely = 'shapely'
-  #: geojson
-  geojson = 'geojson'
-  #: unknown
-  unknown = 'unknown'
+GEOM_FORMATS = ('wkb', 'wkt', 'shapely', 'geojson')
 
 
 def crs_sh2000():
@@ -193,21 +186,21 @@ def is_geojson(x, na=False) -> bool:
   return False
 
 
-@check_null(default_rv=GeomFormat.unknown)
+@check_null(default_rv='unknown')
 def _infer_geom_format(x):
   """推断geometry格式"""
   if is_shapely(x):
-    return GeomFormat.shapely
+    return 'shapely'
   if is_wkb(x):
-    return GeomFormat.wkb
+    return 'wkb'
   if is_wkt(x):
-    return GeomFormat.wkt
+    return 'wkt'
   if is_geojson(x):
-    return GeomFormat.geojson
-  return GeomFormat.unknown
+    return 'geojson'
+  return 'unknown'
 
 
-@check_null(default_rv=GeomFormat.unknown)
+@check_null(default_rv='unknown')
 def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
   """推断geometry格式"""
   assert isinstance(series, (str, list, tuple, pd.Series, BaseGeometry))
@@ -219,13 +212,19 @@ def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
 
 
 @check_shapely
-def ensure_multi_geom(geom: BaseGeometry):
-  """将LineString和Polygon转为multi格式"""
-  if geom.geom_type == 'LineString':
+def ensure_multi_geom(
+    geom: (BaseGeometry, BaseMultipartGeometry)
+) -> BaseMultipartGeometry:
+  """将Point/LineString/Polygon转为multi分别转为MultiPoint/MultiLineString/MultiPolygon"""
+  if isinstance(geom, BaseMultipartGeometry):
+    return geom
+  if isinstance(geom, LineString):
     return MultiLineString([geom])
-  if geom.geom_type == 'Polygon':
+  if isinstance(geom, Polygon):
     return MultiPolygon([geom])
-  return geom
+  if isinstance(geom, Point):
+    return MultiPoint([geom])
+  raise TypeError(f'无法识别的类型{type(geom)}')
 
 
 def multiline2multipolygon(multiline_shapely: MultiLineString, force=False):
@@ -270,7 +269,7 @@ def is_valid_lnglat(lng, lat):
 def auto_loads(x) -> BaseGeometry:
   """自动识别地理格式并转换为shapely格式"""
   geom_format = infer_geom_format(x)
-  assert geom_format != GeomFormat.unknown, '未知的地理格式'
+  assert geom_format in GEOM_FORMATS, '未知的地理格式'
   if geom_format == 'shapely':
     return x
   return getattr(sys.modules[__name__], f'{geom_format}_loads')(x)
@@ -278,7 +277,7 @@ def auto_loads(x) -> BaseGeometry:
 
 def dumps2x(x: BaseGeometry, geom_format):
   """转换geometry格式"""
-  assert geom_format in ('wkb', 'wkt', 'shapely', 'geojson'), '未知的地理格式'
+  assert geom_format in GEOM_FORMATS, '未知的地理格式'
   x = auto_loads(x)
   if geom_format == 'shapely':
     return x
@@ -322,25 +321,17 @@ def distance(
   return Point(p1).distance(Point(p2))
 
 
-def get_geoms(geo: BaseGeometry) -> List:
+@check_null(default_rv=[])
+def split_multi_geoms(geometry: BaseMultipartGeometry) -> list:
   """
-  将geo中包含的LineString、Point、Polygon取出存放到list中
+  返回多部件要素中的元素（LineString、Point、Polygon）组成的列表
 
   Args:
-    geo: geometry类型的数据
-
-  Returns:
-    List：geo中包含的LineString、Point、Polygon
+    geometry: geometry类型的数据
   """
-  list_geo = []
-  if geo.is_empty:
-    list_geo.append(geo)
-  elif hasattr(geo, 'geoms'):
-    for g in geo.geoms:
-      list_geo.extend(get_geoms(g))
-  else:
-    list_geo.append(geo)
-  return list_geo
+  geometry = auto_loads(geometry)
+  geometry = ensure_multi_geom(geometry)
+  return [g for g in geometry.geoms]
 
 
 def text2lnglats(text: str, point_sep: str, lnglat_sep: str):
@@ -386,7 +377,7 @@ def text2shapely(
   Examples:
     >>> ss = '121.4737,31.2304; 121.4740,31.2304; 121.4740,31.2307'
     >>> text2shapely(ss, geometry_type='line', point_sep=';', lnglat_sep=',')
-    >>> # MULTILINESTRING ((121.4737 31.2304, 121.474 31.2304, 121.474 31.2307))
+    MULTILINESTRING ((121.4737 31.2304, 121.474 31.2304, 121.474 31.2307))
   """
 
   geometry_type = geometry_type.lower()
@@ -402,3 +393,21 @@ def text2shapely(
   if ensure_multi:
     return ensure_multi_geom(res)
   return res
+
+
+def filter_polygon_from_collection(x):
+  """从GeometryCollection中筛选面重新组成geometry"""
+  if isinstance(x, (Polygon, MultiPolygon)):
+    return x
+  if isinstance(x, GeometryCollection):
+    return unary_union([
+      i for i in x.geoms if isinstance(i, (Polygon, MultiPolygon))
+    ])
+  raise TypeError(f'不支持的数据类型:{type(x)}')
+
+
+def ensure_valid_polygon(x):
+  if not x.is_valid:
+    valid_res = make_valid(x)
+    return filter_polygon_from_collection(valid_res)
+  return x

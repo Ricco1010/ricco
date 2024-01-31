@@ -29,11 +29,13 @@ from .geometry.df import mark_tags_v2
 from .geometry.df import nearest_kdtree
 from .geometry.df import nearest_neighbor
 from .geometry.df import shapely2x
+from .geometry.topology import fix_topology
 from .geometry.util import text2shapely
 from .geometry.util import wkb_dumps
 from .geometry.util import wkb_loads
 from .geometry.util import wkt_dumps
 from .geometry.util import wkt_loads
+from .local import Rc
 from .util.assertion import assert_columns_exists
 from .util.assertion import assert_not_empty_str
 from .util.assertion import assert_not_null

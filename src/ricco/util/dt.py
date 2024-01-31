@@ -1,5 +1,6 @@
 import datetime as dt
 import re
+import warnings
 from datetime import datetime
 from datetime import timedelta
 from functools import wraps
@@ -93,6 +94,8 @@ class DT:
                date: (str, dt.date, dt.datetime) = None,
                format='%Y-%m-%d',
                dst_format=None):
+    warnings.warn('DT2在版本0.5.38及更新版本中可以使用，详情见util.dt.DT2',
+                  DeprecationWarning)
     if date:
       if isinstance(date, str):
         self.date = dt.datetime.strptime(date, format).date()
@@ -173,3 +176,101 @@ class DT:
     if weekday == 1:
       return self.date
     return self.date - timedelta(weekday - 1)
+
+
+class DT2:
+  def __init__(self,
+               date: (str, dt.date, dt.datetime) = None,
+               date_format='%Y-%m-%d'):
+    """
+    DT日期类
+    Args:
+      date: 初始化支持字符串、datetime.date和datetime.datetime格式作为基准日期。不指定时，默认基准日期今天。
+      format: 当初始化为字符串时，需要输入format指定日期字符串格式。
+    Examples:
+      today = '2024-01-31'
+      上个月的第一天：
+      DT(today).date_move(months=-1).first_day_of_this_month.get()
+      --2023-12-01--(class 'datetime.date')
+      DT(today).date_move(months=-1).first_day_of_this_month.get(format='%Y %m %d')
+      --2023 12 01--(class 'str')
+    """
+    if date:
+      if isinstance(date, str):
+        self.date = dt.datetime.strptime(date, date_format).date()
+      elif isinstance(date, dt.datetime):
+        self.date = date.date()
+      elif isinstance(date, dt.date):
+        self.date = date
+      else:
+        raise TypeError(
+            '无法识别的类型，date只能为字符串、datetime.date或datetime.datetime类型')
+    else:
+      self.date = dt.date.today()
+
+  @property
+  def today(self):
+    """今天"""
+    return self
+
+  @property
+  def tomorrow(self):
+    """明天"""
+    return self.date_move(days=1)
+
+  @property
+  def yesterday(self):
+    """昨天"""
+    return self.date_move(days=-1)
+
+  @property
+  def the_day_after_tomorrow(self):
+    """后天"""
+    return self.date_move(days=2)
+
+  @property
+  def the_day_before_yesterday(self):
+    """前天"""
+    return self.date_move(days=-2)
+
+  @property
+  def one_year_ago(self):
+    """一年前的今天"""
+    return self.date_move(years=-1)
+
+  @property
+  def first_day_of_this_month(self):
+    """本月第一天"""
+    self.date = self.date.replace(day=1)
+    return self
+
+  @property
+  def last_day_of_this_month(self):
+    """本月最后一天"""
+    self.date = self.date_move(months=1).get().replace(day=1) + relativedelta(days=-1)
+    return self
+
+  @property
+  def day_half_year_ago(self):
+    """半年前的今天"""
+    return self.date_move(months=-6)
+
+  @property
+  def monday_of_this_week(self):
+    """本周的星期一"""
+    weekday = self.date.isoweekday()
+    if weekday == 1:
+      return self
+    self.date = self.date - dt.timedelta(weekday - 1)
+    return self
+
+  def date_move(self, years=0, months=0, days=0):
+    """移动任意年/月/日后的日期，移动数量为正数表示向后移动，负数表示向前移动"""
+    self.date = self.date + relativedelta(years=years, months=months, days=days)
+    return self
+
+  def get(self, format=None):
+    """指定format，输出符合format格式的字符串，否则输出datetime.date类实例"""
+    if format:
+      return self.date.strftime(format)
+    return self.date

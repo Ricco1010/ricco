@@ -23,7 +23,8 @@ def ensure_ext(ext: str):
   规范文件扩展名，保持扩展名为点(.)开头
 
   Examples:
-    >>> ensure_ext('csv')  # '.csv'
+    >>> ensure_ext('csv')
+    '.csv'
   """
   if isinstance(ext, str) and ext != '' and not ext.startswith('.'):
     return '.' + ext
@@ -73,10 +74,12 @@ def second_to_desc(second) -> str:
   将秒转为时间描述
 
   Examples:
-    >>> second_to_desc(123)  # '2m 3s'
-    >>> second_to_desc(1234)  # '20m 40s'
-    >>> second_to_desc(123456)  # '1d 10h 17m 36s'
-
+    >>> second_to_desc(123)
+    '2m 3s'
+    >>> second_to_desc(1234)
+    '20m 40s'
+    >>> second_to_desc(123456)
+    '1d 10h 17m 36s'
   """
   d, h, m, second = second_to_dhms(second)
   if d + h + m == 0:
