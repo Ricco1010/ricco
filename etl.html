@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh-CN" >
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>数据读取、处理与保存 &mdash; ricco 1.3.5 文档</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <title>数据读取、处理与保存 &mdash; ricco 1.4.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2491dde2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script src="_static/translations.js?v=beaddf03"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
@@ -34,11 +35,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> ricco
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ricco
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -142,7 +147,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">数据读取、处理与保存</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/etl.rst.txt" rel="nofollow"> 查看页面源码</a>
@@ -154,16 +159,12 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1>数据读取、处理与保存<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<h1>数据读取、处理与保存<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <p>该部分为数据去读取、数据处理、数据保存以及对于文件的操作</p>
 <section id="module-ricco.etl.extract">
-<span id="extract"></span><h2>数据读取（Extract）<a class="headerlink" href="#module-ricco.etl.extract" title="此标题的永久链接"></a></h2>
+<span id="extract"></span><h2>数据读取（Extract）<a class="headerlink" href="#module-ricco.etl.extract" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.extract.get_kml_df_with_level" title="ricco.etl.extract.get_kml_df_with_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_kml_df_with_level</span></code></a>(gdf_dict)</p></td>
 <td><p>从中gdf_dict读取数据以及文件夹名称,并构造文件夹层级,按照指定层级合并所 有数据,并打上层级标签</p></td>
@@ -205,11 +206,11 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.get_kml_df_with_level">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">get_kml_df_with_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.get_kml_df_with_level" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">get_kml_df_with_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.get_kml_df_with_level" title="Link to this definition"></a></dt>
 <dd><p>从中gdf_dict读取数据以及文件夹名称,并构造文件夹层级,按照指定层级合并所
 有数据,并打上层级标签</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>gdf_dict</strong> – GeoDataFrame组成的字典，key为文件夹名称, value为对应数据：{level: gpd.GeoDataFrame}</p>
 </dd>
 </dl>
@@ -217,16 +218,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.kml_df_create_level">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">kml_df_create_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.extract.kml_df_create_level" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">kml_df_create_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.extract.kml_df_create_level" title="Link to this definition"></a></dt>
 <dd><p>读取 dict {level: gpd.GeoDataFrame} 字典, 并根据[name]列包含关系提取分辨文件夹层级</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>gdf_dict</strong> – {dict} {level: gpd.GeoDataFrame} key为文件夹名称, value为对应数据</p>
 </dd>
-<dt class="field-even">返回</dt>
+<dt class="field-even">返回<span class="colon">:</span></dt>
 <dd class="field-even"><p>{‘板块名称’: 0, ‘T顶豪’: 1, ‘O1远郊品质’: 2}</p>
 </dd>
-<dt class="field-odd">返回类型</dt>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
 <dd class="field-odd"><p>文件夹层级字典，如</p>
 </dd>
 </dl>
@@ -234,12 +235,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.rdf">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf" title="Link to this definition"></a></dt>
 <dd><p>常用文件读取函数，支持
 .csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml/
 .geojson/.shp/.json等</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> – 文件或文件夹路径</p></li>
 <li><p><strong>sheet_name</strong> – 数据所在sheet的名称，仅对.xlsx/.xls生效</p></li>
@@ -257,10 +258,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.rdf_by_dir">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf_by_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_index=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info=False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf_by_dir" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf_by_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_index=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info=False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf_by_dir" title="Link to this definition"></a></dt>
 <dd><p>从文件夹中读取所有文件并拼接成一个DataFrame</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dir_path</strong> – 文件夹路径</p></li>
 <li><p><strong>exts</strong> – 要读取的文件扩展名</p></li>
@@ -275,10 +276,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.rdxls">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdxls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdxls" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdxls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdxls" title="Link to this definition"></a></dt>
 <dd><p>读取excel文件</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> – 文件名</p></li>
 <li><p><strong>sheet_name</strong> – sheet表的名称</p></li>
@@ -293,10 +294,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_all_sheets">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_all_sheets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_diff_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_all_sheets" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_all_sheets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_diff_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_all_sheets" title="Link to this definition"></a></dt>
 <dd><p>读取并合并所有sheet表</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> – Excel文件路径</p></li>
 <li><p><strong>sheet_names</strong> – 要读取并合并的sheet列表，默认读取全部的sheet</p></li>
@@ -308,17 +309,17 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_csv">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_csv" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_csv" title="Link to this definition"></a></dt>
 <dd><p>读取csv文件，基于 <cite>pd.read_csv</cite>，加入编码尝试</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_kml">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_kml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.read_kml" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_kml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.read_kml" title="Link to this definition"></a></dt>
 <dd><p>读取kml类文件,将其转换成DataFrame, 根据separate_folders选择是否拆分,
 输出仅保留[name, geometry]字段,暂时只支持polygon和multipolygon数据</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> – kml or ovkml文件路径</p></li>
 <li><p><strong>keep_level</strong> – 是否保留文件夹层级标签</p></li>
@@ -329,10 +330,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_line_json">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_line_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.read_line_json" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_line_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.read_line_json" title="Link to this definition"></a></dt>
 <dd><p>逐行读取json格式的文件</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> – 文件名</p></li>
 <li><p><strong>encoding</strong> – 文件编码，默认为utf-8</p></li>
@@ -343,31 +344,27 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_sav">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_sav</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_sav" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_sav</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_sav" title="Link to this definition"></a></dt>
 <dd><p>读取SPSS的.sav文件</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_shapefile">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_shapefile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_shapefile" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_shapefile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.extract.read_shapefile" title="Link to this definition"></a></dt>
 <dd><p>读取shapefile或geojson文件</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.read_shapefile_with_driver">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_shapefile_with_driver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.read_shapefile_with_driver" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">read_shapefile_with_driver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.read_shapefile_with_driver" title="Link to this definition"></a></dt>
 <dd><p>读取shapefile文件，分别读取dbf中的属性表和shp中的geometry进行拼接</p>
 </dd></dl>
 
 </section>
 <section id="module-ricco.etl.transformer">
-<span id="transform"></span><h2>数据处理（Transform）<a class="headerlink" href="#module-ricco.etl.transformer" title="此标题的永久链接"></a></h2>
+<span id="transform"></span><h2>数据处理（Transform）<a class="headerlink" href="#module-ricco.etl.transformer" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.convert_date" title="ricco.etl.transformer.convert_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_date</span></code></a>(df, columns[, mode])</p></td>
 <td><p>将日期转为当月的第一天或最后一天</p></td>
@@ -421,10 +418,10 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.convert_date">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">convert_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'first'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.convert_date" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">convert_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'first'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.convert_date" title="Link to this definition"></a></dt>
 <dd><p>将日期转为当月的第一天或最后一天</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要处理的DataFrame</p></li>
 <li><p><strong>columns</strong> – 要转换的列</p></li>
@@ -436,10 +433,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.convert_to_float">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">convert_to_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rex_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'mean'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.convert_to_float" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">convert_to_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rex_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'mean'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.convert_to_float" title="Link to this definition"></a></dt>
 <dd><p>提取字符串中的数值信息并转为float类型</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要转换的DataFrame</p></li>
 <li><p><strong>columns</strong> – 要转换的列</p></li>
@@ -451,10 +448,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.create_columns">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">create_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.create_columns" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">create_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.create_columns" title="Link to this definition"></a></dt>
 <dd><p>创建新的列，默认为空</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – DataFrame</p></li>
 <li><p><strong>columns</strong> – 列名</p></li>
@@ -466,10 +463,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.df_iter">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">df_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.df_iter" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">df_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.df_iter" title="Link to this definition"></a></dt>
 <dd><p>DataFrame切片生成器</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要切片的DataFrame</p></li>
 <li><p><strong>chunksize</strong> – 每次返回的大小，与parts必须指定一个</p></li>
@@ -481,22 +478,22 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.dict2df">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">dict2df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'key'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.dict2df" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">dict2df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'key'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.dict2df" title="Link to this definition"></a></dt>
 <dd><p>将字典转为dataframe</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.expand_dict">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">expand_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.expand_dict" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">expand_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.expand_dict" title="Link to this definition"></a></dt>
 <dd><p>展开字典为多列</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.expand_graph">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">expand_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_level_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'level_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parent_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.expand_graph" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">expand_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_level_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'level_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parent_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.expand_graph" title="Link to this definition"></a></dt>
 <dd><p>将图数据展开为宽表</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要展开的图数据</p></li>
 <li><p><strong>start_level</strong> – 开始展开的层级，一般是最低层级</p></li>
@@ -511,16 +508,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.filter_by_df">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">filter_by_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.filter_by_df" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">filter_by_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.filter_by_df" title="Link to this definition"></a></dt>
 <dd><p>根据一个dataframe筛选另一个dataframe</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.fuzz_df">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">fuzz_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_series:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_score=0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.fuzz_df" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">fuzz_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_series:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_score=0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.fuzz_df" title="Link to this definition"></a></dt>
 <dd><p>模糊匹配。为DataFrame中的某一列从某个集合中模糊匹配匹配相似度最高的元素</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 输入的dataframe</p></li>
 <li><p><strong>col</strong> – 要匹配的列</p></li>
@@ -534,10 +531,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.is_changed">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">is_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_old:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_new:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_cols:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_cols:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_res:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'is_changed'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.is_changed" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">is_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_old:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_new:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_cols:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_cols:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_res:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'is_changed'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.is_changed" title="Link to this definition"></a></dt>
 <dd><p>判断新旧数据集中的每一条数据是否变化</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df_old</strong> – 原始数据集</p></li>
 <li><p><strong>df_new</strong> – 修改后的数据集</p></li>
@@ -551,10 +548,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.keep_best_unique">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">keep_best_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_cols:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.keep_best_unique" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">keep_best_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_cols:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.keep_best_unique" title="Link to this definition"></a></dt>
 <dd><p>优化的去重函数，为保证数据的完整性，去重时优先去除指定列中的空值</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要去重的Dataframe</p></li>
 <li><p><strong>subset</strong> – 按照哪些列去重</p></li>
@@ -566,22 +563,22 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.round_by_columns">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">round_by_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.round_by_columns" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">round_by_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.round_by_columns" title="Link to this definition"></a></dt>
 <dd><p>对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.split_list_to_row">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">split_list_to_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.split_list_to_row" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">split_list_to_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.split_list_to_row" title="Link to this definition"></a></dt>
 <dd><p>将列表列中列表的元素拆成多行</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.split_to_rows">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">split_to_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'|'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.split_to_rows" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">split_to_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'|'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.split_to_rows" title="Link to this definition"></a></dt>
 <dd><p>含有多值的列分拆成多行</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – </p></li>
 <li><p><strong>column</strong> – 存在多值的列</p></li>
@@ -593,10 +590,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.table2dict">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">table2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_col:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_col:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.transformer.table2dict" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">table2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_col:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_col:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.transformer.table2dict" title="Link to this definition"></a></dt>
 <dd><p>DataFrame转字典</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – </p></li>
 <li><p><strong>key_col</strong> – 生成key的列</p></li>
@@ -609,10 +606,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.update_df">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">update_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.update_df" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">update_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.update_df" title="Link to this definition"></a></dt>
 <dd><p>根据某一列更新dataframe里的数据</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 待升级的数据集</p></li>
 <li><p><strong>new_df</strong> – 用于更新的DataFrame</p></li>
@@ -637,13 +634,9 @@
 
 </section>
 <section id="module-ricco.etl.load">
-<span id="load"></span><h2>数据保存（Load）<a class="headerlink" href="#module-ricco.etl.load" title="此标题的永久链接"></a></h2>
+<span id="load"></span><h2>数据保存（Load）<a class="headerlink" href="#module-ricco.etl.load" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.load.to_csv_by_line" title="ricco.etl.load.to_csv_by_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_csv_by_line</span></code></a>(data, filename)</p></td>
 <td><p>逐行写入csv文件</p></td>
@@ -664,10 +657,10 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.load.to_csv_by_line">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_csv_by_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_csv_by_line" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_csv_by_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_csv_by_line" title="Link to this definition"></a></dt>
 <dd><p>逐行写入csv文件</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – 要写入的数据列表</p></li>
 <li><p><strong>filename</strong> – 文件名</p></li>
@@ -678,10 +671,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.load.to_file">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_file" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_file" title="Link to this definition"></a></dt>
 <dd><p>根据文件扩展名，将Dataframe保存为文件</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要保存的Dataframe</p></li>
 <li><p><strong>filepath</strong> – 文件路径，包含扩展名</p></li>
@@ -695,16 +688,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.load.to_parquet">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_parquet" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_parquet" title="Link to this definition"></a></dt>
 <dd><p>保存parquet文件，默认将shapely对象转换为wkb格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.load.to_parts_file">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_parts_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_parts_file" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_parts_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_parts_file" title="Link to this definition"></a></dt>
 <dd><p>将Dataframe保存为多个文件</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要拆分保存的DataFrame</p></li>
 <li><p><strong>dirpath</strong> – 文件保存的目录</p></li>
@@ -718,10 +711,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.load.to_sheets">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_sheets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_sheets" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.load.</span></span><span class="sig-name descname"><span class="pre">to_sheets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.load.to_sheets" title="Link to this definition"></a></dt>
 <dd><p>将多个dataframe保存到不同的sheet中</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – 要保存的数据集，格式为：{sheet_name: DataFrame}</p></li>
 <li><p><strong>filename</strong> – 要保存的文件名</p></li>
@@ -733,13 +726,9 @@
 
 </section>
 <section id="module-ricco.etl.file">
-<span id="file"></span><h2>文件操作（File）<a class="headerlink" href="#module-ricco.etl.file" title="此标题的永久链接"></a></h2>
+<span id="file"></span><h2>文件操作（File）<a class="headerlink" href="#module-ricco.etl.file" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.file.dir_file_to_x" title="ricco.etl.file.dir_file_to_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file_to_x</span></code></a>(from_dir, to_dir[, from_ext, ...])</p></td>
 <td><p>转换整个目录中的文件格式</p></td>
@@ -763,16 +752,16 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.file.dir_file_to_x">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">dir_file_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.dir_file_to_x" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">dir_file_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.dir_file_to_x" title="Link to this definition"></a></dt>
 <dd><p>转换整个目录中的文件格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.file.file_to_x">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">file_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.file_to_x" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">file_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.file_to_x" title="Link to this definition"></a></dt>
 <dd><p>文件格式转换，整体读取并转换，将文件整体加载到内存中再保存为另一种文件格式</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filepath</strong> – 待转换的文件路径</p></li>
 <li><p><strong>to_ext</strong> – 要保存的文件扩展名</p></li>
@@ -787,10 +776,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.file.reshape_files">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">reshape_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.reshape_files" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">reshape_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.reshape_files" title="Link to this definition"></a></dt>
 <dd><p>将文件拆分成小文件，并保存到to_dir中</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_dir</strong> – 读取的目录</p></li>
 <li><p><strong>to_dir</strong> – 保存的目录</p></li>
@@ -806,10 +795,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.file.split2x">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.split2x" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.split2x" title="Link to this definition"></a></dt>
 <dd><p>将文件拆分为多个文件，放置在与文件同名目录下</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – 输入的文件路径</p></li>
 <li><p><strong>chunksize</strong> – 每份文件的数据量</p></li>
@@ -824,10 +813,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.file.split2x_by_chunksize">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x_by_chunksize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.split2x_by_chunksize" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x_by_chunksize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.split2x_by_chunksize" title="Link to this definition"></a></dt>
 <dd><p>将文件拆分为多个文件，放置在与文件同名目录下</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filepath</strong> – 输入的文件路径</p></li>
 <li><p><strong>chunksize</strong> – 每份文件的数据量</p></li>
@@ -841,10 +830,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.file.split2x_by_parts">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x_by_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.split2x_by_parts" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.file.</span></span><span class="sig-name descname"><span class="pre">split2x_by_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.file.split2x_by_parts" title="Link to this definition"></a></dt>
 <dd><p>将文件拆分为多个文件，放置在与文件同名目录下</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – 文件路径</p></li>
 <li><p><strong>parts</strong> – 输出的文件个数</p></li>
@@ -858,13 +847,9 @@
 
 </section>
 <section id="module-ricco.etl.entropy">
-<span id="id2"></span><h2>数据标准化（熵值法）<a class="headerlink" href="#module-ricco.etl.entropy" title="此标题的永久链接"></a></h2>
+<span id="id2"></span><h2>数据标准化（熵值法）<a class="headerlink" href="#module-ricco.etl.entropy" title="Link to this heading"></a></h2>
 <p><strong>Classes:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.entropy.EntropyClass" title="ricco.etl.entropy.EntropyClass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EntropyClass</span></code></a>(df, cols, neg_cols, key)</p></td>
 <td><p></p></td>
@@ -873,10 +858,6 @@
 </table>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.entropy.entropy" title="ricco.etl.entropy.entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">entropy</span></code></a>(df[, columns])</p></td>
 <td><p>采用熵值法计算的总分评价</p></td>
@@ -906,22 +887,22 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="ricco.etl.entropy.EntropyClass">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">EntropyClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.EntropyClass" title="永久链接至目标"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">EntropyClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.EntropyClass" title="Link to this definition"></a></dt>
 <dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.entropy">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.entropy" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.entropy" title="Link to this definition"></a></dt>
 <dd><p>采用熵值法计算的总分评价</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 非负数化处理后的数据，默认其中数值量纲都是越大越好</p></li>
 <li><p><strong>columns</strong> – 需要用熵值法计算权重的指标合集</p></li>
 </ul>
 </dd>
-<dt class="field-even">返回</dt>
+<dt class="field-even">返回<span class="colon">:</span></dt>
 <dd class="field-even"><p>用过熵值法得到的总分, 权重</p>
 </dd>
 </dl>
@@ -929,28 +910,28 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.gevalue">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">gevalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.gevalue" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">gevalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.gevalue" title="Link to this definition"></a></dt>
 <dd><p>计算指标的差异系数</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.pca_score">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">pca_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.pca_score" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">pca_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.pca_score" title="Link to this definition"></a></dt>
 <dd><p>PCA法计算器</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.pvalue">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">pvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.pvalue" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">pvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.pvalue" title="Link to this definition"></a></dt>
 <dd><p>计算指标下任一数值在该指标中的比重</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.rescale">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">rescale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">100)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.entropy.rescale" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">rescale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">100)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.entropy.rescale" title="Link to this definition"></a></dt>
 <dd><p>归一化处理</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 为原始待计算df</p></li>
 <li><p><strong>key</strong> – 需要参与计算的列名</p></li>
@@ -964,31 +945,27 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.standard_e">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">standard_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.standard_e" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">standard_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.standard_e" title="Link to this definition"></a></dt>
 <dd><p>熵值法的正向指标的极差标准化</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.standard_e_neg">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">standard_e_neg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.standard_e_neg" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">standard_e_neg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.standard_e_neg" title="Link to this definition"></a></dt>
 <dd><p>熵值法的负向指标的极差标准化</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.entropy.wvalue">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">wvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.wvalue" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.entropy.</span></span><span class="sig-name descname"><span class="pre">wvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.entropy.wvalue" title="Link to this definition"></a></dt>
 <dd><p>计算指标之间的权重关系</p>
 </dd></dl>
 
 </section>
 <section id="module-ricco.etl.graph">
-<span id="graph"></span><h2>图数据处理（Graph）<a class="headerlink" href="#module-ricco.etl.graph" title="此标题的永久链接"></a></h2>
+<span id="graph"></span><h2>图数据处理（Graph）<a class="headerlink" href="#module-ricco.etl.graph" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.graph.get_graph_dict" title="ricco.etl.graph.get_graph_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_graph_dict</span></code></a>(graph_df[, c_key, ...])</p></td>
 <td><p>将图结构的Dataframe转为字典格式，提高查询效率</p></td>
@@ -1000,10 +977,10 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.graph.get_graph_dict">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.graph.</span></span><span class="sig-name descname"><span class="pre">get_graph_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_level_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'level_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parent_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parent_type'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.graph.get_graph_dict" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.graph.</span></span><span class="sig-name descname"><span class="pre">get_graph_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_level_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'level_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parent_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parent_type'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.graph.get_graph_dict" title="Link to this definition"></a></dt>
 <dd><p>将图结构的Dataframe转为字典格式，提高查询效率</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>graph_df</strong> – 图结构的数据</p></li>
 <li><p><strong>c_key</strong> – 索引列</p></li>
@@ -1017,10 +994,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.graph.query_from_graph">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.graph.</span></span><span class="sig-name descname"><span class="pre">query_from_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_data:</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'dict'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key='id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_level_type='level_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_key='parent_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth=10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.graph.query_from_graph" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.graph.</span></span><span class="sig-name descname"><span class="pre">query_from_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_data:</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'dict'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key='id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_level_type='level_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_parent_key='parent_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth=10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ricco.etl.graph.query_from_graph" title="Link to this definition"></a></dt>
 <dd><p>从图数据中查询全部当前节点的全部父级节点</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> – 要查询的节点</p></li>
 <li><p><strong>graph_data</strong> – 要查询的数据集</p></li>
@@ -1047,7 +1024,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; 版权所有 2024, wangyukang.</p>
+    <p>&#169; 版权所有 2024, wangyukang。</p>
   </div>
 
   利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 

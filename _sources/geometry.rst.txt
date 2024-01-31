@@ -17,4 +17,4 @@
 拓扑处理
 -------------------------
 
-.. automodule:: ricco.geometry.topology_check
+.. automodule:: ricco.geometry.topology

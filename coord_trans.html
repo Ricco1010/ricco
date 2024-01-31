@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh-CN" >
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>坐标转换 &mdash; ricco 1.3.5 文档</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <title>坐标转换 &mdash; ricco 1.4.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2491dde2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script src="_static/translations.js?v=beaddf03"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
@@ -34,11 +35,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> ricco
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ricco
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -85,7 +90,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">坐标转换</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/coord_trans.rst.txt" rel="nofollow"> 查看页面源码</a>
@@ -97,13 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="module-ricco.geometry.coord_trans">
-<span id="id1"></span><h1>坐标转换<a class="headerlink" href="#module-ricco.geometry.coord_trans" title="此标题的永久链接"></a></h1>
+<span id="id1"></span><h1>坐标转换<a class="headerlink" href="#module-ricco.geometry.coord_trans" title="Link to this heading"></a></h1>
 <p><strong>Classes:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.coord_trans.SRS" title="ricco.geometry.coord_trans.SRS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SRS</span></code></a>()</p></td>
 <td><p>空间参考系统(Spatial Reference System)</p></td>
@@ -112,10 +113,6 @@
 </table>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.coord_trans.coord_trans_geom" title="ricco.geometry.coord_trans.coord_trans_geom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coord_trans_geom</span></code></a>(df, srs_from, srs_to[, ...])</p></td>
 <td><p>geometry类型坐标批量转换工具</p></td>
@@ -136,15 +133,11 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.SRS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">SRS</span></span><a class="headerlink" href="#ricco.geometry.coord_trans.SRS" title="永久链接至目标"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">SRS</span></span><a class="headerlink" href="#ricco.geometry.coord_trans.SRS" title="Link to this definition"></a></dt>
 <dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>空间参考系统(Spatial Reference System)</p>
 <p><strong>Attributes:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.coord_trans.SRS.bd09" title="ricco.geometry.coord_trans.SRS.bd09"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bd09</span></code></a></p></td>
 <td><p>百度坐标系</p></td>
@@ -159,19 +152,19 @@
 </table>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.SRS.bd09">
-<span class="sig-name descname"><span class="pre">bd09</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bd09'</span></em><a class="headerlink" href="#ricco.geometry.coord_trans.SRS.bd09" title="永久链接至目标"></a></dt>
+<span class="sig-name descname"><span class="pre">bd09</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bd09'</span></em><a class="headerlink" href="#ricco.geometry.coord_trans.SRS.bd09" title="Link to this definition"></a></dt>
 <dd><p>百度坐标系</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.SRS.gcj02">
-<span class="sig-name descname"><span class="pre">gcj02</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gcj02'</span></em><a class="headerlink" href="#ricco.geometry.coord_trans.SRS.gcj02" title="永久链接至目标"></a></dt>
+<span class="sig-name descname"><span class="pre">gcj02</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gcj02'</span></em><a class="headerlink" href="#ricco.geometry.coord_trans.SRS.gcj02" title="Link to this definition"></a></dt>
 <dd><p>国测局坐标（或火星坐标）</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.SRS.wgs84">
-<span class="sig-name descname"><span class="pre">wgs84</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wgs84'</span></em><a class="headerlink" href="#ricco.geometry.coord_trans.SRS.wgs84" title="永久链接至目标"></a></dt>
+<span class="sig-name descname"><span class="pre">wgs84</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wgs84'</span></em><a class="headerlink" href="#ricco.geometry.coord_trans.SRS.wgs84" title="Link to this definition"></a></dt>
 <dd><p>世界大地测量系统 (World Geodetic System 1984)</p>
 </dd></dl>
 
@@ -179,10 +172,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.coord_trans_geom">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_trans_geom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_from:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_geometry:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_trans_geom" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_trans_geom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_from:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_geometry:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_trans_geom" title="Link to this definition"></a></dt>
 <dd><p>geometry类型坐标批量转换工具</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 输入的dataframe，必须要有geometry列</p></li>
 <li><p><strong>srs_from</strong> – 当前坐标系，可选wgs84,bd09,gcj02</p></li>
@@ -196,10 +189,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.coord_trans_x2y">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_trans_x2y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_from:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lat'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_trans_x2y" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_trans_x2y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_from:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lat'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_trans_x2y" title="Link to this definition"></a></dt>
 <dd><p>经纬度类型坐标坐标批量转换工具</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 输入的dataframe，必须要有geometry列</p></li>
 <li><p><strong>srs_from</strong> – 当前坐标系，可选wgs84,bd09,gcj02</p></li>
@@ -213,7 +206,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.coord_transform_geojson">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_transform_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ricco.geometry.coord_trans.SRS" title="ricco.geometry.coord_trans.SRS"><span class="pre">SRS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ricco.geometry.coord_trans.SRS" title="ricco.geometry.coord_trans.SRS"><span class="pre">SRS</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_transform_geojson" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_transform_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ricco.geometry.coord_trans.SRS" title="ricco.geometry.coord_trans.SRS"><span class="pre">SRS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ricco.geometry.coord_trans.SRS" title="ricco.geometry.coord_trans.SRS"><span class="pre">SRS</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_transform_geojson" title="Link to this definition"></a></dt>
 <dd><p>对GeoJSON格式内的所有坐标点执行坐标系转换
 :param obj: GeoJson格式的坐标
 :param from_srs: 输入坐标的格式
@@ -222,10 +215,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.coord_transformer">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_from:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_geometry:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_transformer" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">coord_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_from:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'ricco.geometry.coord_trans.SRS'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_geometry:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.coord_transformer" title="Link to this definition"></a></dt>
 <dd><p>坐标转换工具，优先转geometry列</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 输入的dataframe，必须要有geometry列</p></li>
 <li><p><strong>srs_from</strong> – 当前坐标系，可选wgs84,bd09,gcj02</p></li>
@@ -241,10 +234,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.coord_trans.out_of_china">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">out_of_china</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.out_of_china" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.coord_trans.</span></span><span class="sig-name descname"><span class="pre">out_of_china</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.coord_trans.out_of_china" title="Link to this definition"></a></dt>
 <dd><p>判断经纬度是否在国外（简易矩形判断，并非精确国界）</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lat</strong> – 纬度</p></li>
 <li><p><strong>lng</strong> – 经度</p></li>
@@ -266,7 +259,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; 版权所有 2024, wangyukang.</p>
+    <p>&#169; 版权所有 2024, wangyukang。</p>
   </div>
 
   利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 

@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh-CN" >
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>地理处理 &mdash; ricco 1.3.5 文档</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <title>地理处理 &mdash; ricco 1.4.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2491dde2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script src="_static/translations.js?v=beaddf03"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
@@ -34,11 +35,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> ricco
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ricco
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,25 +60,18 @@
 <li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">地理处理</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.geometry.util">基础地理处理工具</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.GeomFormat"><code class="docutils literal notranslate"><span class="pre">GeomFormat</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.geometry.util.GeomFormat.geojson"><code class="docutils literal notranslate"><span class="pre">GeomFormat.geojson</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.geometry.util.GeomFormat.shapely"><code class="docutils literal notranslate"><span class="pre">GeomFormat.shapely</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.geometry.util.GeomFormat.unknown"><code class="docutils literal notranslate"><span class="pre">GeomFormat.unknown</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.geometry.util.GeomFormat.wkb"><code class="docutils literal notranslate"><span class="pre">GeomFormat.wkb</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.geometry.util.GeomFormat.wkt"><code class="docutils literal notranslate"><span class="pre">GeomFormat.wkt</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.auto_loads"><code class="docutils literal notranslate"><span class="pre">auto_loads()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.crs_sh2000"><code class="docutils literal notranslate"><span class="pre">crs_sh2000()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.distance"><code class="docutils literal notranslate"><span class="pre">distance()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.dumps2x"><code class="docutils literal notranslate"><span class="pre">dumps2x()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.ensure_lnglat"><code class="docutils literal notranslate"><span class="pre">ensure_lnglat()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.ensure_multi_geom"><code class="docutils literal notranslate"><span class="pre">ensure_multi_geom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.ensure_valid_polygon"><code class="docutils literal notranslate"><span class="pre">ensure_valid_polygon()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.epsg_from_lnglat"><code class="docutils literal notranslate"><span class="pre">epsg_from_lnglat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.filter_polygon_from_collection"><code class="docutils literal notranslate"><span class="pre">filter_polygon_from_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.geojson_dumps"><code class="docutils literal notranslate"><span class="pre">geojson_dumps()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.geojson_loads"><code class="docutils literal notranslate"><span class="pre">geojson_loads()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.get_epsg"><code class="docutils literal notranslate"><span class="pre">get_epsg()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.get_geoms"><code class="docutils literal notranslate"><span class="pre">get_geoms()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.get_inner_point"><code class="docutils literal notranslate"><span class="pre">get_inner_point()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.infer_geom_format"><code class="docutils literal notranslate"><span class="pre">infer_geom_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.is_geojson"><code class="docutils literal notranslate"><span class="pre">is_geojson()</span></code></a></li>
@@ -83,6 +81,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.is_wkt"><code class="docutils literal notranslate"><span class="pre">is_wkt()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.lng_from_city"><code class="docutils literal notranslate"><span class="pre">lng_from_city()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.multiline2multipolygon"><code class="docutils literal notranslate"><span class="pre">multiline2multipolygon()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.split_multi_geoms"><code class="docutils literal notranslate"><span class="pre">split_multi_geoms()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.text2lnglats"><code class="docutils literal notranslate"><span class="pre">text2lnglats()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.text2shapely"><code class="docutils literal notranslate"><span class="pre">text2shapely()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.util.wkb_dumps"><code class="docutils literal notranslate"><span class="pre">wkb_dumps()</span></code></a></li>
@@ -127,10 +126,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.df.wkt2wkb"><code class="docutils literal notranslate"><span class="pre">wkt2wkb()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-ricco.geometry.topology_check">拓扑处理</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.topology_check.fix_polygon_topology"><code class="docutils literal notranslate"><span class="pre">fix_polygon_topology()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.topology_check.series_geometry_fix_topology"><code class="docutils literal notranslate"><span class="pre">series_geometry_fix_topology()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.topology_check.topology_check"><code class="docutils literal notranslate"><span class="pre">topology_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ricco.geometry.topology">拓扑处理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.topology.fix_topology"><code class="docutils literal notranslate"><span class="pre">fix_topology()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.geometry.topology.is_topology_valid"><code class="docutils literal notranslate"><span class="pre">is_topology_valid()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -153,7 +151,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">地理处理</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/geometry.rst.txt" rel="nofollow"> 查看页面源码</a>
@@ -165,27 +163,11 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1>地理处理<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<h1>地理处理<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <section id="module-ricco.geometry.util">
-<span id="id2"></span><h2>基础地理处理工具<a class="headerlink" href="#module-ricco.geometry.util" title="此标题的永久链接"></a></h2>
-<p><strong>Classes:</strong></p>
-<table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.GeomFormat" title="ricco.geometry.util.GeomFormat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeomFormat</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
+<span id="id2"></span><h2>基础地理处理工具<a class="headerlink" href="#module-ricco.geometry.util" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.auto_loads" title="ricco.geometry.util.auto_loads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_loads</span></code></a>(x)</p></td>
 <td><p>自动识别地理格式并转换为shapely格式</p></td>
@@ -203,10 +185,16 @@
 <td><p>确保经纬度是tuple类型，如果是geometry会自动提取经纬度</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.ensure_multi_geom" title="ricco.geometry.util.ensure_multi_geom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_multi_geom</span></code></a>(geom)</p></td>
-<td><p>将LineString和Polygon转为multi格式</p></td>
+<td><p>将Point/LineString/Polygon转为multi分别转为MultiPoint/MultiLineString/MultiPolygon</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.epsg_from_lnglat" title="ricco.geometry.util.epsg_from_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epsg_from_lnglat</span></code></a>(lng[, lat])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.ensure_valid_polygon" title="ricco.geometry.util.ensure_valid_polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_valid_polygon</span></code></a>(x)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.epsg_from_lnglat" title="ricco.geometry.util.epsg_from_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epsg_from_lnglat</span></code></a>(lng[, lat])</p></td>
 <td><p>根据经纬度计算 UTM 区域 EPSG 代码</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.filter_polygon_from_collection" title="ricco.geometry.util.filter_polygon_from_collection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_polygon_from_collection</span></code></a>(x)</p></td>
+<td><p>从GeometryCollection中筛选面重新组成geometry</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.geojson_dumps" title="ricco.geometry.util.geojson_dumps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geojson_dumps</span></code></a>(x)</p></td>
 <td><p>shapely转为geojson文本格式</p></td>
@@ -217,35 +205,35 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.get_epsg" title="ricco.geometry.util.get_epsg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_epsg</span></code></a>(city)</p></td>
 <td><p>根据城市查询epsg代码，用于投影</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.get_geoms" title="ricco.geometry.util.get_geoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_geoms</span></code></a>(geo)</p></td>
-<td><p>将geo中包含的LineString、Point、Polygon取出存放到list中</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.get_inner_point" title="ricco.geometry.util.get_inner_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_inner_point</span></code></a>(polygon[, within])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.get_inner_point" title="ricco.geometry.util.get_inner_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_inner_point</span></code></a>(polygon[, within])</p></td>
 <td><p>返回面内的一个点，默认返回中心点，当中心点不在面内则返回面内一个点</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.infer_geom_format" title="ricco.geometry.util.infer_geom_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_geom_format</span></code></a>(series)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.infer_geom_format" title="ricco.geometry.util.infer_geom_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_geom_format</span></code></a>(series)</p></td>
 <td><p>推断geometry格式</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.is_geojson" title="ricco.geometry.util.is_geojson"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_geojson</span></code></a>(x[, na])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.is_geojson" title="ricco.geometry.util.is_geojson"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_geojson</span></code></a>(x[, na])</p></td>
 <td><p>判断是否为geojson格式</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.is_shapely" title="ricco.geometry.util.is_shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_shapely</span></code></a>(x[, na])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.is_shapely" title="ricco.geometry.util.is_shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_shapely</span></code></a>(x[, na])</p></td>
 <td><p>判断是否为shapely格式</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.is_valid_lnglat" title="ricco.geometry.util.is_valid_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_lnglat</span></code></a>(lng, lat)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.is_valid_lnglat" title="ricco.geometry.util.is_valid_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_lnglat</span></code></a>(lng, lat)</p></td>
 <td><p>判断经纬度是否有效</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.is_wkb" title="ricco.geometry.util.is_wkb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_wkb</span></code></a>(x[, na])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.is_wkb" title="ricco.geometry.util.is_wkb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_wkb</span></code></a>(x[, na])</p></td>
 <td><p>判断是否为wkb格式</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.is_wkt" title="ricco.geometry.util.is_wkt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_wkt</span></code></a>(x[, na])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.is_wkt" title="ricco.geometry.util.is_wkt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_wkt</span></code></a>(x[, na])</p></td>
 <td><p>判断是否为wkt格式</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.lng_from_city" title="ricco.geometry.util.lng_from_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lng_from_city</span></code></a>(city)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.lng_from_city" title="ricco.geometry.util.lng_from_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lng_from_city</span></code></a>(city)</p></td>
 <td><p>获取城市所在的经度</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.multiline2multipolygon" title="ricco.geometry.util.multiline2multipolygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multiline2multipolygon</span></code></a>(multiline_shapely[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.multiline2multipolygon" title="ricco.geometry.util.multiline2multipolygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multiline2multipolygon</span></code></a>(multiline_shapely[, ...])</p></td>
 <td><p>multiline转为multipolygon，直接首尾相连</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.split_multi_geoms" title="ricco.geometry.util.split_multi_geoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_multi_geoms</span></code></a>(geometry)</p></td>
+<td><p>返回多部件要素中的元素（LineString、Point、Polygon）组成的列表</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.text2lnglats" title="ricco.geometry.util.text2lnglats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text2lnglats</span></code></a>(text, point_sep, lnglat_sep)</p></td>
 <td><p>将一段坐标文本信息整理成经纬度列表</p></td>
@@ -267,84 +255,24 @@
 </tr>
 </tbody>
 </table>
-<dl class="py class">
-<dt class="sig sig-object py" id="ricco.geometry.util.GeomFormat">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">GeomFormat</span></span><a class="headerlink" href="#ricco.geometry.util.GeomFormat" title="永久链接至目标"></a></dt>
-<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p><strong>Attributes:</strong></p>
-<table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.GeomFormat.geojson" title="ricco.geometry.util.GeomFormat.geojson"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geojson</span></code></a></p></td>
-<td><p>geojson</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.GeomFormat.shapely" title="ricco.geometry.util.GeomFormat.shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shapely</span></code></a></p></td>
-<td><p>shapely</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.GeomFormat.unknown" title="ricco.geometry.util.GeomFormat.unknown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unknown</span></code></a></p></td>
-<td><p>unknown</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.util.GeomFormat.wkb" title="ricco.geometry.util.GeomFormat.wkb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wkb</span></code></a></p></td>
-<td><p>wkb</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.util.GeomFormat.wkt" title="ricco.geometry.util.GeomFormat.wkt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wkt</span></code></a></p></td>
-<td><p>wkt</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ricco.geometry.util.GeomFormat.geojson">
-<span class="sig-name descname"><span class="pre">geojson</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'geojson'</span></em><a class="headerlink" href="#ricco.geometry.util.GeomFormat.geojson" title="永久链接至目标"></a></dt>
-<dd><p>geojson</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ricco.geometry.util.GeomFormat.shapely">
-<span class="sig-name descname"><span class="pre">shapely</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'shapely'</span></em><a class="headerlink" href="#ricco.geometry.util.GeomFormat.shapely" title="永久链接至目标"></a></dt>
-<dd><p>shapely</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ricco.geometry.util.GeomFormat.unknown">
-<span class="sig-name descname"><span class="pre">unknown</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown'</span></em><a class="headerlink" href="#ricco.geometry.util.GeomFormat.unknown" title="永久链接至目标"></a></dt>
-<dd><p>unknown</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ricco.geometry.util.GeomFormat.wkb">
-<span class="sig-name descname"><span class="pre">wkb</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wkb'</span></em><a class="headerlink" href="#ricco.geometry.util.GeomFormat.wkb" title="永久链接至目标"></a></dt>
-<dd><p>wkb</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ricco.geometry.util.GeomFormat.wkt">
-<span class="sig-name descname"><span class="pre">wkt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wkt'</span></em><a class="headerlink" href="#ricco.geometry.util.GeomFormat.wkt" title="永久链接至目标"></a></dt>
-<dd><p>wkt</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.auto_loads">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">auto_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BaseGeometry</span></span></span><a class="headerlink" href="#ricco.geometry.util.auto_loads" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">auto_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BaseGeometry</span></span></span><a class="headerlink" href="#ricco.geometry.util.auto_loads" title="Link to this definition"></a></dt>
 <dd><p>自动识别地理格式并转换为shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.crs_sh2000">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">crs_sh2000</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.crs_sh2000" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">crs_sh2000</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.crs_sh2000" title="Link to this definition"></a></dt>
 <dd><p>测绘院（上海2000）crs信息</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.distance">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1:</span> <span class="pre">(&lt;class</span> <span class="pre">'tuple'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2:</span> <span class="pre">(&lt;class</span> <span class="pre">'tuple'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_from:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4326</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.distance" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1:</span> <span class="pre">(&lt;class</span> <span class="pre">'tuple'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2:</span> <span class="pre">(&lt;class</span> <span class="pre">'tuple'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_from:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4326</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_to:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.distance" title="Link to this definition"></a></dt>
 <dd><p>计算两个点（经度，纬度）之间的距离，单位：米</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p1</strong> – 点位1，经纬度或geometry</p></li>
 <li><p><strong>p2</strong> – 点位2，经纬度或geometry</p></li>
@@ -358,120 +286,128 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.dumps2x">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">dumps2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.dumps2x" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">dumps2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.dumps2x" title="Link to this definition"></a></dt>
 <dd><p>转换geometry格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.ensure_lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">ensure_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lnglat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#ricco.geometry.util.ensure_lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">ensure_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lnglat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#ricco.geometry.util.ensure_lnglat" title="Link to this definition"></a></dt>
 <dd><p>确保经纬度是tuple类型，如果是geometry会自动提取经纬度</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.ensure_multi_geom">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">ensure_multi_geom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.ensure_multi_geom" title="永久链接至目标"></a></dt>
-<dd><p>将LineString和Polygon转为multi格式</p>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">ensure_multi_geom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom:</span> <span class="pre">(&lt;class</span> <span class="pre">'shapely.geometry.base.BaseGeometry'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'shapely.geometry.base.BaseMultipartGeometry'&gt;)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BaseMultipartGeometry</span></span></span><a class="headerlink" href="#ricco.geometry.util.ensure_multi_geom" title="Link to this definition"></a></dt>
+<dd><p>将Point/LineString/Polygon转为multi分别转为MultiPoint/MultiLineString/MultiPolygon</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ricco.geometry.util.ensure_valid_polygon">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">ensure_valid_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.ensure_valid_polygon" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.epsg_from_lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">epsg_from_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.epsg_from_lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">epsg_from_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.epsg_from_lnglat" title="Link to this definition"></a></dt>
 <dd><p>根据经纬度计算 UTM 区域 EPSG 代码</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ricco.geometry.util.filter_polygon_from_collection">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">filter_polygon_from_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.filter_polygon_from_collection" title="Link to this definition"></a></dt>
+<dd><p>从GeometryCollection中筛选面重新组成geometry</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.geojson_dumps">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">geojson_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.geojson_dumps" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">geojson_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.geojson_dumps" title="Link to this definition"></a></dt>
 <dd><p>shapely转为geojson文本格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.geojson_loads">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">geojson_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'dict'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.geojson_loads" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">geojson_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'dict'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.geojson_loads" title="Link to this definition"></a></dt>
 <dd><p>geojson文本形式转为shapely几个对象</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.get_epsg">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">get_epsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.get_epsg" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">get_epsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.get_epsg" title="Link to this definition"></a></dt>
 <dd><p>根据城市查询epsg代码，用于投影</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ricco.geometry.util.get_geoms">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">get_geoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#ricco.geometry.util.get_geoms" title="永久链接至目标"></a></dt>
-<dd><p>将geo中包含的LineString、Point、Polygon取出存放到list中</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>geo</strong> – geometry类型的数据</p>
-</dd>
-<dt class="field-even">返回</dt>
-<dd class="field-even"><p>List：geo中包含的LineString、Point、Polygon</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.get_inner_point">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">get_inner_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Polygon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.get_inner_point" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">get_inner_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Polygon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.get_inner_point" title="Link to this definition"></a></dt>
 <dd><p>返回面内的一个点，默认返回中心点，当中心点不在面内则返回面内一个点</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.infer_geom_format">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">infer_geom_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'tuple'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'shapely.geometry.base.BaseGeometry'&gt;)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.infer_geom_format" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">infer_geom_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'tuple'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'shapely.geometry.base.BaseGeometry'&gt;)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.infer_geom_format" title="Link to this definition"></a></dt>
 <dd><p>推断geometry格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.is_geojson">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_geojson" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_geojson" title="Link to this definition"></a></dt>
 <dd><p>判断是否为geojson格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.is_shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_shapely" title="Link to this definition"></a></dt>
 <dd><p>判断是否为shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.is_valid_lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_valid_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.is_valid_lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_valid_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.is_valid_lnglat" title="Link to this definition"></a></dt>
 <dd><p>判断经纬度是否有效</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.is_wkb">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_wkb" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_wkb" title="Link to this definition"></a></dt>
 <dd><p>判断是否为wkb格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.is_wkt">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_wkt" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">is_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.geometry.util.is_wkt" title="Link to this definition"></a></dt>
 <dd><p>判断是否为wkt格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.lng_from_city">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">lng_from_city</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.lng_from_city" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">lng_from_city</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.lng_from_city" title="Link to this definition"></a></dt>
 <dd><p>获取城市所在的经度</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.multiline2multipolygon">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">multiline2multipolygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiline_shapely</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MultiLineString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.multiline2multipolygon" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">multiline2multipolygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiline_shapely</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MultiLineString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.multiline2multipolygon" title="Link to this definition"></a></dt>
 <dd><p>multiline转为multipolygon，直接首尾相连</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ricco.geometry.util.split_multi_geoms">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">split_multi_geoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseMultipartGeometry</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#ricco.geometry.util.split_multi_geoms" title="Link to this definition"></a></dt>
+<dd><p>返回多部件要素中的元素（LineString、Point、Polygon）组成的列表</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geometry</strong> – geometry类型的数据</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.text2lnglats">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">text2lnglats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lnglat_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.text2lnglats" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">text2lnglats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lnglat_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.text2lnglats" title="Link to this definition"></a></dt>
 <dd><p>将一段坐标文本信息整理成经纬度列表</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – 要转换为文本</p></li>
 <li><p><strong>point_sep</strong> – 点位之间的分隔符</p></li>
@@ -483,10 +419,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.text2shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">text2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">';'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lnglat_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_multi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.text2shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">text2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">';'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lnglat_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_multi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.text2shapely" title="Link to this definition"></a></dt>
 <dd><p>文本转为shapely</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – 坐标组成的文本</p></li>
 <li><p><strong>geometry_type</strong> – 要输出的地理类型，可选值为 ‘polygon’、’line’</p></li>
@@ -499,44 +435,40 @@
 <p class="rubric">示例</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ss</span> <span class="o">=</span> <span class="s1">&#39;121.4737,31.2304; 121.4740,31.2304; 121.4740,31.2307&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">text2shapely</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">geometry_type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">point_sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">lnglat_sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># MULTILINESTRING ((121.4737 31.2304, 121.474 31.2304, 121.474 31.2307))</span>
+<span class="go">MULTILINESTRING ((121.4737 31.2304, 121.474 31.2304, 121.474 31.2307))</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.wkb_dumps">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkb_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkb_dumps" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkb_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkb_dumps" title="Link to this definition"></a></dt>
 <dd><p>将Shapely几何对象转换为文本形式的WKB</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.wkb_loads">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkb_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkb_loads" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkb_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkb_loads" title="Link to this definition"></a></dt>
 <dd><p>将文本形式的WKB转换为Shapely几何对象</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.wkt_dumps">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkt_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkt_dumps" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkt_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkt_dumps" title="Link to this definition"></a></dt>
 <dd><p>将Shapely几何对象转换为文本形式的WKT</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.util.wkt_loads">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkt_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkt_loads" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.util.</span></span><span class="sig-name descname"><span class="pre">wkt_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.util.wkt_loads" title="Link to this definition"></a></dt>
 <dd><p>将文本形式的WKT转换为Shapely几何对象</p>
 </dd></dl>
 
 </section>
 <section id="module-ricco.geometry.df">
-<span id="geodataframe"></span><h2>基于GeoDataframe处理<a class="headerlink" href="#module-ricco.geometry.df" title="此标题的永久链接"></a></h2>
+<span id="geodataframe"></span><h2>基于GeoDataframe处理<a class="headerlink" href="#module-ricco.geometry.df" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.auto2shapely" title="ricco.geometry.df.auto2shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auto2shapely</span></code></a>(df[, geometry])</p></td>
 <td><p>自动识别地理格式并转换为shapely格式</p></td>
@@ -550,8 +482,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.distance_gdf" title="ricco.geometry.df.distance_gdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_gdf</span></code></a>(df, df_target[, c_dst, ...])</p></td>
 <td><p>计算一个数据集中的每个元素到另一个数据集之间的最短距离</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.distance_min" title="ricco.geometry.df.distance_min"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_min</span></code></a>(geometry, gdf)</p></td>
-<td><p>计算单个geometry到数据集gdf中元素的最短距离</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.distance_min" title="ricco.geometry.df.distance_min"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_min</span></code></a>(df, geometry)</p></td>
+<td><p>计算数据集df中元素到单个geometry的最短距离</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.ensure_geometry" title="ricco.geometry.df.ensure_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_geometry</span></code></a>(df[, ensure_point, warning, ...])</p></td>
 <td><p>转换并仅保留geometry列</p></td>
@@ -562,7 +494,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.geojson2shapely" title="ricco.geometry.df.geojson2shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geojson2shapely</span></code></a>(df[, geometry, epsg_code])</p></td>
 <td><p>将geojson格式的geometry列转换为shapely格式</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.get_area" title="ricco.geometry.df.get_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_area</span></code></a>(df[, c_dst, epsg])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.get_area" title="ricco.geometry.df.get_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_area</span></code></a>(df[, c_dst, epsg, decimals])</p></td>
 <td><p>计算面积（单位：平方米）</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.get_neighbors" title="ricco.geometry.df.get_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_neighbors</span></code></a>(df, key_col[, res_type])</p></td>
@@ -586,7 +518,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.nearest_neighbor" title="ricco.geometry.df.nearest_neighbor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest_neighbor</span></code></a>(df, df_target[, c_dst, epsg])</p></td>
 <td><p>近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.projection" title="ricco.geometry.df.projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection</span></code></a>(gdf[, epsg, city, crs])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.projection" title="ricco.geometry.df.projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection</span></code></a>(df[, epsg, city, crs])</p></td>
 <td><p>投影变换</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.projection_lnglat" title="ricco.geometry.df.projection_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection_lnglat</span></code></a>(df)</p></td>
@@ -641,16 +573,16 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.auto2shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">auto2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.auto2shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">auto2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.auto2shapely" title="Link to this definition"></a></dt>
 <dd><p>自动识别地理格式并转换为shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.auto2x">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">auto2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.auto2x" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">auto2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.auto2x" title="Link to this definition"></a></dt>
 <dd><p>将geometry转为指定格式</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要转换的Dataframe</p></li>
 <li><p><strong>geometry_format</strong> – 要转换为的geometry类型，支持shapely,wkb,wkt,geojson</p></li>
@@ -662,10 +594,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.buffer">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'buffer_geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wkb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.buffer" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'buffer_geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wkb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.buffer" title="Link to this definition"></a></dt>
 <dd><p>获得一定半径的缓冲区</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – pd.DataFrame, 包含地理信息的DataFrame</p></li>
 <li><p><strong>radius</strong> – numeric, 缓冲区半径（单位米）</p></li>
@@ -676,7 +608,7 @@
 <li><p><strong>geo_format</strong> – str, 输出的缓冲区geometry格式，支持wkb,wkt,shapely,geojson，默认wkb</p></li>
 </ul>
 </dd>
-<dt class="field-even">返回</dt>
+<dt class="field-even">返回<span class="colon">:</span></dt>
 <dd class="field-even"><p>包含缓冲区geometry的DataFrame</p>
 </dd>
 </dl>
@@ -684,19 +616,19 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.distance_gdf">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">distance_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'最小距离'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.distance_gdf" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">distance_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'最小距离'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.distance_gdf" title="Link to this definition"></a></dt>
 <dd><p>计算一个数据集中的每个元素到另一个数据集之间的最短距离</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.distance_min">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">distance_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#ricco.geometry.df.distance_min" title="永久链接至目标"></a></dt>
-<dd><p>计算单个geometry到数据集gdf中元素的最短距离</p>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">distance_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseGeometry</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#ricco.geometry.df.distance_min" title="Link to this definition"></a></dt>
+<dd><p>计算数据集df中元素到单个geometry的最短距离</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 数据集，GeoDataFrame格式</p></li>
 <li><p><strong>geometry</strong> – 单个geometry，shapely格式</p></li>
-<li><p><strong>gdf</strong> – 数据集，GeoDataFrame格式</p></li>
 </ul>
 </dd>
 </dl>
@@ -704,32 +636,33 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.ensure_geometry">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">ensure_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.ensure_geometry" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">ensure_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.ensure_geometry" title="Link to this definition"></a></dt>
 <dd><p>转换并仅保留geometry列</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.ensure_lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">ensure_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.ensure_lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">ensure_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.ensure_lnglat" title="Link to this definition"></a></dt>
 <dd><p>自动提取点或转换为点的经纬度</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.geojson2shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">geojson2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.geojson2shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">geojson2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.geojson2shapely" title="Link to this definition"></a></dt>
 <dd><p>将geojson格式的geometry列转换为shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.get_area">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">get_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'area'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.get_area" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">get_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'area'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.get_area" title="Link to this definition"></a></dt>
 <dd><p>计算面积（单位：平方米）</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要计算的面数据</p></li>
 <li><p><strong>c_dst</strong> – 输出面积的列名，默认为“area”</p></li>
 <li><p><strong>epsg</strong> – 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取</p></li>
+<li><p><strong>decimals</strong> – 要保留的小数位数</p></li>
 </ul>
 </dd>
 </dl>
@@ -737,10 +670,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.get_neighbors">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">get_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'geopandas.geodataframe.GeoDataFrame'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_type='dict')</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'dict'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.get_neighbors" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">get_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'geopandas.geodataframe.GeoDataFrame'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_col:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_type='dict')</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'dict'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.get_neighbors" title="Link to this definition"></a></dt>
 <dd><p>获取数据集中每个点的邻居面(相邻标准：至少有一个点相同且不重叠)</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – </p></li>
 <li><p><strong>key_col</strong> – 关键列，必须唯一</p></li>
@@ -752,28 +685,28 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.lnglat2shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">lnglat2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.lnglat2shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">lnglat2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.lnglat2shapely" title="Link to this definition"></a></dt>
 <dd><p>将经纬度坐标转换为shapely格式的geometry</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.lnglat2wkb">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">lnglat2wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.lnglat2wkb" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">lnglat2wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.lnglat2wkb" title="Link to this definition"></a></dt>
 <dd><p>经纬度转wkb格式的geometry</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.lnglat2wkt">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">lnglat2wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.lnglat2wkt" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">lnglat2wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.lnglat2wkt" title="Link to this definition"></a></dt>
 <dd><p>经纬度转wkb格式的geometry</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.mark_tags_v2">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">mark_tags_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate='intersects'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_geometry=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format='wkb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.mark_tags_v2" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">mark_tags_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate='intersects'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_geometry=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format='wkb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.mark_tags_v2" title="Link to this definition"></a></dt>
 <dd><p>使用面数据通过空间关联（sjoin）给数据打标签</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>point_df</strong> – 点数据</p></li>
 <li><p><strong>polygon_df</strong> – 面数据</p></li>
@@ -794,11 +727,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.nearest_kdtree">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_kdtree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_poi:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_count:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_min_distance:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_origin:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size=2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.nearest_kdtree" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_kdtree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_poi:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_count:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_min_distance:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_origin:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.nearest_kdtree" title="Link to this definition"></a></dt>
 <dd><p>KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
 同时可进行其他运算</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 基础数据集，统计该数据及周边的其他数据集的信息</p></li>
 <li><p><strong>df_poi</strong> – 被统计的数据集</p></li>
@@ -816,10 +749,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.nearest_neighbor">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.nearest_neighbor" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_dst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.nearest_neighbor" title="Link to this definition"></a></dt>
 <dd><p>近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – </p></li>
 <li><p><strong>df_target</strong> – </p></li>
@@ -832,12 +765,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.projection">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.projection" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.projection" title="Link to this definition"></a></dt>
 <dd><p>投影变换</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gdf</strong> – 输入的GeomDataFrame格式的数据</p></li>
+<li><p><strong>df</strong> – 输入的GeomDataFrame格式的数据</p></li>
 <li><p><strong>epsg</strong> – epsg code, 第一优先级</p></li>
 <li><p><strong>city</strong> – 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取</p></li>
 <li><p><strong>crs</strong> – 投影坐标系，第二优先级</p></li>
@@ -848,28 +781,28 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.projection_lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.projection_lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.projection_lnglat" title="Link to this definition"></a></dt>
 <dd><p>直接对经纬度进行投影变换</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.shapely2central_shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2central_shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2central_shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2central_shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2central_shapely" title="Link to this definition"></a></dt>
 <dd><p>获取中心点shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.shapely2geojson">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2geojson" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2geojson" title="Link to this definition"></a></dt>
 <dd><p>将shapely格式的geometry列转换为geojson格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.shapely2lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2lnglat" title="Link to this definition"></a></dt>
 <dd><p>shapely格式提取面内点转为经纬度。</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要转换的DataFrame</p></li>
 <li><p><strong>geometry</strong> – 输入的geometry列名</p></li>
@@ -886,22 +819,22 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.shapely2wkb">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2wkb" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2wkb" title="Link to this definition"></a></dt>
 <dd><p>将shapely格式的geometry列转换为wkb格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.shapely2wkt">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2wkt" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2wkt" title="Link to this definition"></a></dt>
 <dd><p>将shapely格式的geometry列转换为wkt格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.shapely2x">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">(&lt;class</span> <span class="pre">'geopandas.geodataframe.GeoDataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry='geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2x" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">shapely2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">(&lt;class</span> <span class="pre">'geopandas.geodataframe.GeoDataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry='geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.shapely2x" title="Link to this definition"></a></dt>
 <dd><p>将shapely转为指定的格式</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 要转换的GeoDataFrame</p></li>
 <li><p><strong>geometry_format</strong> – 支持wkb,wkt,shapely,geojson</p></li>
@@ -913,10 +846,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.spatial_agg">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">spatial_agg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.spatial_agg" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">spatial_agg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.spatial_agg" title="Link to this definition"></a></dt>
 <dd><p>对面数据覆盖范围内的点数据进行空间统计</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>point_df</strong> – pd.DataFrame, 点数据dataframe;</p></li>
 <li><p><strong>polygon_df</strong> – pd.DataFrame, 面数据dataframe;</p></li>
@@ -925,7 +858,7 @@
 <li><p><strong>polygon_geometry</strong> – str, 面数据geometry字段名，默认”geometry”;</p></li>
 </ul>
 </dd>
-<dt class="field-even">返回</dt>
+<dt class="field-even">返回<span class="colon">:</span></dt>
 <dd class="field-even"><p>pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame</p>
 </dd>
 </dl>
@@ -933,10 +866,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.split_grids">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">split_grids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wkb'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.split_grids" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">split_grids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wkb'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.split_grids" title="Link to this definition"></a></dt>
 <dd><p>根据所给边界划分固定边长的栅格</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – 边界文件，GeoDataFrame格式</p></li>
 <li><p><strong>step</strong> – 栅格边长，单位：米</p></li>
@@ -948,120 +881,98 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.split_multi_to_rows">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">split_multi_to_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.split_multi_to_rows" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">split_multi_to_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.split_multi_to_rows" title="Link to this definition"></a></dt>
 <dd><p>将多部件要素拆解为多行的单部件要素</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.wkb2lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkb2lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkb2lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkb2lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkb2lnglat" title="Link to this definition"></a></dt>
 <dd><p>geometry转经纬度，求中心点经纬度</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.wkb2shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkb2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.wkb2shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkb2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.wkb2shapely" title="Link to this definition"></a></dt>
 <dd><p>将wkb格式的geometry列转换为shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.wkb2wkt">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkb2wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkb2wkt" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkb2wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkb2wkt" title="Link to this definition"></a></dt>
 <dd><p>wkb转wkt</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.wkt2lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkt2lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkt2lnglat" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkt2lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">within</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkt2lnglat" title="Link to this definition"></a></dt>
 <dd><p>geometry转经纬度，求中心点经纬度</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.wkt2shapely">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkt2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.wkt2shapely" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkt2shapely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.wkt2shapely" title="Link to this definition"></a></dt>
 <dd><p>将wkt格式的geometry列转换为shapely格式</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.wkt2wkb">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkt2wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkt2wkb" title="永久链接至目标"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">wkt2wkb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4326</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.wkt2wkb" title="Link to this definition"></a></dt>
 <dd><p>wkb转wkt</p>
 </dd></dl>
 
 </section>
-<section id="module-ricco.geometry.topology_check">
-<span id="id3"></span><h2>拓扑处理<a class="headerlink" href="#module-ricco.geometry.topology_check" title="此标题的永久链接"></a></h2>
+<section id="module-ricco.geometry.topology">
+<span id="id3"></span><h2>拓扑处理<a class="headerlink" href="#module-ricco.geometry.topology" title="Link to this heading"></a></h2>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.topology_check.fix_polygon_topology" title="ricco.geometry.topology_check.fix_polygon_topology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_polygon_topology</span></code></a>(gdf[, geo_col, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.topology.fix_topology" title="ricco.geometry.topology.fix_topology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_topology</span></code></a>(df[, c_geometry, ...])</p></td>
 <td><p>修复面地理数据的拓扑问题,index不能重复</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.topology_check.series_geometry_fix_topology" title="ricco.geometry.topology_check.series_geometry_fix_topology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">series_geometry_fix_topology</span></code></a>(series[, ...])</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">param series</dt>
-<dd class="field-odd"><p>series的index不能重复, 如果keep_contains=True,geometry不能相互包含</p>
-</dd>
-</dl>
-</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.topology_check.topology_check" title="ricco.geometry.topology_check.topology_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">topology_check</span></code></a>(gdf[, geo_col])</p></td>
-<td><p>判断整列geometry是否规范, 仅支持面数据， 检查geometry是否有空值， 检查每个geometry是否存在拓扑问题， 检查整列geometry之间是否存在拓扑问题</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.topology.is_topology_valid" title="ricco.geometry.topology.is_topology_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_topology_valid</span></code></a>(df[, c_geometry])</p></td>
+<td><p>判断整列geometry是否规范, 仅支持面数据，</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
-<dt class="sig sig-object py" id="ricco.geometry.topology_check.fix_polygon_topology">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.topology_check.</span></span><span class="sig-name descname"><span class="pre">fix_polygon_topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_intersects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_contains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.topology_check.fix_polygon_topology" title="永久链接至目标"></a></dt>
+<dt class="sig sig-object py" id="ricco.geometry.topology.fix_topology">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.topology.</span></span><span class="sig-name descname"><span class="pre">fix_topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_intersects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_contains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.topology.fix_topology" title="Link to this definition"></a></dt>
 <dd><p>修复面地理数据的拓扑问题,index不能重复</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gdf</strong> – 需要进行拓扑修复的GeoDataFrame</p></li>
-<li><p><strong>geo_col</strong> – geometry列列名</p></li>
+<li><p><strong>df</strong> – 需要进行拓扑修复的GeoDataFrame</p></li>
+<li><p><strong>c_geometry</strong> – geometry列列名</p></li>
 <li><p><strong>fill_intersects</strong> – 是否填满相交的区域，如果为True的话，两个面相交的区域会随机分配到其中一个面内</p></li>
 <li><p><strong>keep_contains</strong> – fill_intersects为True时才有效，即是否强制保留被包含的面</p></li>
 </ul>
 </dd>
-<dt class="field-even">返回</dt>
+<dt class="field-even">返回<span class="colon">:</span></dt>
 <dd class="field-even"><p>修复完拓扑问题的GeoDataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ricco.geometry.topology_check.series_geometry_fix_topology">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.topology_check.</span></span><span class="sig-name descname"><span class="pre">series_geometry_fix_topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_intersects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_contains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.topology_check.series_geometry_fix_topology" title="永久链接至目标"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>series</strong> – series的index不能重复, 如果keep_contains=True,geometry不能相互包含</p></li>
-<li><p><strong>fill_intersects</strong> – 是否填满相交的区域，如果为True的话，两个面相交的区域会分配到更靠后的面内</p></li>
-<li><p><strong>keep_contains</strong> – fill_intersects为True时才有效，即是否强制保留被包含的面</p></li>
+<dt class="sig sig-object py" id="ricco.geometry.topology.is_topology_valid">
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.topology.</span></span><span class="sig-name descname"><span class="pre">is_topology_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.topology.is_topology_valid" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>判断整列geometry是否规范, 仅支持面数据，</dt><dd><ul class="simple">
+<li><p>检查geometry是否有空值，</p></li>
+<li><p>检查每个geometry是否存在拓扑问题，</p></li>
+<li><p>检查整列geometry之间是否存在拓扑问题</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ricco.geometry.topology_check.topology_check">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.topology_check.</span></span><span class="sig-name descname"><span class="pre">topology_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.topology_check.topology_check" title="永久链接至目标"></a></dt>
-<dd><p>判断整列geometry是否规范, 仅支持面数据，
-检查geometry是否有空值，
-检查每个geometry是否存在拓扑问题，
-检查整列geometry之间是否存在拓扑问题</p>
 <dl class="field-list simple">
-<dt class="field-odd">参数</dt>
+<dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gdf</strong> – 需要进行拓扑修复的GeoDataFrame</p></li>
-<li><p><strong>geo_col</strong> – geometry列列名</p></li>
+<li><p><strong>df</strong> – 需要进行拓扑修复的GeoDataFrame</p></li>
+<li><p><strong>c_geometry</strong> – geometry列名</p></li>
 </ul>
 </dd>
-<dt class="field-even">返回</dt>
+<dt class="field-even">返回<span class="colon">:</span></dt>
 <dd class="field-even"><p>geometry数据是否规范</p>
 </dd>
 </dl>
@@ -1081,7 +992,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; 版权所有 2024, wangyukang.</p>
+    <p>&#169; 版权所有 2024, wangyukang。</p>
   </div>
 
   利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
