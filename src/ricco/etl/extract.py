@@ -52,6 +52,8 @@ def rdf(
     recursive: 是否循环遍历更深层级的文件夹，默认为True，仅当路径为文件夹时生效
   """
   if os.path.isdir(file_path):
+    if file_path.endswith('.gdb'):
+      return read_gdb(file_path)
     # 此部分为递归，注意避免无限递归
     return rdf_by_dir(file_path, columns=columns, info=info,
                       recursive=recursive)
@@ -82,7 +84,7 @@ def rdf(
   if ex in ('.kml', '.ovkml'):
     df = read_kml(file_path)
   if ex in ('.sav', '.zsav'):
-    df = read_sav(file_path, encoding=encoding, columns=columns, nrows=nrows)
+    df = read_spss(file_path, encoding=encoding, columns=columns, nrows=nrows)
 
   df = df[columns] if columns else df  # noqa
   df = df.head(nrows) if nrows else df
@@ -331,7 +333,15 @@ def read_shapefile(file_path, **kwargs):
   return df
 
 
-def read_sav(file_path, columns=None, nrows=None, encoding=None):
+def read_gdb(dir_path):
+  """读取gdb文件夹"""
+  return gpd.read_file(
+      dir_path,
+      driver='FileGDB',
+  )
+
+
+def read_spss(file_path, columns=None, nrows=None, encoding=None):
   """读取SPSS的.sav文件"""
   import pyreadstat
   df, meta = pyreadstat.read_sav(

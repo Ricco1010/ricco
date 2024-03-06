@@ -86,7 +86,7 @@ def or_(*conditions):
 def physical_age(birthday: datetime.datetime,
                  deadline: datetime.datetime = None):
   """计算周岁，默认按照当前时间点计算"""
-  now = deadline if deadline else datetime.datetime.now()
+  now = deadline or datetime.datetime.now()
   now_str = now.strftime('%m%d')
   birth_str = birthday.strftime('%m%d')
   if now_str >= birth_str:
@@ -363,7 +363,7 @@ def union_list_v2(*lists) -> list:
     >>> union_list_v2(a, b)
     [1, 2, 3]
   """
-  lists = [ensure_list(i) for i in lists]
+  lists = [ensure_list(i) for i in lists if not_empty(i)]
   return list(chain(*lists))
 
 
@@ -484,16 +484,16 @@ def is_hex(string) -> bool:
   return False
 
 
-def isinstance_in_list(value: list, types: (str, list)):
+def isinstance_in_list(values: list, types: (str, list)) -> bool:
   """
-  检查列表内的元素类型是否满足多个类型之一
+  检查列表内的元素类型是否全部满足多个类型之一
 
   Args:
-    value: 要检查的值
+    values: 要检查的值
     types: 类型类别
   """
-  assert isinstance(value, (list, tuple))
-  return all([isinstance(v, types) for v in value])
+  values = ensure_list(values)
+  return all([isinstance(v, types) for v in values])
 
 
 def drop_repeat_element(x: (list, tuple)):
@@ -501,7 +501,7 @@ def drop_repeat_element(x: (list, tuple)):
   删除列表中连续重复的元素
 
   Examples:
-    >>> drop_repeat_element([1, 2, 2, 3, 4, 4, 4])
-    [1, 2, 3, 4]
+    >>> drop_repeat_element([1, 2, 2, 3, 4, 4, 4, 3])
+    [1, 2, 3, 4, 3]
   """
   return [key for key, _ in groupby(x)]

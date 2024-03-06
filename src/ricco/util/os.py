@@ -1,10 +1,26 @@
-import datetime
 import logging
 import os
+import shutil
+import warnings
 import zipfile
+from datetime import datetime
+from datetime import timedelta
 from pathlib import Path
 
 from ..base import ensure_list
+
+
+def protect_dir(path):
+  if os.path.isdir(path):
+    if path == '/':
+      raise ValueError('不可指定根目录')
+    dirs = [
+      '/bin', '/sbin', '/usr', '/etc', '/dev', '/Applications', '/Library',
+      '/Network', '/System', '/Volumes', '/cores', '/private'
+    ]
+    for pre in dirs:
+      if os.path.abspath(path).startswith(fr'{pre}'):
+        raise ValueError('系统目录下的文件不可删除')
 
 
 def ext(filepath):
@@ -32,8 +48,7 @@ def split_path(filepath, abspath=False):
   if abspath:
     filepath = os.path.abspath(filepath)
   basename = os.path.basename(filepath)
-  dir_path = os.path.dirname(filepath)
-  return dir_path, path_name(basename), extension(basename)
+  return os.path.dirname(filepath), path_name(basename), extension(basename)
 
 
 def ensure_dir(dirpath: str):
@@ -43,17 +58,14 @@ def ensure_dir(dirpath: str):
   return dirpath
 
 
-def remove_dir(filepath):
-  """除某一目录下的所有文件或文件夹"""
-  import shutil
-  del_list = os.listdir(filepath)
-  for f in del_list:
-    file_path = os.path.join(filepath, f)
-    if os.path.isfile(file_path):
-      os.remove(file_path)
-    elif os.path.isdir(file_path):
-      shutil.rmtree(file_path)
-  shutil.rmtree(filepath)
+def remove_path(path, log=True):
+  """删除文件或文件夹"""
+  if os.path.exists(path):
+    os.remove(path) if os.path.isfile(path) else shutil.rmtree(path)
+    if log:
+      logging.warning(f'Deleted:"{path}"')
+  else:
+    warnings.warn(f'Path not found:"{path}"')
 
 
 def find_undefined_dirs(dirpath):
@@ -78,31 +90,40 @@ def ensure_dirpath_exist(filepath):
     logging.warning(f'Created: "{p}"')
 
 
-def dir2zip(filepath, overwrite=False, delete_origin=False):
+def file2zip(filepath, overwrite=False, delete_origin=False):
+  """将一个文件压缩为zip格式"""
+  zfn = path_name(filepath) + '.zip'
+  if os.path.exists(zfn) and not overwrite:
+    raise FileExistsError(f'"{zfn}"已存在')
+  logging.warning(f'Compressing: "{filepath}"')
+  with zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    zipf.write(filepath, arcname=os.path.basename(filepath))
+  if delete_origin:
+    remove_path(filepath)
+
+
+def dir2zip(dir_path, overwrite=False, delete_origin=False):
   """
   压缩文件夹
 
   Args:
-    filepath: 文件夹路径
+    dir_path: 文件夹路径
     overwrite: 是否覆盖已有文件
     delete_origin: 是否删除原文件
   """
-  zfn = f'{filepath}.zip'
-  if os.path.exists(zfn):
-    if overwrite:
-      os.remove(zfn)
-    else:
-      raise FileExistsError(f'"{zfn}"已存在')
+  protect_dir(dir_path)
+  zfn = f'{dir_path}.zip'
+  if os.path.exists(zfn) and not overwrite:
+    raise FileExistsError(f'"{zfn}"已存在')
   z = zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED)
-  for dirpath, _, filenames in os.walk(filepath):
+  for dirpath, _, filenames in os.walk(dir_path):
     for filename in filenames:
-      filepath_out = str(os.path.join(dirpath, filename))
-      filepath_in = str(os.path.join(os.path.split(dirpath)[-1], filename))
-      z.write(filepath_out, filepath_in)
+      f_o = str(os.path.join(dirpath, filename))
+      f_i = str(os.path.join(os.path.split(dirpath)[-1], filename))
+      z.write(f_o, f_i)
   z.close()
   if delete_origin:
-    remove_dir(filepath)
-    logging.warning(f'Deleted:"{filepath}"')
+    remove_path(dir_path)
 
 
 def count_files(dir_path):
@@ -118,21 +139,13 @@ def count_files(dir_path):
 def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False,
                     exts=None):
   """删除指定天数前修改过的文件"""
-  dirs = [
-    '/bin', '/sbin', '/usr', '/etc', '/dev', '/Applications', '/Library',
-    '/Network', '/System', '/Volumes', '/cores', '/private'
-  ]
-  for pre in dirs:
-    if os.path.abspath(dir_path).startswith(fr'{pre}'):
-      raise ValueError('系统目录下的文件不可删除')
-  if dir_path == '/':
-    raise ValueError('不可指定根目录')
-  timeline = datetime.datetime.now() - datetime.timedelta(days)
+  protect_dir(dir_path)
+  timeline = datetime.now() - timedelta(days)
   # 删除过期文件
   for file in dir_iter(dir_path, abspath=True, recursive=recursive,
                        ignore_hidden_files=not rm_hidden_file, exts=exts):
     m_time = os.path.getmtime(file)
-    m_time = datetime.datetime.fromtimestamp(m_time)
+    m_time = datetime.fromtimestamp(m_time)
     if m_time <= timeline:
       os.remove(file)
       logging.warning(f'Deleted:"{file}"')
@@ -142,8 +155,15 @@ def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False,
       dir_full_path = os.path.join(dirpath, dirname)
       num = count_files(dir_full_path)
       if num == 0:
-        remove_dir(dir_full_path)
-        logging.warning(f'Deleted:"{dir_full_path}"')
+        remove_path(dir_full_path)
+
+
+def remove_ds_store(dir_path):
+  """删除文件夹中的.DS_Store文件"""
+  protect_dir(dir_path)
+  for i in dir_iter(dir_path, recursive=True, ignore_hidden_files=False):
+    if i.endswith('.DS_Store'):
+      remove_path(i)
 
 
 def dir_iter(root,

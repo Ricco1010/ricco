@@ -168,7 +168,7 @@ def get_city_and_region(string) -> tuple:
 def extract_city(string: str, na=None):
   """从字符串中提取城市（可能包含县级市）"""
   res = get_city_and_region(string)
-  rv = res[0] if res[0] else res[1]
+  rv = res[0] or res[1]
   if is_empty(rv):
     return na
   return rv

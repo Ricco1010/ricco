@@ -40,10 +40,7 @@ class PhoneNumber:
   @property
   def service_providers(self):
     """手机运营商"""
-    if p := service_providers.get(self.__3):
-      return p
-    else:
-      return '未知'
+    return service_providers.get(self.__3) or '未知'
 
   @property
   def home(self):
