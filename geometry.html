@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>地理处理 &mdash; ricco 1.4.0 文档</title>
+  <title>地理处理 &mdash; ricco 1.4.1 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=2491dde2"></script>
+        <script src="_static/documentation_options.js?v=3657e1f8"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -521,7 +521,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.projection" title="ricco.geometry.df.projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection</span></code></a>(df[, epsg, city, crs])</p></td>
 <td><p>投影变换</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.projection_lnglat" title="ricco.geometry.df.projection_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection_lnglat</span></code></a>(df)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geometry.df.projection_lnglat" title="ricco.geometry.df.projection_lnglat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection_lnglat</span></code></a>(df[, epsg, city, crs])</p></td>
 <td><p>直接对经纬度进行投影变换</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geometry.df.shapely2central_shapely" title="ricco.geometry.df.shapely2central_shapely"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shapely2central_shapely</span></code></a>(df[, geometry, within])</p></td>
@@ -727,7 +727,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.nearest_kdtree">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_kdtree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_poi:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_count:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_min_distance:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_origin:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.nearest_kdtree" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">nearest_kdtree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_poi:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_count:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_min_distance:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'min_distance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_origin:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geometry.df.nearest_kdtree" title="Link to this definition"></a></dt>
 <dd><p>KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
 同时可进行其他运算</p>
 <dl class="field-list simple">
@@ -742,6 +742,9 @@
 <li><p><strong>r</strong> – 限制查询半径</p></li>
 <li><p><strong>keep_origin</strong> – 是否保留匹配后原始的索引信息</p></li>
 <li><p><strong>leaf_size</strong> – KDTree 叶子节点大小</p></li>
+<li><p><strong>epsg</strong> – 投影代码，用于投影，epsg/city/crs指定多个时以epsg为准</p></li>
+<li><p><strong>city</strong> – 城市，用于获取城市中心点，epsg/city/crs指定多个时以epsg为准</p></li>
+<li><p><strong>crs</strong> – 数据集的 crs，epsg/city/crs指定多个时以epsg为准</p></li>
 </ul>
 </dd>
 </dl>
@@ -781,8 +784,18 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geometry.df.projection_lnglat">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.projection_lnglat" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">projection_lnglat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.geometry.df.projection_lnglat" title="Link to this definition"></a></dt>
 <dd><p>直接对经纬度进行投影变换</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 输入的GeomDataFrame格式的数据</p></li>
+<li><p><strong>epsg</strong> – epsg code, 第一优先级</p></li>
+<li><p><strong>city</strong> – 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取</p></li>
+<li><p><strong>crs</strong> – 投影坐标系，第二优先级</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

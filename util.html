@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>工具集 &mdash; ricco 1.4.0 文档</title>
+  <title>工具集 &mdash; ricco 1.4.1 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=2491dde2"></script>
+        <script src="_static/documentation_options.js?v=3657e1f8"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -156,10 +156,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.ensure_dirpath_exist"><code class="docutils literal notranslate"><span class="pre">ensure_dirpath_exist()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.ext"><code class="docutils literal notranslate"><span class="pre">ext()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.extension"><code class="docutils literal notranslate"><span class="pre">extension()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.file2zip"><code class="docutils literal notranslate"><span class="pre">file2zip()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.find_undefined_dirs"><code class="docutils literal notranslate"><span class="pre">find_undefined_dirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.fn"><code class="docutils literal notranslate"><span class="pre">fn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.path_name"><code class="docutils literal notranslate"><span class="pre">path_name()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.remove_dir"><code class="docutils literal notranslate"><span class="pre">remove_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.protect_dir"><code class="docutils literal notranslate"><span class="pre">protect_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.remove_ds_store"><code class="docutils literal notranslate"><span class="pre">remove_ds_store()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.remove_path"><code class="docutils literal notranslate"><span class="pre">remove_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.rm_scratch_file"><code class="docutils literal notranslate"><span class="pre">rm_scratch_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.single_ext"><code class="docutils literal notranslate"><span class="pre">single_ext()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.split_path"><code class="docutils literal notranslate"><span class="pre">split_path()</span></code></a></li>
@@ -414,8 +417,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_valid_uuid" title="ricco.util.util.is_valid_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_uuid</span></code></a>(uuid_to_test[, version])</p></td>
 <td><p>判断一个字符是否是uuid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.isinstance_in_list" title="ricco.util.util.isinstance_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isinstance_in_list</span></code></a>(value, types)</p></td>
-<td><p>检查列表内的元素类型是否满足多个类型之一</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.isinstance_in_list" title="ricco.util.util.isinstance_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isinstance_in_list</span></code></a>(values, types)</p></td>
+<td><p>检查列表内的元素类型是否全部满足多个类型之一</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.list2dict" title="ricco.util.util.list2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2dict</span></code></a>(x)</p></td>
 <td><p>列表转为字典，key为元素的顺序</p></td>
@@ -484,8 +487,8 @@
 <span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">drop_repeat_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'tuple'&gt;)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.drop_repeat_element" title="Link to this definition"></a></dt>
 <dd><p>删除列表中连续重复的元素</p>
 <p class="rubric">示例</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">drop_repeat_element</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="go">[1, 2, 3, 4]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">drop_repeat_element</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">[1, 2, 3, 4, 3]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -600,12 +603,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.util.isinstance_in_list">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">isinstance_in_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value:</span> <span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.isinstance_in_list" title="Link to this definition"></a></dt>
-<dd><p>检查列表内的元素类型是否满足多个类型之一</p>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">isinstance_in_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values:</span> <span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ricco.util.util.isinstance_in_list" title="Link to this definition"></a></dt>
+<dd><p>检查列表内的元素类型是否全部满足多个类型之一</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> – 要检查的值</p></li>
+<li><p><strong>values</strong> – 要检查的值</p></li>
 <li><p><strong>types</strong> – 类型类别</p></li>
 </ul>
 </dd>
@@ -1118,7 +1121,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.count_files" title="ricco.util.os.count_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_files</span></code></a>(dir_path)</p></td>
 <td><p>统计文件夹中文件的数量</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.dir2zip" title="ricco.util.os.dir2zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir2zip</span></code></a>(filepath[, overwrite, delete_origin])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.dir2zip" title="ricco.util.os.dir2zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir2zip</span></code></a>(dir_path[, overwrite, delete_origin])</p></td>
 <td><p>压缩文件夹</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.dir_iter" title="ricco.util.os.dir_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter</span></code></a>(root[, exts, abspath, recursive, ...])</p></td>
@@ -1139,25 +1142,34 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.extension" title="ricco.util.os.extension"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extension</span></code></a>(filepath)</p></td>
 <td><p>获取文件扩展名</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.find_undefined_dirs" title="ricco.util.os.find_undefined_dirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_undefined_dirs</span></code></a>(dirpath)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.file2zip" title="ricco.util.os.file2zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file2zip</span></code></a>(filepath[, overwrite, delete_origin])</p></td>
+<td><p>将一个文件压缩为zip格式</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.find_undefined_dirs" title="ricco.util.os.find_undefined_dirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_undefined_dirs</span></code></a>(dirpath)</p></td>
 <td><p>获取不存在的目录列表</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.fn" title="ricco.util.os.fn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code></a>(filepath)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.fn" title="ricco.util.os.fn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code></a>(filepath)</p></td>
 <td><p>路径及文件名（不含扩展名）</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.path_name" title="ricco.util.os.path_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_name</span></code></a>(filepath)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.path_name" title="ricco.util.os.path_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_name</span></code></a>(filepath)</p></td>
 <td><p>路径及文件名（不含扩展名）</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.remove_dir" title="ricco.util.os.remove_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dir</span></code></a>(filepath)</p></td>
-<td><p>除某一目录下的所有文件或文件夹</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.rm_scratch_file" title="ricco.util.os.rm_scratch_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rm_scratch_file</span></code></a>(dir_path, days[, recursive, ...])</p></td>
-<td><p>删除指定天数前修改过的文件</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.single_ext" title="ricco.util.os.single_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">single_ext</span></code></a>(path_list)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.protect_dir" title="ricco.util.os.protect_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protect_dir</span></code></a>(path)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.split_path" title="ricco.util.os.split_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_path</span></code></a>(filepath[, abspath])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.remove_ds_store" title="ricco.util.os.remove_ds_store"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_ds_store</span></code></a>(dir_path)</p></td>
+<td><p>删除文件夹中的.DS_Store文件</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.remove_path" title="ricco.util.os.remove_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_path</span></code></a>(path[, log])</p></td>
+<td><p>删除文件或文件夹</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.rm_scratch_file" title="ricco.util.os.rm_scratch_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rm_scratch_file</span></code></a>(dir_path, days[, recursive, ...])</p></td>
+<td><p>删除指定天数前修改过的文件</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.single_ext" title="ricco.util.os.single_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">single_ext</span></code></a>(path_list)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.split_path" title="ricco.util.os.split_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_path</span></code></a>(filepath[, abspath])</p></td>
 <td><p>将文件路径拆分为文件夹路径、文件名、扩展名三部分</p></td>
 </tr>
 </tbody>
@@ -1217,12 +1229,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.dir2zip">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">dir2zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.dir2zip" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">dir2zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.dir2zip" title="Link to this definition"></a></dt>
 <dd><p>压缩文件夹</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> – 文件夹路径</p></li>
+<li><p><strong>dir_path</strong> – 文件夹路径</p></li>
 <li><p><strong>overwrite</strong> – 是否覆盖已有文件</p></li>
 <li><p><strong>delete_origin</strong> – 是否删除原文件</p></li>
 </ul>
@@ -1289,6 +1301,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.os.file2zip">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">file2zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.file2zip" title="Link to this definition"></a></dt>
+<dd><p>将一个文件压缩为zip格式</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.find_undefined_dirs">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">find_undefined_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.find_undefined_dirs" title="Link to this definition"></a></dt>
 <dd><p>获取不存在的目录列表</p>
@@ -1307,9 +1325,20 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ricco.util.os.remove_dir">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">remove_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.remove_dir" title="Link to this definition"></a></dt>
-<dd><p>除某一目录下的所有文件或文件夹</p>
+<dt class="sig sig-object py" id="ricco.util.os.protect_dir">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">protect_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.protect_dir" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.os.remove_ds_store">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">remove_ds_store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.remove_ds_store" title="Link to this definition"></a></dt>
+<dd><p>删除文件夹中的.DS_Store文件</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.os.remove_path">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">remove_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.remove_path" title="Link to this definition"></a></dt>
+<dd><p>删除文件或文件夹</p>
 </dd></dl>
 
 <dl class="py function">
