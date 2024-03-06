@@ -169,7 +169,7 @@ def fuzz_df(df: pd.DataFrame,
   target_series = to_str_list(target_series)
   _df = df[df[col].notna()][[col]].drop_duplicates(ignore_index=True)
 
-  c_dst = c_dst if c_dst else f'{col}_target'
+  c_dst = c_dst or f'{col}_target'
   _df[[
     c_dst, 'normal_score', 'partial_score', 'weight_score'
   ]] = _df.parallel_apply(
@@ -196,22 +196,57 @@ def convert_to_float(df: pd.DataFrame,
   return df
 
 
-def filter_by_df(df: pd.DataFrame, df_sizer: pd.DataFrame) -> pd.DataFrame:
-  """根据一个dataframe筛选另一个dataframe"""
+def _is_eq(series: pd.Series, value):
+  """整合空和非空的判断条件"""
+  return series.isna() if pd.isna(value) else (series == value)
 
-  def _is_eq(series: pd.Series, value):
-    """整合空和非空的判断条件"""
-    return series.isna() if pd.isna(value) else (series == value)
 
-  df_sizer = df_sizer.drop_duplicates()
-  for c in df_sizer:
-    if df_sizer[c].dtypes != df[c].dtypes:
+def _compare_dtypes(df_main, df_other):
+  """判断df_main和df_other的列类型是否一致，其中df_main的列是df_other列的子集"""
+  for c in df_main:
+    if df_main[c].dtypes != df_other[c].dtypes:
       warnings.warn(f'两个数据集"{c}"列类型不一致')
+
+
+def filter_by_df(df: pd.DataFrame, df_sizer: pd.DataFrame) -> pd.DataFrame:
+  """从df中筛选出满足df_size的数据"""
+  _compare_dtypes(df_sizer, df)
+  df_sizer = df_sizer.drop_duplicates()
+
   return df[or_(*[
     and_(
         *[_is_eq(df[c], df_sizer[c][i]) for c in df_sizer]
     ) for i in df_sizer.index
   ])]
+
+
+def drop_by_df(df: pd.DataFrame, df_deleted: pd.DataFrame) -> pd.DataFrame:
+  """根据一个df_deleted中的数据从df中删除"""
+
+  _compare_dtypes(df_deleted, df)
+  df_deleted = df_deleted.drop_duplicates()
+
+  return df[~or_(*[
+    and_(
+        *[_is_eq(df[c], df_deleted[c][i]) for c in df_deleted]
+    ) for i in df_deleted.index
+  ])]
+
+
+def wrap_dict(df: pd.DataFrame, c_srcs: list = None, c_dst: str = 'extra'):
+  """将指定的多列合并成一个字典列
+  Args:
+    df: 要处理的数据集
+    c_srcs: 需要包装成字典的多列, 如果不指定，则wrap所有的列
+    c_dst: 处理后的数据存储的列名称，默认为 'extra'
+  """
+  df = df.copy()
+  if not c_srcs:
+    c_srcs = df.columns.tolist()
+  extra = df[c_srcs]
+  df = df.drop(c_srcs, axis=1)
+  df[c_dst] = extra.to_dict('records')
+  return df
 
 
 @timer()
@@ -222,6 +257,19 @@ def expand_dict(df: pd.DataFrame, c_src: str):
       [
         df.drop(c_src, axis=1),
         df[c_src].progress_apply(
+            lambda x: pd.Series(x, dtype='object')
+        ).set_index(df.index)
+      ],
+      axis=1
+  )
+
+
+def expand_dict_silent(df: pd.DataFrame, c_src: str):
+  """展开字典为多列"""
+  return pd.concat(
+      [
+        df.drop(c_src, axis=1),
+        df[c_src].apply(
             lambda x: pd.Series(x, dtype='object')
         ).set_index(df.index)
       ],
@@ -404,4 +452,42 @@ def expand_graph(df: pd.DataFrame,
       df_level.columns = [f'{level_type}_{c}' for c in df_level]
       if f'{level_type}_{c_key}' in df_level:
         df = df.merge(df_level, on=f'{level_type}_{c_key}', how='left')
+  return df
+
+
+def null_if_in(df, columns: (str, list), values: list):
+  """
+  如果列的值正好在values中定义的数组中，则将该列值设置为None
+
+  Args:
+    df:
+    columns: 需要检查的列，一个或多少
+    values: 所有需要标识为None的值
+  """
+  columns = ensure_list(columns)
+  for c in columns:
+    conditions = [df[c] == v for v in values]
+    df.loc[or_(*conditions), c] = None
+  return df
+
+
+def fix_null(df: pd.DataFrame, columns: (str, list) = None):
+  """将None/NaN/NaT等都替换为None"""
+  if not columns:
+    columns = df.columns
+  columns = ensure_list(columns)
+  for c in columns:
+    df.loc[df[c].isna(), c] = None
+  return df
+
+
+def fillna_by_adding(df: pd.DataFrame, col: str):
+  """以自增的方式填充空值"""
+  df = df.copy()
+  max_id = 0 if df[col].isna().all() else df[col].max()
+  n = df[col].isna().sum()
+  df.loc[df[col].isna(), col] = range(int(max_id + 1), int(max_id + 1 + n))
+  df[col] = df[col].astype(int)
+  assert_not_null(df, col)
+  assert_series_unique(df, col)
   return df

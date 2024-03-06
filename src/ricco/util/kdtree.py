@@ -58,7 +58,7 @@ def kdtree_query(xy_tree, xy_query, limit: int = None, r=None, leaf_size=2):
   tree = KDTree(xy_tree, leaf_size=leaf_size)
   dist, ind = tree.query(
       xy_query,
-      k=limit if limit else 1,
+      k=limit or 1,
       return_distance=True)
   ind = [list(i) for i in ind]
   dist = [list(i) for i in dist]
@@ -75,5 +75,15 @@ def kdtree_nearest(xy_tree,
                    leaf_size=2):
   """使用kdtree查询最近点"""
   if limit or not (r or limit):
-    return kdtree_query(xy_tree, xy_query, limit, leaf_size)
-  return kdtree_query_radius(xy_tree, xy_query, r, limit, leaf_size)
+    return kdtree_query(
+        xy_tree=xy_tree,
+        xy_query=xy_query,
+        limit=limit,
+        r=r,
+        leaf_size=leaf_size)
+  return kdtree_query_radius(
+      xy_tree=xy_tree,
+      xy_query=xy_query,
+      r=r,
+      limit=limit,
+      leaf_size=leaf_size)

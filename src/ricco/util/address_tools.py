@@ -22,7 +22,7 @@ RES_PRE = {
 
 def drop_repeat_hao(string: str):
   """将重复的xx号中间的部分全部删掉"""
-  ls = re.findall(r'\d+号', string)
+  ls = re.findall(r'[0-9]+号', string)
   if len(ls) >= 2:
     _df = pd.DataFrame({'号': ls})
     _df = pd.DataFrame(_df['号'].value_counts()).reset_index(names='name')
@@ -82,7 +82,7 @@ def is_std_hao(string):
   检查号相关的字符串是否为标准格式，仅检查是否为"xx号、xx号"的形式，不检查重复值和顺序
   """
   ls = string.split('、')
-  return all([re.match('^\d+号$', i) for i in ls])
+  return all([re.match('^[0-9]+号$', i) for i in ls])
 
 
 def hao_format(string):
@@ -96,9 +96,9 @@ def extract_seps(string):
   _ = []
   ls = re.split('[、|，]', string)
   for i in ls:
-    if re.match('^\d+$', i):
+    if re.match('^[0-9]+$', i):
       _.append(i + '号')
-    if re.match('^\d+号$', i):
+    if re.match('^[0-9]+号$', i):
       _.append(i)
   _ = list(set(_))
   _.sort()
@@ -121,14 +121,14 @@ def extra_process(string):
     return res
 
   # 路名之后为纯数字的认为是xx号
-  if pre_str := re.findall('^\d+$', string):
+  if pre_str := re.findall('^[0-9]+$', string):
     res['号'] = pre_str[0] + '号'
     return res
 
   # 范围号提取，如221-223是221号、222号、223号
-  if pre_str := re.findall('^\d+号?[\-—－一]\d+号?', string):
+  if pre_str := re.findall('^[0-9]+号?[-—－一][0-9]+号?', string):
     pre_str = pre_str[0]
-    ls = [int(i) for i in re.findall('\d+', pre_str)]
+    ls = [int(i) for i in re.findall('[0-9]+', pre_str)]
     sub_str = relstrip(string, pre_str).lstrip('号')
     res['subfix'] = None if sub_str == '' else sub_str
     if ls[0] > ls[1]:
@@ -143,14 +143,14 @@ def extra_process(string):
     return res
 
   # 枚举号提取，如"221号，222号"或"221、222号"，提取结果为："221号、222号"
-  if pre_str := re.findall('^\d+号?(?:[、，]\d+号?)*', string):
+  if pre_str := re.findall('^[0-9]+号?(?:[、，][0-9]+号?)*', string):
     pre_str = pre_str[0]
     res['号'] = extract_seps(pre_str)
     res['subfix'] = clean_after_split(relstrip(string, pre_str))
     return res
 
   # 直接提取xx号，仅提取第一个
-  if pre_str := re.findall(r'^\d+号', string):
+  if pre_str := re.findall(r'^[0-9]+号', string):
     pre_str = pre_str[0]
     sub_str = relstrip(string, pre_str).lstrip('号')
     res['号'] = pre_str
@@ -186,9 +186,9 @@ def pre_process(string: str):
   string = ''.join(string.split())
 
   # 将"xx甲号"改为"xx号甲"
-  if ls := re.findall('\d+[甲乙丙丁戊己庚辛壬癸]号', string):
+  if ls := re.findall('[0-9]+[甲乙丙丁戊己庚辛壬癸]号', string):
     for str_o in ls:
-      s1 = re.findall('^\d+', str_o)[0]
+      s1 = re.findall('^[0-9]+', str_o)[0]
       s2 = re.findall('[甲乙丙丁戊己庚辛壬癸]', str_o)[0]
       str_d = f'{s1}号{s2}'
       string = string.replace(str_o, str_d)

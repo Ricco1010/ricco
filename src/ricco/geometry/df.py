@@ -63,11 +63,23 @@ def projection(
 
 
 @timer()
-def projection_lnglat(df: pd.DataFrame) -> pd.DataFrame:
-  """直接对经纬度进行投影变换"""
+def projection_lnglat(
+    df: pd.DataFrame,
+    epsg=None,
+    city=None,
+    crs=None) -> pd.DataFrame:
+  """
+  直接对经纬度进行投影变换
+
+  Args:
+    df: 输入的GeomDataFrame格式的数据
+    epsg: epsg code, 第一优先级
+    city: 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取
+    crs: 投影坐标系，第二优先级
+  """
   df = df.copy()
   df_temp = lnglat2shapely(df[['lng', 'lat']])
-  df_temp = projection(df_temp)
+  df_temp = projection(df_temp, epsg=epsg, city=city, crs=crs)
   df_temp = shapely2lnglat(df_temp[['geometry']])[['lng', 'lat']]
   df.update(df_temp)
   if 'geometry' in df:
@@ -526,6 +538,9 @@ def nearest_kdtree(
     r: (int, float) = None,
     keep_origin: bool = False,
     leaf_size: int = 2,
+    epsg: int = None,
+    city=None,
+    crs=None,
 ):
   """
   KDTree近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）,
@@ -541,6 +556,9 @@ def nearest_kdtree(
     r: 限制查询半径
     keep_origin: 是否保留匹配后原始的索引信息
     leaf_size: KDTree 叶子节点大小
+    epsg: 投影代码，用于投影，epsg/city/crs指定多个时以epsg为准
+    city: 城市，用于获取城市中心点，epsg/city/crs指定多个时以epsg为准
+    crs: 数据集的 crs，epsg/city/crs指定多个时以epsg为准
   """
   assert df.index.is_unique and df_poi.index.is_unique, '数据集索引必须唯一'
   # 确保数据中有经纬度
@@ -551,8 +569,10 @@ def nearest_kdtree(
   df_poi = df_poi[df_poi.lng.notna() & df_poi.lat.notna()]
   assert not df_temp.empty and not df_poi.empty, '筛选后数据集为空，请检查经纬度列'
   # 投影
-  df_temp = projection_lnglat(df_temp)[['lng', 'lat']]
-  df_poi = projection_lnglat(df_poi)
+  df_temp = projection_lnglat(
+      df_temp, epsg=epsg, city=city, crs=crs
+  )[['lng', 'lat']]
+  df_poi = projection_lnglat(df_poi, epsg=epsg, city=city, crs=crs)
   # 计算（范围内）的一个点或多个点
   data_tree = df_poi[['lng', 'lat']].values
   data_query = df_temp[['lng', 'lat']].values

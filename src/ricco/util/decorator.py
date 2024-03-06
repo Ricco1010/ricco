@@ -60,7 +60,7 @@ def timer(desc=None):
       end_time = time.time()
       duration = end_time - start_time
       time_desc = second_to_desc(duration)
-      title = desc if desc else func.__name__
+      title = desc or func.__name__
       print(f'Costs：{duration:.2f} s ({time_desc})，function: {title} ')
       return result
 
@@ -131,3 +131,14 @@ def run_once(func):
 
   wrapper.has_run = False
   return wrapper
+
+
+def as_staticmethod(cls):
+  """将函数添加到类中并作为staticmethod"""
+
+  @wraps(cls)
+  def decorator(func):
+    setattr(cls, func.__name__, staticmethod(func))
+    return func
+
+  return decorator

@@ -1,19 +1,25 @@
+import csv
 import os
 import shutil
 
+import fiona
 import pandas as pd
+from shapely.geometry import shape
 from tqdm import tqdm
 
 from ..base import ensure_ext
 from ..base import warn_
+from ..geometry.util import dumps2x
 from ..util.os import dir_iter_list
 from ..util.os import ensure_dir
 from ..util.os import ensure_dirpath_exist
 from ..util.os import extension
 from ..util.os import path_name
+from ..util.os import remove_path
 from ..util.os import single_ext
 from ..util.os import split_path
 from .extract import rdf
+from .extract import rdf_by_dir
 from .load import to_file
 from .load import to_parts_file
 
@@ -213,3 +219,108 @@ def reshape_files(from_dir, to_dir,
           **kwargs)
   print(f'输入文件总数: {len(path_list)}, 输入数据量: {total_lines}')
   print(f'输出文件总数: {n}, 输出数据量: {after_lines}')
+
+
+def df_iter_by_column(df: pd.DataFrame, by):
+  """按列的值分组迭代df"""
+  if df[by].isna().any():
+    yield 'null', df[df[by].isna()]
+
+  df = df[df[by].notna()]
+  for enum in df[by].unique():
+    yield enum, df[df[by] == enum]
+
+
+def split_csv_by_column(
+    filepath: str, by: str,
+    *,
+    to_dir: str = None,
+    to_ext: str = '.csv',
+    merge_file: bool = True,
+    chunksize=100000,
+):
+  """
+  将csv文件按指定列的值拆分为多个文件
+
+  Args:
+    filepath: csv文件路径
+    by: 根据那一列拆分
+    to_dir: 要保存的位置，默认与原文件同名目录
+    to_ext: 输出的文件扩展名
+    merge_file: 是否将每一类数据合并为一个文件，默认合并
+    chunksize: 中间文件大小，如内存不足则可适当调低
+  """
+  dirpath, filename, ex = split_path(filepath)
+  to_dir = to_dir or f'{dirpath}/{filename}'
+  # 作为中间文件时使用parquet提高速度
+  part_ext = '.parquet' if merge_file else to_ext
+  print(f'根据"{by}"列将大文件拆分至对应文件夹')
+  for i, df in enumerate(pd.read_csv(filepath, chunksize=chunksize, dtype=str)):
+    for name, _df in df_iter_by_column(df, by):
+      to_file(_df, f'{dirpath}/{filename}/{name}/{i}{part_ext}', log=False)
+  if merge_file:
+    print('将各个文件夹中的数据合并为一个文件')
+    for name in os.listdir(to_dir):
+      to_file(
+          rdf_by_dir(f'{to_dir}/{name}', exts='.parquet'),
+          f'{to_dir}/{name}{to_ext}',
+      )
+      remove_path(f'{to_dir}/{name}')
+
+
+def merge_csv_files(dir_path, output_file):
+  """
+  合并指定目录下的所有CSV文件到一个输出文件中，极低内存消耗
+
+  参数:
+  - csv_dir: CSV文件所在的目录
+  - output_file: 合并后的输出CSV文件路径
+  """
+  path_list = dir_iter_list(dir_path, exts='.csv')
+
+  if not path_list:
+    print("没有找到csv文件，请检查目录。")
+
+  # 将列表中的第一个csv文件复制并重命名为输出文件
+  shutil.copyfile(path_list[0], output_file)
+
+  # 从列表的第二个CSV文件开始逐个处理
+  for p in path_list[1:]:
+    print(f"正在合并 {p} 到 {output_file} ...")
+    with open(p, 'r') as fin:
+      # 跳过表头
+      next(fin)
+      # 以追加模式打开输出文件，并逐行写入内容
+      with open(output_file, 'a') as fout:
+        for line in fin:
+          fout.write(line)
+  print(f"所有csv文件已经合并为 '{output_file}'。")
+
+
+def gdb2csv(
+    dir_path,
+    output_path=None,
+    with_geometry=True,
+    geom_format='wkb',
+    log=True):
+  """gdb文件转换为csv文件"""
+  if not output_path:
+    output_path = f'{dir_path}.csv'
+  if log:
+    print(f'Saving: {output_path}')
+  with fiona.open(dir_path) as src:
+    # 获取图层的字段名称
+    columns = list(src.schema['properties'].keys())
+    if with_geometry:
+      columns.append('geometry')
+    with open(output_path, mode='w', newline='', encoding='utf-8') as csv_file:
+      writer = csv.DictWriter(csv_file, fieldnames=columns)
+      writer.writeheader()
+      # 逐行读取GDB文件中的记录
+      for line in tqdm(src):
+        r = {
+          c: line['properties'][c] for c in columns if c != 'geometry'
+        }
+        if with_geometry:
+          r['geometry'] = dumps2x(shape(line['geometry']), geom_format)
+        writer.writerow(r)

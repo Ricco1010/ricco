@@ -1,5 +1,6 @@
 import numpy as np
 
+from ricco.util.util import drop_repeat_element
 from ricco.util.util import eval_
 from ricco.util.util import extract_num
 from ricco.util.util import fix_str
@@ -7,9 +8,11 @@ from ricco.util.util import get_shortest_element
 from ricco.util.util import house_type_format
 from ricco.util.util import interchange_dict
 from ricco.util.util import is_digit
+from ricco.util.util import isinstance_in_list
 from ricco.util.util import list2dict
 from ricco.util.util import pinyin
 from ricco.util.util import relstrip
+from ricco.util.util import remove_null_in_dict
 from ricco.util.util import rerstrip
 from ricco.util.util import rstrip_d0
 from ricco.util.util import segment
@@ -18,7 +21,6 @@ from ricco.util.util import to_bool
 from ricco.util.util import to_float
 from ricco.util.util import union_list_v2
 from ricco.util.util import union_str_v2
-from ricco.util.util import remove_null_in_dict
 
 
 def test_relstrip():
@@ -159,3 +161,13 @@ def test_interchange_dict():
 
 def test_remove_null_in_dict():
   assert remove_null_in_dict({1: 2, 3: None, 4: None}) == {1: 2}
+
+
+def test_drop_repeat_element():
+  assert drop_repeat_element([1, 2, 2, 2, 3, 4, 3]) == [1, 2, 3, 4, 3]
+
+
+def test_isinstance_in_list():
+  assert isinstance_in_list([1, 2, 3], int) is True
+  assert isinstance_in_list([1, 2, '3'], int) is False
+  assert isinstance_in_list([1, 2, 3], (int, str)) is True
