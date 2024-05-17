@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>★★实用方法推荐★★ &mdash; ricco 1.4.1 文档</title>
+  <title>★★实用方法推荐★★ &mdash; ricco 1.4.2 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=3657e1f8"></script>
+        <script src="_static/documentation_options.js?v=011da5d6"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -572,7 +572,7 @@
 <h3>空间连接打标签<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">mark_tags_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate='intersects'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_geometry=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format='wkb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message=None</span></span></em><span class="sig-paren">)</span></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geometry.df.</span></span><span class="sig-name descname"><span class="pre">mark_tags_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate='intersects'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_geometry=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_format='wkb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_geometry='geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_point=True</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>使用面数据通过空间关联（sjoin）给数据打标签</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
@@ -581,7 +581,7 @@
 <li><p><strong>polygon_df</strong> – 面数据</p></li>
 <li><p><strong>col_list</strong> – 面数据中要关联到结果中的列，若为空则全部关联</p></li>
 <li><p><strong>predicate</strong> – 关联方法，默认 ‘intersects’</p></li>
-<li><p><strong>drop_geometry</strong> – 结果是否删除geometry，默认删除</p></li>
+<li><p><strong>drop_geometry</strong> – 结果是否删除geometry，默认不删除</p></li>
 <li><p><strong>geometry_format</strong> – 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb</p></li>
 <li><p><strong>warning</strong> – 是否输出警告信息</p></li>
 <li><p><strong>point_lng</strong> – 指定点数据的经度列名</p></li>
@@ -589,6 +589,7 @@
 <li><p><strong>point_geometry</strong> – 指定点数据的geometry列名</p></li>
 <li><p><strong>polygon_geometry</strong> – 指定面数据的geometry列名</p></li>
 <li><p><strong>warning_message</strong> – 是否输出警告信息，已弃用</p></li>
+<li><p><strong>ensure_point</strong> – point_df是否强制转换为点数据</p></li>
 </ul>
 </dd>
 </dl>
