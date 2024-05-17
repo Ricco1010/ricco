@@ -33,6 +33,7 @@ setup(
       'numpy>=1.0.0',
       'pandas<2.0.0',
       'requests>=2.7',
+      'shapely<2.0.0',
       'tqdm>=4.62.0',
     ],
     classifiers=[

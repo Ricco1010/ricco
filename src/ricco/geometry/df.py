@@ -440,6 +440,7 @@ def mark_tags_v2(
     point_geometry='geometry',
     polygon_geometry='geometry',
     warning_message=None,
+    ensure_point=True
 ):
   """
   使用面数据通过空间关联（sjoin）给数据打标签
@@ -449,7 +450,7 @@ def mark_tags_v2(
     polygon_df: 面数据
     col_list: 面数据中要关联到结果中的列，若为空则全部关联
     predicate: 关联方法，默认 'intersects'
-    drop_geometry: 结果是否删除geometry，默认删除
+    drop_geometry: 结果是否删除geometry，默认不删除
     geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
     warning: 是否输出警告信息
     point_lng: 指定点数据的经度列名
@@ -457,9 +458,15 @@ def mark_tags_v2(
     point_geometry: 指定点数据的geometry列名
     polygon_geometry: 指定面数据的geometry列名
     warning_message: 是否输出警告信息，已弃用
+    ensure_point: point_df是否强制转换为点数据
   """
   if warning_message is not None:
     warn_('参数"warning_message"已弃用，请使用参数"warning"')
+
+  if point_df.empty or point_df.empty:
+    warn_('存在空的数据集，请检查', warning)
+    return point_df
+
   point_df = point_df.copy()
   assert point_df.index.is_unique, 'point_df索引列必须唯一'
   if not col_list:
@@ -476,27 +483,22 @@ def mark_tags_v2(
     point_df.rename(columns=cols_mapping, inplace=True)
 
   # 转换为shapely格式
-  df = ensure_geometry(point_df, True, warning,
-                       lng=point_lng, lat=point_lat, geometry=point_geometry)
+  _df = ensure_geometry(point_df, ensure_point, warning,
+                        lng=point_lng, lat=point_lat, geometry=point_geometry)
   polygon_df = auto2shapely(polygon_df, geometry=polygon_geometry)
   # 空间关联
-  df = df.sjoin(
+  _df = _df.sjoin(
       polygon_df, how='left', predicate=predicate,
   ).drop(['index_right'], axis=1)
+  del _df[point_geometry]
   # 统一geometry输出格式、删除geometry、避免多次转换
   if point_geometry in point_df:
-    if geometry_format != 'shapely':
-      del df[point_geometry]
-    if geometry_format == 'shapely' or drop_geometry:
+    if drop_geometry:
       del point_df[point_geometry]
     else:
       point_df = auto2x(point_df, geometry_format, geometry=point_geometry)
-  elif drop_geometry:
-    del df[point_geometry]
-  else:
-    df = shapely2x(df, geometry_format, geometry=point_geometry)
   # 将空间关联后的数据关联到原来的Dataframe上
-  return point_df.join(df, how='left')
+  return point_df.join(_df, how='left')
 
 
 def nearest_neighbor(
