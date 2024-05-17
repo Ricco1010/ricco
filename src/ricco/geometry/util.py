@@ -358,6 +358,28 @@ def text2lnglats(text: str, point_sep: str, lnglat_sep: str):
   return [i for i, _ in groupby(res)]
 
 
+def deg_to_decimal(x: (str, list, tuple)):
+  """
+  将度分秒格式的经纬度转为小数
+
+  Args:
+    x: 字符串或列表，
+      - 字符串格式为 123°5'6.77"（分和秒分别为单双引号）
+      - 列表长度为3，分别是度分秒，数值型
+  """
+  if isinstance(x, str):
+    x = x.strip('"')
+    d, m_s = x.split('°', 1)
+    m, s = m_s.split("'")
+  elif isinstance(x, (tuple, list)):
+    assert len(x) == 3, '长度必须为3'
+    d, m, s = x
+  else:
+    raise TypeError('类型错误，必须为字符串或列表')
+  d, m, s = [float(i) for i in (d, m, s)]
+  return d + m / 60 + s / 3600
+
+
 def text2shapely(
     text: str,
     geometry_type: str,

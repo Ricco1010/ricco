@@ -70,9 +70,7 @@ def test_mark_tags_v2():
   df1 = pd.DataFrame(point_df[['name', 'lng', 'lat']])
   df2 = pd.DataFrame(polygon_df[[
     '板块', 'geometry_wkb']].rename(columns={'geometry_wkb': 'geometry'}))
-  df3 = pd.DataFrame(res_df[[
-    'name', 'lng', 'lat', 'geometry_wkb', '板块'
-  ]].rename(columns={'geometry_wkb': 'geometry'}))
+  df3 = pd.DataFrame(res_df[['name', 'lng', 'lat', '板块']])
   assert_frame_equal(mark_tags_v2(df1, df2, '板块'), df3)
 
   # wkb -- wkb, with lnglat
@@ -163,8 +161,7 @@ def test_mark_tags_v22():
           point_geometry='geometry2',
           polygon_geometry='geometry2',
       ),
-      res[['name', 'lng2', 'lat2', 'geometry_wkb2', '板块']].rename(
-          columns={'geometry_wkb2': 'geometry2'})
+      res[['name', 'lng2', 'lat2', '板块']]
   )
 
   # wkb -- wkb, with lnglat

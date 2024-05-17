@@ -221,14 +221,10 @@ def reshape_files(from_dir, to_dir,
   print(f'输出文件总数: {n}, 输出数据量: {after_lines}')
 
 
-def df_iter_by_column(df: pd.DataFrame, by):
+def df_iter_by_column(df: pd.DataFrame, by, na='null'):
   """按列的值分组迭代df"""
-  if df[by].isna().any():
-    yield 'null', df[df[by].isna()]
-
-  df = df[df[by].notna()]
-  for enum in df[by].unique():
-    yield enum, df[df[by] == enum]
+  for enum, _df in df.groupby(by, as_index=False, dropna=False):
+    yield enum if pd.notna(enum) else na, _df
 
 
 def split_csv_by_column(

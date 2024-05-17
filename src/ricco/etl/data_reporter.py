@@ -1,5 +1,3 @@
-import os
-
 import pandas as pd
 
 from ..base import ensure_list
@@ -26,16 +24,11 @@ class DataReporter(Docx):
       exclude: list = None):
     self.set_default_style()
     self.doc.add_heading('数据检测报告', 0)
-    if isinstance(data, str):
-      if os.path.exists(data):
-        self.add_intense_quote(f'Data：{data}')
-        self.df = rdf(data, info=True)
-      else:
-        raise FileNotFoundError(f'未找到文件{data}')
-    elif isinstance(data, pd.DataFrame):
+    if isinstance(data, pd.DataFrame):
       self.df = data
     else:
-      raise ValueError('请输入Dataframe或路径')
+      self.add_intense_quote(f'Data：{data}')
+      self.df = rdf(data, info=True)
 
     columns = list(self.df.columns)
     if not only:
