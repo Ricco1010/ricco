@@ -56,7 +56,7 @@ def rdf(
       return read_gdb(file_path)
     # 此部分为递归，注意避免无限递归
     return rdf_by_dir(file_path, columns=columns, info=info,
-                      recursive=recursive)
+                      recursive=recursive, encoding=encoding)
 
   if columns:
     columns = ensure_list(columns)
@@ -198,8 +198,12 @@ def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:
   return pd.DataFrame(records)
 
 
-def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
-               columns: (list, str) = None, info=False) -> pd.DataFrame:
+def rdf_by_dir(
+    dir_path, exts=None, ignore_index=True, recursive=False,
+    columns: (list, str) = None, info=False,
+    sign_data_from: bool = False, col_data_from: str = '__data_from',
+    encoding: str = None
+) -> pd.DataFrame:
   """
   从文件夹中读取所有文件并拼接成一个DataFrame
 
@@ -210,6 +214,8 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
     recursive: 是否循环遍历更深层级的文件夹
     columns: 指定列名
     info: 是否打印基本信息（列名、行列数）
+    sign_data_from: 是否标记数据来源于哪个文件，默认不标记
+    col_data_from: 用于标记数据来源文件的列名
   """
   desc = dir_path if len(dir_path) <= 23 else f'...{dir_path[-20:]}'
   path_list = []
@@ -219,7 +225,13 @@ def rdf_by_dir(dir_path, exts=None, ignore_index=True, recursive=False,
   dfs = []
   for filename in tqdm(path_list, desc=desc):
     assert os.path.isfile(filename), f'{filename} is not a file'
-    dfs.append(rdf(filename, columns=columns))
+    _df = rdf(filename, columns=columns, encoding=encoding)
+    if sign_data_from:
+      if col_data_from in _df:
+        raise KeyError(
+            f'{col_data_from}列名已被占用， 请指定其他的`col_data_from`')
+      _df[col_data_from] = filename
+    dfs.append(_df.copy())
   df = pd.concat(dfs, ignore_index=ignore_index)
   return _df_desc(df) if info else df
 

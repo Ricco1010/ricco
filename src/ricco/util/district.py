@@ -5,6 +5,38 @@ from ..base import warn_
 from ..resource.bd_region import get_bd_region
 
 
+def get_upload_region(df, city):
+  """从bd_region表中提取某个城市的区县数据，并处理成可以上传的格式"""
+  city_id = df[
+    (df['short_name'] == city) &
+    (df['level_type'] == 2)
+    ]['id'].unique().tolist()[0]
+  df = df[df['parent_id'] == city_id]
+  df = df[['id', 'name', 'geometry']]
+  df.columns = ['regioncode', 'region', 'geometry']
+  df = df.reset_index(drop=True)
+  df['regioncode'] = df['regioncode'].astype(int)
+  print(df.shape)
+  return df
+
+
+def get_upload_street(df, city):
+  """从bd_region表中提取某个城市的街道数据，并处理成可以上传的格式"""
+  city_id = df[
+    (df['short_name'] == city) &
+    (df['level_type'] == 2)
+    ]['id'].unique().tolist()[0]
+  region_ids = df[df['parent_id'] == city_id]['id'].tolist()
+  df = df[df['parent_id'].isin(region_ids)]
+  df = df[['id', 'name', 'parent_id', 'geometry']]
+  df.columns = ['towncode', 'town', 'regioncode', 'geometry']
+  df = df.reset_index(drop=True)
+  df['towncode'] = df['towncode'].astype(int)
+  df['regioncode'] = df['regioncode'].astype(int)
+  print(df.shape)
+  return df
+
+
 class District:
   def __init__(self):
     """自动转换行政区划"""

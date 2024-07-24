@@ -40,7 +40,9 @@ def projection(
     df: gpd.GeoDataFrame,
     epsg: int = None,
     city: str = None,
-    crs=None) -> gpd.GeoDataFrame:
+    crs=None,
+    c_geometry='geometry'
+) -> gpd.GeoDataFrame:
   """
   投影变换
 
@@ -49,8 +51,9 @@ def projection(
     epsg: epsg code, 第一优先级
     city: 城市名称，未传入epsg的情况下将通过城市名称获取epsg，若二者都为空则根据经纬度获取
     crs: 投影坐标系，第二优先级
+    c_geometry: geometry的列名
   """
-  df = auto2shapely(df)
+  df = auto2shapely(df, geometry=c_geometry)
   if not epsg and not crs:
     if city:
       epsg = get_epsg(city)
@@ -446,11 +449,11 @@ def mark_tags_v2(
   使用面数据通过空间关联（sjoin）给数据打标签
 
   Args:
-    point_df: 点数据
-    polygon_df: 面数据
+    point_df: 要打标签的数据，一般为点数据，如为面数据，则会自动提取面内点计算
+    polygon_df: 标签所在的数据集，一般为面数据
     col_list: 面数据中要关联到结果中的列，若为空则全部关联
     predicate: 关联方法，默认 'intersects'
-    drop_geometry: 结果是否删除geometry，默认不删除
+    drop_geometry: 结果是否删除point_df中的geometry，默认不删除
     geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
     warning: 是否输出警告信息
     point_lng: 指定点数据的经度列名
@@ -703,7 +706,7 @@ def buffer(df: pd.DataFrame,
   df_buffer = gpd.GeoDataFrame(
       df_buffer[[buffer_geometry]], geometry=buffer_geometry
   )
-  df_buffer = projection(df_buffer, crs=crs)
+  df_buffer = projection(df_buffer, crs=crs, c_geometry=buffer_geometry)
   df = df.join(df_buffer, how='left')
   return shapely2x(df, geo_format, geometry=buffer_geometry)
 

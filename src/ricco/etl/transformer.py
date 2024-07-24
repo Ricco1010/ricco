@@ -1,8 +1,10 @@
+import math
 import warnings
 from datetime import datetime
 
 import numpy as np
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 
 from ..base import ensure_list
 from ..base import is_empty
@@ -155,7 +157,7 @@ def fuzz_df(df: pd.DataFrame,
             col: str,
             target_series: (list, pd.Series),
             c_dst: str = None,
-            valid_score=0) -> pd.DataFrame:
+            valid_score=60) -> pd.DataFrame:
   """
   模糊匹配。为DataFrame中的某一列从某个集合中模糊匹配匹配相似度最高的元素
 
@@ -164,8 +166,10 @@ def fuzz_df(df: pd.DataFrame,
     col: 要匹配的列
     target_series: 从何处匹配， list/pd.Series
     c_dst: 关联后输出的列名，默认为原列名+"_target"后缀
-    valid_score: 相似度大于该值的才返回
+    valid_score: 相似度大于该值的才返回，默认60
   """
+  if c_dst:
+    assert isinstance(c_dst, str), 'c_dst must be str'
   target_series = to_str_list(target_series)
   _df = df[df[col].notna()][[col]].drop_duplicates(ignore_index=True)
 
@@ -208,16 +212,20 @@ def _compare_dtypes(df_main, df_other):
       warnings.warn(f'两个数据集"{c}"列类型不一致')
 
 
-def filter_by_df(df: pd.DataFrame, df_sizer: pd.DataFrame) -> pd.DataFrame:
+def filter_by_df(df: pd.DataFrame,
+                 df_sizer: pd.DataFrame,
+                 reverse: bool = False) -> pd.DataFrame:
   """从df中筛选出满足df_size的数据"""
   _compare_dtypes(df_sizer, df)
   df_sizer = df_sizer.drop_duplicates()
-
-  return df[or_(*[
+  cond = or_(*[
     and_(
         *[_is_eq(df[c], df_sizer[c][i]) for c in df_sizer]
     ) for i in df_sizer.index
-  ])]
+  ])
+  if reverse:
+    return df[~cond]
+  return df[cond]
 
 
 def drop_by_df(df: pd.DataFrame, df_deleted: pd.DataFrame) -> pd.DataFrame:
@@ -365,9 +373,9 @@ def df_iter(df: pd.DataFrame, *, chunksize: int = None, parts: int = None):
   assert any([chunksize, parts]), 'chunksize和parts必须指定一个'
   size = df.shape[0]
   if chunksize:
-    parts = int(size / chunksize) + 1
+    parts = math.ceil(size / chunksize)
   else:
-    chunksize = int(size / parts) + 1
+    chunksize = math.ceil(size / parts)
   for i in range(parts):
     low = i * chunksize
     high = (i + 1) * chunksize
@@ -491,3 +499,30 @@ def fillna_by_adding(df: pd.DataFrame, col: str):
   assert_not_null(df, col)
   assert_series_unique(df, col)
   return df
+
+
+def rolling_by_month(df, c_date, c_group, months: int, agg: dict):
+  """
+  按照日期进行滚动聚合，比如：分组对某个项目计算近6个月的成交面积
+
+  Args:
+    df: 输入的dataframe
+    c_date: 日期列
+    c_group: 分组列
+    months: 窗口大小
+    agg: 聚合函数，如：{'金额': 'sum'}
+  """
+  df = df.copy()
+  df[c_date] = pd.to_datetime(df[c_date])
+  # 起始日期为最小日期加上窗口时间
+  date_start = df[c_date].min() + relativedelta(months=months)
+  date_end = df[c_date].max()
+  dfs = []
+  while date_end >= date_start:
+    date_l = date_start - relativedelta(months=months)
+    _df = df[(df[c_date] >= date_l) & (df[c_date] < date_start)]
+    _df = _df.groupby(c_group, as_index=False).agg(agg)
+    _df[c_date] = date_start
+    dfs.append(_df.copy())
+    date_start += relativedelta(months=1)
+  return pd.concat(dfs, ignore_index=True)
