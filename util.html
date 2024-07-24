@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>工具集 &mdash; ricco 1.4.2 文档</title>
+  <title>工具集 &mdash; ricco 1.4.3 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=011da5d6"></script>
+        <script src="_static/documentation_options.js?v=13db99cc"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -68,12 +68,15 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.util.util">基础工具二</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.and_"><code class="docutils literal notranslate"><span class="pre">and_()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.check_diff"><code class="docutils literal notranslate"><span class="pre">check_diff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.drop_repeat_element"><code class="docutils literal notranslate"><span class="pre">drop_repeat_element()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.eval_"><code class="docutils literal notranslate"><span class="pre">eval_()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.extract_num"><code class="docutils literal notranslate"><span class="pre">extract_num()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.first_notnull_value"><code class="docutils literal notranslate"><span class="pre">first_notnull_value()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fix_str"><code class="docutils literal notranslate"><span class="pre">fix_str()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fuzz_match"><code class="docutils literal notranslate"><span class="pre">fuzz_match()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fuzz_pair"><code class="docutils literal notranslate"><span class="pre">fuzz_pair()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.get_city_id_by_name"><code class="docutils literal notranslate"><span class="pre">get_city_id_by_name()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.get_shortest_element"><code class="docutils literal notranslate"><span class="pre">get_shortest_element()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.get_uuid"><code class="docutils literal notranslate"><span class="pre">get_uuid()</span></code></a></li>
@@ -372,6 +375,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.and_" title="ricco.util.util.and_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">and_</span></code></a>(*conditions)</p></td>
 <td><p>对多个条件执行and操作</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.check_diff" title="ricco.util.util.check_diff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_diff</span></code></a>(ls1, ls2)</p></td>
+<td><p>检查两个列表的差集</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.diff" title="ricco.util.util.diff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diff</span></code></a>(ls1, ls2)</p></td>
+<td><p>求两个列表的差集</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.drop_repeat_element" title="ricco.util.util.drop_repeat_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_element</span></code></a>(x)</p></td>
 <td><p>删除列表中连续重复的元素</p></td>
 </tr>
@@ -390,88 +399,91 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.fuzz_match" title="ricco.util.util.fuzz_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_match</span></code></a>(string, string_set[, ...])</p></td>
 <td><p>为某一字符串从某一集合中匹配相似度最高的元素</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.get_city_id_by_name" title="ricco.util.util.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(city)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.fuzz_pair" title="ricco.util.util.fuzz_pair"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_pair</span></code></a>(ls1, ls2[, score])</p></td>
+<td><p>模糊配对</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.get_city_id_by_name" title="ricco.util.util.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(city)</p></td>
 <td><p>获取城市代码</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.get_shortest_element" title="ricco.util.util.get_shortest_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shortest_element</span></code></a>(elements)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.get_shortest_element" title="ricco.util.util.get_shortest_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shortest_element</span></code></a>(elements)</p></td>
 <td><p>获取列表中长度最短的元素</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.get_uuid" title="ricco.util.util.get_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_uuid</span></code></a>(s)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.get_uuid" title="ricco.util.util.get_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_uuid</span></code></a>(s)</p></td>
 <td><p>针对格式错误的uuid和空白值生成新的uuid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.house_type_format" title="ricco.util.util.house_type_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">house_type_format</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.house_type_format" title="ricco.util.util.house_type_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">house_type_format</span></code></a>(x)</p></td>
 <td><p>通过正则表达式将户型统一修改为1房，2房···5房及以上，目前只支持9室以下户型， 其中5室及以上的类别为“5房及以上”</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.interchange_dict" title="ricco.util.util.interchange_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interchange_dict</span></code></a>(dic)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.interchange_dict" title="ricco.util.util.interchange_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interchange_dict</span></code></a>(dic)</p></td>
 <td><p>将字典的key和value互换</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_digit" title="ricco.util.util.is_digit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_digit</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_digit" title="ricco.util.util.is_digit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_digit</span></code></a>(x)</p></td>
 <td><p>判断一个值是否能通过float方法转为数值型</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_hex" title="ricco.util.util.is_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hex</span></code></a>(string)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_hex" title="ricco.util.util.is_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hex</span></code></a>(string)</p></td>
 <td><p>判断一个字符串是否是十六进制格式</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_unique_series" title="ricco.util.util.is_unique_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unique_series</span></code></a>(df[, key_cols, ignore_na])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_unique_series" title="ricco.util.util.is_unique_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unique_series</span></code></a>(df[, key_cols, ignore_na])</p></td>
 <td><p>判断Dataframe中的某一列或某几列的组合是否唯一</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_valid_uuid" title="ricco.util.util.is_valid_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_uuid</span></code></a>(uuid_to_test[, version])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_valid_uuid" title="ricco.util.util.is_valid_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_uuid</span></code></a>(uuid_to_test[, version])</p></td>
 <td><p>判断一个字符是否是uuid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.isinstance_in_list" title="ricco.util.util.isinstance_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isinstance_in_list</span></code></a>(values, types)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.isinstance_in_list" title="ricco.util.util.isinstance_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isinstance_in_list</span></code></a>(values, types)</p></td>
 <td><p>检查列表内的元素类型是否全部满足多个类型之一</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.list2dict" title="ricco.util.util.list2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2dict</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.list2dict" title="ricco.util.util.list2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2dict</span></code></a>(x)</p></td>
 <td><p>列表转为字典，key为元素的顺序</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.or_" title="ricco.util.util.or_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">or_</span></code></a>(*conditions)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.or_" title="ricco.util.util.or_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">or_</span></code></a>(*conditions)</p></td>
 <td><p>对多个条件执行or操作</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.per2float" title="ricco.util.util.per2float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per2float</span></code></a>(string)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.per2float" title="ricco.util.util.per2float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per2float</span></code></a>(string)</p></td>
 <td><p>带有百分号的数值字符串转小数点形式的数值，没有百分号的返回原值</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.physical_age" title="ricco.util.util.physical_age"><code class="xref py py-obj docutils literal notranslate"><span class="pre">physical_age</span></code></a>(birthday[, deadline])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.physical_age" title="ricco.util.util.physical_age"><code class="xref py py-obj docutils literal notranslate"><span class="pre">physical_age</span></code></a>(birthday[, deadline])</p></td>
 <td><p>计算周岁，默认按照当前时间点计算</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.pinyin" title="ricco.util.util.pinyin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pinyin</span></code></a>(word)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.pinyin" title="ricco.util.util.pinyin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pinyin</span></code></a>(word)</p></td>
 <td><p>将中文转换为汉语拼音</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.re_fast" title="ricco.util.util.re_fast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">re_fast</span></code></a>(pattern, string[, warning])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.re_fast" title="ricco.util.util.re_fast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">re_fast</span></code></a>(pattern, string[, warning])</p></td>
 <td><p>根据正则表达式快速提取匹配到的第一个</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.relstrip" title="ricco.util.util.relstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relstrip</span></code></a>(string, kwd)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.relstrip" title="ricco.util.util.relstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relstrip</span></code></a>(string, kwd)</p></td>
 <td><p>通过正则表达式删除左侧字符串</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.remove_null_in_dict" title="ricco.util.util.remove_null_in_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_null_in_dict</span></code></a>(dic)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.remove_null_in_dict" title="ricco.util.util.remove_null_in_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_null_in_dict</span></code></a>(dic)</p></td>
 <td><p>将字典中值为空的元素删掉</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.rerstrip" title="ricco.util.util.rerstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rerstrip</span></code></a>(string, kwd)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.rerstrip" title="ricco.util.util.rerstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rerstrip</span></code></a>(string, kwd)</p></td>
 <td><p>通过正则表达式删除右侧字符串</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.rstrip_d0" title="ricco.util.util.rstrip_d0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rstrip_d0</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.rstrip_d0" title="ricco.util.util.rstrip_d0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rstrip_d0</span></code></a>(x)</p></td>
 <td><p>删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -&gt; '130'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.segment" title="ricco.util.util.segment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment</span></code></a>(x, gap[, sep, unit, bottom, top])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.segment" title="ricco.util.util.segment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment</span></code></a>(x, gap[, sep, unit, bottom, top])</p></td>
 <td><p>区间段划分工具</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.sort_by_list" title="ricco.util.util.sort_by_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_by_list</span></code></a>(src_list, by_list[, filter_])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.sort_by_list" title="ricco.util.util.sort_by_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_by_list</span></code></a>(src_list, by_list[, filter_])</p></td>
 <td><p>根据一个列表对另一个列表进行筛选或排序，参照列表中不存在的元素按照原始顺序排列在后</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_bool" title="ricco.util.util.to_bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bool</span></code></a>(x[, na, other, t_list, f_list])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_bool" title="ricco.util.util.to_bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bool</span></code></a>(x[, na, other, t_list, f_list])</p></td>
 <td><p>将常见的布尔类型的代替值转为布尔类型</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_float" title="ricco.util.util.to_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_float</span></code></a>(string[, rex_method, ignore_pct, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_float" title="ricco.util.util.to_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_float</span></code></a>(string[, rex_method, ignore_pct, ...])</p></td>
 <td><p>字符串转换为float</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_json_string" title="ricco.util.util.to_json_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json_string</span></code></a>(string[, errors])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_json_string" title="ricco.util.util.to_json_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json_string</span></code></a>(string[, errors])</p></td>
 <td><p>将字符串转为json格式的字符串</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_str_list" title="ricco.util.util.to_str_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str_list</span></code></a>(series)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_str_list" title="ricco.util.util.to_str_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str_list</span></code></a>(series)</p></td>
 <td><p>将列表中的元素保留为字符串、唯一、非空</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.union_list_v2" title="ricco.util.util.union_list_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_list_v2</span></code></a>(*lists)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.union_list_v2" title="ricco.util.util.union_list_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_list_v2</span></code></a>(*lists)</p></td>
 <td><p>合并列表</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.union_str_v2" title="ricco.util.util.union_str_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_str_v2</span></code></a>(*strings[, sep])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.union_str_v2" title="ricco.util.util.union_str_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_str_v2</span></code></a>(*strings[, sep])</p></td>
 <td><p>连接字符串，空白字符串会被忽略</p></td>
 </tr>
 </tbody>
@@ -480,6 +492,18 @@
 <dt class="sig sig-object py" id="ricco.util.util.and_">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">and_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">conditions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.and_" title="Link to this definition"></a></dt>
 <dd><p>对多个条件执行and操作</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.util.check_diff">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">check_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.check_diff" title="Link to this definition"></a></dt>
+<dd><p>检查两个列表的差集</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.util.diff">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.diff" title="Link to this definition"></a></dt>
+<dd><p>求两个列表的差集</p>
 </dd></dl>
 
 <dl class="py function">
@@ -544,6 +568,12 @@
 </dd>
 </dl>
 <p>Returns: 字符串及相似度组成的列表</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.util.fuzz_pair">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">fuzz_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.fuzz_pair" title="Link to this definition"></a></dt>
+<dd><p>模糊配对</p>
 </dd></dl>
 
 <dl class="py function">
