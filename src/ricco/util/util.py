@@ -505,3 +505,30 @@ def drop_repeat_element(x: (list, tuple)):
     [1, 2, 3, 4, 3]
   """
   return [key for key, _ in groupby(x)]
+
+
+def diff(ls1: list, ls2: list):
+  """求两个列表的差集"""
+  return list(set(ls1) - set(ls2)), list(set(ls2) - set(ls1))
+
+
+def fuzz_pair(ls1, ls2, score=50):
+  """模糊配对"""
+  mark = 0 if len(ls1) <= len(ls2) else 1
+  ls_iter = ls1 if mark == 0 else ls2
+  ls_set = ls1 if mark != 0 else ls2
+
+  res_list = []
+  for i in ls_iter:
+    rv = fuzz_match(i, ls_set)
+    if rv[3] is not None and rv[3] > score:
+      res_list.append([i, rv[0]] if mark == 0 else [rv[0], i])
+  return res_list
+
+
+def check_diff(ls1: list, ls2: list):
+  """检查两个列表的差集"""
+  res1, res2 = diff(ls1, ls2)
+  print(f'左侧特有元素：{res1}')
+  print(f'\n右侧特有元素：{res2}')
+  print(f'\n模糊配对结果：{fuzz_pair(res1, res2)}')

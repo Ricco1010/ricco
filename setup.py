@@ -31,6 +31,7 @@ setup(
     install_requires=[
       'geojson<3.0.0',
       'numpy>=1.0.0',
+      'numpy<2.0.0',
       'pandas<2.0.0',
       'requests>=2.7',
       'shapely<2.0.0',
