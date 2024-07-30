@@ -13,6 +13,7 @@
 1. 创建并切换至虚拟环境（以conda为例）
 
 .. code-block:: bash
+
    # 创建虚拟环境（以etl为例）
    conda create -n etl python=3.9
    # 激活虚拟环境
@@ -21,6 +22,7 @@
 2. 安装geopandas
 
 .. code-block:: bash
+
    # 安装geopandas之前建议先手动安装shapely，否则会安装shapely2
    pip install shapely==1.8.5.post1
    pip install geopandas==0.11.1
@@ -28,6 +30,7 @@
 3. 安装ricco
 
 .. code-block:: bash
+
    pip install ricco
 
 
@@ -37,6 +40,7 @@
 Kernel -- Change Kernel
 
 .. code-block:: bash
+
    # 激活虚拟环境
    conda activate etl
 
