@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>安装 &mdash; ricco 1.4.4 文档</title>
+  <title>安装 &mdash; ricco 1.4.5 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=6f892d8a"></script>
+        <script src="_static/documentation_options.js?v=7d4f1190"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -105,16 +105,47 @@
 <ol class="arabic simple">
 <li><p>创建并切换至虚拟环境（以conda为例）</p></li>
 </ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 创建虚拟环境（以etl为例）</span>
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>etl<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+<span class="c1"># 激活虚拟环境</span>
+conda<span class="w"> </span>activate<span class="w"> </span>etl
+</pre></div>
+</div>
 <ol class="arabic simple" start="2">
 <li><p>安装geopandas</p></li>
 </ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 安装geopandas之前建议先手动安装shapely，否则会安装shapely2</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="nv">shapely</span><span class="o">==</span><span class="m">1</span>.8.5.post1
+pip<span class="w"> </span>install<span class="w"> </span><span class="nv">geopandas</span><span class="o">==</span><span class="m">0</span>.11.1
+</pre></div>
+</div>
 <ol class="arabic simple" start="3">
 <li><p>安装ricco</p></li>
 </ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ricco
+</pre></div>
+</div>
 </section>
 <section id="jupyter">
 <h2>在jupyter中切换虚拟环境<a class="headerlink" href="#jupyter" title="Link to this heading"></a></h2>
 <p>Kernel – Change Kernel</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 激活虚拟环境</span>
+conda<span class="w"> </span>activate<span class="w"> </span>etl
+
+<span class="c1"># 安装ipykernel</span>
+pip<span class="w"> </span>install<span class="w"> </span>ipykernel
+<span class="c1"># 运行上述命令后可能已经可以进行虚拟环境切换了，如果不行的话，执行下面的命令</span>
+
+<span class="c1"># 将虚拟环境添加到jupyter</span>
+python<span class="w"> </span>-m<span class="w"> </span>ipykernel<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--name<span class="w"> </span>etl
+<span class="c1"># 或（给kernel命名）</span>
+python<span class="w"> </span>-m<span class="w"> </span>ipykernel<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--name<span class="w"> </span>etl<span class="w"> </span>--display-name<span class="w"> </span><span class="s2">&quot;Python (etl)&quot;</span>
+
+<span class="c1"># 移除Kernel</span>
+jupyter<span class="w"> </span>kernelspec<span class="w"> </span>list
+jupyter<span class="w"> </span>kernelspec<span class="w"> </span>uninstall<span class="w"> </span>etl
+</pre></div>
+</div>
 </section>
 </section>
 
