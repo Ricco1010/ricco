@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>工具集 &mdash; ricco 1.4.5 文档</title>
+  <title>工具集 &mdash; ricco 1.4.6 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=7d4f1190"></script>
+        <script src="_static/documentation_options.js?v=4a0555be"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -160,7 +160,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.ext"><code class="docutils literal notranslate"><span class="pre">ext()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.extension"><code class="docutils literal notranslate"><span class="pre">extension()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.file2zip"><code class="docutils literal notranslate"><span class="pre">file2zip()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.find_undefined_dirs"><code class="docutils literal notranslate"><span class="pre">find_undefined_dirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.fn"><code class="docutils literal notranslate"><span class="pre">fn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.path_name"><code class="docutils literal notranslate"><span class="pre">path_name()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.protect_dir"><code class="docutils literal notranslate"><span class="pre">protect_dir()</span></code></a></li>
@@ -175,6 +174,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.drop_repeat_element"><code class="docutils literal notranslate"><span class="pre">drop_repeat_element()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.drop_repeat_string"><code class="docutils literal notranslate"><span class="pre">drop_repeat_string()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.drop_repeat_string_by_step"><code class="docutils literal notranslate"><span class="pre">drop_repeat_string_by_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.easy_split"><code class="docutils literal notranslate"><span class="pre">easy_split()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.extract_city"><code class="docutils literal notranslate"><span class="pre">extract_city()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.extract_possible_region"><code class="docutils literal notranslate"><span class="pre">extract_possible_region()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.get_breaks"><code class="docutils literal notranslate"><span class="pre">get_breaks()</span></code></a></li>
@@ -200,6 +200,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.city"><code class="docutils literal notranslate"><span class="pre">District.city()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.city_list"><code class="docutils literal notranslate"><span class="pre">District.city_list</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.city_names"><code class="docutils literal notranslate"><span class="pre">District.city_names()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.get_city_id_by_name"><code class="docutils literal notranslate"><span class="pre">District.get_city_id_by_name()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.is_city"><code class="docutils literal notranslate"><span class="pre">District.is_city()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.is_region"><code class="docutils literal notranslate"><span class="pre">District.is_region()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.province"><code class="docutils literal notranslate"><span class="pre">District.province()</span></code></a></li>
@@ -232,6 +233,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="etl.html">数据读取、处理与保存</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oss.html">OSS工具集</a></li>
 <li class="toctree-l1"><a class="reference internal" href="geocode.html">Geocoding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a></li>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">地理处理</a></li>
@@ -1175,31 +1177,28 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.file2zip" title="ricco.util.os.file2zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file2zip</span></code></a>(filepath[, overwrite, delete_origin])</p></td>
 <td><p>将一个文件压缩为zip格式</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.find_undefined_dirs" title="ricco.util.os.find_undefined_dirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_undefined_dirs</span></code></a>(dirpath)</p></td>
-<td><p>获取不存在的目录列表</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.fn" title="ricco.util.os.fn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code></a>(filepath)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.fn" title="ricco.util.os.fn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code></a>(filepath)</p></td>
 <td><p>路径及文件名（不含扩展名）</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.path_name" title="ricco.util.os.path_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_name</span></code></a>(filepath)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.path_name" title="ricco.util.os.path_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_name</span></code></a>(filepath)</p></td>
 <td><p>路径及文件名（不含扩展名）</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.protect_dir" title="ricco.util.os.protect_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protect_dir</span></code></a>(path)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.protect_dir" title="ricco.util.os.protect_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protect_dir</span></code></a>(path)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.remove_ds_store" title="ricco.util.os.remove_ds_store"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_ds_store</span></code></a>(dir_path)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.remove_ds_store" title="ricco.util.os.remove_ds_store"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_ds_store</span></code></a>(dir_path)</p></td>
 <td><p>删除文件夹中的.DS_Store文件</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.remove_path" title="ricco.util.os.remove_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_path</span></code></a>(path[, log])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.remove_path" title="ricco.util.os.remove_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_path</span></code></a>(path[, log])</p></td>
 <td><p>删除文件或文件夹</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.rm_scratch_file" title="ricco.util.os.rm_scratch_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rm_scratch_file</span></code></a>(dir_path, days[, recursive, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.rm_scratch_file" title="ricco.util.os.rm_scratch_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rm_scratch_file</span></code></a>(dir_path, days[, recursive, ...])</p></td>
 <td><p>删除指定天数前修改过的文件</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.single_ext" title="ricco.util.os.single_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">single_ext</span></code></a>(path_list)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.single_ext" title="ricco.util.os.single_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">single_ext</span></code></a>(path_list)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.split_path" title="ricco.util.os.split_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_path</span></code></a>(filepath[, abspath])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.split_path" title="ricco.util.os.split_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_path</span></code></a>(filepath[, abspath])</p></td>
 <td><p>将文件路径拆分为文件夹路径、文件名、扩展名三部分</p></td>
 </tr>
 </tbody>
@@ -1337,12 +1336,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ricco.util.os.find_undefined_dirs">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">find_undefined_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.find_undefined_dirs" title="Link to this definition"></a></dt>
-<dd><p>获取不存在的目录列表</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.fn">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.fn" title="Link to this definition"></a></dt>
 <dd><p>路径及文件名（不含扩展名）</p>
@@ -1403,22 +1396,25 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_string_by_step" title="ricco.util.strings.drop_repeat_string_by_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_string_by_step</span></code></a>(string, step)</p></td>
 <td><p>根据指定的小块长度，获取去重后的字符串</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.extract_city" title="ricco.util.strings.extract_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_city</span></code></a>(string[, na])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.easy_split" title="ricco.util.strings.easy_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">easy_split</span></code></a>(string[, seps])</p></td>
+<td><p>使用常见的分隔符将字符串拆分为列表</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.extract_city" title="ricco.util.strings.extract_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_city</span></code></a>(string[, na])</p></td>
 <td><p>从字符串中提取城市（可能包含县级市）</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.extract_possible_region" title="ricco.util.strings.extract_possible_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_possible_region</span></code></a>(string)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.extract_possible_region" title="ricco.util.strings.extract_possible_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_possible_region</span></code></a>(string)</p></td>
 <td><p>从字符串中提取可能的城市、区县</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_breaks" title="ricco.util.strings.get_breaks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_breaks</span></code></a>(length, step)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_breaks" title="ricco.util.strings.get_breaks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_breaks</span></code></a>(length, step)</p></td>
 <td><p>通过长度和步长获所有可能的取端点列表的列表 .</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_city_and_region" title="ricco.util.strings.get_city_and_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_and_region</span></code></a>(string)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_city_and_region" title="ricco.util.strings.get_city_and_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_and_region</span></code></a>(string)</p></td>
 <td><p>从字符串中提取城市、区县</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_list_by_position" title="ricco.util.strings.get_list_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_list_by_position</span></code></a>(string, breaks)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_list_by_position" title="ricco.util.strings.get_list_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_list_by_position</span></code></a>(string, breaks)</p></td>
 <td><p>按照位置信息将字符串拆解为多个字符串的列表 :param string: 需要拆分的字符串 :param breaks: 位置集合列表的列表（左闭右开），[[1, 5], [5, 10], [10, 15]]</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_single_list" title="ricco.util.strings.get_single_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_single_list</span></code></a>(start, length, step)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_single_list" title="ricco.util.strings.get_single_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_single_list</span></code></a>(start, length, step)</p></td>
 <td><p>获取单个起点的位置端点列表，如果起始位置不是零，则会返回0到起始位置的列表 :param start: 起始位置 :param length: 总长度 :param step: 步长</p></td>
 </tr>
 </tbody>
@@ -1453,6 +1449,12 @@
 <dt class="sig sig-object py" id="ricco.util.strings.drop_repeat_string_by_step">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">drop_repeat_string_by_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.drop_repeat_string_by_step" title="Link to this definition"></a></dt>
 <dd><p>根据指定的小块长度，获取去重后的字符串</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.strings.easy_split">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">easy_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.easy_split" title="Link to this definition"></a></dt>
+<dd><p>使用常见的分隔符将字符串拆分为列表</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1632,16 +1634,19 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.city_names" title="ricco.util.district.District.city_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">city_names</span></code></a>(name)</p></td>
 <td><p>返回匹配到的全部城市名称列表</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.is_city" title="ricco.util.district.District.is_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_city</span></code></a>(name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.get_city_id_by_name" title="ricco.util.district.District.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.is_city" title="ricco.util.district.District.is_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_city</span></code></a>(name)</p></td>
 <td><p>判断是否是地级市</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.is_region" title="ricco.util.district.District.is_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_region</span></code></a>(name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.is_region" title="ricco.util.district.District.is_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_region</span></code></a>(name)</p></td>
 <td><p>判断是否是县市区</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.province" title="ricco.util.district.District.province"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province</span></code></a>(name[, if_not_unique, warning])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.province" title="ricco.util.district.District.province"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province</span></code></a>(name[, if_not_unique, warning])</p></td>
 <td><p>通过地名（省份、城市、区县）获取所在的省份名称</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.province_names" title="ricco.util.district.District.province_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province_names</span></code></a>(name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.province_names" title="ricco.util.district.District.province_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province_names</span></code></a>(name)</p></td>
 <td><p>返回匹配到的全部省份名称列表</p></td>
 </tr>
 </tbody>
@@ -1687,6 +1692,11 @@
 <span class="sig-name descname"><span class="pre">city_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.city_names" title="Link to this definition"></a></dt>
 <dd><p>返回匹配到的全部城市名称列表</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.util.district.District.get_city_id_by_name">
+<span class="sig-name descname"><span class="pre">get_city_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.get_city_id_by_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.util.district.District.is_city">
