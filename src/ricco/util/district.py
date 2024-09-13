@@ -5,6 +5,30 @@ from ..base import warn_
 from ..resource.bd_region import get_bd_region
 
 
+def norm_city_name(name, full=False):
+  """标准化城市名称为简称或全称"""
+  df = get_bd_region()
+  df = df[['城市名称', '城市简称']].drop_duplicates(ignore_index=True)
+  df = df[
+    (df['城市名称'] == name) |
+    (df['城市简称'] == name)
+    ].reset_index(drop=True)
+  assert df.shape[0] == 1, f'未找到对应的城市或匹配到多个城市:{name}'
+  return df['城市名称' if full else '城市简称'][0]
+
+
+def get_city_id_by_name(name: str):
+  df_o = get_bd_region()
+  df = df_o[['城市id', '城市名称', '城市简称']].drop_duplicates()
+  df = df.dropna()
+  df = df[
+    (df['城市简称'] == name) |
+    (df['城市名称'] == name)
+    ]
+  assert df.shape[0] == 1, f'"{name}"匹配到多个或没有匹配到城市'
+  return int(df['城市id'].unique().tolist()[0])
+
+
 def get_upload_region(df, city):
   """从bd_region表中提取某个城市的区县数据，并处理成可以上传的格式"""
   city_id = df[
@@ -163,3 +187,12 @@ class District:
         if_not_unique=if_not_unique,
         warning=warning
     )
+
+  def get_city_id_by_name(self, name: str):
+    df = self.df[['城市id', '城市名称', '城市简称']].drop_duplicates()
+    df = df.dropna()
+    df = df[
+      (df['城市简称'] == name) | (df['城市名称'] == name)
+      ]
+    assert df.shape[0] == 1, f'"{name}"匹配到多个或没有匹配到城市'
+    return int(df['城市id'].unique().tolist()[0])

@@ -46,6 +46,21 @@ def crs_sh2000():
   return CRS_SH2000
 
 
+def is_point(x: BaseGeometry):
+  """判断是否为点数据"""
+  return isinstance(x, (Point, MultiPoint))
+
+
+def is_line(x: BaseGeometry):
+  """判断是否为线数据"""
+  return isinstance(x, (LineString, MultiLineString))
+
+
+def is_polygon(x: BaseGeometry):
+  """判断是否为面数据"""
+  return isinstance(x, (Polygon, MultiPolygon))
+
+
 def epsg_from_lnglat(lng, lat=0):
   """根据经纬度计算 UTM 区域 EPSG 代码"""
   lng = ensure_list(lng)
@@ -249,10 +264,11 @@ def multiline2multipolygon(multiline_shapely: MultiLineString, force=False):
     return
 
 
-def get_inner_point(polygon: Polygon, within=True):
+@check_null()
+def get_inner_point(polygon: BaseGeometry, within=True):
   """返回面内的一个点，默认返回中心点，当中心点不在面内则返回面内一个点"""
-  if is_empty(polygon):
-    return
+  if is_point(polygon):
+    return polygon
   point = polygon.centroid
   if not polygon.is_valid:
     polygon = polygon.buffer(0.000001)
@@ -277,7 +293,7 @@ def auto_loads(x) -> BaseGeometry:
 
 def dumps2x(x: BaseGeometry, geom_format):
   """转换geometry格式"""
-  assert geom_format in GEOM_FORMATS, '未知的地理格式'
+  assert geom_format in GEOM_FORMATS, f'未知的地理格式:"{geom_format}"'
   x = auto_loads(x)
   if geom_format == 'shapely':
     return x
@@ -419,17 +435,30 @@ def text2shapely(
 
 def filter_polygon_from_collection(x):
   """从GeometryCollection中筛选面重新组成geometry"""
-  if isinstance(x, (Polygon, MultiPolygon)):
+  if is_polygon(x):
     return x
   if isinstance(x, GeometryCollection):
-    return unary_union([
-      i for i in x.geoms if isinstance(i, (Polygon, MultiPolygon))
-    ])
+    return unary_union([i for i in x.geoms if is_polygon(i)])
   raise TypeError(f'不支持的数据类型:{type(x)}')
 
 
 def ensure_valid_polygon(x):
+  """确保输出的面数据是有效的，会从GeometryCollection中筛选面重新组成geometry"""
   if not x.is_valid:
     valid_res = make_valid(x)
     return filter_polygon_from_collection(valid_res)
   return x
+
+
+def make_line(p1: Point, p2: Point, geom_format='shapely'):
+  """根据提供的点划线"""
+  p1 = auto_loads(p1)
+  p2 = auto_loads(p2)
+  assert not (is_line(p1) or is_line(p2)), '无法对线数据进行操作'
+  if is_polygon(p1):
+    warnings.warn('p1为面数据，取内部点')
+    p1 = get_inner_point(p1)
+  if is_polygon(p2):
+    warnings.warn('p2为面数据，取内部点')
+    p2 = get_inner_point(p2)
+  return dumps2x(LineString([p1, p2]), geom_format=geom_format)

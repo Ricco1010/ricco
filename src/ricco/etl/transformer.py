@@ -1,6 +1,7 @@
 import math
 import warnings
 from datetime import datetime
+from itertools import product
 
 import numpy as np
 import pandas as pd
@@ -18,6 +19,7 @@ from ..util.decorator import timer
 from ..util.util import and_
 from ..util.util import fuzz_match
 from ..util.util import or_
+from ..util.util import sort_by_list
 from ..util.util import to_float
 from ..util.util import to_str_list
 from .graph import get_graph_dict
@@ -526,3 +528,25 @@ def rolling_by_month(df, c_date, c_group, months: int, agg: dict):
     dfs.append(_df.copy())
     date_start += relativedelta(months=1)
   return pd.concat(dfs, ignore_index=True)
+
+
+def columns_contrast(df_left, df_right, n_rows=None):
+  """对比两个Dataframe的列，同名的列会放在一起"""
+  _l = 'left'
+  _r = 'right'
+  if n_rows:
+    df_left = df_left.head(n_rows)
+    df_right = df_right.head(n_rows)
+  cols_left = df_left.columns.tolist()
+  cols_right = df_right.columns.tolist()
+  mapping_left = {i: f'{i}-{_l}' for i in cols_left}
+  mapping_right = {i: f'{i}-{_r}' for i in cols_right}
+  df_left = df_left.rename(columns=mapping_left)
+  df_right = df_right.rename(columns=mapping_right)
+  df = df_left.join(df_right)
+  # 排序列
+  common_list = [i for i in cols_left if i in cols_right]
+  cols_new = [f'{i}-{j}' for i, j in product(common_list, [_l, _r])]
+  cols_all = [*mapping_left.values(), *mapping_right.values()]
+  cols_sorted = sort_by_list(cols_all, cols_new)
+  return df[cols_sorted]

@@ -68,26 +68,12 @@ def remove_path(path, log=True):
     warnings.warn(f'Path not found:"{path}"')
 
 
-def find_undefined_dirs(dirpath):
-  """获取不存在的目录列表"""
-  dirs = []
-  dirpath = os.path.abspath(dirpath)
-  while not os.path.exists(dirpath):
-    dirs.append(dirpath)
-    dirpath = os.path.dirname(dirpath)
-  dirs.reverse()
-  return dirs
-
-
 def ensure_dirpath_exist(filepath):
   """确保目录存在，不存在则创建"""
   dir_path = os.path.dirname(filepath)
-  if os.path.exists(dir_path):
-    return
-  undefined_dirs = find_undefined_dirs(dir_path)
-  for p in undefined_dirs:
-    os.makedirs(p)
-    logging.warning(f'Created: "{p}"')
+  if not os.path.exists(dir_path):
+    os.makedirs(dir_path)
+    logging.warning(f'Created: "{dir_path}"')
 
 
 def file2zip(filepath, overwrite=False, delete_origin=False):

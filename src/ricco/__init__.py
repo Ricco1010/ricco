@@ -36,6 +36,7 @@ from .geometry.util import wkb_loads
 from .geometry.util import wkt_dumps
 from .geometry.util import wkt_loads
 from .local import Rc
+from .oss import OssUtils
 from .util.assertion import assert_columns_exists
 from .util.assertion import assert_not_empty_str
 from .util.assertion import assert_not_null
