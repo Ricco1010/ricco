@@ -63,7 +63,7 @@ def filter_dup_building(df,
   if not xiaoqu[c_xiaoqu].is_unique:
     raise ValueError(f'{c_xiaoqu}存在重复值')
 
-  df = mark_tags_v2(df, xiaoqu, col_list=[c_xiaoqu])
+  df = mark_tags_v2(df, xiaoqu, c_tags=[c_xiaoqu])
 
   df = df[df[c_xiaoqu].notna() & df[c_building].notna()]
 

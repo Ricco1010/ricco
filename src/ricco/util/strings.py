@@ -1,3 +1,6 @@
+import re
+
+from ..base import ensure_list
 from ..base import is_empty
 from ..resource.bd_region import cities
 from ..resource.bd_region import regions
@@ -172,3 +175,19 @@ def extract_city(string: str, na=None):
   if is_empty(rv):
     return na
   return rv
+
+
+@check_null(default_rv=[])
+def easy_split(string: str, seps: list = None):
+  """使用常见的分隔符将字符串拆分为列表"""
+  if '\\' in string:
+    raise Exception('字符串中不能包含"\\"')
+  if not seps:
+    seps = [
+      '，', ',',
+      '、', '/',
+      '；', ';',
+      '。', '\\|', ' ',
+    ]
+  seps = ensure_list(seps)
+  return [i for i in re.split('|'.join(seps), string) if i]

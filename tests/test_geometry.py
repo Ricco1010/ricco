@@ -80,7 +80,7 @@ def test_mark_tags_v2():
               columns={'geometry_wkb': 'geometry'}),
           polygon_df[['板块', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
-          col_list=['板块'],
+          c_tags=['板块'],
       ),
       res_df[['name', 'lng', 'lat', 'geometry_wkb', '板块']].rename(
           columns={'geometry_wkb': 'geometry'})
@@ -93,7 +93,7 @@ def test_mark_tags_v2():
               columns={'geometry_wkb': 'geometry'}),
           polygon_df[['板块', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
-          col_list=['板块'],
+          c_tags=['板块'],
       ),
       res_df[['name', 'geometry_wkb', '板块']].rename(
           columns={'geometry_wkb': 'geometry'})
@@ -105,7 +105,7 @@ def test_mark_tags_v2():
           point_df[['name', 'lng', 'lat']],
           polygon_df[['板块', 'geometry_wkb']].rename(
               columns={'geometry_wkb': 'geometry'}),
-          col_list=['板块'],
+          c_tags=['板块'],
           drop_geometry=True
       ),
       res_df[['name', 'lng', 'lat', '板块']]
@@ -117,7 +117,7 @@ def test_mark_tags_v2():
               columns={'geometry_shapely': 'geometry'}),
           polygon_df[['板块', 'geometry_shapely']].rename(
               columns={'geometry_shapely': 'geometry'}),
-          col_list=['板块'],
+          c_tags=['板块'],
       ),
       res_df[['name', 'geometry_wkb', '板块']].rename(
           columns={'geometry_wkb': 'geometry'})
@@ -130,7 +130,7 @@ def test_mark_tags_v2():
               columns={'geometry_shapely': 'geometry'}),
           polygon_df[['板块', 'geometry_shapely']].rename(
               columns={'geometry_shapely': 'geometry'}),
-          col_list=['板块'],
+          c_tags=['板块'],
           geometry_format='shapely'
       ),
       res_df[['name', 'geometry_shapely', '板块']].rename(
@@ -155,11 +155,11 @@ def test_mark_tags_v22():
           point[['name', 'lng2', 'lat2']],
           polygon[['板块', 'geometry_wkb2']].rename(
               columns={'geometry_wkb2': 'geometry2'}),
-          col_list=['板块'],
-          point_lng='lng2',
-          point_lat='lat2',
-          point_geometry='geometry2',
-          polygon_geometry='geometry2',
+          c_tags=['板块'],
+          c_lng='lng2',
+          c_lat='lat2',
+          c_geometry='geometry2',
+          c_polygon_geometry='geometry2',
       ),
       res[['name', 'lng2', 'lat2', '板块']]
   )
@@ -171,11 +171,11 @@ def test_mark_tags_v22():
               columns={'geometry_wkb2': 'geometry2'}),
           polygon[['板块', 'geometry_wkb2']].rename(
               columns={'geometry_wkb2': 'geometry2'}),
-          col_list=['板块'],
-          point_lng='lng2',
-          point_lat='lat2',
-          point_geometry='geometry2',
-          polygon_geometry='geometry2',
+          c_tags=['板块'],
+          c_lng='lng2',
+          c_lat='lat2',
+          c_geometry='geometry2',
+          c_polygon_geometry='geometry2',
       ),
       res[['name', 'lng2', 'lat2', 'geometry_wkb2', '板块']].rename(
           columns={'geometry_wkb2': 'geometry2'})
@@ -188,11 +188,11 @@ def test_mark_tags_v22():
               columns={'geometry_wkb2': 'geometry2'}),
           polygon[['板块', 'geometry_wkb2']].rename(
               columns={'geometry_wkb2': 'geometry2'}),
-          col_list=['板块'],
-          point_lng='lng2',
-          point_lat='lat2',
-          point_geometry='geometry2',
-          polygon_geometry='geometry2',
+          c_tags=['板块'],
+          c_lng='lng2',
+          c_lat='lat2',
+          c_geometry='geometry2',
+          c_polygon_geometry='geometry2',
       ),
       res[['name', 'geometry_wkb2', '板块']].rename(
           columns={'geometry_wkb2': 'geometry2'})
@@ -204,12 +204,12 @@ def test_mark_tags_v22():
           point[['name', 'lng2', 'lat2']],
           polygon[['板块', 'geometry_wkb2']].rename(
               columns={'geometry_wkb2': 'geometry2'}),
-          col_list=['板块'],
+          c_tags=['板块'],
           drop_geometry=True,
-          point_lng='lng2',
-          point_lat='lat2',
-          point_geometry='geometry2',
-          polygon_geometry='geometry2',
+          c_lng='lng2',
+          c_lat='lat2',
+          c_geometry='geometry2',
+          c_polygon_geometry='geometry2',
       ),
       res[['name', 'lng2', 'lat2', '板块']]
   )
@@ -220,11 +220,11 @@ def test_mark_tags_v22():
               columns={'geometry_shapely2': 'geometry2'}),
           polygon[['板块', 'geometry_shapely2']].rename(
               columns={'geometry_shapely2': 'geometry2'}),
-          col_list=['板块'],
-          point_lng='lng2',
-          point_lat='lat2',
-          point_geometry='geometry2',
-          polygon_geometry='geometry2',
+          c_tags=['板块'],
+          c_lng='lng2',
+          c_lat='lat2',
+          c_geometry='geometry2',
+          c_polygon_geometry='geometry2',
       ),
       res[['name', 'geometry_wkb2', '板块']].rename(
           columns={'geometry_wkb2': 'geometry2'})
@@ -237,12 +237,12 @@ def test_mark_tags_v22():
               columns={'geometry_shapely2': 'geometry2'}),
           polygon[['板块', 'geometry_shapely2']].rename(
               columns={'geometry_shapely2': 'geometry2'}),
-          col_list=['板块'],
+          c_tags=['板块'],
           geometry_format='shapely',
-          point_lng='lng2',
-          point_lat='lat2',
-          point_geometry='geometry2',
-          polygon_geometry='geometry2',
+          c_lng='lng2',
+          c_lat='lat2',
+          c_geometry='geometry2',
+          c_polygon_geometry='geometry2',
       ),
       res[['name', 'geometry_shapely2', '板块']].rename(
           columns={'geometry_shapely2': 'geometry2'})

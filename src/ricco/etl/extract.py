@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import sys
+from tempfile import NamedTemporaryFile
 
 import geopandas as gpd
 import pandas as pd
@@ -10,6 +11,7 @@ from tqdm import tqdm
 
 from ..base import ensure_list
 from ..geometry.util import wkt_loads
+from ..oss import OssUtils
 from ..util.os import dir_iter
 from ..util.os import extension
 from ..util.os import path_name
@@ -34,6 +36,8 @@ def rdf(
     columns: (list, str) = None,
     nrows: int = None,
     recursive: bool = True,
+    access_key=None,
+    secret_key=None,
 ) -> pd.DataFrame:
   """
   常用文件读取函数，支持
@@ -50,7 +54,13 @@ def rdf(
     columns: 指定读取的列名
     nrows: 指定读取的行数
     recursive: 是否循环遍历更深层级的文件夹，默认为True，仅当路径为文件夹时生效
+    access_key: 阿里云OSS访问密钥
+    secret_key: 阿里云OSS访问密钥
   """
+  if file_path.startswith('oss://'):
+    assert access_key and secret_key, 'access_key和secret_key不能为空'
+    return read_oss(file_path, access_key, secret_key, columns, nrows, encoding)
+
   if os.path.isdir(file_path):
     if file_path.endswith('.gdb'):
       return read_gdb(file_path)
@@ -216,10 +226,11 @@ def rdf_by_dir(
     info: 是否打印基本信息（列名、行列数）
     sign_data_from: 是否标记数据来源于哪个文件，默认不标记
     col_data_from: 用于标记数据来源文件的列名
+    encoding: 文件编码，默认为utf-8
   """
   desc = dir_path if len(dir_path) <= 23 else f'...{dir_path[-20:]}'
   path_list = []
-  for p in dir_iter(dir_path, exts=exts, ignore_hidden_files=True,
+  for p in dir_iter(dir_path, exts=exts or ALL_EXTS, ignore_hidden_files=True,
                     recursive=recursive):
     path_list.append(p)
   dfs = []
@@ -359,6 +370,23 @@ def read_spss(file_path, columns=None, nrows=None, encoding=None):
   df, meta = pyreadstat.read_sav(
       file_path,
       usecols=columns,
-      row_limit=nrows if nrows else 0,
+      row_limit=nrows or 0,
       encoding=encoding)
   return pd.DataFrame(df, columns=meta.column_names)
+
+
+def read_oss(file_path, access_key, secret_key, columns=None, nrows=None,
+             encoding=None):
+  """读取OSS文件"""
+  assert file_path.startswith('oss://'), '文件路径必须以oss://开头'
+  work_path = path_name(file_path)
+  ext = extension(file_path)
+  _oss = OssUtils(
+      work_path=work_path,
+      access_key=access_key,
+      secret_key=secret_key
+  )
+  with NamedTemporaryFile(suffix=ext) as _temp:
+    _oss.download(file_path, _temp.name, overwrite=True)
+    df = rdf(_temp.name, encoding=encoding, nrows=nrows, columns=columns)
+  return df

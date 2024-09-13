@@ -430,78 +430,78 @@ def ensure_lnglat(df, lng='lng', lat='lat', geometry='geometry'):
 
 
 def mark_tags_v2(
-    point_df: pd.DataFrame,
+    df: pd.DataFrame,
     polygon_df: pd.DataFrame,
-    col_list: (list, str) = None,
+    c_tags: (list, str) = None,
+    col_list=None,
     *,
     predicate='intersects',
     drop_geometry=False,
     geometry_format='wkb',
     warning=True,
-    point_lng='lng',
-    point_lat='lat',
-    point_geometry='geometry',
-    polygon_geometry='geometry',
-    warning_message=None,
+    c_lng='lng',
+    c_lat='lat',
+    c_geometry='geometry',
+    c_polygon_geometry='geometry',
     ensure_point=True
 ):
   """
   使用面数据通过空间关联（sjoin）给数据打标签
 
   Args:
-    point_df: 要打标签的数据，一般为点数据，如为面数据，则会自动提取面内点计算
-    polygon_df: 标签所在的数据集，一般为面数据
-    col_list: 面数据中要关联到结果中的列，若为空则全部关联
+    df: 要打标签的数据，一般为点数据，如为面数据，则会自动提取面内点计算
+    polygon_df: 标签列所在的数据集，一般为面数据
+    c_tags: 面数据中要关联到结果中的标签字段名，若为空则全部关联
+    col_list: (已弃用)，同c_tags
     predicate: 关联方法，默认 'intersects'
     drop_geometry: 结果是否删除point_df中的geometry，默认不删除
     geometry_format: 输出的geometry格式，支持wkb,wkt,shapely,geojson，默认wkb
     warning: 是否输出警告信息
-    point_lng: 指定点数据的经度列名
-    point_lat: 指定点数据的经度列名
-    point_geometry: 指定点数据的geometry列名
-    polygon_geometry: 指定面数据的geometry列名
-    warning_message: 是否输出警告信息，已弃用
+    c_lng: 指定点数据的经度列名
+    c_lat: 指定点数据的经度列名
+    c_geometry: 指定点数据的geometry列名
+    c_polygon_geometry: 指定面数据的geometry列名
     ensure_point: point_df是否强制转换为点数据
   """
-  if warning_message is not None:
-    warn_('参数"warning_message"已弃用，请使用参数"warning"')
-
-  if point_df.empty or point_df.empty:
+  if df.empty or polygon_df.empty:
     warn_('存在空的数据集，请检查', warning)
-    return point_df
+    return df
+  if col_list:
+    warnings.warn('“col_list”即将弃用，请使用“c_tags”代替', DeprecationWarning)
+    c_tags = c_tags or col_list
 
-  point_df = point_df.copy()
-  assert point_df.index.is_unique, 'point_df索引列必须唯一'
-  if not col_list:
-    col_list = polygon_df.columns.to_list()
+  df = df.copy()
+  assert df.index.is_unique, 'point_df索引列必须唯一'
+  if not c_tags:
+    c_tags = polygon_df.columns.to_list()
   else:
-    col_list = ensure_list(col_list)
-    polygon_df = polygon_df[[*col_list, polygon_geometry]]
+    c_tags = ensure_list(c_tags)
+    polygon_df = polygon_df[[*c_tags, c_polygon_geometry]]
 
   if cols_mapping := {
-    c: f'{c}_origin' for c in col_list
-    if c in point_df and c not in [point_lng, point_lat, point_geometry]
+    c: f'{c}_origin' for c in c_tags
+    if c in df and c not in [c_lng, c_lat, c_geometry]
   }:
     warn_(f'同名字段重命名：{cols_mapping}', warning)
-    point_df.rename(columns=cols_mapping, inplace=True)
+    df.rename(columns=cols_mapping, inplace=True)
 
   # 转换为shapely格式
-  _df = ensure_geometry(point_df, ensure_point, warning,
-                        lng=point_lng, lat=point_lat, geometry=point_geometry)
-  polygon_df = auto2shapely(polygon_df, geometry=polygon_geometry)
+  _df = ensure_geometry(df, ensure_point, warning,
+                        lng=c_lng, lat=c_lat, geometry=c_geometry)
+  polygon_df = auto2shapely(polygon_df, geometry=c_polygon_geometry)
   # 空间关联
   _df = _df.sjoin(
       polygon_df, how='left', predicate=predicate,
   ).drop(['index_right'], axis=1)
-  del _df[point_geometry]
+  del _df[c_geometry]
   # 统一geometry输出格式、删除geometry、避免多次转换
-  if point_geometry in point_df:
+  if c_geometry in df:
     if drop_geometry:
-      del point_df[point_geometry]
+      del df[c_geometry]
     else:
-      point_df = auto2x(point_df, geometry_format, geometry=point_geometry)
+      df = auto2x(df, geometry_format, geometry=c_geometry)
   # 将空间关联后的数据关联到原来的Dataframe上
-  return point_df.join(_df, how='left')
+  return df.join(_df, how='left')
 
 
 def nearest_neighbor(
@@ -711,32 +711,32 @@ def buffer(df: pd.DataFrame,
   return shapely2x(df, geo_format, geometry=buffer_geometry)
 
 
-def spatial_agg(point_df: pd.DataFrame,
+def spatial_agg(df: pd.DataFrame,
                 polygon_df: pd.DataFrame,
                 by: Union[str, List[str]],
                 agg: dict,
-                polygon_geometry: str = 'geometry') -> pd.DataFrame:
+                c_polygon_geometry: str = 'geometry') -> pd.DataFrame:
   """
   对面数据覆盖范围内的点数据进行空间统计
 
   Args:
-    point_df: pd.DataFrame, 点数据dataframe;
-    polygon_df: pd.DataFrame, 面数据dataframe;
-    by: Union[str, List[str]], 空间统计单位字段；
-    agg: dict, 空间统计操作。格式为{'被统计字段名': '操作名', ...}的字典。如{'poi':'sum'};
-    polygon_geometry: str, 面数据geometry字段名，默认"geometry";
+    df: 点数据dataframe;
+    polygon_df: 面数据dataframe;
+    by: 空间统计单位字段；
+    agg: 空间统计操作。格式为{'被统计字段名': '操作名', ...}的字典。如{'poi':'sum'};
+    c_polygon_geometry: 面数据geometry字段名，默认"geometry";
   Returns:
     pd.DataFrame, 包含空间统计单位字段和被统计字段和面数据geometry的DataFrame
   """
 
-  polygon_df = polygon_df[[by, polygon_geometry]]
-  point_df = mark_tags_v2(
-      point_df=point_df,
+  polygon_df = polygon_df[[by, c_polygon_geometry]]
+  df = mark_tags_v2(
+      df=df,
       polygon_df=polygon_df,
-      col_list=by,
+      c_tags=by,
       drop_geometry=True,
-      polygon_geometry=polygon_geometry)
-  df_grouped = point_df.groupby(by=by, as_index=False).agg(agg)
+      c_polygon_geometry=c_polygon_geometry)
+  df_grouped = df.groupby(by=by, as_index=False).agg(agg)
   return df_grouped
 
 
