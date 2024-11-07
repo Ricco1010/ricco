@@ -45,3 +45,5 @@ src/ricco/local/
 #files
 src/ricco/*/*.csv
 !src/ricco/resource/bd_region.csv
+!src/ricco/resource/postcode.csv
+!src/ricco/resource/stopwords.txt

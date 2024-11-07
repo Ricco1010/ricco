@@ -7,6 +7,8 @@ def resource_path(filename):
 
 
 P_BD_REGION = resource_path('bd_region.csv')
+P_POSTCODE = resource_path('postcode.csv')
+P_STOPWORDS = resource_path('stopwords.txt')
 
 UTIL_CN_NUM = {
   '〇': '0',

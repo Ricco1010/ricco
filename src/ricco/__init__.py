@@ -17,6 +17,8 @@ from .etl.transformer import keep_best_unique
 from .etl.transformer import split_to_rows
 from .etl.transformer import table2dict
 from .etl.transformer import update_df
+from .fs.oss import OssUtils
+from .fs.sftp import SFTP
 from .geocode.geocode import geocode
 from .geocode.geocode import geocode_df
 from .geometry.coord_trans import coord_trans_geom
@@ -36,7 +38,6 @@ from .geometry.util import wkb_loads
 from .geometry.util import wkt_dumps
 from .geometry.util import wkt_loads
 from .local import Rc
-from .oss import OssUtils
 from .util.assertion import assert_columns_exists
 from .util.assertion import assert_not_empty_str
 from .util.assertion import assert_not_null

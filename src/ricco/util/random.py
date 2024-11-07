@@ -1,5 +1,5 @@
-import random
 import datetime
+import random
 
 import numpy as np
 import pandas as pd

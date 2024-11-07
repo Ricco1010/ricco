@@ -274,12 +274,13 @@ def expand_dict(df: pd.DataFrame, c_src: str):
   )
 
 
+@process_multi
 def expand_dict_silent(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
   return pd.concat(
       [
         df.drop(c_src, axis=1),
-        df[c_src].apply(
+        df[c_src].parallel_apply(
             lambda x: pd.Series(x, dtype='object')
         ).set_index(df.index)
       ],

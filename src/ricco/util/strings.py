@@ -1,11 +1,14 @@
 import re
+from functools import lru_cache
 
 from ..base import ensure_list
 from ..base import is_empty
 from ..resource.bd_region import cities
 from ..resource.bd_region import regions
 from ..resource.patterns import AddressPattern
-from ..util.district import District
+from ..util.district import ensure_city_name
+from ..util.district import is_city
+from ..util.district import is_region
 from .decorator import check_null
 from .util import get_shortest_element
 from .util import re_fast
@@ -119,16 +122,15 @@ def extract_possible_region(string: str) -> list:
   """从字符串中提取可能的城市、区县"""
   if not isinstance(string, str):
     return []
-  ds = District()
   ls = []
   city_num, region_num = 0, 0
   # 根据正则表达式提取城市和区县
   for pattern in [*AddressPattern.cities, *AddressPattern.regions]:
     if res := re_fast(pattern, string, warning=False):
-      if ds.is_city(res):
+      if is_city(res):
         ls.append(res)
         city_num += 1
-      if ds.is_region(res):
+      if is_region(res):
         ls.append(res)
         region_num += 1
   # 没提取出区县时，按照字符串匹配尝试提取
@@ -148,17 +150,16 @@ def extract_possible_region(string: str) -> list:
 
 def get_city_and_region(string) -> tuple:
   """从字符串中提取城市、区县"""
-  ds = District()
   city_list, region_list = [], []
   ls = extract_possible_region(string)
   for i in ls:
-    if ds.is_city(i):
+    if is_city(i):
       city_list.append(i)
-    if ds.is_region(i):
+    if is_region(i):
       region_list.append(i)
   if region_list and not city_list:
     for r in region_list:
-      if _city := ds.city(r, warning=False):
+      if _city := ensure_city_name(r, warning=False):
         city_list.append(_city)
   return (
     city_list[0] if city_list else None,
@@ -168,6 +169,7 @@ def get_city_and_region(string) -> tuple:
   )
 
 
+@lru_cache()
 def extract_city(string: str, na=None):
   """从字符串中提取城市（可能包含县级市）"""
   res = get_city_and_region(string)
@@ -191,3 +193,81 @@ def easy_split(string: str, seps: list = None):
     ]
   seps = ensure_list(seps)
   return [i for i in re.split('|'.join(seps), string) if i]
+
+
+def punctuation_en2cn(text: str):
+  """将英文标点符号替换为中文标点符号"""
+  if not text or text == '' or not isinstance(text, str):
+    return
+
+  replace_dict = {
+    ',': '，',
+    '.': '。',
+    '?': '？',
+    '!': '！',
+    ';': '；',
+    ':': '：',
+    '(': '（',
+    ')': '）',
+    '[': '【',
+    ']': '】',
+    '{': '｛',
+    '}': '｝',
+    '"': '“',
+  }
+  pattern = re.compile(
+      '|'.join(re.escape(key) for key in replace_dict.keys())
+  )
+
+  def _replace(match):
+    return replace_dict[match.group(0)]
+
+  return pattern.sub(_replace, text)
+
+
+def cyclic_slice(s, n=5):
+  """迭代生成长度为n的字符串"""
+  l = len(s)
+  for i in range(0, l - n + 1):
+    yield s[i:i + n]
+
+
+def _is_seq(_str):
+  """判断一个字符串是否全部是递增或递减1的数字组成的，如‘1234’、‘876’"""
+  # 初始化为递增或递减
+  diff_ls = [1, -1]
+  s0 = _str[0]
+  for s in _str[1:]:
+    _d = int(s) - int(s0)
+    if _d not in diff_ls:
+      return False
+    # 根据前面的字符再次确定递增或递减
+    diff_ls = [_d]
+    s0 = s
+  return True
+
+
+def is_seq(num_str: str, n: int):
+  """判断一个全部为数字的字符串是否含有连续n个递增或递减1的数字"""
+  num_str = str(num_str)
+  assert num_str.isdigit(), '输入值必须为字符串且全部由数字组成'
+  l = len(num_str)
+  if l < n:
+    return False
+  for s in cyclic_slice(num_str, n):
+    if _is_seq(s):
+      return True
+  return False
+
+
+def is_repeated(string, min_length: int = 1):
+  """检查输入是重复字符串组成的字符串"""
+  n = len(string)
+  if min_length * 2 > n:
+    return False
+  for i in range(min_length, n // 2 + 1):
+    if n % i == 0:
+      substring = string[:i]
+      if substring * (n // i) == string:
+        return True
+  return False
