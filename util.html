@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>工具集 &mdash; ricco 1.4.6 文档</title>
+  <title>工具集 &mdash; ricco 1.5.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=4a0555be"></script>
+        <script src="_static/documentation_options.js?v=bbd34978"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,6 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.base.ensure_ext"><code class="docutils literal notranslate"><span class="pre">ensure_ext()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.base.ensure_list"><code class="docutils literal notranslate"><span class="pre">ensure_list()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.base.is_empty"><code class="docutils literal notranslate"><span class="pre">is_empty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.base.log"><code class="docutils literal notranslate"><span class="pre">log()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.base.not_empty"><code class="docutils literal notranslate"><span class="pre">not_empty()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.base.second_to_desc"><code class="docutils literal notranslate"><span class="pre">second_to_desc()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.base.second_to_dhms"><code class="docutils literal notranslate"><span class="pre">second_to_dhms()</span></code></a></li>
@@ -171,6 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.util.strings">字符串处理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.cyclic_slice"><code class="docutils literal notranslate"><span class="pre">cyclic_slice()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.drop_repeat_element"><code class="docutils literal notranslate"><span class="pre">drop_repeat_element()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.drop_repeat_string"><code class="docutils literal notranslate"><span class="pre">drop_repeat_string()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.drop_repeat_string_by_step"><code class="docutils literal notranslate"><span class="pre">drop_repeat_string_by_step()</span></code></a></li>
@@ -181,6 +183,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.get_city_and_region"><code class="docutils literal notranslate"><span class="pre">get_city_and_region()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.get_list_by_position"><code class="docutils literal notranslate"><span class="pre">get_list_by_position()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.get_single_list"><code class="docutils literal notranslate"><span class="pre">get_single_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.is_repeated"><code class="docutils literal notranslate"><span class="pre">is_repeated()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.is_seq"><code class="docutils literal notranslate"><span class="pre">is_seq()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.strings.punctuation_en2cn"><code class="docutils literal notranslate"><span class="pre">punctuation_en2cn()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.util.assertion">数据校验</a><ul>
@@ -201,6 +206,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.city_list"><code class="docutils literal notranslate"><span class="pre">District.city_list</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.city_names"><code class="docutils literal notranslate"><span class="pre">District.city_names()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.get_city_id_by_name"><code class="docutils literal notranslate"><span class="pre">District.get_city_id_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.get_city_name_by_id"><code class="docutils literal notranslate"><span class="pre">District.get_city_name_by_id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.is_city"><code class="docutils literal notranslate"><span class="pre">District.is_city()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.is_region"><code class="docutils literal notranslate"><span class="pre">District.is_region()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ricco.util.district.District.province"><code class="docutils literal notranslate"><span class="pre">District.province()</span></code></a></li>
@@ -285,16 +291,19 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.base.is_empty" title="ricco.base.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>(x)</p></td>
 <td><p>判断变量是否为空值</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.base.not_empty" title="ricco.base.not_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">not_empty</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.base.log" title="ricco.base.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a>(msg)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.base.not_empty" title="ricco.base.not_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">not_empty</span></code></a>(x)</p></td>
 <td><p>判断是否非空，对`is_empty`取反</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.base.second_to_desc" title="ricco.base.second_to_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">second_to_desc</span></code></a>(second)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.base.second_to_desc" title="ricco.base.second_to_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">second_to_desc</span></code></a>(second)</p></td>
 <td><p>将秒转为时间描述</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.base.second_to_dhms" title="ricco.base.second_to_dhms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">second_to_dhms</span></code></a>(second)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.base.second_to_dhms" title="ricco.base.second_to_dhms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">second_to_dhms</span></code></a>(second)</p></td>
 <td><p>将秒转为天、时、分、秒</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.base.warn_" title="ricco.base.warn_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">warn_</span></code></a>(msg[, if_or_not, mode])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.base.warn_" title="ricco.base.warn_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">warn_</span></code></a>(msg[, if_or_not, mode])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -335,6 +344,11 @@
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.base.log">
+<span class="sig-prename descclassname"><span class="pre">ricco.base.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.base.log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.base.not_empty">
@@ -1387,38 +1401,56 @@
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_element" title="ricco.util.strings.drop_repeat_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_element</span></code></a>(strs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.cyclic_slice" title="ricco.util.strings.cyclic_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cyclic_slice</span></code></a>(s[, n])</p></td>
+<td><p>迭代生成长度为n的字符串</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_element" title="ricco.util.strings.drop_repeat_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_element</span></code></a>(strs)</p></td>
 <td><p>删除列表中连续重复的元素</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_string" title="ricco.util.strings.drop_repeat_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_string</span></code></a>(string[, min_length, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_string" title="ricco.util.strings.drop_repeat_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_string</span></code></a>(string[, min_length, ...])</p></td>
 <td><p>删除连续重复的字符串，按照step从大到小删除重复字符，返回去重后最短的字符串</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_string_by_step" title="ricco.util.strings.drop_repeat_string_by_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_string_by_step</span></code></a>(string, step)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.drop_repeat_string_by_step" title="ricco.util.strings.drop_repeat_string_by_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_repeat_string_by_step</span></code></a>(string, step)</p></td>
 <td><p>根据指定的小块长度，获取去重后的字符串</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.easy_split" title="ricco.util.strings.easy_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">easy_split</span></code></a>(string[, seps])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.easy_split" title="ricco.util.strings.easy_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">easy_split</span></code></a>(string[, seps])</p></td>
 <td><p>使用常见的分隔符将字符串拆分为列表</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.extract_city" title="ricco.util.strings.extract_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_city</span></code></a>(string[, na])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.extract_city" title="ricco.util.strings.extract_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_city</span></code></a>(string[, na])</p></td>
 <td><p>从字符串中提取城市（可能包含县级市）</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.extract_possible_region" title="ricco.util.strings.extract_possible_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_possible_region</span></code></a>(string)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.extract_possible_region" title="ricco.util.strings.extract_possible_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_possible_region</span></code></a>(string)</p></td>
 <td><p>从字符串中提取可能的城市、区县</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_breaks" title="ricco.util.strings.get_breaks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_breaks</span></code></a>(length, step)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_breaks" title="ricco.util.strings.get_breaks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_breaks</span></code></a>(length, step)</p></td>
 <td><p>通过长度和步长获所有可能的取端点列表的列表 .</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_city_and_region" title="ricco.util.strings.get_city_and_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_and_region</span></code></a>(string)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_city_and_region" title="ricco.util.strings.get_city_and_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_and_region</span></code></a>(string)</p></td>
 <td><p>从字符串中提取城市、区县</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_list_by_position" title="ricco.util.strings.get_list_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_list_by_position</span></code></a>(string, breaks)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_list_by_position" title="ricco.util.strings.get_list_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_list_by_position</span></code></a>(string, breaks)</p></td>
 <td><p>按照位置信息将字符串拆解为多个字符串的列表 :param string: 需要拆分的字符串 :param breaks: 位置集合列表的列表（左闭右开），[[1, 5], [5, 10], [10, 15]]</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.get_single_list" title="ricco.util.strings.get_single_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_single_list</span></code></a>(start, length, step)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.get_single_list" title="ricco.util.strings.get_single_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_single_list</span></code></a>(start, length, step)</p></td>
 <td><p>获取单个起点的位置端点列表，如果起始位置不是零，则会返回0到起始位置的列表 :param start: 起始位置 :param length: 总长度 :param step: 步长</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.is_repeated" title="ricco.util.strings.is_repeated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_repeated</span></code></a>(string[, min_length])</p></td>
+<td><p>检查输入是重复字符串组成的字符串</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.strings.is_seq" title="ricco.util.strings.is_seq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_seq</span></code></a>(num_str, n)</p></td>
+<td><p>判断一个全部为数字的字符串是否含有连续n个递增或递减1的数字</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.strings.punctuation_en2cn" title="ricco.util.strings.punctuation_en2cn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">punctuation_en2cn</span></code></a>(text)</p></td>
+<td><p>将英文标点符号替换为中文标点符号</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.strings.cyclic_slice">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">cyclic_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.cyclic_slice" title="Link to this definition"></a></dt>
+<dd><p>迭代生成长度为n的字符串</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.strings.drop_repeat_element">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">drop_repeat_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.drop_repeat_element" title="Link to this definition"></a></dt>
@@ -1509,6 +1541,24 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_single_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.strings.is_repeated">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">is_repeated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.is_repeated" title="Link to this definition"></a></dt>
+<dd><p>检查输入是重复字符串组成的字符串</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.strings.is_seq">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">is_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.is_seq" title="Link to this definition"></a></dt>
+<dd><p>判断一个全部为数字的字符串是否含有连续n个递增或递减1的数字</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.strings.punctuation_en2cn">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.strings.</span></span><span class="sig-name descname"><span class="pre">punctuation_en2cn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.strings.punctuation_en2cn" title="Link to this definition"></a></dt>
+<dd><p>将英文标点符号替换为中文标点符号</p>
 </dd></dl>
 
 </section>
@@ -1634,19 +1684,22 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.city_names" title="ricco.util.district.District.city_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">city_names</span></code></a>(name)</p></td>
 <td><p>返回匹配到的全部城市名称列表</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.get_city_id_by_name" title="ricco.util.district.District.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.get_city_id_by_name" title="ricco.util.district.District.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(name[, warning])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.is_city" title="ricco.util.district.District.is_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_city</span></code></a>(name)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.get_city_name_by_id" title="ricco.util.district.District.get_city_name_by_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_name_by_id</span></code></a>(city_id[, full, warning])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.is_city" title="ricco.util.district.District.is_city"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_city</span></code></a>(name)</p></td>
 <td><p>判断是否是地级市</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.is_region" title="ricco.util.district.District.is_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_region</span></code></a>(name)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.is_region" title="ricco.util.district.District.is_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_region</span></code></a>(name)</p></td>
 <td><p>判断是否是县市区</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.province" title="ricco.util.district.District.province"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province</span></code></a>(name[, if_not_unique, warning])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.province" title="ricco.util.district.District.province"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province</span></code></a>(name[, if_not_unique, warning])</p></td>
 <td><p>通过地名（省份、城市、区县）获取所在的省份名称</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.district.District.province_names" title="ricco.util.district.District.province_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province_names</span></code></a>(name)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.district.District.province_names" title="ricco.util.district.District.province_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">province_names</span></code></a>(name)</p></td>
 <td><p>返回匹配到的全部省份名称列表</p></td>
 </tr>
 </tbody>
@@ -1664,7 +1717,7 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.util.district.District.city">
-<span class="sig-name descname"><span class="pre">city</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_not_unique</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.city" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">city</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_not_unique</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'coerce'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.city" title="Link to this definition"></a></dt>
 <dd><p>通过地名（城市、区县）获取所在的城市名称</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
@@ -1695,7 +1748,12 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.util.district.District.get_city_id_by_name">
-<span class="sig-name descname"><span class="pre">get_city_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.get_city_id_by_name" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_city_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.get_city_id_by_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.util.district.District.get_city_name_by_id">
+<span class="sig-name descname"><span class="pre">get_city_name_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.get_city_name_by_id" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1712,7 +1770,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.util.district.District.province">
-<span class="sig-name descname"><span class="pre">province</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_not_unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.province" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">province</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_not_unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'coerce'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.District.province" title="Link to this definition"></a></dt>
 <dd><p>通过地名（省份、城市、区县）获取所在的省份名称</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
