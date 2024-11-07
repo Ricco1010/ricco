@@ -6,11 +6,11 @@ from tempfile import NamedTemporaryFile
 import pandas as pd
 from shapely.geometry.base import BaseGeometry
 
+from ..fs.oss import OssUtils
 from ..geometry.df import auto2shapely
 from ..geometry.df import shapely2wkt
 from ..geometry.util import infer_geom_format
 from ..geometry.util import wkb_dumps
-from ..oss import OssUtils
 from ..util.os import ensure_dirpath_exist
 from ..util.os import extension
 from ..util.os import path_name

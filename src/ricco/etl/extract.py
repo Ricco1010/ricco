@@ -10,8 +10,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from ..base import ensure_list
+from ..fs.oss import OssUtils
 from ..geometry.util import wkt_loads
-from ..oss import OssUtils
 from ..util.os import dir_iter
 from ..util.os import extension
 from ..util.os import path_name

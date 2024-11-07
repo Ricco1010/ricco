@@ -22,13 +22,20 @@ def progress(func):
   return wrapper
 
 
+def get_cores():
+  import psutil
+  return int(
+      (psutil.cpu_count(logical=True) + psutil.cpu_count(logical=False)) / 2
+  )
+
+
 def process_multi(func):
   """多线程处理apply任务（parallel_apply）"""
 
   @run_once
   def init_pandarallel():
     from pandarallel import pandarallel
-    pandarallel.initialize()
+    pandarallel.initialize(nb_workers=get_cores(), progress_bar=True)
 
   @wraps(func)
   def wrapper(*args, **kwargs):

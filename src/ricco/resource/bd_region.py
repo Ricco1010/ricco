@@ -3,8 +3,8 @@ from functools import lru_cache
 import pandas as pd
 
 from ..base import not_empty
-from ..resource import P_BD_REGION
 from ..util.util import rstrip_d0
+from . import P_BD_REGION
 
 EX = ['新城区']
 
@@ -12,6 +12,7 @@ EX = ['新城区']
 @lru_cache()
 def get_bd_region(start_level='区县') -> pd.DataFrame:
   """获取bd_region表并转为宽表；同时保存为全局变量，避免多次IO"""
+  print('获取行政区划数据集')
   default_level = ['街镇', '区县', '城市', '省份']
   levels = default_level[default_level.index(start_level):]
 

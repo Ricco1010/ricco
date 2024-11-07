@@ -1,1 +1,3 @@
 include src/ricco/resource/bd_region.csv
+include src/ricco/resource/postcode.csv
+include src/ricco/resource/stopwords.txt

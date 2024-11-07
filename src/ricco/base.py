@@ -1,5 +1,6 @@
 import logging
 import warnings
+from datetime import datetime
 
 import pandas as pd
 from shapely.geometry.base import BaseGeometry
@@ -91,12 +92,17 @@ def second_to_desc(second) -> str:
   return f'{d}d {h}h {m}m {second:.0f}s'
 
 
+def log(msg):
+  t = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+  logging.warning(f'{t} {msg}')
+
+
 def warn_(msg, if_or_not=True, mode='warning'):
   if if_or_not:
     if mode == 'warning':
       warnings.warn(msg)
     if mode == 'logging':
-      logging.warning(msg)
+      log(msg)
 
 
 def agg_parser(agg: dict) -> list:
