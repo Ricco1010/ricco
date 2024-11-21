@@ -312,7 +312,9 @@ class District:
     )
 
   def get_city_id_by_name(self, name: str, warning=True):
+    """通过城市名称获取城市id"""
     return get_city_id_by_name(name, warning=warning)
 
   def get_city_name_by_id(self, city_id: int, full=False, warning=False):
+    """通过城市id获取城市名称"""
     return get_city_name_by_id(city_id, full=full, warning=warning)

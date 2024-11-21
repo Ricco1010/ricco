@@ -50,6 +50,8 @@ def get_baidu(*,
   """MC geocode服务"""
   assert source in ('baidu', 'baidu_poi')
   url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
+  if key:
+    url += f'&key={key}'
   req = requests.get(url)
   if req.status_code == 200:
     return req.json()['result'][0]['extra']

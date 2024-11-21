@@ -11,6 +11,7 @@ from ..base import ensure_list
 
 
 def protect_dir(path):
+  """检查路径是否为系统目录"""
   if os.path.isdir(path):
     if path == '/':
       raise ValueError('不可指定根目录')
@@ -207,6 +208,7 @@ def dir_iter_list(root,
 
 
 def single_ext(path_list):
+  """获取文件列表中所有文件的扩展名，如果只有一个则返回该扩展名"""
   ext_list = list(set([extension(p) for p in path_list]))
   if len(ext_list) == 1:
     return ext_list[0]

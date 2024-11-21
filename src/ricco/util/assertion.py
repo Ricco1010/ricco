@@ -122,5 +122,6 @@ def assert_series_not_like(df: pd.DataFrame, col: str, pattern):
 
 
 def assert_subset(values: (list, set, tuple), superset: (list, set, tuple)):
+  """检查values是否是superset的子集"""
   res = [i for i in values if i not in superset]
   assert not res, f'{res}不在指定的集合中'

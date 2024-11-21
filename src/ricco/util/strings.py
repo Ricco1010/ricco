@@ -227,8 +227,8 @@ def punctuation_en2cn(text: str):
 
 def cyclic_slice(s, n=5):
   """迭代生成长度为n的字符串"""
-  l = len(s)
-  for i in range(0, l - n + 1):
+  length = len(s)
+  for i in range(0, length - n + 1):
     yield s[i:i + n]
 
 
@@ -251,8 +251,8 @@ def is_seq(num_str: str, n: int):
   """判断一个全部为数字的字符串是否含有连续n个递增或递减1的数字"""
   num_str = str(num_str)
   assert num_str.isdigit(), '输入值必须为字符串且全部由数字组成'
-  l = len(num_str)
-  if l < n:
+  length = len(num_str)
+  if length < n:
     return False
   for s in cyclic_slice(num_str, n):
     if _is_seq(s):

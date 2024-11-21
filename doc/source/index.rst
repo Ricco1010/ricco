@@ -15,7 +15,7 @@ ricco 文档
    niubility
    util
    etl
-   oss
+   fs
    geocode
    coord_trans
    geometry

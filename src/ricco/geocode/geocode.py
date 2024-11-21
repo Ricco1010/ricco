@@ -1,3 +1,4 @@
+import logging
 import uuid
 import warnings
 from functools import lru_cache
@@ -138,6 +139,7 @@ def geocode_df(df: pd.DataFrame,
                c_lng='lng',
                c_lat='lat',
                ignore_existing: bool = True,
+               progress_bar: bool = True,
                **kwargs):
   """
   基于dataframe进行geocoding
@@ -156,6 +158,7 @@ def geocode_df(df: pd.DataFrame,
     ignore_existing: 是否忽略已经存在经纬的行，默认为 TRUE，即保持原有的经纬度不变
     key_baidu: 百度接口的key，公共key失效后可自行传入
     key_amap: 高德接口的key，公共key失效后可自行传入
+    progress_bar: 是否显示进度条，默认为TRUE
 
   See Also:
     * :func:`ricco.geocode.geocode.geocode_best`
@@ -171,6 +174,7 @@ def geocode_df(df: pd.DataFrame,
     base_cols.extend(['rv', 'score', 'source'])
   # 补全列，方便后续进行update
   df = create_columns(df.copy(), base_cols)
+  num_all = df[df[c_lng].isna()].shape[0]
   # 新增临时城市列
   df[__c_city] = city if isinstance(city, str) else df[city[0]]
 
@@ -178,7 +182,7 @@ def geocode_df(df: pd.DataFrame,
   datas = []
   for _data in tqdm(
       df[[__c_city, by, c_lng, c_lat]].itertuples(),
-      desc='Geocoding', total=df.shape[0]
+      desc='Geocoding', total=df.shape[0], disable=not progress_bar
   ):
     if ignore_existing and not_empty(_data[3]) and not_empty(_data[4]):
       # ignore_existing为TRUE时，已经存在经纬度的行不再进行geocoding
@@ -194,6 +198,8 @@ def geocode_df(df: pd.DataFrame,
     indexes.append(_data[0])
   df_temp = pd.DataFrame(datas, index=indexes)
   df.update(df_temp[base_cols])
+  num_miss = df[df[c_lng].isna()].shape[0]
+  logging.warning(f'总数：{num_all}，成功：{num_all - num_miss}，失败：{num_miss}')
   # 删除临时城市列
   del df[__c_city]
   return df

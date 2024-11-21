@@ -1,3 +1,4 @@
+import re
 import warnings
 
 from ..geometry.coord_trans import _gcj2bd
@@ -54,8 +55,10 @@ def error_amap(js):
 @check_null(default_rv='')
 def fix_address(string):
   string = str(string)
-  for _ in ['&', '%', '#', '@', '$', '|']:
-    string = string.replace(_, '')
+  string = re.sub(r'[&%#@$|]', '', string)
+  string = re.sub(r'(.*?路.*?号).*', r'\1', string)
+  string = re.sub('\d+室', '', string)
+  string = re.sub('\d+层', '', string)
   return string
 
 

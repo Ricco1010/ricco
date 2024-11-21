@@ -186,7 +186,7 @@ class DT2:
     DT日期类
     Args:
       date: 初始化支持字符串、datetime.date和datetime.datetime格式作为基准日期。不指定时，默认基准日期今天。
-      format: 当初始化为字符串时，需要输入format指定日期字符串格式。
+      date_format: 当初始化为字符串时，需要输入format指定日期字符串格式。
     Examples:
       today = '2024-01-31'
       上个月的第一天：
