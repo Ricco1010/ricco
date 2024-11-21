@@ -40,11 +40,9 @@
 
 行政区划工具
 -------------------------
-.. automodule:: ricco.resource.district
+.. automodule:: ricco.util.district
 
-.. automodule:: ricco.resource.bd_region
-
-.. automodule:: ricco.resource.postcode
+.. automodule:: ricco.util.postcode
 
 
 随机工具
