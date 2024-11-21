@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FileSystem工具集 &mdash; ricco 1.5.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a9157562"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script src="_static/translations.js?v=beaddf03"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="Geocoding" href="geocode.html" />
+    <link rel="prev" title="数据读取、处理与保存" href="etl.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ricco
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">主页</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="niubility.html">★★实用方法推荐★★</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">工具集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="etl.html">数据读取、处理与保存</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FileSystem工具集</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#oss">OSS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.fs.oss.OssUtils"><code class="docutils literal notranslate"><span class="pre">OssUtils</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.abspath"><code class="docutils literal notranslate"><span class="pre">OssUtils.abspath()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.dir_iter"><code class="docutils literal notranslate"><span class="pre">OssUtils.dir_iter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.download"><code class="docutils literal notranslate"><span class="pre">OssUtils.download()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.exist"><code class="docutils literal notranslate"><span class="pre">OssUtils.exist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.mkdir"><code class="docutils literal notranslate"><span class="pre">OssUtils.mkdir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.object_path"><code class="docutils literal notranslate"><span class="pre">OssUtils.object_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.rm"><code class="docutils literal notranslate"><span class="pre">OssUtils.rm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.oss.OssUtils.upload"><code class="docutils literal notranslate"><span class="pre">OssUtils.upload()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sftp">SFTP</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.fs.sftp.SFTP"><code class="docutils literal notranslate"><span class="pre">SFTP</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.chdir"><code class="docutils literal notranslate"><span class="pre">SFTP.chdir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.dir_iter"><code class="docutils literal notranslate"><span class="pre">SFTP.dir_iter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.download"><code class="docutils literal notranslate"><span class="pre">SFTP.download()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.isdir"><code class="docutils literal notranslate"><span class="pre">SFTP.isdir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.isfile"><code class="docutils literal notranslate"><span class="pre">SFTP.isfile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.listdir"><code class="docutils literal notranslate"><span class="pre">SFTP.listdir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ricco.fs.sftp.SFTP.workdir"><code class="docutils literal notranslate"><span class="pre">SFTP.workdir</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="geocode.html">Geocoding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">地理处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat.html">统计分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_reporter.html">数据报告</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decorator.html">装饰器</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ricco</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">FileSystem工具集</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fs.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="filesystem">
+<h1>FileSystem工具集<a class="headerlink" href="#filesystem" title="Link to this heading"></a></h1>
+<section id="oss">
+<h2>OSS<a class="headerlink" href="#oss" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.fs.oss.</span></span><span class="sig-name descname"><span class="pre">OssUtils</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.abspath" title="ricco.fs.oss.OssUtils.abspath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abspath</span></code></a>(_path)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.dir_iter" title="ricco.fs.oss.OssUtils.dir_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter</span></code></a>([dir_path, exts, recursive])</p></td>
+<td><p>遍历目录下的文件</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.download" title="ricco.fs.oss.OssUtils.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>(path_remote[, path_local, overwrite])</p></td>
+<td><p>从oss中下载文件</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.exist" title="ricco.fs.oss.OssUtils.exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exist</span></code></a>(_path)</p></td>
+<td><p>判断文件是否存在</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.mkdir" title="ricco.fs.oss.OssUtils.mkdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mkdir</span></code></a>(dir_path)</p></td>
+<td><p>创建目录</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.object_path" title="ricco.fs.oss.OssUtils.object_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_path</span></code></a>(_path)</p></td>
+<td><p>将文件路径转为oss2的输入路径，即Bucket之后的路径</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.rm" title="ricco.fs.oss.OssUtils.rm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rm</span></code></a>(_path)</p></td>
+<td><p>删除文件或目录</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.oss.OssUtils.upload" title="ricco.fs.oss.OssUtils.upload"><code class="xref py py-obj docutils literal notranslate"><span class="pre">upload</span></code></a>(path_local[, path_remote, overwrite])</p></td>
+<td><p>上传文件到oss中</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.abspath">
+<span class="sig-name descname"><span class="pre">abspath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.abspath" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.dir_iter">
+<span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.dir_iter" title="Link to this definition"></a></dt>
+<dd><p>遍历目录下的文件</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir_path</strong> – 目录路径，如不指定则遍历实例化时指定的work_path</p></li>
+<li><p><strong>exts</strong> – 文件后缀</p></li>
+<li><p><strong>recursive</strong> – 是否递归遍历</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_remote</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.download" title="Link to this definition"></a></dt>
+<dd><p>从oss中下载文件</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_remote</strong> – oss路径及文件名</p></li>
+<li><p><strong>path_local</strong> – 本地文件路径，若不指定则下载为work_path下的同名文件</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.exist">
+<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.exist" title="Link to this definition"></a></dt>
+<dd><p>判断文件是否存在</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.mkdir" title="Link to this definition"></a></dt>
+<dd><p>创建目录</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.object_path">
+<span class="sig-name descname"><span class="pre">object_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.object_path" title="Link to this definition"></a></dt>
+<dd><p>将文件路径转为oss2的输入路径，即Bucket之后的路径</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.rm">
+<span class="sig-name descname"><span class="pre">rm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.rm" title="Link to this definition"></a></dt>
+<dd><p>删除文件或目录</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.upload" title="Link to this definition"></a></dt>
+<dd><p>上传文件到oss中</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_local</strong> – 本地文件路径</p></li>
+<li><p><strong>path_remote</strong> – oss路径及文件名，若不指定则上传为work_path下的同名文件</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="sftp">
+<h2>SFTP<a class="headerlink" href="#sftp" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.fs.sftp.</span></span><span class="sig-name descname"><span class="pre">SFTP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.chdir" title="ricco.fs.sftp.SFTP.chdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chdir</span></code></a>(path)</p></td>
+<td><p>切换工作目录</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.dir_iter" title="ricco.fs.sftp.SFTP.dir_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter</span></code></a>([path, recursive, exts])</p></td>
+<td><p>遍历目录，返回所有文件路径</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.download" title="ricco.fs.sftp.SFTP.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>(remote_path, local_dir)</p></td>
+<td><p>下载单个文件或整个目录</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.isdir" title="ricco.fs.sftp.SFTP.isdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isdir</span></code></a>(path)</p></td>
+<td><p>判断是否为目录</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.isfile" title="ricco.fs.sftp.SFTP.isfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isfile</span></code></a>(path)</p></td>
+<td><p>判断是否为文件</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.listdir" title="ricco.fs.sftp.SFTP.listdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">listdir</span></code></a>([path, recursive])</p></td>
+<td><p>列出目录下的所有文件和子目录，返回列表</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.fs.sftp.SFTP.workdir" title="ricco.fs.sftp.SFTP.workdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">workdir</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.chdir">
+<span class="sig-name descname"><span class="pre">chdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.chdir" title="Link to this definition"></a></dt>
+<dd><p>切换工作目录</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.dir_iter">
+<span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.dir_iter" title="Link to this definition"></a></dt>
+<dd><p>遍历目录，返回所有文件路径</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.download" title="Link to this definition"></a></dt>
+<dd><p>下载单个文件或整个目录</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.isdir">
+<span class="sig-name descname"><span class="pre">isdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.isdir" title="Link to this definition"></a></dt>
+<dd><p>判断是否为目录</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.isfile">
+<span class="sig-name descname"><span class="pre">isfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.isfile" title="Link to this definition"></a></dt>
+<dd><p>判断是否为文件</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.listdir">
+<span class="sig-name descname"><span class="pre">listdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.listdir" title="Link to this definition"></a></dt>
+<dd><p>列出目录下的所有文件和子目录，返回列表</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.workdir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">workdir</span></span><a class="headerlink" href="#ricco.fs.sftp.SFTP.workdir" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="etl.html" class="btn btn-neutral float-left" title="数据读取、处理与保存" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="geocode.html" class="btn btn-neutral float-right" title="Geocoding" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, wangyukang。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

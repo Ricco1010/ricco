@@ -40,9 +40,11 @@
 
 行政区划工具
 -------------------------
-.. autoclass:: ricco.util.district.District
+.. automodule:: ricco.resource.district
 
 .. automodule:: ricco.resource.bd_region
+
+.. automodule:: ricco.resource.postcode
 
 
 随机工具
@@ -55,3 +57,15 @@ Kdtree
 -------------------------
 
 .. automodule:: ricco.util.kdtree
+
+
+Word文档处理
+-------------------------
+
+.. automodule:: ricco.util.docx
+
+
+多媒体文件处理
+-------------------------
+
+.. automodule:: ricco.util.media
