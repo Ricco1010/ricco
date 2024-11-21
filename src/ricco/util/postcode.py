@@ -27,6 +27,7 @@ def get_city_from_postcode(postcode: str, full=False, warning=False):
   Args:
     postcode: 邮编
     full: 是否返回全称
+    warning: 是否打印警告
   """
   if is_empty(postcode):
     return

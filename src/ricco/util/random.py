@@ -49,6 +49,8 @@ def ramdom_lnglat(
     lat_range: (tuple, list) = (0, 56),
 ):
   """
+  随机生成经纬度
+
   Args:
     df: 输入的dataframe
     lng_range: 城市的经度范围

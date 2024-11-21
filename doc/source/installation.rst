@@ -1,7 +1,7 @@
 安装
 ==========
 
-* Python: >=3.8
+* Python: >=3.9
 
 .. code-block:: bash
 

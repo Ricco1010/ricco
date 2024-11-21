@@ -158,6 +158,7 @@ def lnglat2shapely(df,
       crs=epsg_code
   )
   df.rename(columns={'geometry': geometry}, inplace=True)
+  df.loc[df[lng].isna() | df[lat].isna(), geometry] = None
   if delete:
     del df[lng], df[lat]
   return gpd.GeoDataFrame(df, geometry=geometry)
@@ -354,7 +355,7 @@ def split_grids(df: gpd.GeoDataFrame, step: int, geometry_format='wkb'):
   # 融合
   df = auto2shapely(df)
   df = df[['geometry']].dissolve().reset_index(drop=True)
-  df.crs = 'epsg:4326'
+  df.set_crs('epsg:4326', inplace=True)
   # 投影，获取实际的距离
   df_p = projection(df)
   # 分别获取投影前和投影后的点位及边长信息
@@ -484,6 +485,12 @@ def mark_tags_v2(
   }:
     warn_(f'同名字段重命名：{cols_mapping}', warning)
     df.rename(columns=cols_mapping, inplace=True)
+  # 检查geometry列是否为空，如果全部为空则不需要进行空间关联
+  if c_geometry in df and df[c_geometry].isna().all():
+    warn_(f'“{c_geometry}”列全为空，无需进行空间关联')
+    for c in c_tags:
+      df[c] = None
+    return df
 
   # 转换为shapely格式
   _df = ensure_geometry(df, ensure_point, warning,

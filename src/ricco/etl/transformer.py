@@ -1,7 +1,10 @@
+import logging
 import math
 import warnings
 from datetime import datetime
+from functools import reduce
 from itertools import product
+from typing import List
 
 import numpy as np
 import pandas as pd
@@ -260,32 +263,24 @@ def wrap_dict(df: pd.DataFrame, c_srcs: list = None, c_dst: str = 'extra'):
 
 
 @timer()
-@progress
 def expand_dict(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
-  return pd.concat(
-      [
-        df.drop(c_src, axis=1),
-        df[c_src].progress_apply(
-            lambda x: pd.Series(x, dtype='object')
-        ).set_index(df.index)
-      ],
-      axis=1
+  df_extra = pd.json_normalize(
+      df[c_src].apply(lambda x: {} if pd.isna(x) else x),
+      max_level=0, errors='ignore',
   )
+  df_extra.index = df.index
+  return pd.concat([df.drop(columns=[c_src]), df_extra], axis=1)
 
 
-@process_multi
+@timer()
 def expand_dict_silent(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
-  return pd.concat(
-      [
-        df.drop(c_src, axis=1),
-        df[c_src].parallel_apply(
-            lambda x: pd.Series(x, dtype='object')
-        ).set_index(df.index)
-      ],
-      axis=1
+  logging.warning(
+      DeprecationWarning,
+      'expand_dict_silent is deprecated, use expand_dict instead'
   )
+  return expand_dict(df, c_src)
 
 
 @timer()
@@ -551,3 +546,18 @@ def columns_contrast(df_left, df_right, n_rows=None):
   cols_all = [*mapping_left.values(), *mapping_right.values()]
   cols_sorted = sort_by_list(cols_all, cols_new)
   return df[cols_sorted]
+
+
+def merge_dfs(dfs: List[pd.DataFrame], on, how):
+  """
+  合并多个dataframe
+
+  Args:
+    dfs: 多个Dataframe组成的列表，需要有相同的列
+    on: 根据那个字段进行merge
+    how: 以何种方式进行合并，同pd.merge
+  """
+  return reduce(
+      lambda left, right: pd.merge(left, right, on=on, how=how),
+      dfs
+  )

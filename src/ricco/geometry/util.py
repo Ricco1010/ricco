@@ -10,7 +10,9 @@ import pandas as pd
 from shapely import wkb
 from shapely import wkt
 from shapely.errors import GeometryTypeError
+from shapely.errors import ShapelyDeprecationWarning
 from shapely.errors import WKBReadingError
+from shapely.errors import WKTReadingError
 from shapely.geometry import GeometryCollection
 from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
@@ -21,8 +23,6 @@ from shapely.geometry import Polygon
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
 from shapely.geometry.base import BaseMultipartGeometry
-from shapely.geometry.geo import ShapelyDeprecationWarning
-from shapely.geos import WKTReadingError
 from shapely.ops import unary_union
 from shapely.validation import make_valid
 
@@ -396,6 +396,7 @@ def deg_to_decimal(x: (str, list, tuple)):
   return d + m / 60 + s / 3600
 
 
+@check_null()
 def text2shapely(
     text: str,
     geometry_type: str,

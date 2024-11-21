@@ -93,11 +93,20 @@ def second_to_desc(second) -> str:
 
 
 def log(msg):
+  """打印带有时间的日志信息"""
   t = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
   logging.warning(f'{t} {msg}')
 
 
 def warn_(msg, if_or_not=True, mode='warning'):
+  """
+  打印警告信息，嵌入函数内部，可由if_or_not控制是否打印
+
+  Args:
+    msg: 要输出的警告信息
+    if_or_not: 是否输出
+    mode: 警告类型，支持logging和warning
+  """
   if if_or_not:
     if mode == 'warning':
       warnings.warn(msg)
