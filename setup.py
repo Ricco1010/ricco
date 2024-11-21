@@ -29,10 +29,13 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=[
+      'fuzzywuzzy==0.18.0',
       'geojson<3.0.0',
       'numpy>=1.0.0',
       'numpy<2.0.0',
+      'pandarallel==1.6.5',
       'pandas<2.0.0',
+      'python-Levenshtein>=0.25.0',
       'requests>=2.7',
       'shapely<2.0.0',
       'tqdm>=4.62.0',
