@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>数据读取、处理与保存 &mdash; ricco 1.5.1 文档</title>
+  <title>数据读取、处理与保存 &mdash; ricco 1.5.2 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=a9157562"></script>
+        <script src="_static/documentation_options.js?v=9e5f314c"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -94,6 +94,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.null_if_in"><code class="docutils literal notranslate"><span class="pre">null_if_in()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.rolling_by_month"><code class="docutils literal notranslate"><span class="pre">rolling_by_month()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.round_by_columns"><code class="docutils literal notranslate"><span class="pre">round_by_columns()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.shift_data"><code class="docutils literal notranslate"><span class="pre">shift_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.split_list_to_row"><code class="docutils literal notranslate"><span class="pre">split_list_to_row()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.split_to_rows"><code class="docutils literal notranslate"><span class="pre">split_to_rows()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.table2dict"><code class="docutils literal notranslate"><span class="pre">table2dict()</span></code></a></li>
@@ -466,19 +467,22 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.round_by_columns" title="ricco.etl.transformer.round_by_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_by_columns</span></code></a>(df, columns)</p></td>
 <td><p>对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_list_to_row" title="ricco.etl.transformer.split_list_to_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_list_to_row</span></code></a>(df, column)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.shift_data" title="ricco.etl.transformer.shift_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_data</span></code></a>(df, c_date, c_group, c_value[, ...])</p></td>
+<td><p>环比计算</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_list_to_row" title="ricco.etl.transformer.split_list_to_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_list_to_row</span></code></a>(df, column)</p></td>
 <td><p>将列表列中列表的元素拆成多行</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_to_rows" title="ricco.etl.transformer.split_to_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_to_rows</span></code></a>(df, column[, delimiter])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_to_rows" title="ricco.etl.transformer.split_to_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_to_rows</span></code></a>(df, column[, delimiter])</p></td>
 <td><p>含有多值的列分拆成多行</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.table2dict" title="ricco.etl.transformer.table2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table2dict</span></code></a>(df[, key_col, value_col, orient])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.table2dict" title="ricco.etl.transformer.table2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table2dict</span></code></a>(df[, key_col, value_col, orient])</p></td>
 <td><p>DataFrame转字典</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.update_df" title="ricco.etl.transformer.update_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_df</span></code></a>(df, new_df[, on, overwrite, errors])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.update_df" title="ricco.etl.transformer.update_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_df</span></code></a>(df, new_df[, on, overwrite, errors])</p></td>
 <td><p>根据某一列更新dataframe里的数据</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.wrap_dict" title="ricco.etl.transformer.wrap_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap_dict</span></code></a>(df[, c_srcs, c_dst])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.wrap_dict" title="ricco.etl.transformer.wrap_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap_dict</span></code></a>(df[, c_srcs, c_dst])</p></td>
 <td><p>将指定的多列合并成一个字典列 :param df: 要处理的数据集 :param c_srcs: 需要包装成字典的多列, 如果不指定，则wrap所有的列 :param c_dst: 处理后的数据存储的列名称，默认为 'extra'</p></td>
 </tr>
 </tbody>
@@ -709,6 +713,24 @@
 <dt class="sig sig-object py" id="ricco.etl.transformer.round_by_columns">
 <span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">round_by_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.round_by_columns" title="Link to this definition"></a></dt>
 <dd><p>对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.etl.transformer.shift_data">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">shift_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_date:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_group:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_value:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subfix:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_环比'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.shift_data" title="Link to this definition"></a></dt>
+<dd><p>环比计算</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – DataFrame</p></li>
+<li><p><strong>c_date</strong> – 日期列</p></li>
+<li><p><strong>c_group</strong> – 分组列</p></li>
+<li><p><strong>c_value</strong> – 值列</p></li>
+<li><p><strong>subfix</strong> – 环比列后缀</p></li>
+<li><p><strong>shift</strong> – 环比计算的时间间隔</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

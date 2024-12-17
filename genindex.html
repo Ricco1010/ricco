@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>索引 &mdash; ricco 1.5.1 文档</title>
+  <title>索引 &mdash; ricco 1.5.2 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=a9157562"></script>
+        <script src="_static/documentation_options.js?v=9e5f314c"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -98,6 +98,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -290,10 +291,10 @@
 </li>
       <li><a href="fs.html#ricco.fs.oss.OssUtils.dir_iter">dir_iter() （ricco.fs.oss.OssUtils 方法）</a>
 </li>
-      <li><a href="fs.html#ricco.fs.sftp.SFTP.dir_iter">dir_iter() （ricco.fs.sftp.SFTP 方法）</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs.html#ricco.fs.sftp.SFTP.dir_iter">dir_iter() （ricco.fs.sftp.SFTP 方法）</a>
+</li>
       <li><a href="util.html#ricco.util.os.dir_iter">dir_iter()（在 ricco.util.os 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.os.dir_iter_list">dir_iter_list()（在 ricco.util.os 模块中）</a>
@@ -316,9 +317,7 @@
 </li>
       <li><a href="etl.html#ricco.etl.transformer.drop_by_df">drop_by_df()（在 ricco.etl.transformer 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.strings.drop_repeat_element">drop_repeat_element()（在 ricco.util.strings 模块中）</a>
-</li>
-      <li><a href="util.html#ricco.util.util.drop_repeat_element">drop_repeat_element()（在 ricco.util.util 模块中）</a>
+      <li><a href="util.html#ricco.util.util.drop_repeat">drop_repeat()（在 ricco.util.util 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.strings.drop_repeat_string">drop_repeat_string()（在 ricco.util.strings 模块中）</a>
 </li>
@@ -384,11 +383,13 @@
 </li>
       <li><a href="util.html#ricco.util.os.extension">extension()（在 ricco.util.os 模块中）</a>
 </li>
+      <li><a href="util.html#ricco.util.district.extract_city">extract_city()（在 ricco.util.district 模块中）</a>
+</li>
       <li><a href="util.html#ricco.util.strings.extract_city">extract_city()（在 ricco.util.strings 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.util.extract_num">extract_num()（在 ricco.util.util 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.strings.extract_possible_region">extract_possible_region()（在 ricco.util.strings 模块中）</a>
+      <li><a href="util.html#ricco.util.district.extract_possible_region">extract_possible_region()（在 ricco.util.district 模块中）</a>
 </li>
   </ul></td>
 </tr></table>
@@ -464,7 +465,7 @@
 </li>
       <li><a href="util.html#ricco.util.strings.get_breaks">get_breaks()（在 ricco.util.strings 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.strings.get_city_and_region">get_city_and_region()（在 ricco.util.strings 模块中）</a>
+      <li><a href="util.html#ricco.util.district.get_city_and_region">get_city_and_region()（在 ricco.util.district 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.postcode.get_city_from_postcode">get_city_from_postcode()（在 ricco.util.postcode 模块中）</a>
 </li>
@@ -482,8 +483,6 @@
 </li>
       <li><a href="util.html#ricco.util.district.get_city_name_by_id">get_city_name_by_id()（在 ricco.util.district 模块中）</a>
 </li>
-      <li><a href="decorator.html#ricco.util.decorator.get_cores">get_cores()（在 ricco.util.decorator 模块中）</a>
-</li>
       <li><a href="geometry.html#ricco.geometry.util.get_epsg">get_epsg()（在 ricco.geometry.util 模块中）</a>
 </li>
       <li><a href="etl.html#ricco.etl.graph.get_graph_dict">get_graph_dict()（在 ricco.etl.graph 模块中）</a>
@@ -497,6 +496,8 @@
       <li><a href="util.html#ricco.util.media.get_mp3_metadata">get_mp3_metadata()（在 ricco.util.media 模块中）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.df.get_neighbors">get_neighbors()（在 ricco.geometry.df 模块中）</a>
+</li>
+      <li><a href="geometry.html#ricco.geometry.df.get_projection_xy">get_projection_xy()（在 ricco.geometry.df 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.district.get_region_list">get_region_list()（在 ricco.util.district 模块中）</a>
 </li>
@@ -583,6 +584,14 @@
       <li><a href="fs.html#ricco.fs.sftp.SFTP.isfile">isfile() （ricco.fs.sftp.SFTP 方法）</a>
 </li>
       <li><a href="util.html#ricco.util.util.isinstance_in_list">isinstance_in_list()（在 ricco.util.util 模块中）</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="util.html#ricco.util.strings.join_unique">join_unique()（在 ricco.util.strings 模块中）</a>
 </li>
   </ul></td>
 </tr></table>
@@ -717,9 +726,11 @@
 </li>
       <li><a href="geometry.html#ricco.geometry.df.nearest_neighbor">nearest_neighbor()（在 ricco.geometry.df 模块中）</a>
 </li>
+      <li><a href="util.html#ricco.util.district.norm_city_name">norm_city_name()（在 ricco.util.district 模块中）</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="util.html#ricco.util.district.norm_city_name">norm_city_name()（在 ricco.util.district 模块中）</a>
+      <li><a href="geometry.html#ricco.geometry.df.norm_geometry">norm_geometry()（在 ricco.geometry.df 模块中）</a>
 </li>
       <li><a href="util.html#ricco.base.not_empty">not_empty()（在 ricco.base 模块中）</a>
 </li>
@@ -1082,14 +1093,16 @@
 </li>
       <li><a href="geometry.html#ricco.geometry.df.shapely2x">shapely2x()（在 ricco.geometry.df 模块中）</a>
 </li>
+      <li><a href="etl.html#ricco.etl.transformer.shift_data">shift_data()（在 ricco.etl.transformer 模块中）</a>
+</li>
       <li><a href="util.html#ricco.util.os.single_ext">single_ext()（在 ricco.util.os 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.assertion.skip_column">skip_column()（在 ricco.util.assertion 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.util.sort_by_list">sort_by_list()（在 ricco.util.util 模块中）</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="util.html#ricco.util.util.sort_by_list">sort_by_list()（在 ricco.util.util 模块中）</a>
+</li>
       <li><a href="geometry.html#ricco.geometry.df.spatial_agg">spatial_agg()（在 ricco.geometry.df 模块中）</a>
 </li>
       <li><a href="etl.html#ricco.etl.file.split2x">split2x()（在 ricco.etl.file 模块中）</a>
