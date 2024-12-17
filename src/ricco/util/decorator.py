@@ -2,6 +2,8 @@ import time
 import warnings
 from functools import wraps
 
+import psutil
+from pandarallel import pandarallel
 from shapely.geometry.base import BaseGeometry
 from tqdm import tqdm
 
@@ -22,19 +24,16 @@ def progress(func):
   return wrapper
 
 
-def get_cores():
-  import psutil
-  return int(
-      (psutil.cpu_count(logical=True) + psutil.cpu_count(logical=False)) / 2
-  )
-
-
 def process_multi(func):
   """多线程处理apply任务（parallel_apply）"""
 
+  def get_cores():
+    return int(
+        (psutil.cpu_count(logical=True) + psutil.cpu_count(logical=False)) / 2
+    )
+
   @run_once
   def init_pandarallel():
-    from pandarallel import pandarallel
     pandarallel.initialize(nb_workers=get_cores(), progress_bar=True)
 
   @wraps(func)

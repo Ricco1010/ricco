@@ -45,6 +45,7 @@ from .util.assertion import assert_series_digit
 from .util.assertion import assert_series_unique
 from .util.assertion import assert_values_in
 from .util.district import District
+from .util.district import get_city_and_region
 from .util.dt import DT
 from .util.dt import auto2date
 from .util.dt import excel2date
@@ -61,7 +62,6 @@ from .util.os import path_name
 from .util.os import split_path
 from .util.phone_number import PhoneNumber
 from .util.strings import drop_repeat_string
-from .util.strings import get_city_and_region
 from .util.util import and_
 from .util.util import extract_num
 from .util.util import fix_str

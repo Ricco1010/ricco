@@ -9,6 +9,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
+from pandas.tseries.offsets import MonthEnd
 
 from ..base import ensure_list
 from ..base import is_empty
@@ -143,7 +144,6 @@ def convert_date(df: pd.DataFrame,
   def trans(x):
     return datetime(x.year, x.month, x.day)
 
-  from pandas.tseries.offsets import MonthEnd
   assert mode in ('first', 'last'), "可选参数为first or last"
   columns = ensure_list(columns)
   for c in columns:
@@ -561,3 +561,35 @@ def merge_dfs(dfs: List[pd.DataFrame], on, how):
       lambda left, right: pd.merge(left, right, on=on, how=how),
       dfs
   )
+
+
+def shift_data(
+    df,
+    c_date: str,
+    c_group: (str, list),
+    c_value: (str, list),
+    subfix: str = '_环比',
+    shift: int = 1
+):
+  """
+  环比计算
+
+  Args:
+    df: DataFrame
+    c_date: 日期列
+    c_group: 分组列
+    c_value: 值列
+    subfix: 环比列后缀
+    shift: 环比计算的时间间隔
+  """
+  c_value = ensure_list(c_value)
+  sort_keys = [*ensure_list(c_group), *ensure_list(c_date)]
+  df = df.sort_values(by=sort_keys, ignore_index=True)
+  for c in c_value:
+    df[f'{c}_1'] = df.groupby(c_group)[c].shift(shift)
+    df[f'{c}{subfix}'] = (
+        (df[c] - df[f'{c}_1'])
+        / df[f'{c}_1']
+    )
+    del df[f'{c}_1']
+  return df

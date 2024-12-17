@@ -1,17 +1,20 @@
+import logging
 import re
-from functools import lru_cache
 
 from ..base import ensure_list
-from ..base import is_empty
-from ..resource.bd_region import cities
-from ..resource.bd_region import regions
-from ..resource.patterns import AddressPattern
-from ..util.district import ensure_city_name
-from ..util.district import is_city
-from ..util.district import is_region
 from .decorator import check_null
+from .util import drop_repeat
 from .util import get_shortest_element
-from .util import re_fast
+
+
+def extract_city(string: str, na=None):
+  """从字符串中提取城市（可能包含县级市）"""
+  logging.warning(
+      "extract_city is deprecated, use mdt_biz_util.util.district.extract_city instead",
+      DeprecationWarning
+  )
+  from .district import extract_city as _
+  return _(string, na)
 
 
 def get_single_list(start, length, step):
@@ -66,15 +69,10 @@ def get_list_by_position(string: str, breaks: list):
   return res
 
 
-def drop_repeat_element(strs: list):
-  """删除列表中连续重复的元素"""
-  s = ''
-  last = ''
-  for i in strs:
-    if i != last:
-      s += i
-      last = i
-  return s
+def join_unique(strs: list):
+  """删除列表中连续重复的元素，并拼接成字符串"""
+  strs = drop_repeat(strs)
+  return ''.join(strs)
 
 
 def drop_repeat_string_by_step(string, step):
@@ -83,7 +81,7 @@ def drop_repeat_string_by_step(string, step):
   length = len(string)
   for breaks in get_breaks(length, step):
     res = get_list_by_position(string, breaks)
-    str_drop = drop_repeat_element(res)
+    str_drop = join_unique(res)
     _list.append(str_drop)
 
   return get_shortest_element(_list)
@@ -118,70 +116,15 @@ def drop_repeat_string(string,
 
 
 @check_null(default_rv=[])
-def extract_possible_region(string: str) -> list:
-  """从字符串中提取可能的城市、区县"""
-  if not isinstance(string, str):
-    return []
-  ls = []
-  city_num, region_num = 0, 0
-  # 根据正则表达式提取城市和区县
-  for pattern in [*AddressPattern.cities, *AddressPattern.regions]:
-    if res := re_fast(pattern, string, warning=False):
-      if is_city(res):
-        ls.append(res)
-        city_num += 1
-      if is_region(res):
-        ls.append(res)
-        region_num += 1
-  # 没提取出区县时，按照字符串匹配尝试提取
-  if region_num == 0:
-    for cr in regions():
-      if cr in string:
-        ls.append(cr)
-        break
-  # 没提取出城市时，按照字符串匹配尝试提取
-  if city_num == 0:
-    for cr in cities():
-      if cr in string:
-        ls.append(cr)
-        break
-  return list(set(ls))
+def easy_split(string: str, seps: list = None, extra_seps: list = None):
+  """
+  使用常见的分隔符将字符串拆分为列表
 
-
-def get_city_and_region(string) -> tuple:
-  """从字符串中提取城市、区县"""
-  city_list, region_list = [], []
-  ls = extract_possible_region(string)
-  for i in ls:
-    if is_city(i):
-      city_list.append(i)
-    if is_region(i):
-      region_list.append(i)
-  if region_list and not city_list:
-    for r in region_list:
-      if _city := ensure_city_name(r, warning=False):
-        city_list.append(_city)
-  return (
-    city_list[0] if city_list else None,
-    region_list[0] if region_list else None,
-    city_list,
-    region_list
-  )
-
-
-@lru_cache()
-def extract_city(string: str, na=None):
-  """从字符串中提取城市（可能包含县级市）"""
-  res = get_city_and_region(string)
-  rv = res[0] or res[1]
-  if is_empty(rv):
-    return na
-  return rv
-
-
-@check_null(default_rv=[])
-def easy_split(string: str, seps: list = None):
-  """使用常见的分隔符将字符串拆分为列表"""
+  Args:
+    string:
+    seps: 自定义分隔符
+    extra_seps: 额外的分隔符
+  """
   if '\\' in string:
     raise Exception('字符串中不能包含"\\"')
   if not seps:
@@ -191,6 +134,8 @@ def easy_split(string: str, seps: list = None):
       '；', ';',
       '。', '\\|', ' ',
     ]
+  if extra_seps:
+    seps.extend(extra_seps)
   seps = ensure_list(seps)
   return [i for i in re.split('|'.join(seps), string) if i]
 

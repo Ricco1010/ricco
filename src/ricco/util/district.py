@@ -3,9 +3,15 @@ from functools import lru_cache
 
 from ricco import ensure_list
 
+from ..base import is_empty
 from ..base import not_empty
 from ..base import warn_
+from ..resource.bd_region import cities
 from ..resource.bd_region import get_bd_region
+from ..resource.bd_region import regions
+from ..resource.patterns import AddressPattern
+from .decorator import check_null
+from .util import re_fast
 
 
 def if_many_value(ls, action='raise', warning=False):
@@ -199,6 +205,71 @@ def get_upload_street(df, city):
   df['regioncode'] = df['regioncode'].astype(int)
   print(df.shape)
   return df
+
+
+@check_null(default_rv=[])
+def extract_possible_region(string: str) -> list:
+  """从字符串中提取可能的城市、区县"""
+  if not isinstance(string, str):
+    return []
+  ls = []
+  city_num, region_num = 0, 0
+  # 根据正则表达式提取城市和区县
+  for pattern in [*AddressPattern.cities, *AddressPattern.regions]:
+    if res := re_fast(pattern, string, warning=False):
+      if is_city(res):
+        ls.append(res)
+        city_num += 1
+      if is_region(res):
+        ls.append(res)
+        region_num += 1
+  # 没提取出区县时，按照字符串匹配尝试提取
+  if region_num == 0:
+    for cr in regions():
+      if cr in string:
+        ls.append(cr)
+        break
+  # 没提取出城市时，按照字符串匹配尝试提取
+  if city_num == 0:
+    for cr in cities():
+      if cr in string:
+        ls.append(cr)
+        break
+  ls = list(set(ls))
+  ls1 = [i for i in ls if i.endswith('市')]
+  ls2 = [i for i in ls if not i.endswith('市')]
+  return [*ls1, *ls2]
+
+
+def get_city_and_region(string) -> tuple:
+  """从字符串中提取城市、区县"""
+  city_list, region_list = [], []
+  ls = extract_possible_region(string)
+  for i in ls:
+    if is_city(i):
+      city_list.append(i)
+    if is_region(i):
+      region_list.append(i)
+  if region_list and not city_list:
+    for r in region_list:
+      if _city := ensure_city_name(r, warning=False):
+        city_list.append(_city)
+  return (
+    city_list[0] if city_list else None,
+    region_list[0] if region_list else None,
+    city_list,
+    region_list
+  )
+
+
+@lru_cache()
+def extract_city(string: str, na=None):
+  """从字符串中提取城市（可能包含县级市）"""
+  res = get_city_and_region(string)
+  rv = res[0] or res[1]
+  if is_empty(rv):
+    return na
+  return rv
 
 
 class District:

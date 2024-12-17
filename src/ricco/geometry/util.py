@@ -159,7 +159,7 @@ def geojson_dumps(x: BaseGeometry):
 
 def is_shapely(x, na=False) -> bool:
   """判断是否为shapely格式"""
-  if is_empty(x):
+  if pd.isna(x):
     return na
   if isinstance(x, BaseGeometry):
     return True
@@ -221,7 +221,7 @@ def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
   assert isinstance(series, (str, list, tuple, pd.Series, BaseGeometry))
   if isinstance(series, (list, tuple, pd.Series)):
     for i in series:
-      if not_empty(i):
+      if pd.notna(i):
         return _infer_geom_format(i)
   return _infer_geom_format(series)
 
