@@ -11,6 +11,7 @@ from itertools import groupby
 
 import numpy as np
 import pandas as pd
+from fuzzywuzzy import fuzz
 
 from ..base import ensure_list
 from ..base import is_empty
@@ -269,7 +270,6 @@ def fuzz_match(string: str,
     valid_score: 相似度大于该值的才返回
   Returns: 字符串及相似度组成的列表
   """
-  from fuzzywuzzy import fuzz
   w = 0.3
 
   def score(x, s):
@@ -496,12 +496,12 @@ def isinstance_in_list(values: list, types: (str, list)) -> bool:
   return all([isinstance(v, types) for v in values])
 
 
-def drop_repeat_element(x: (list, tuple)):
+def drop_repeat(x: (list, tuple)):
   """
   删除列表中连续重复的元素
 
   Examples:
-    >>> drop_repeat_element([1, 2, 2, 3, 4, 4, 4, 3])
+    >>> drop_repeat([1, 2, 2, 3, 4, 4, 4, 3])
     [1, 2, 3, 4, 3]
   """
   return [key for key, _ in groupby(x)]

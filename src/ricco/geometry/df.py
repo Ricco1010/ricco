@@ -7,17 +7,14 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from shapely.geometry import Polygon
-from shapely.geometry.base import BaseGeometry
 
 from ..base import agg_parser
 from ..base import ensure_list
-from ..base import not_empty
 from ..base import warn_
 from ..etl.transformer import dict2df
 from ..etl.transformer import split_list_to_row
 from ..util.assertion import assert_not_null
 from ..util.assertion import assert_series_unique
-from ..util.decorator import process_multi
 from ..util.decorator import progress
 from ..util.decorator import timer
 from ..util.kdtree import kdtree_nearest
@@ -185,12 +182,12 @@ def shapely2lnglat(df,
   """
 
   df = df.copy()
-  if within:
-    df[lng] = df.representative_point().x
-    df[lat] = df.representative_point().y
-  else:
-    df[lng] = df.centroid.x
-    df[lat] = df.centroid.y
+  df_temp = shapely2central_shapely(
+      df[[geometry]], geometry=geometry, within=within
+  )
+  df_temp[lng] = df_temp.geometry.x
+  df_temp[lat] = df_temp.geometry.y
+  df = df.join(df_temp[[lng, lat]])
   if delete:
     del df[geometry]
   return df
@@ -254,13 +251,19 @@ def wkt2wkb(df, geometry='geometry', epsg_code: int = 4326):
 
 def shapely2central_shapely(df, geometry='geometry', within=False):
   """获取中心点shapely格式"""
-  df = shapely2lnglat(df, geometry=geometry, within=within)
-  return lnglat2shapely(df, geometry=geometry, delete=True)
+  if within:
+    df[geometry] = df[geometry].representative_point()
+  else:
+    df[geometry] = df[geometry].centroid
+  return gpd.GeoDataFrame(df, geometry=geometry)
 
 
 def auto2shapely(df, geometry='geometry') -> gpd.GeoDataFrame:
   """自动识别地理格式并转换为shapely格式"""
   if geometry in df:
+    if df[geometry].isna().all():
+      warn_(f'{geometry}列全为空，返回GeoDataframe', mode='logging')
+      return gpd.GeoDataFrame(df, geometry=geometry)
     geom_format = infer_geom_format(df[geometry])
     assert geom_format in GEOM_FORMATS, '未知的地理格式'
     if geom_format == 'shapely':
@@ -302,15 +305,42 @@ def auto2x(df, geometry_format: str, geometry='geometry'):
     geometry: geometry列的列名，默认为“geometry”
   """
   assert geometry_format in GEOM_FORMATS, '未知的地理格式'
+  # 当geometry列全部为空时，只转换Dataframe格式
+  if df[geometry].isna().all():
+    warn_(f'{geometry}列全为空', mode='logging')
+    if geometry_format == 'shapely':
+      return gpd.GeoDataFrame(df, geometry=geometry)
+    else:
+      return pd.DataFrame(df)
   if infer_geom_format(df[geometry]) == geometry_format:
     return df
   df = auto2shapely(df, geometry=geometry)
   return shapely2x(df, geometry_format=geometry_format, geometry=geometry)
 
 
-def distance_min(df: gpd.GeoDataFrame, geometry: BaseGeometry) -> float:
+def norm_geometry(df,
+                  c_lng='lat',
+                  c_lat='lng',
+                  c_geometry='geometry',
+                  geometry_format='wkb'):
+  """确保Dataframe中有lng/lat/geometry列"""
+  if c_lng in df and c_lat in df and c_geometry in df:
+    return df
+  elif c_lng in df and c_lat in df:
+    df = lnglat2shapely(df, lng=c_lng, lat=c_lat, geometry=c_geometry,
+                        delete=False)
+  elif c_geometry in df:
+    df = auto2shapely(df, geometry=c_geometry)
+    df = shapely2lnglat(df, geometry=c_geometry, delete=False)
+  else:
+    raise KeyError('未找到lng/lat/geometry列')
+  return shapely2x(df, geometry_format=geometry_format, geometry=c_geometry)
+
+
+def distance_min(df, geometry) -> float:
   """
-  计算数据集df中元素到单个geometry的最短距离
+  计算数据集df中元素到单个geometry的最短距离。
+  该方法可自动将df转为GeoDataframe，自动将geometry转为shapely格式
 
   Args:
     df: 数据集，GeoDataFrame格式
@@ -321,18 +351,28 @@ def distance_min(df: gpd.GeoDataFrame, geometry: BaseGeometry) -> float:
   return df.distance(geometry).min()
 
 
-@process_multi
 def distance_gdf(df: gpd.GeoDataFrame, df_target: gpd.GeoDataFrame,
                  c_dst: str = '最小距离',
-                 left_geometry='geometry'):
-  """计算一个数据集中的每个元素到另一个数据集之间的最短距离"""
-  assert df.index.is_unique, 'df 索引列必须唯一'
-  df_target = auto2shapely(df_target)
-  df_dis = auto2shapely(df[[left_geometry]], geometry=left_geometry)
-  df_dis[c_dst] = df_dis[left_geometry].parallel_apply(
-      lambda p: distance_min(df_target, p) if not_empty(p) else np.nan
-  )
-  return df.join(df_dis[[c_dst]])
+                 c_tags: list = None) -> gpd.GeoDataFrame:
+  """
+  计算一个数据集中的每个元素到另一个数据集之间的最短距离。
+  如需计算实际距离，投影后再使用此方法
+
+  Args:
+    df: 数据集
+    df_target: 目标数据集
+    c_dst: 保存距离的列名，默认为“最小距离”
+    c_tags: 保存目标数据集的标签列，默认为None
+  """
+  assert isinstance(df, gpd.GeoDataFrame), 'df必须为GeoDataFrame格式'
+  assert isinstance(df_target, gpd.GeoDataFrame), 'df_target必须为GeoDataFrame格式'
+  c_tags = c_tags or []
+  df_target = gpd.GeoDataFrame(df_target[['geometry', *c_tags]])
+
+  return df.sjoin_nearest(
+      df_target,
+      distance_col=c_dst
+  ).drop(['index_right'], axis=1)
 
 
 def split_grids(df: gpd.GeoDataFrame, step: int, geometry_format='wkb'):
@@ -515,7 +555,9 @@ def nearest_neighbor(
     df: pd.DataFrame,
     df_target: pd.DataFrame,
     c_dst: str = 'min_distance',
-    epsg: int = None) -> pd.DataFrame:
+    epsg: int = None,
+    r=None,
+) -> pd.DataFrame:
   """
   近邻分析，计算一个数据集中的元素到另一个数据集中全部元素的最短距离（单位：米）
 
@@ -524,6 +566,7 @@ def nearest_neighbor(
     df_target:
     c_dst: 输出最短距离的列名，默认为“min_distance”
     epsg: 对于跨时区或不在同一个城市的可以指定epsg code，默认会根据经度中位数获取
+    r: 限制查询半径
   """
   # 将两个数据集都转为shapely格式
   assert df.index.is_unique, 'df索引列必须唯一'
@@ -533,7 +576,9 @@ def nearest_neighbor(
   df_left = projection(df_left, epsg=epsg)
   df_target = projection(df_target, epsg=epsg)
   # 计算最短距离
-  df_left = distance_gdf(df_left, df_target, c_dst=c_dst)
+  df_left = df_left.sjoin_nearest(
+      df_target, how='left', distance_col=c_dst, max_distance=r
+  ).drop(['index_right'], axis=1)
   # 将距离合并到原来的数据集上
   return df.join(df_left[[c_dst]], how='left')
 
@@ -759,3 +804,29 @@ def split_multi_to_rows(df, geometry='geometry', geometry_format=None):
   df = gpd.GeoDataFrame(df, geometry=geometry)
   print(f'Rows: {lo} -> {df.shape[0]}')
   return auto2x(df, geometry_format, geometry)
+
+
+def get_projection_xy(
+    df: pd.DataFrame,
+    epsg: int = None,
+    city: str = None,
+    crs=None,
+    c_x: str = 'x',
+    c_y: str = 'y'):
+  """
+  获取数据投影后或坐标系转后的中心点x、y坐标
+
+  Args:
+    df: 数据集
+    epsg: 投影坐标epsg编号
+    city: 要投影的城市名
+    crs: 投影坐标系
+    c_x: 投影后经度的列名
+    c_y: 投影后纬度的列名
+  """
+  assert df.index.is_unique, '数据索引必须唯一'
+  df_temp = auto2shapely(df)
+  df_temp = projection(df_temp, epsg=epsg, city=city, crs=crs)
+  df_temp[c_x] = df_temp.centroid.x
+  df_temp[c_y] = df_temp.centroid.y
+  return df.join(df_temp[[c_x, c_y]])

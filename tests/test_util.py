@@ -1,6 +1,6 @@
 import numpy as np
 
-from ricco.util.util import drop_repeat_element
+from ricco.util.util import drop_repeat
 from ricco.util.util import eval_
 from ricco.util.util import extract_num
 from ricco.util.util import fix_str
@@ -164,7 +164,7 @@ def test_remove_null_in_dict():
 
 
 def test_drop_repeat_element():
-  assert drop_repeat_element([1, 2, 2, 2, 3, 4, 3]) == [1, 2, 3, 4, 3]
+  assert drop_repeat([1, 2, 2, 2, 3, 4, 3]) == [1, 2, 3, 4, 3]
 
 
 def test_isinstance_in_list():
