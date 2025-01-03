@@ -27,10 +27,19 @@ from .util import geojson_loads
 from .util import get_epsg
 from .util import infer_geom_format
 from .util import split_multi_geoms
-from .util import wkb_dumps
+from .util import st_is_empty
 from .util import wkb_loads
-from .util import wkt_dumps
 from .util import wkt_loads
+
+
+def geom_empty2null(df, c_geometry='geometry'):
+  """将geometry列中为空的记录置为None"""
+
+  if isinstance(df, gpd.GeoDataFrame):
+    df.loc[df[c_geometry].is_empty, c_geometry] = None
+  else:
+    df.loc[df[c_geometry].apply(st_is_empty), c_geometry] = None
+  return df
 
 
 def projection(
@@ -93,16 +102,16 @@ def wkb2shapely(df,
                 epsg_code: int = 4326) -> gpd.GeoDataFrame:
   """将wkb格式的geometry列转换为shapely格式"""
   df = df.copy()
+  df = geom_empty2null(df, c_geometry=geometry)
   df[geometry] = df[geometry].progress_apply(wkb_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
 
 
-@progress
 def shapely2wkb(df, geometry='geometry'):
   """将shapely格式的geometry列转换为wkb格式"""
-  df = pd.DataFrame(df).copy()
-  df[geometry] = df[geometry].progress_apply(wkb_dumps)
-  return df
+  df = gpd.GeoDataFrame(df, geometry=geometry).copy()
+  df = geom_empty2null(df, c_geometry=geometry)
+  return df.to_wkb(hex=True)
 
 
 @progress
@@ -111,16 +120,16 @@ def wkt2shapely(df,
                 epsg_code: int = 4326) -> gpd.GeoDataFrame:
   """将wkt格式的geometry列转换为shapely格式"""
   df = df.copy()
+  df = geom_empty2null(df, c_geometry=geometry)
   df[geometry] = df[geometry].progress_apply(wkt_loads)
   return gpd.GeoDataFrame(df, geometry=geometry, crs=epsg_code)
 
 
-@progress
-def shapely2wkt(df, geometry='geometry'):
+def shapely2wkt(df: gpd.GeoDataFrame, geometry='geometry'):
   """将shapely格式的geometry列转换为wkt格式"""
-  df = pd.DataFrame(df).copy()
-  df[geometry] = df[geometry].progress_apply(wkt_dumps)
-  return df
+  df = gpd.GeoDataFrame(df, geometry=geometry).copy()
+  df = geom_empty2null(df, c_geometry=geometry)
+  return df.to_wkt()
 
 
 @progress
@@ -154,6 +163,7 @@ def lnglat2shapely(df,
       geometry=gpd.points_from_xy(df[lng], df[lat]),
       crs=epsg_code
   )
+  df = geom_empty2null(df, c_geometry='geometry')
   df.rename(columns={'geometry': geometry}, inplace=True)
   df.loc[df[lng].isna() | df[lat].isna(), geometry] = None
   if delete:

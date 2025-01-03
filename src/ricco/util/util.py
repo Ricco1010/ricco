@@ -1,14 +1,14 @@
 import builtins
-import datetime
 import json
 import logging
 import re
 import uuid
 import warnings
 from ast import literal_eval
+from datetime import datetime
 from itertools import chain
 from itertools import groupby
-
+from typing import Iterable
 import numpy as np
 import pandas as pd
 from fuzzywuzzy import fuzz
@@ -84,19 +84,18 @@ def or_(*conditions):
   return res
 
 
-def physical_age(birthday: datetime.datetime,
-                 deadline: datetime.datetime = None):
+def physical_age(birthday: datetime, deadline: datetime = None):
   """计算周岁，默认按照当前时间点计算"""
-  now = deadline or datetime.datetime.now()
+  now = deadline or datetime.now()
   now_str = now.strftime('%m%d')
   birth_str = birthday.strftime('%m%d')
-  if now_str >= birth_str:
-    return now.year - birthday.year
-  else:
-    return now.year - birthday.year - 1
+  res = now.year - birthday.year
+  if now_str < birth_str:
+    res -= 1
+  return res
 
 
-def first_notnull_value(series):
+def first_notnull_value(series: Iterable):
   """筛选第一个不为空的值"""
   for v in series:
     if not_empty(v):
@@ -224,7 +223,8 @@ def segment(x: (int, float),
     sep: 分隔符，中间
     bottom: 默认为“以下”：80米以下
     top: 默认为“以上”：100米以上
-  Returns: 区间段 'num1分隔符num2单位'：‘80-100米’
+  Returns:
+    区间段 'num1分隔符num2单位'：‘80-100米’
   """
 
   def between_list(_x, lis):

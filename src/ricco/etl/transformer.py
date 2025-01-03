@@ -115,8 +115,7 @@ def update_df(df: pd.DataFrame,
       * False: 只更新原DataFrame中重叠位置数据为 *空* 的值.
     errors: （可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为 'ignore'
 
-      * 'ignore': 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，
-        使用other中的值替换df中的值。
+      * 'ignore': 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，使用other中的值替换df中的值。
       * 'raise': target和other都在同一位置包含非NA数据将抛出ValueError异常（'Data overlaps'）。
   """
   if on:

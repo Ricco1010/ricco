@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+import time
 import warnings
 import zipfile
 from datetime import datetime
@@ -212,6 +213,53 @@ def single_ext(path_list):
   ext_list = list(set([extension(p) for p in path_list]))
   if len(ext_list) == 1:
     return ext_list[0]
+
+
+def getsize(filepath, unit: str):
+  """
+  获取文件大小
+
+  Args:
+    filepath: 获取文件大小
+    unit: 单位，如B、KB、MB、GB、TB、PB
+  """
+  unit = unit.upper()
+  file_size = os.path.getsize(filepath)
+  for u in ['B', 'KB', 'MB', 'GB', 'TB', 'PB']:
+    if u == unit:
+      return file_size
+    file_size /= 1024
+
+
+def move_file_with_metadata(src, dst):
+  # 确保源文件存在
+  if not os.path.isfile(src):
+    print(f"源文件不存在: {src}")
+    return
+  if os.path.isfile(dst):
+    print(f'文件已存在：{dst}')
+    os.remove(dst)
+  # 复制源文件到目标位置
+  shutil.copy2(src, dst)
+  # 获取源文件的元数据
+  stat = os.stat(src)
+  # 修改目标文件的访问和修改时间
+  os.utime(dst, (stat.st_atime, stat.st_mtime))
+  # 删除源文件
+  os.remove(src)
+  print(f"Move:{src}-->{dst}")
+
+
+def is_using_in(filepath, hours):
+  """判断文件是否在某个时间段内修改过"""
+  # 获取当前时间戳
+  current_time = time.time()
+  # 获取文件的最后修改时间戳
+  file_mod_time = os.path.getmtime(filepath)
+  # 计算时间差（秒）
+  _diff = current_time - file_mod_time
+  # 检查文件是否在指定的小时内被修改
+  return _diff <= hours * 3600
 
 
 class OssPath:

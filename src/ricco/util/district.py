@@ -20,6 +20,7 @@ def if_many_value(ls, action='raise', warning=False):
   Args:
     ls: 列表
     action: 处理方式，可选值：'raise', 'first', 'last', 'coerce', 'all'
+    warning: 是否打印警告
   """
   ls = ensure_list(ls)
   if len(ls) == 1:
@@ -287,11 +288,13 @@ class District:
     """全部区县（全程+简称）列表"""
     return get_region_list()
 
-  def is_city(self, name: str) -> bool:
+  @staticmethod
+  def is_city(name: str) -> bool:
     """判断是否是地级市"""
     return is_city(name)
 
-  def is_region(self, name: str) -> bool:
+  @staticmethod
+  def is_region(name: str) -> bool:
     """判断是否是县市区"""
     return is_region(name)
 
@@ -382,10 +385,12 @@ class District:
         warning=warning
     )
 
-  def get_city_id_by_name(self, name: str, warning=True):
+  @staticmethod
+  def get_city_id_by_name(name: str, warning=True):
     """通过城市名称获取城市id"""
     return get_city_id_by_name(name, warning=warning)
 
-  def get_city_name_by_id(self, city_id: int, full=False, warning=False):
+  @staticmethod
+  def get_city_name_by_id(city_id: int, full=False, warning=False):
     """通过城市id获取城市名称"""
     return get_city_name_by_id(city_id, full=full, warning=warning)
