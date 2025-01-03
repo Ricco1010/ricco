@@ -32,6 +32,7 @@ from ..base import not_empty
 from ..util.decorator import check_null
 from ..util.decorator import check_shapely
 from ..util.decorator import check_str
+from ..util.district import norm_city_name
 from ..util.util import is_hex
 from ..util.util import isinstance_in_list
 
@@ -61,6 +62,24 @@ def is_polygon(x: BaseGeometry):
   return isinstance(x, (Polygon, MultiPolygon))
 
 
+def st_is_empty(x):
+  """判断是否为空"""
+  _s = [
+    '010700000000000000',
+    '010700000000000000',
+    'GEOMETRYCOLLECTION EMPTY'
+  ]
+  if isinstance(x, str):
+    if x in _s:
+      return True
+  return is_empty(x)
+
+
+def st_not_empty(x):
+  """判断是否非空"""
+  return not st_is_empty(x)
+
+
 def epsg_from_lnglat(lng, lat=0):
   """根据经纬度计算 UTM 区域 EPSG 代码"""
   lng = ensure_list(lng)
@@ -74,12 +93,9 @@ def lng_from_city(city: str):
   """获取城市所在的经度"""
   from ..resource.epsg_code import CITY_POINT
   assert len(city) >= 2, '城市名称过短'
-  if city in CITY_POINT:
-    return CITY_POINT[city]['lng']
-  else:
-    for _c in CITY_POINT.keys():
-      if city in _c:
-        return CITY_POINT[_c]['lng']
+  city_full = norm_city_name(city, full=True)
+  if _c := CITY_POINT.get(city_full):
+    return _c['lng']
   warnings.warn(f'请补充"{city}"的epsg信息，默认返回经度113.0')
   return 113.0
 
@@ -104,13 +120,13 @@ def wkb_loads(x: str, hex=True):
   try:
     return wkb.loads(x, hex=hex)
   except (AttributeError, WKBReadingError) as e:
-    warnings.warn(f'{e}, 【{x}】')
+    warnings.warn(f'wkb.loads失败：【{x}】, 【{e}】')
 
 
 @check_shapely
-def wkb_dumps(x: BaseGeometry, hex=True, srid=4326):
+def wkb_dumps(x: BaseGeometry):
   """将Shapely几何对象转换为文本形式的WKB"""
-  return wkb.dumps(x, hex=hex, srid=srid)
+  return x.wkb_hex
 
 
 @check_str
@@ -119,13 +135,13 @@ def wkt_loads(x: str):
   try:
     return wkt.loads(x)
   except (AttributeError, WKTReadingError, TypeError) as e:
-    warnings.warn(f'{e}, 【{x}】')
+    warnings.warn(f'wkt.loads失败：【{x}】, 【{e}】')
 
 
 @check_shapely
 def wkt_dumps(x: BaseGeometry):
   """将Shapely几何对象转换为文本形式的WKT"""
-  return wkt.dumps(x)
+  return x.wkt
 
 
 @check_null()

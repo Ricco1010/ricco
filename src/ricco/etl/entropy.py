@@ -47,7 +47,7 @@ def gevalue(df: pd.DataFrame, columns: list):
   columns = ensure_list(columns)
   n = df.shape[0]
   for c in columns:
-    df[c] = df.apply(lambda x: np.log(x[c]) * x[c], axis=1)
+    df[c] = np.where(df[c] > 0, np.log(df[c]) * df[c], 0)
     j_sum = df[c].sum(axis=0)
     df.loc[:, c] = 1 - (-1 / np.log(n)) * j_sum
   return df
