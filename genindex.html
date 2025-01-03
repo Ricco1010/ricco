@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>索引 &mdash; ricco 1.5.2 文档</title>
+  <title>索引 &mdash; ricco 1.5.3 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=9e5f314c"></script>
+        <script src="_static/documentation_options.js?v=8c990d56"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -459,6 +459,8 @@
 </li>
       <li><a href="geometry.html#ricco.geometry.util.geojson_loads">geojson_loads()（在 ricco.geometry.util 模块中）</a>
 </li>
+      <li><a href="geometry.html#ricco.geometry.df.geom_empty2null">geom_empty2null()（在 ricco.geometry.df 模块中）</a>
+</li>
       <li><a href="util.html#ricco.util.dt.DT2.get">get() （ricco.util.dt.DT2 方法）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.df.get_area">get_area()（在 ricco.geometry.df 模块中）</a>
@@ -469,7 +471,7 @@
 </li>
       <li><a href="util.html#ricco.util.postcode.get_city_from_postcode">get_city_from_postcode()（在 ricco.util.postcode 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.district.District.get_city_id_by_name">get_city_id_by_name() （ricco.util.district.District 方法）</a>
+      <li><a href="util.html#ricco.util.district.District.get_city_id_by_name">get_city_id_by_name()（ricco.util.district.District 静态方法）</a>
 </li>
       <li><a href="util.html#ricco.util.district.get_city_id_by_name">get_city_id_by_name()（在 ricco.util.district 模块中）</a>
 </li>
@@ -479,7 +481,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="util.html#ricco.util.district.get_city_list">get_city_list()（在 ricco.util.district 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.district.District.get_city_name_by_id">get_city_name_by_id() （ricco.util.district.District 方法）</a>
+      <li><a href="util.html#ricco.util.district.District.get_city_name_by_id">get_city_name_by_id()（ricco.util.district.District 静态方法）</a>
 </li>
       <li><a href="util.html#ricco.util.district.get_city_name_by_id">get_city_name_by_id()（在 ricco.util.district 模块中）</a>
 </li>
@@ -511,6 +513,8 @@
 </li>
       <li><a href="util.html#ricco.util.util.get_uuid">get_uuid()（在 ricco.util.util 模块中）</a>
 </li>
+      <li><a href="util.html#ricco.util.os.getsize">getsize()（在 ricco.util.os 模块中）</a>
+</li>
       <li><a href="etl.html#ricco.etl.entropy.gevalue">gevalue()（在 ricco.etl.entropy 模块中）</a>
 </li>
   </ul></td>
@@ -535,7 +539,7 @@
 </li>
       <li><a href="etl.html#ricco.etl.transformer.is_changed">is_changed()（在 ricco.etl.transformer 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.district.District.is_city">is_city() （ricco.util.district.District 方法）</a>
+      <li><a href="util.html#ricco.util.district.District.is_city">is_city()（ricco.util.district.District 静态方法）</a>
 </li>
       <li><a href="util.html#ricco.util.district.is_city">is_city()（在 ricco.util.district 模块中）</a>
 </li>
@@ -553,7 +557,7 @@
 </li>
       <li><a href="geometry.html#ricco.geometry.util.is_polygon">is_polygon()（在 ricco.geometry.util 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.district.District.is_region">is_region() （ricco.util.district.District 方法）</a>
+      <li><a href="util.html#ricco.util.district.District.is_region">is_region()（ricco.util.district.District 静态方法）</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -568,6 +572,8 @@
       <li><a href="geometry.html#ricco.geometry.topology.is_topology_valid">is_topology_valid()（在 ricco.geometry.topology 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.util.is_unique_series">is_unique_series()（在 ricco.util.util 模块中）</a>
+</li>
+      <li><a href="util.html#ricco.util.os.is_using_in">is_using_in()（在 ricco.util.os 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.dt.is_valid_date">is_valid_date()（在 ricco.util.dt 模块中）</a>
 </li>
@@ -713,6 +719,8 @@
       <li><a href="util.html#ricco.util.dt.DT.monday_of_this_week">monday_of_this_week（ricco.util.dt.DT 属性）</a>
 </li>
       <li><a href="util.html#ricco.util.dt.DT2.monday_of_this_week">monday_of_this_week（ricco.util.dt.DT2 属性）</a>
+</li>
+      <li><a href="util.html#ricco.util.os.move_file_with_metadata">move_file_with_metadata()（在 ricco.util.os 模块中）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.util.multiline2multipolygon">multiline2multipolygon()（在 ricco.geometry.util 模块中）</a>
 </li>
@@ -1099,10 +1107,10 @@
 </li>
       <li><a href="util.html#ricco.util.assertion.skip_column">skip_column()（在 ricco.util.assertion 模块中）</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="util.html#ricco.util.util.sort_by_list">sort_by_list()（在 ricco.util.util 模块中）</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="geometry.html#ricco.geometry.df.spatial_agg">spatial_agg()（在 ricco.geometry.df 模块中）</a>
 </li>
       <li><a href="etl.html#ricco.etl.file.split2x">split2x()（在 ricco.etl.file 模块中）</a>
@@ -1126,6 +1134,10 @@
       <li><a href="etl.html#ricco.etl.transformer.split_to_rows">split_to_rows()（在 ricco.etl.transformer 模块中）</a>
 </li>
       <li><a href="coord_trans.html#ricco.geometry.coord_trans.SRS">SRS（ricco.geometry.coord_trans 中的类）</a>
+</li>
+      <li><a href="geometry.html#ricco.geometry.util.st_is_empty">st_is_empty()（在 ricco.geometry.util 模块中）</a>
+</li>
+      <li><a href="geometry.html#ricco.geometry.util.st_not_empty">st_not_empty()（在 ricco.geometry.util 模块中）</a>
 </li>
       <li><a href="etl.html#ricco.etl.entropy.standard_e">standard_e()（在 ricco.etl.entropy 模块中）</a>
 </li>
