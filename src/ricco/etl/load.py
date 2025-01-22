@@ -19,35 +19,44 @@ from . import ALL_EXTS
 from .transformer import df_iter
 
 
-def to_csv_by_line(data: list, filename: str):
+def to_csv_by_line(data: (list, dict), filepath: str):
   """
   逐行写入csv文件
 
   Args:
-    data: 要写入的数据列表
-    filename: 文件名
+    data: 要写入的数据列表或字典，如果传入的为字典，在缺少文件的情况下会先写入key为表头
+    filepath: 文件名
   """
-  with open(filename, 'a') as f:
+  if isinstance(data, list):
+    _data = data
+  elif isinstance(data, dict):
+    _data = [*data.values()]
+    if not os.path.exists(filepath):
+      to_csv_by_line([*data.keys()], filepath)
+  else:
+    raise ValueError('data must be list or dict')
+
+  with open(filepath, 'a') as f:
     csv_write = csv.writer(f, dialect='excel')
-    csv_write.writerow(data)
+    csv_write.writerow(_data)
 
 
-def to_sheets(data: dict, filename: str, index=False):
+def to_sheets(data: dict, filepath: str, index=False):
   """
   将多个dataframe保存到不同的sheet中
 
   Args:
     data: 要保存的数据集，格式为：{sheet_name: DataFrame}
-    filename: 要保存的文件名
+    filepath: 要保存的文件名
     index: 是否保存index
   """
   assert isinstance(data, dict), 'data must be dict'
-  with pd.ExcelWriter(filename) as writer:
+  with pd.ExcelWriter(filepath) as writer:
     for sheet_name, _df in data.items():
       _df.to_excel(writer, sheet_name, index=index)
 
 
-def to_parquet(df, filepath, index):
+def to_parquet(df: pd.DataFrame, filepath: str, index=False):
   """保存parquet文件，默认将shapely对象转换为wkb格式"""
   shapely_columns = [
     c for c in df if isinstance(first_notnull_value(df[c]), BaseGeometry)
@@ -59,7 +68,7 @@ def to_parquet(df, filepath, index):
 
 def to_file(
     df: pd.DataFrame,
-    filepath,
+    filepath: str,
     *,
     index=False,
     log=True,

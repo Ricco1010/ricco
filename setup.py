@@ -29,13 +29,14 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=[
-      'fuzzywuzzy>=0.18.0',
+      'fuzzywuzzy==0.18.0',
       'geojson<3',
-      'numpy>=1',
-      'pandarallel>=1.6.5',
-      'pandas>=1',
+      'numpy>=1,<2',
+      'pandarallel==1.6.5',
+      'pandas>=1,<2',
       'python-Levenshtein>=0.25.0',
       'requests>=2.7',
+      'shapely<2',
       'tqdm>=4.62.0',
     ],
     classifiers=[

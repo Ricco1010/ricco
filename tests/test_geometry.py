@@ -7,12 +7,14 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 
 from ricco.geometry.df import mark_tags_v2
+from ricco.geometry.util import epsg_from_lnglat
 from ricco.geometry.util import get_epsg
 from ricco.geometry.util import infer_geom_format
 from ricco.geometry.util import is_geojson
 from ricco.geometry.util import is_shapely
 from ricco.geometry.util import is_wkb
 from ricco.geometry.util import is_wkt
+from ricco.geometry.util import st_is_empty
 
 point_name = '点位A'
 point_lng = 121.505563
@@ -61,6 +63,13 @@ def test_get_epsg():
     assert len(w) == 1
     assert issubclass(w[-1].category, UserWarning)
     assert f'请补充"{city}"的epsg信息，默认返回经度113.0' in str(w[-1].message)
+
+
+def test_epsg_from_lnglat():
+  assert epsg_from_lnglat(116.41) == 32650  # 北京
+  assert epsg_from_lnglat(114.32) == 32650  # 武汉
+  assert epsg_from_lnglat(121.48) == 32651  # 上海
+  assert epsg_from_lnglat(106.56) == 32648  # 上海
 
 
 def test_mark_tags_v2():
@@ -280,3 +289,12 @@ def test_infer_geom_format():
   assert infer_geom_format(['POINT (1.1 1.1)']) == 'wkt'
   assert infer_geom_format(('POINT (1.1 1.1)',)) == 'wkt'
   assert infer_geom_format(pd.Series(['POINT (1.1 1.1)'])) == 'wkt'
+
+
+def test_st_is_empty():
+  assert st_is_empty('010700000000000000') is True
+  assert st_is_empty('0107000020E610000000000000') is True
+  assert st_is_empty('GEOMETRYCOLLECTION EMPTY') is True
+  assert st_is_empty(Point()) is True
+  assert st_is_empty(Polygon()) is True
+  assert st_is_empty(Point(1, 1)) is False
