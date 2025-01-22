@@ -1,6 +1,7 @@
 from ricco.util.strings import drop_repeat_string
 from ricco.util.strings import get_breaks
 from ricco.util.strings import get_single_list
+from ricco.util.strings import is_repeated
 
 
 def test_drop_repeat_string():
@@ -28,3 +29,12 @@ def test_get_breaks():
     [[0, 1], [1, 4], [4, 7], [7, 10]],
     [[0, 2], [2, 5], [5, 8], [8, 10]]
   ]
+
+
+def test_is_repeated():
+  assert is_repeated('1111') is True
+  assert is_repeated('1111', min_length=3) is False
+  assert is_repeated('12121212') is True
+  assert is_repeated('1212121') is False
+  assert is_repeated('123123') is True
+  assert is_repeated('123123', min_length=4) is False

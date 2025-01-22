@@ -66,7 +66,7 @@ def st_is_empty(x):
   """判断是否为空"""
   _s = [
     '010700000000000000',
-    '010700000000000000',
+    '0107000020E610000000000000',
     'GEOMETRYCOLLECTION EMPTY'
   ]
   if isinstance(x, str):
