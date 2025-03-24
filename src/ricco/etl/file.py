@@ -159,6 +159,7 @@ def dir_file_to_x(from_dir, to_dir,
                   from_ext=None, to_ext=None,
                   recursive=False,
                   delete=False,
+                  overwrite=False,
                   log=False):
   """转换整个目录中的文件格式"""
   assert from_dir != to_dir, 'from_dir and to_dir must be different'
@@ -168,7 +169,10 @@ def dir_file_to_x(from_dir, to_dir,
   path_list = dir_iter_list(from_dir, exts=from_ext, recursive=recursive)
   print(len(path_list))
   for f in tqdm(path_list):
-    file_to_x(f, to_ext, to_dir=to_dir, delete=delete, log=log)
+    file_to_x(
+        f, to_ext, to_dir=to_dir, delete=delete,
+        overwrite=overwrite, log=log,
+    )
 
 
 def reshape_files(from_dir, to_dir,

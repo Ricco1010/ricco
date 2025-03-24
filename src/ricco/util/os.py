@@ -6,7 +6,6 @@ import warnings
 import zipfile
 from datetime import datetime
 from datetime import timedelta
-from pathlib import Path
 
 from ..base import ensure_list
 
@@ -65,9 +64,9 @@ def remove_path(path, log=True):
   if os.path.exists(path):
     os.remove(path) if os.path.isfile(path) else shutil.rmtree(path)
     if log:
-      logging.warning(f'Deleted:"{path}"')
+      logging.warning(f'Deleted:{path}')
   else:
-    warnings.warn(f'Path not found:"{path}"')
+    warnings.warn(f'NotFound:{path}')
 
 
 def ensure_dirpath_exist(filepath):
@@ -75,15 +74,15 @@ def ensure_dirpath_exist(filepath):
   dir_path = os.path.dirname(filepath)
   if not os.path.exists(dir_path):
     os.makedirs(dir_path)
-    logging.warning(f'Created: "{dir_path}"')
+    logging.warning(f'Created:{dir_path}')
 
 
 def file2zip(filepath, overwrite=False, delete_origin=False):
   """将一个文件压缩为zip格式"""
   zfn = path_name(filepath) + '.zip'
   if os.path.exists(zfn) and not overwrite:
-    raise FileExistsError(f'"{zfn}"已存在')
-  logging.warning(f'Compressing: "{filepath}"')
+    raise FileExistsError(f'{zfn}')
+  logging.warning(f'Compressing:{filepath}')
   with zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED) as zipf:
     zipf.write(filepath, arcname=os.path.basename(filepath))
   if delete_origin:
@@ -102,12 +101,12 @@ def dir2zip(dir_path, overwrite=False, delete_origin=False):
   protect_dir(dir_path)
   zfn = f'{dir_path}.zip'
   if os.path.exists(zfn) and not overwrite:
-    raise FileExistsError(f'"{zfn}"已存在')
+    raise FileExistsError(f'{zfn}')
   z = zipfile.ZipFile(zfn, 'w', zipfile.ZIP_DEFLATED)
-  for dirpath, _, filenames in os.walk(dir_path):
+  for _root, _, filenames in os.walk(dir_path):
     for filename in filenames:
-      f_o = str(os.path.join(dirpath, filename))
-      f_i = str(os.path.join(os.path.split(dirpath)[-1], filename))
+      f_o = str(os.path.join(_root, filename))
+      f_i = str(os.path.join(os.path.split(_root)[-1], filename))
       z.write(f_o, f_i)
   z.close()
   if delete_origin:
@@ -117,7 +116,7 @@ def dir2zip(dir_path, overwrite=False, delete_origin=False):
 def count_files(dir_path):
   """统计文件夹中文件的数量"""
   num = 0
-  for dirpath, dirnames, filenames in os.walk(dir_path):
+  for _, __, filenames in os.walk(dir_path):
     for filename in filenames:
       if filename != '.DS_Store':
         num += 1
@@ -136,11 +135,11 @@ def rm_scratch_file(dir_path, days, recursive=False, rm_hidden_file=False,
     m_time = datetime.fromtimestamp(m_time)
     if m_time <= timeline:
       os.remove(file)
-      logging.warning(f'Deleted:"{file}"')
+      logging.warning(f'Deleted:{file}')
   # 删除空文件夹
-  for dirpath, dirnames, _ in os.walk(dir_path):
-    for dirname in dirnames:
-      dir_full_path = os.path.join(dirpath, dirname)
+  for _root, dirs, _ in os.walk(dir_path):
+    for dir_name in dirs:
+      dir_full_path = os.path.join(_root, dir_name)
       num = count_files(dir_full_path)
       if num == 0:
         remove_path(dir_full_path)
@@ -154,7 +153,7 @@ def remove_ds_store(dir_path):
       remove_path(i)
 
 
-def dir_iter(root,
+def dir_iter(dir_path,
              exts: (list, str) = None,
              abspath=False,
              recursive=False,
@@ -163,7 +162,7 @@ def dir_iter(root,
   文件夹中的文件路径生成器，用于遍历文件夹中的文件
 
   Args:
-    root: 文件目录
+    dir_path: 文件目录
     exts: 文件扩展名，不指定则返回所有文件
     abspath: 是否返回绝对路径
     recursive: 是否循环遍历更深层级的文件，默认只返回当前目录下的文件
@@ -172,22 +171,22 @@ def dir_iter(root,
   if exts:
     exts = ensure_list(exts)
 
-  for dirpath, _, filenames in os.walk(root):
+  for _root, _, filenames in os.walk(dir_path):
     for _name in filenames:
       if ignore_hidden_files and _name.startswith('.'):
         continue
-      filepath = os.path.join(dirpath, _name)
+      filepath = os.path.join(_root, str(_name))
       filepath = os.path.abspath(filepath) if abspath else filepath
       # 不符合扩展名要求忽略
       if exts and extension(_name) not in exts:
         continue
       # 仅需要当前目录时，dirpath和root不相同的过滤掉
-      if not recursive and dirpath != root:
+      if not recursive and _root != dir_path:
         continue
       yield filepath
 
 
-def dir_iter_list(root,
+def dir_iter_list(dir_path,
                   exts: (list, str) = None,
                   abspath=False,
                   recursive=False,
@@ -196,15 +195,16 @@ def dir_iter_list(root,
   文件夹中的文件路径列表
 
   Args:
-    root: 文件目录
+    dir_path: 文件目录
     exts: 文件扩展名，不指定则返回所有文件
     abspath: 是否返回绝对路径
     recursive: 是否循环遍历更深层级的文件，默认只返回当前目录下的文件
     reverse: 路径列表是否倒序
   """
-  path_list = []
-  for p in dir_iter(root, exts, abspath, recursive, ignore_hidden_files=True):
-    path_list.append(p)
+  path_list = [
+    p for p in
+    dir_iter(dir_path, exts, abspath, recursive, ignore_hidden_files=True)
+  ]
   return sorted(path_list, reverse=reverse)
 
 
@@ -215,29 +215,20 @@ def single_ext(path_list):
     return ext_list[0]
 
 
-def getsize(filepath, unit: str):
-  """
-  获取文件大小
-
-  Args:
-    filepath: 获取文件大小
-    unit: 单位，如B、KB、MB、GB、TB、PB
-  """
-  unit = unit.upper()
-  file_size = os.path.getsize(filepath)
-  for u in ['B', 'KB', 'MB', 'GB', 'TB', 'PB']:
-    if u == unit:
-      return file_size
-    file_size /= 1024
+def getsize(filepath):
+  """获取文件大小"""
+  from psutil._common import bytes2human
+  return bytes2human(os.path.getsize(filepath))
 
 
 def move_file_with_metadata(src, dst):
+  """移动文件并保留元数据"""
   # 确保源文件存在
   if not os.path.isfile(src):
-    print(f"源文件不存在: {src}")
+    print(f'FileNotExist: {src}')
     return
   if os.path.isfile(dst):
-    print(f'文件已存在：{dst}')
+    print(f'FileExist：{dst}')
     os.remove(dst)
   # 复制源文件到目标位置
   shutil.copy2(src, dst)
@@ -247,7 +238,7 @@ def move_file_with_metadata(src, dst):
   os.utime(dst, (stat.st_atime, stat.st_mtime))
   # 删除源文件
   os.remove(src)
-  print(f"Move:{src}-->{dst}")
+  print(f'Move:{src}-->{dst}')
 
 
 def is_using_in(filepath, hours):
@@ -260,48 +251,3 @@ def is_using_in(filepath, hours):
   _diff = current_time - file_mod_time
   # 检查文件是否在指定的小时内被修改
   return _diff <= hours * 3600
-
-
-class OssPath:
-  def __init__(self, path, bucket=None):
-    """
-    OSS路径类，确保不同类型的地址属性统一
-
-    Args:
-      path: 路径，完整路径或bucket后的部分路径
-      bucket: 默认从完整路径中获取，当为部分路径时需指定Bucket
-    """
-
-    if path.startswith('oss://'):
-      pass
-    elif bucket:
-      path = os.path.join('oss:///', bucket, path)
-    else:
-      raise Exception('Bucket name is required')
-
-    self.parts = Path(path).parts
-
-    if bucket:
-      assert bucket == self.parts[1], 'Bucket name does not match'
-
-  @property
-  def bucket(self):
-    """Bucket"""
-    return self.parts[1]
-
-  @property
-  def driver(self):
-    """Driver"""
-    return self.parts[0]
-
-  @property
-  def path_short(self):
-    """短路径"""
-    if len(self.parts) > 2:
-      return str(os.path.join(*self.parts[2:]))
-    return ''
-
-  @property
-  def path_full(self):
-    """完整路径"""
-    return str(os.path.join(f'oss:///{self.bucket}', self.path_short))

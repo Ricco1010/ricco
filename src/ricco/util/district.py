@@ -1,8 +1,7 @@
 from functools import cached_property
 from functools import lru_cache
 
-from ricco import ensure_list
-
+from ..base import ensure_list
 from ..base import is_empty
 from ..base import not_empty
 from ..base import warn_
@@ -149,7 +148,7 @@ def get_city_id_by_name(name: str, warning=True):
 
 
 @lru_cache()
-def get_city_name_by_id(city_id: str, full=False, warning=False):
+def get_city_name_by_id(city_id: (str, int), full=False, warning=False):
   """根据城市id获取城市名称"""
   if isinstance(city_id, (int, float)):
     city_id = str(int(city_id))

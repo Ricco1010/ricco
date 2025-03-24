@@ -13,7 +13,7 @@ from ..geometry.util import infer_geom_format
 from ..geometry.util import wkb_dumps
 from ..util.os import ensure_dirpath_exist
 from ..util.os import extension
-from ..util.os import path_name
+from ..util.os import split_path
 from ..util.util import first_notnull_value
 from . import ALL_EXTS
 from .transformer import df_iter
@@ -157,8 +157,7 @@ def to_parts_file(df, dirpath,
 def to_oss(df: pd.DataFrame, filepath, access_key, secret_key, encoding=None):
   """写入oss"""
   assert filepath.startswith('oss://'), '文件路径必须以oss://开头'
-  work_path = path_name(filepath)
-  ext = extension(filepath)
+  work_path, _name, ext = split_path(filepath)
   _oss = OssUtils(
       work_path=work_path,
       access_key=access_key,

@@ -1,7 +1,6 @@
 from functools import lru_cache
 
-from ricco import is_empty
-
+from ..base import is_empty
 from ..base import warn_
 from ..resource.postcode import get_postcode
 from .district import norm_city_name

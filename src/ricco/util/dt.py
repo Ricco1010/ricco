@@ -9,6 +9,7 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 
 from .decorator import check_null
+from .decorator import check_str
 
 
 def to_str(func):
@@ -24,22 +25,38 @@ def to_str(func):
   return wrapper
 
 
-@check_null()
-def auto2date(string, errors='raise'):
-  """自动检查格式并输出日期"""
-  if string in ['', None]:
-    return
-  string = str(string)
+@check_str
+def infer_format(string):
+  """自动判断日期格式"""
+  mapping = {
+    # sep: 年月日
+    '^\d{4}年([1-9]|0[1-9]|1[0-2])月([1-9]|0[1-9]|[12][0-9]|3[01])日([1-9]|0[1-9]|1[0-9]|2[04])时$': '%Y年%m月%d日%H时',
+    '^\d{4}年([1-9]|0[1-9]|1[0-2])月([1-9]|0[1-9]|[12][0-9]|3[01])日$': '%Y年%m月%d日',
+    '^\d{4}年([1-9]|0[1-9]|1[0-2])月$': '%Y年%m月',
+    '^\d{4}年$': '%Y年',
+    # sep: -
+    '^\d{4}-([1-9]|0[1-9]|1[0-2])-([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y-%m-%d',
+    '^\d{4}-([1-9]|0[1-9]|1[0-2])$': '%Y-%m',
+    # sep: /
+    '^\d{4}/([1-9]|0[1-9]|1[0-2])/([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y/%m',
+    '^\d{4}/([1-9]|0[1-9]|1[0-2])$': '%Y/%m/%d',
+    # sep: .
+    '^\d{4}\.([1-9]|0[1-9]|1[0-2])\.([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y.%m.%d',
+    '^\d{4}\.([1-9]|0[1-9]|1[0-2])$': '%Y.%m',
+  }
+  for _pattern, _format in mapping.items():
+    if re.match(_pattern, string):
+      return _format
 
-  if '时' in string:
-    _hour = re.findall(r'\d+时', string)[0]
-    string = string.split(_hour)[0]
-  if all([i in string for i in ['年', '月', '日']]):
-    return pd.to_datetime(string, format='%Y年%m月%d日')
-  if all([i in string for i in ['年', '月']]):
-    return pd.to_datetime(string, format='%Y年%m月')
-  if '年' in string:
-    return pd.to_datetime(string, format='%Y年')
+
+@check_str
+def auto2date(string, errors='ignore'):
+  """自动检查格式并输出日期"""
+  if string == '':
+    return
+
+  if _format := infer_format(string):
+    return pd.to_datetime(string, format=_format, errors=errors)
   return pd.to_datetime(string, errors=errors)
 
 
@@ -47,11 +64,9 @@ def is_valid_date(string, na=False):
   """判断是否是一个有效的日期字符串"""
   if string in ['', None]:
     return na
-  try:
-    auto2date(string)
+  if auto2date(string):
     return True
-  except Exception:
-    return False
+  return False
 
 
 @check_null()
@@ -63,21 +78,25 @@ def excel2date(dates, date_type='str'):
     dates: 传入excel的日期格式，或ymd的日期格式
     date_type: 返回日期类型，str or date
   """
-  from xlrd import xldate_as_datetime
-  dates = str(dates)
-  if re.match('^\d{4,5}$', dates):
-    _date = datetime.strftime(xldate_as_datetime(int(dates), 0), '%Y-%m-%d')
-  elif is_valid_date(dates):
-    _date = datetime.strftime(auto2date(dates), '%Y-%m-%d')
-  else:
-    return
+  assert date_type in (
+    'string', 'str', str, 'date', 'datetime'
+  ), 'date_type参数错误，可选参数为str或date'
 
-  if date_type in ('string', 'str', str):
-    return _date
-  elif date_type in ('date', 'datetime'):
-    return datetime.strptime(_date, '%Y-%m-%d')
-  else:
-    raise ValueError('date_type参数错误，可选参数为str或date')
+  dates = str(dates)
+
+  if re.match('^\d{4,5}$', dates):
+    from xlrd import xldate_as_datetime
+    _date = xldate_as_datetime(int(dates), 0)
+    if date_type in ('date', 'datetime'):
+      return _date
+    if date_type in ('string', 'str', str):
+      return datetime.strftime(_date, '%Y-%m-%d')
+
+  if _date := auto2date(dates):
+    if date_type in ('date', 'datetime'):
+      return _date
+    if date_type in ('string', 'str', str):
+      return datetime.strftime(_date, '%Y-%m-%d')
 
 
 class DT:
@@ -247,7 +266,8 @@ class DT2:
   @property
   def last_day_of_this_month(self):
     """本月最后一天"""
-    self.date = self.date_move(months=1).get().replace(day=1) + relativedelta(days=-1)
+    self.date = self.date_move(months=1).get().replace(day=1) + relativedelta(
+        days=-1)
     return self
 
   @property

@@ -9,6 +9,7 @@ from datetime import datetime
 from itertools import chain
 from itertools import groupby
 from typing import Iterable
+
 import numpy as np
 import pandas as pd
 from fuzzywuzzy import fuzz
@@ -532,3 +533,11 @@ def check_diff(ls1: list, ls2: list):
   print(f'左侧特有元素：{res1}')
   print(f'\n右侧特有元素：{res2}')
   print(f'\n模糊配对结果：{fuzz_pair(res1, res2)}')
+
+
+def fix_sql(s):
+  """移除SQL语句中的换行符和多余的空格"""
+  s = s.replace('\t', ' ').replace('\n', ' ')
+  while '  ' in s:
+    s = s.replace('  ', ' ')
+  return s.strip()
