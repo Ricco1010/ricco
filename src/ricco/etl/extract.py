@@ -15,6 +15,7 @@ from ..geometry.util import wkt_loads
 from ..util.os import dir_iter
 from ..util.os import extension
 from ..util.os import path_name
+from ..util.os import split_path
 from . import ALL_EXTS
 
 
@@ -72,7 +73,7 @@ def rdf(
     columns = ensure_list(columns)
 
   ex = extension(file_path)
-  assert ex in ALL_EXTS, f'未知的文件扩展名：{ex}'
+  assert ex in ALL_EXTS, f'未知的文件扩展名："{ex}"，原路径：“{file_path}”'
 
   if ex == '.csv':
     df = read_csv(
@@ -379,8 +380,7 @@ def read_oss(file_path, access_key, secret_key, columns=None, nrows=None,
              encoding=None):
   """读取OSS文件"""
   assert file_path.startswith('oss://'), '文件路径必须以oss://开头'
-  work_path = path_name(file_path)
-  ext = extension(file_path)
+  work_path, _name, ext = split_path(file_path)
   _oss = OssUtils(
       work_path=work_path,
       access_key=access_key,

@@ -244,7 +244,7 @@ def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
 
 @check_shapely
 def ensure_multi_geom(
-    geom: (BaseGeometry, BaseMultipartGeometry)
+    geom: BaseGeometry
 ) -> BaseMultipartGeometry:
   """将Point/LineString/Polygon转为multi分别转为MultiPoint/MultiLineString/MultiPolygon"""
   if isinstance(geom, BaseMultipartGeometry):
@@ -255,6 +255,21 @@ def ensure_multi_geom(
     return MultiPolygon([geom])
   if isinstance(geom, Point):
     return MultiPoint([geom])
+  raise TypeError(f'无法识别的类型{type(geom)}')
+
+
+@check_shapely
+def ensure_single_geom(geom: BaseGeometry) -> BaseGeometry:
+  """提取Multi类型的geometry中的第一个元素"""
+  if isinstance(geom, BaseMultipartGeometry):
+    ls = [i for i in geom.geoms]
+    length = len(ls)
+    if length == 1:
+      return ls[0]
+    warnings.warn(f'发现{length}个元素，返回length最大的元素')
+    return max(ls, key=lambda x: x.length)
+  if isinstance(geom, BaseGeometry):
+    return geom
   raise TypeError(f'无法识别的类型{type(geom)}')
 
 
