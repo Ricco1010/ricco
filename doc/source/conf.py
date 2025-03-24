@@ -18,7 +18,7 @@ extensions = [
   'sphinx.ext.autodoc',
   'sphinx.ext.napoleon',
   'sphinx.ext.graphviz',
-  'sphinxcontrib.redoc',
+  # 'sphinxcontrib.redoc',
   'autodocsumm',
   'sphinx_copybutton',
   'sphinx.ext.intersphinx',
