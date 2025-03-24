@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>工具集 &mdash; ricco 1.6.0 文档</title>
+  <title>工具集 &mdash; ricco 1.6.1 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=c165f297"></script>
+        <script src="_static/documentation_options.js?v=d3a3ce8d"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -75,6 +75,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.eval_"><code class="docutils literal notranslate"><span class="pre">eval_()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.extract_num"><code class="docutils literal notranslate"><span class="pre">extract_num()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.first_notnull_value"><code class="docutils literal notranslate"><span class="pre">first_notnull_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fix_sql"><code class="docutils literal notranslate"><span class="pre">fix_sql()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fix_str"><code class="docutils literal notranslate"><span class="pre">fix_str()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fuzz_match"><code class="docutils literal notranslate"><span class="pre">fuzz_match()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.util.fuzz_pair"><code class="docutils literal notranslate"><span class="pre">fuzz_pair()</span></code></a></li>
@@ -140,18 +141,12 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.dt.auto2date"><code class="docutils literal notranslate"><span class="pre">auto2date()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.dt.excel2date"><code class="docutils literal notranslate"><span class="pre">excel2date()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.util.dt.infer_format"><code class="docutils literal notranslate"><span class="pre">infer_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.dt.is_valid_date"><code class="docutils literal notranslate"><span class="pre">is_valid_date()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.dt.to_str"><code class="docutils literal notranslate"><span class="pre">to_str()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.util.os">文件路径</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.OssPath"><code class="docutils literal notranslate"><span class="pre">OssPath</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.util.os.OssPath.bucket"><code class="docutils literal notranslate"><span class="pre">OssPath.bucket</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.util.os.OssPath.driver"><code class="docutils literal notranslate"><span class="pre">OssPath.driver</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.util.os.OssPath.path_full"><code class="docutils literal notranslate"><span class="pre">OssPath.path_full</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ricco.util.os.OssPath.path_short"><code class="docutils literal notranslate"><span class="pre">OssPath.path_short</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.count_files"><code class="docutils literal notranslate"><span class="pre">count_files()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.dir2zip"><code class="docutils literal notranslate"><span class="pre">dir2zip()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.util.os.dir_iter"><code class="docutils literal notranslate"><span class="pre">dir_iter()</span></code></a></li>
@@ -465,97 +460,100 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.first_notnull_value" title="ricco.util.util.first_notnull_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">first_notnull_value</span></code></a>(series)</p></td>
 <td><p>筛选第一个不为空的值</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.fix_str" title="ricco.util.util.fix_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_str</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.fix_sql" title="ricco.util.util.fix_sql"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_sql</span></code></a>(s)</p></td>
+<td><p>移除SQL语句中的换行符和多余的空格</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.fix_str" title="ricco.util.util.fix_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_str</span></code></a>(x)</p></td>
 <td><p>将字符串两端的空格及换行符删除，如果为空白字符串则返回空值</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.fuzz_match" title="ricco.util.util.fuzz_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_match</span></code></a>(string, string_set[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.fuzz_match" title="ricco.util.util.fuzz_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_match</span></code></a>(string, string_set[, ...])</p></td>
 <td><p>为某一字符串从某一集合中匹配相似度最高的元素</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.fuzz_pair" title="ricco.util.util.fuzz_pair"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_pair</span></code></a>(ls1, ls2[, score])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.fuzz_pair" title="ricco.util.util.fuzz_pair"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_pair</span></code></a>(ls1, ls2[, score])</p></td>
 <td><p>模糊配对</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.get_city_id_by_name" title="ricco.util.util.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(city)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.get_city_id_by_name" title="ricco.util.util.get_city_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_city_id_by_name</span></code></a>(city)</p></td>
 <td><p>获取城市代码</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.get_shortest_element" title="ricco.util.util.get_shortest_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shortest_element</span></code></a>(elements)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.get_shortest_element" title="ricco.util.util.get_shortest_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shortest_element</span></code></a>(elements)</p></td>
 <td><p>获取列表中长度最短的元素</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.get_uuid" title="ricco.util.util.get_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_uuid</span></code></a>(s)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.get_uuid" title="ricco.util.util.get_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_uuid</span></code></a>(s)</p></td>
 <td><p>针对格式错误的uuid和空白值生成新的uuid</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.house_type_format" title="ricco.util.util.house_type_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">house_type_format</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.house_type_format" title="ricco.util.util.house_type_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">house_type_format</span></code></a>(x)</p></td>
 <td><p>通过正则表达式将户型统一修改为1房，2房···5房及以上，目前只支持9室以下户型， 其中5室及以上的类别为“5房及以上”</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.interchange_dict" title="ricco.util.util.interchange_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interchange_dict</span></code></a>(dic)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.interchange_dict" title="ricco.util.util.interchange_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interchange_dict</span></code></a>(dic)</p></td>
 <td><p>将字典的key和value互换</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_digit" title="ricco.util.util.is_digit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_digit</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_digit" title="ricco.util.util.is_digit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_digit</span></code></a>(x)</p></td>
 <td><p>判断一个值是否能通过float方法转为数值型</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_hex" title="ricco.util.util.is_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hex</span></code></a>(string)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_hex" title="ricco.util.util.is_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hex</span></code></a>(string)</p></td>
 <td><p>判断一个字符串是否是十六进制格式</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_unique_series" title="ricco.util.util.is_unique_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unique_series</span></code></a>(df[, key_cols, ignore_na])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_unique_series" title="ricco.util.util.is_unique_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unique_series</span></code></a>(df[, key_cols, ignore_na])</p></td>
 <td><p>判断Dataframe中的某一列或某几列的组合是否唯一</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.is_valid_uuid" title="ricco.util.util.is_valid_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_uuid</span></code></a>(uuid_to_test[, version])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.is_valid_uuid" title="ricco.util.util.is_valid_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_uuid</span></code></a>(uuid_to_test[, version])</p></td>
 <td><p>判断一个字符是否是uuid</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.isinstance_in_list" title="ricco.util.util.isinstance_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isinstance_in_list</span></code></a>(values, types)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.isinstance_in_list" title="ricco.util.util.isinstance_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isinstance_in_list</span></code></a>(values, types)</p></td>
 <td><p>检查列表内的元素类型是否全部满足多个类型之一</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.list2dict" title="ricco.util.util.list2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2dict</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.list2dict" title="ricco.util.util.list2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2dict</span></code></a>(x)</p></td>
 <td><p>列表转为字典，key为元素的顺序</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.or_" title="ricco.util.util.or_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">or_</span></code></a>(*conditions)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.or_" title="ricco.util.util.or_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">or_</span></code></a>(*conditions)</p></td>
 <td><p>对多个条件执行or操作</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.per2float" title="ricco.util.util.per2float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per2float</span></code></a>(string)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.per2float" title="ricco.util.util.per2float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per2float</span></code></a>(string)</p></td>
 <td><p>带有百分号的数值字符串转小数点形式的数值，没有百分号的返回原值</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.physical_age" title="ricco.util.util.physical_age"><code class="xref py py-obj docutils literal notranslate"><span class="pre">physical_age</span></code></a>(birthday[, deadline])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.physical_age" title="ricco.util.util.physical_age"><code class="xref py py-obj docutils literal notranslate"><span class="pre">physical_age</span></code></a>(birthday[, deadline])</p></td>
 <td><p>计算周岁，默认按照当前时间点计算</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.pinyin" title="ricco.util.util.pinyin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pinyin</span></code></a>(word)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.pinyin" title="ricco.util.util.pinyin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pinyin</span></code></a>(word)</p></td>
 <td><p>将中文转换为汉语拼音</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.re_fast" title="ricco.util.util.re_fast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">re_fast</span></code></a>(pattern, string[, warning])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.re_fast" title="ricco.util.util.re_fast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">re_fast</span></code></a>(pattern, string[, warning])</p></td>
 <td><p>根据正则表达式快速提取匹配到的第一个</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.relstrip" title="ricco.util.util.relstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relstrip</span></code></a>(string, kwd)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.relstrip" title="ricco.util.util.relstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relstrip</span></code></a>(string, kwd)</p></td>
 <td><p>通过正则表达式删除左侧字符串</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.remove_null_in_dict" title="ricco.util.util.remove_null_in_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_null_in_dict</span></code></a>(dic)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.remove_null_in_dict" title="ricco.util.util.remove_null_in_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_null_in_dict</span></code></a>(dic)</p></td>
 <td><p>将字典中值为空的元素删掉</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.rerstrip" title="ricco.util.util.rerstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rerstrip</span></code></a>(string, kwd)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.rerstrip" title="ricco.util.util.rerstrip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rerstrip</span></code></a>(string, kwd)</p></td>
 <td><p>通过正则表达式删除右侧字符串</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.rstrip_d0" title="ricco.util.util.rstrip_d0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rstrip_d0</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.rstrip_d0" title="ricco.util.util.rstrip_d0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rstrip_d0</span></code></a>(x)</p></td>
 <td><p>删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -&gt; '130'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.segment" title="ricco.util.util.segment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment</span></code></a>(x, gap[, sep, unit, bottom, top])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.segment" title="ricco.util.util.segment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment</span></code></a>(x, gap[, sep, unit, bottom, top])</p></td>
 <td><p>区间段划分工具</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.sort_by_list" title="ricco.util.util.sort_by_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_by_list</span></code></a>(src_list, by_list[, filter_])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.sort_by_list" title="ricco.util.util.sort_by_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_by_list</span></code></a>(src_list, by_list[, filter_])</p></td>
 <td><p>根据一个列表对另一个列表进行筛选或排序，参照列表中不存在的元素按照原始顺序排列在后</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_bool" title="ricco.util.util.to_bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bool</span></code></a>(x[, na, other, t_list, f_list])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_bool" title="ricco.util.util.to_bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bool</span></code></a>(x[, na, other, t_list, f_list])</p></td>
 <td><p>将常见的布尔类型的代替值转为布尔类型</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_float" title="ricco.util.util.to_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_float</span></code></a>(string[, rex_method, ignore_pct, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_float" title="ricco.util.util.to_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_float</span></code></a>(string[, rex_method, ignore_pct, ...])</p></td>
 <td><p>字符串转换为float</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_json_string" title="ricco.util.util.to_json_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json_string</span></code></a>(string[, errors])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_json_string" title="ricco.util.util.to_json_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json_string</span></code></a>(string[, errors])</p></td>
 <td><p>将字符串转为json格式的字符串</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.to_str_list" title="ricco.util.util.to_str_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str_list</span></code></a>(series)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.to_str_list" title="ricco.util.util.to_str_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str_list</span></code></a>(series)</p></td>
 <td><p>将列表中的元素保留为字符串、唯一、非空</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.union_list_v2" title="ricco.util.util.union_list_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_list_v2</span></code></a>(*lists)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.union_list_v2" title="ricco.util.util.union_list_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_list_v2</span></code></a>(*lists)</p></td>
 <td><p>合并列表</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.util.union_str_v2" title="ricco.util.util.union_str_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_str_v2</span></code></a>(*strings[, sep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.util.union_str_v2" title="ricco.util.util.union_str_v2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_str_v2</span></code></a>(*strings[, sep])</p></td>
 <td><p>连接字符串，空白字符串会被忽略</p></td>
 </tr>
 </tbody>
@@ -617,6 +615,12 @@
 <dt class="sig sig-object py" id="ricco.util.util.first_notnull_value">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">first_notnull_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.first_notnull_value" title="Link to this definition"></a></dt>
 <dd><p>筛选第一个不为空的值</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.util.fix_sql">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.util.</span></span><span class="sig-name descname"><span class="pre">fix_sql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.util.fix_sql" title="Link to this definition"></a></dt>
+<dd><p>移除SQL语句中的换行符和多余的空格</p>
 </dd></dl>
 
 <dl class="py function">
@@ -919,10 +923,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.dt.excel2date" title="ricco.util.dt.excel2date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">excel2date</span></code></a>(dates[, date_type])</p></td>
 <td><p>excel的数字样式时间格式转日期格式</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.dt.is_valid_date" title="ricco.util.dt.is_valid_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_date</span></code></a>(string[, na])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.dt.infer_format" title="ricco.util.dt.infer_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_format</span></code></a>(string)</p></td>
+<td><p>自动判断日期格式</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.dt.is_valid_date" title="ricco.util.dt.is_valid_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_date</span></code></a>(string[, na])</p></td>
 <td><p>判断是否是一个有效的日期字符串</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.dt.to_str" title="ricco.util.dt.to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str</span></code></a>(func)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.dt.to_str" title="ricco.util.dt.to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str</span></code></a>(func)</p></td>
 <td><p>将日期转为字符串的装饰器</p></td>
 </tr>
 </tbody>
@@ -1178,7 +1185,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.dt.auto2date">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.dt.</span></span><span class="sig-name descname"><span class="pre">auto2date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.dt.auto2date" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.dt.</span></span><span class="sig-name descname"><span class="pre">auto2date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.dt.auto2date" title="Link to this definition"></a></dt>
 <dd><p>自动检查格式并输出日期</p>
 </dd></dl>
 
@@ -1197,6 +1204,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ricco.util.dt.infer_format">
+<span class="sig-prename descclassname"><span class="pre">ricco.util.dt.</span></span><span class="sig-name descname"><span class="pre">infer_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.dt.infer_format" title="Link to this definition"></a></dt>
+<dd><p>自动判断日期格式</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.dt.is_valid_date">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.dt.</span></span><span class="sig-name descname"><span class="pre">is_valid_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.dt.is_valid_date" title="Link to this definition"></a></dt>
 <dd><p>判断是否是一个有效的日期字符串</p>
@@ -1211,14 +1224,6 @@
 </section>
 <section id="module-ricco.util.os">
 <span id="id5"></span><h2>文件路径<a class="headerlink" href="#module-ricco.util.os" title="Link to this heading"></a></h2>
-<p><strong>Classes:</strong></p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.OssPath" title="ricco.util.os.OssPath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OssPath</span></code></a>(path[, bucket])</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -1228,10 +1233,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.dir2zip" title="ricco.util.os.dir2zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir2zip</span></code></a>(dir_path[, overwrite, delete_origin])</p></td>
 <td><p>压缩文件夹</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.dir_iter" title="ricco.util.os.dir_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter</span></code></a>(root[, exts, abspath, recursive, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.dir_iter" title="ricco.util.os.dir_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter</span></code></a>(dir_path[, exts, abspath, ...])</p></td>
 <td><p>文件夹中的文件路径生成器，用于遍历文件夹中的文件</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.dir_iter_list" title="ricco.util.os.dir_iter_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter_list</span></code></a>(root[, exts, abspath, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.dir_iter_list" title="ricco.util.os.dir_iter_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_iter_list</span></code></a>(dir_path[, exts, abspath, ...])</p></td>
 <td><p>文件夹中的文件路径列表</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.ensure_dir" title="ricco.util.os.ensure_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_dir</span></code></a>(dirpath)</p></td>
@@ -1252,14 +1257,14 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.fn" title="ricco.util.os.fn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code></a>(filepath)</p></td>
 <td><p>路径及文件名（不含扩展名）</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.getsize" title="ricco.util.os.getsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getsize</span></code></a>(filepath, unit)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.getsize" title="ricco.util.os.getsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getsize</span></code></a>(filepath)</p></td>
 <td><p>获取文件大小</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.is_using_in" title="ricco.util.os.is_using_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_using_in</span></code></a>(filepath, hours)</p></td>
 <td><p>判断文件是否在某个时间段内修改过</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.move_file_with_metadata" title="ricco.util.os.move_file_with_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_file_with_metadata</span></code></a>(src, dst)</p></td>
-<td><p></p></td>
+<td><p>移动文件并保留元数据</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.path_name" title="ricco.util.os.path_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_name</span></code></a>(filepath)</p></td>
 <td><p>路径及文件名（不含扩展名）</p></td>
@@ -1284,53 +1289,6 @@
 </tr>
 </tbody>
 </table>
-<dl class="py class">
-<dt class="sig sig-object py" id="ricco.util.os.OssPath">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">OssPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.OssPath" title="Link to this definition"></a></dt>
-<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p><strong>Attributes:</strong></p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.OssPath.bucket" title="ricco.util.os.OssPath.bucket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bucket</span></code></a></p></td>
-<td><p>Bucket</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.OssPath.driver" title="ricco.util.os.OssPath.driver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">driver</span></code></a></p></td>
-<td><p>Driver</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.util.os.OssPath.path_full" title="ricco.util.os.OssPath.path_full"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_full</span></code></a></p></td>
-<td><p>完整路径</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.util.os.OssPath.path_short" title="ricco.util.os.OssPath.path_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_short</span></code></a></p></td>
-<td><p>短路径</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py property">
-<dt class="sig sig-object py" id="ricco.util.os.OssPath.bucket">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bucket</span></span><a class="headerlink" href="#ricco.util.os.OssPath.bucket" title="Link to this definition"></a></dt>
-<dd><p>Bucket</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ricco.util.os.OssPath.driver">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">driver</span></span><a class="headerlink" href="#ricco.util.os.OssPath.driver" title="Link to this definition"></a></dt>
-<dd><p>Driver</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ricco.util.os.OssPath.path_full">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path_full</span></span><a class="headerlink" href="#ricco.util.os.OssPath.path_full" title="Link to this definition"></a></dt>
-<dd><p>完整路径</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ricco.util.os.OssPath.path_short">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path_short</span></span><a class="headerlink" href="#ricco.util.os.OssPath.path_short" title="Link to this definition"></a></dt>
-<dd><p>短路径</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.count_files">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">count_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.count_files" title="Link to this definition"></a></dt>
@@ -1354,12 +1312,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.dir_iter">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abspath=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_hidden_files=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.dir_iter" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abspath=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_hidden_files=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.dir_iter" title="Link to this definition"></a></dt>
 <dd><p>文件夹中的文件路径生成器，用于遍历文件夹中的文件</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>root</strong> – 文件目录</p></li>
+<li><p><strong>dir_path</strong> – 文件目录</p></li>
 <li><p><strong>exts</strong> – 文件扩展名，不指定则返回所有文件</p></li>
 <li><p><strong>abspath</strong> – 是否返回绝对路径</p></li>
 <li><p><strong>recursive</strong> – 是否循环遍历更深层级的文件，默认只返回当前目录下的文件</p></li>
@@ -1371,12 +1329,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.dir_iter_list">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">dir_iter_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abspath=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.dir_iter_list" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">dir_iter_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abspath=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.dir_iter_list" title="Link to this definition"></a></dt>
 <dd><p>文件夹中的文件路径列表</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>root</strong> – 文件目录</p></li>
+<li><p><strong>dir_path</strong> – 文件目录</p></li>
 <li><p><strong>exts</strong> – 文件扩展名，不指定则返回所有文件</p></li>
 <li><p><strong>abspath</strong> – 是否返回绝对路径</p></li>
 <li><p><strong>recursive</strong> – 是否循环遍历更深层级的文件，默认只返回当前目录下的文件</p></li>
@@ -1424,16 +1382,8 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.getsize">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">getsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.getsize" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">getsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.getsize" title="Link to this definition"></a></dt>
 <dd><p>获取文件大小</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> – 获取文件大小</p></li>
-<li><p><strong>unit</strong> – 单位，如B、KB、MB、GB、TB、PB</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1445,7 +1395,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.move_file_with_metadata">
 <span class="sig-prename descclassname"><span class="pre">ricco.util.os.</span></span><span class="sig-name descname"><span class="pre">move_file_with_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.os.move_file_with_metadata" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>移动文件并保留元数据</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.os.path_name">
@@ -2024,7 +1975,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.util.district.get_city_name_by_id">
-<span class="sig-prename descclassname"><span class="pre">ricco.util.district.</span></span><span class="sig-name descname"><span class="pre">get_city_name_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.get_city_name_by_id" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.util.district.</span></span><span class="sig-name descname"><span class="pre">get_city_name_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">city_id:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.util.district.get_city_name_by_id" title="Link to this definition"></a></dt>
 <dd><p>根据城市id获取城市名称</p>
 </dd></dl>
 
