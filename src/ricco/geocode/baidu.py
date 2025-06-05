@@ -1,27 +1,21 @@
 import warnings
 
-import requests
-
 from ..util.decorator import check_null
+from .request import request_baidu_addr
+from .request import request_baidu_place
+from .request import request_mdt
 from .util import DEFAULT_RES
-from .util import MapKeys
-from .util import MapUrls
 from .util import error_baidu
 from .util import fix_address
 from .util import fix_city
 from .util import gcj2xx
 from .util import rv_score
 
-KEY = MapKeys.baidu
-
 
 @check_null()
 def address_json(address: str, city: str, key=None):
   """百度地理编码接口"""
-  if not key:
-    key = KEY
-  url = f'{MapUrls.baidu}?city={city}&address={address}&output=json&ak={key}&ret_coordtype=gcj02ll'
-  js = requests.get(url).json()
+  js = request_baidu_addr(address, city, key)
   error_baidu(js)
   if js['status'] == 0:
     return js['result']
@@ -30,10 +24,7 @@ def address_json(address: str, city: str, key=None):
 @check_null()
 def place_json(address: str, city: str, key=None):
   """百度地点检索接口"""
-  if not key:
-    key = KEY
-  url = f'{MapUrls.baidu_poi}?query={address}&region={city}&city_limit=true&output=json&ak={key}&ret_coordtype=gcj02ll'
-  js = requests.get(url).json()
+  js = request_baidu_place(address, city, key)
   error_baidu(js)
   if js['status'] == 0 and len(js['results']) >= 1:
     return js['results'][0]
@@ -49,10 +40,10 @@ def get_baidu(*,
               key=None):
   """MC geocode服务"""
   assert source in ('baidu', 'baidu_poi')
-  url = f'{MapUrls.mdt}?address={address}&city={city}&disable_cache={disable_cache}&with_detail={with_detail}&source={source}'
-  if key:
-    url += f'&key={key}'
-  req = requests.get(url)
+  req = request_mdt(
+      address=address, city=city, source=source, disable_cache=disable_cache,
+      with_detail=with_detail, key=key
+  )
   if req.status_code == 200:
     return req.json()['result'][0]['extra']
   if req.status_code in (400, 403):

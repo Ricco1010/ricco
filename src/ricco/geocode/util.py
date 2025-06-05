@@ -57,8 +57,8 @@ def fix_address(string):
   string = str(string)
   string = re.sub(r'[&%#@$|]', '', string)
   string = re.sub(r'(.*?路.*?号).*', r'\1', string)
-  string = re.sub('\d+室', '', string)
-  string = re.sub('\d+层', '', string)
+  string = re.sub(r'\d+室', '', string)
+  string = re.sub(r'\d+层', '', string)
   return string
 
 

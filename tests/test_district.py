@@ -1,4 +1,5 @@
 from ricco.util.district import District
+from ricco.util.district import extract_city
 from ricco.util.district import get_city_and_region
 from ricco.util.district import norm_city_name
 
@@ -21,7 +22,7 @@ def test_norm_city_name():
   assert norm_city_name('上海', full=False) == '上海'
 
 
-def test_extract_city():
+def test_get_city_and_region():
   s = '上海市杨浦区政立路111号'
   assert get_city_and_region(s) == ('上海市', '杨浦区', ['上海市'], ['杨浦区'])
 
@@ -52,3 +53,11 @@ def test_extract_city():
   assert get_city_and_region(s) == (
     '石家庄市', '桥西区', ['石家庄市'], ['桥西区']
   )
+
+
+def test_extract_city():
+  assert extract_city(None) is None
+  assert extract_city('') is None
+  assert extract_city('上海市杨浦区政立路111号') == '上海市'
+  assert extract_city('上海杨浦区政立路111号') == '上海'
+  assert extract_city('浙江省杭州市滨江区西兴街道泰安路199号') == '杭州市'

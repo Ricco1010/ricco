@@ -1,16 +1,59 @@
 from functools import cached_property
 from functools import lru_cache
 
+import ahocorasick
+
 from ..base import ensure_list
 from ..base import is_empty
-from ..base import not_empty
 from ..base import warn_
-from ..resource.bd_region import cities
+from ..resource.bd_region import cities_all
 from ..resource.bd_region import get_bd_region
-from ..resource.bd_region import regions
-from ..resource.patterns import AddressPattern
-from .decorator import check_null
-from .util import re_fast
+from ..resource.bd_region import regions_all
+from ..resource.patterns import city_region_compiles
+from .util import re_multi
+
+
+def build_automaton(ls):
+  """构建前缀树"""
+  automaton = ahocorasick.Automaton()
+  for idx, values in enumerate(ls):
+    automaton.add_word(values, (idx, values))
+  automaton.make_automaton()
+  return automaton
+
+
+@lru_cache()
+def build_city():
+  kwds = cities_all()
+  return build_automaton(kwds)
+
+
+@lru_cache()
+def build_region():
+  kwds = regions_all()
+  return build_automaton(kwds)
+
+
+def find_cities(text):
+  """从字符串中获取全部的城市名称的简称列表"""
+  if not isinstance(text, str):
+    return []
+  automaton = build_city()
+  results = set()
+  for end_index, (idx, value) in automaton.iter_long(text):
+    results.add(value)
+  return sorted(list(results), key=lambda x: len(x), reverse=True)
+
+
+def find_regions(text):
+  """从字符串中获取全部的区县名称的简称列表"""
+  if not isinstance(text, str):
+    return []
+  automaton = build_region()
+  results = set()
+  for end_index, (idx, value) in automaton.iter_long(text):
+    results.add(value)
+  return sorted(list(results), key=lambda x: len(x), reverse=True)
 
 
 def if_many_value(ls, action='raise', warning=False):
@@ -40,36 +83,14 @@ def if_many_value(ls, action='raise', warning=False):
     return ls[-1]
 
 
-@lru_cache()
-def get_city_list():
-  """全部城市（全程+简称）列表"""
-  df = get_bd_region()[['城市名称', '城市简称']]
-  city_list = [
-    *df['城市名称'].unique().tolist(),
-    *df['城市简称'].unique().tolist(),
-  ]
-  return [c for c in city_list if not_empty(c)]
-
-
 def is_city(name):
   """是否是城市"""
-  return name in get_city_list()
-
-
-@lru_cache()
-def get_region_list():
-  """全部区县（全程+简称）列表"""
-  df = get_bd_region()[['区县名称', '区县简称']]
-  region_list = [
-    *df['区县名称'].unique().tolist(),
-    *df['区县简称'].unique().tolist(),
-  ]
-  return [c for c in region_list if not_empty(c)]
+  return name in cities_all()
 
 
 def is_region(name):
   """是否是区县"""
-  return name in get_region_list()
+  return name in regions_all()
 
 
 @lru_cache()
@@ -164,8 +185,7 @@ def ensure_city_name(name, full=False, warning=False):
   """输入城市或区县，返回城市"""
   if not name:
     return
-  city = norm_city_name(name, full=full, warning=warning)
-  if city:
+  if city := norm_city_name(name, full=full, warning=warning):
     return city
   rf_c = region_full_city_mapping()
   rs_c = region_short_city_mapping()
@@ -207,49 +227,30 @@ def get_upload_street(df, city):
   return df
 
 
-@check_null(default_rv=[])
-def extract_possible_region(string: str) -> list:
-  """从字符串中提取可能的城市、区县"""
-  if not isinstance(string, str):
-    return []
-  ls = []
-  city_num, region_num = 0, 0
-  # 根据正则表达式提取城市和区县
-  for pattern in [*AddressPattern.cities, *AddressPattern.regions]:
-    if res := re_fast(pattern, string, warning=False):
-      if is_city(res):
-        ls.append(res)
-        city_num += 1
-      if is_region(res):
-        ls.append(res)
-        region_num += 1
-  # 没提取出区县时，按照字符串匹配尝试提取
-  if region_num == 0:
-    for cr in regions():
-      if cr in string:
-        ls.append(cr)
-        break
-  # 没提取出城市时，按照字符串匹配尝试提取
-  if city_num == 0:
-    for cr in cities():
-      if cr in string:
-        ls.append(cr)
-        break
-  ls = list(set(ls))
-  ls1 = [i for i in ls if i.endswith('市')]
-  ls2 = [i for i in ls if not i.endswith('市')]
-  return [*ls1, *ls2]
-
-
+@lru_cache()
 def get_city_and_region(string) -> tuple:
   """从字符串中提取城市、区县"""
-  city_list, region_list = [], []
-  ls = extract_possible_region(string)
-  for i in ls:
-    if is_city(i):
-      city_list.append(i)
-    if is_region(i):
-      region_list.append(i)
+
+  def make_shi_behind(_city_list):
+    ls1 = [i for i in _city_list if i.endswith('市')]
+    ls2 = [i for i in _city_list if not i.endswith('市')]
+    return [*ls1, *ls2]
+
+  if not isinstance(string, str):
+    return (None, None, [], [])
+  ls = re_multi(city_region_compiles(), string)
+
+  city_list = [i for i in ls if is_city(i)]
+  if not city_list:
+    # 没提取出城市时，按照字符串匹配尝试提取
+    city_list.extend(find_cities(string))
+  city_list = make_shi_behind(city_list)
+
+  region_list = [i for i in ls if is_region(i)]
+  if not region_list:
+    # 没提取出区县时，按照字符串匹配尝试提取
+    region_list.extend(find_regions(string))
+
   if region_list and not city_list:
     for r in region_list:
       if _city := ensure_city_name(r, warning=False):
@@ -280,12 +281,12 @@ class District:
   @cached_property
   def city_list(self):
     """全部城市（全程+简称）列表"""
-    return get_city_list()
+    return cities_all()
 
   @cached_property
   def region_list(self):
     """全部区县（全程+简称）列表"""
-    return get_region_list()
+    return regions_all()
 
   @staticmethod
   def is_city(name: str) -> bool:

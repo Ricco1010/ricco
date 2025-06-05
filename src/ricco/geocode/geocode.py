@@ -9,6 +9,7 @@ from tqdm import tqdm
 from ..base import not_empty
 from ..etl.transformer import create_columns
 from ..util.decorator import check_null
+from ..util.district import ensure_city_name
 from .amap import get_address_amap
 from .amap import get_place_amap
 from .baidu import get_address_baidu
@@ -166,7 +167,9 @@ def geocode_df(df: pd.DataFrame,
   assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
   assert isinstance(city, (str, list)), 'city参数类型应为 str 或 list'
   assert df.index.is_unique, 'df的index必须唯一'
-
+  if isinstance(city, str):
+    if not ensure_city_name(city):
+      warnings.warn(f"无效的城市名称: {city}，请检查输入参数类型")
   __c_city = f'city-{uuid.uuid1()}'
   # 最后要输出的列
   base_cols = [c_lng, c_lat]

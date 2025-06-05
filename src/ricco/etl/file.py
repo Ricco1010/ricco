@@ -14,7 +14,6 @@ from ..util.os import dir_iter_list
 from ..util.os import ensure_dir
 from ..util.os import ensure_dirpath_exist
 from ..util.os import extension
-from ..util.os import path_name
 from ..util.os import remove_path
 from ..util.os import single_ext
 from ..util.os import split_path
@@ -24,8 +23,15 @@ from .load import to_file
 from .load import to_parts_file
 
 
+def get_dst_dir(filename, dst_path=None):
+  root_path, name, ext = split_path(filename)
+  root_path = os.path.abspath(dst_path if dst_path else root_path)
+  return ensure_dir(os.path.join(root_path, name))
+
+
 def split2x_by_parts(
     filename: str,
+    to_dir=None,
     *,
     parts: int = None,
     to_ext='.csv',
@@ -37,6 +43,7 @@ def split2x_by_parts(
 
   Args:
     filename: 文件路径
+    to_dir: 文件保存的目录
     parts: 输出的文件个数
     to_ext: 输出文件扩展名
     log: 是否输出文件保存信息
@@ -45,7 +52,7 @@ def split2x_by_parts(
   # 创建目标目录
   to_ext = ensure_ext(to_ext)
   full_path = os.path.abspath(filename)
-  dirpath = path_name(full_path)
+  dirpath = get_dst_dir(filename, to_dir)
   # 读取文件并分批保存
   df = rdf(full_path)
   if fn:
@@ -55,6 +62,7 @@ def split2x_by_parts(
 
 def split2x_by_chunksize(
     filepath: str,
+    to_dir=None,
     *,
     chunksize: int = 50000,
     to_ext='.csv',
@@ -67,13 +75,14 @@ def split2x_by_chunksize(
 
   Args:
     filepath: 输入的文件路径
+    to_dir: 输出目录
     chunksize: 每份文件的数据量
     to_ext: 输出文件扩展名
     log: 是否输出文件保存信息
     fn: 处理函数
   """
   to_ext = ensure_ext(to_ext)
-  dirpath = path_name(os.path.abspath(filepath))
+  dirpath = get_dst_dir(filepath, to_dir)
   ext = extension(filepath)
   if ext == '.csv':
     for i, _df in enumerate(
@@ -94,6 +103,7 @@ def split2x_by_chunksize(
 
 def split2x(
     filename: str,
+    to_dir=None,
     *,
     chunksize: int = None,
     parts: int = None,
@@ -115,10 +125,13 @@ def split2x(
   assert any([chunksize, parts]), 'chunksize 和 parts必须指定一个'
   to_ext = ensure_ext(to_ext)
   if chunksize:
-    split2x_by_chunksize(filename, chunksize=chunksize, to_ext=to_ext, log=log,
-                         fn=fn)
+    split2x_by_chunksize(
+        filename, to_dir,
+        chunksize=chunksize, to_ext=to_ext, log=log, fn=fn)
   if parts:
-    split2x_by_parts(filename, parts=parts, to_ext=to_ext, log=log, fn=fn)
+    split2x_by_parts(
+        filename, to_dir,
+        parts=parts, to_ext=to_ext, log=log, fn=fn)
 
 
 def file_to_x(filepath, to_ext,
