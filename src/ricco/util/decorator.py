@@ -104,7 +104,7 @@ def check_str(func):
     if is_empty(args[0]):
       return
     if not isinstance(args[0], str):
-      warnings.warn(f'TypeError:【{args[0]}】')
+      warnings.warn(f'类型不是字符串:【{args[0]}】')
       return
     return func(*args, **kwargs)
 

@@ -31,12 +31,15 @@ setup(
     install_requires=[
       'fuzzywuzzy==0.18.0',
       'geojson<3',
+      'geopandas>=0.10,<1',
       'numpy>=1,<2',
       'pandarallel==1.6.5',
       'pandas>=1,<2',
+      'pyahocorasick>=2',
+      'python-dateutil',
       'python-Levenshtein>=0.25.0',
       'requests>=2.7',
-      'shapely<2',
+      'shapely>=1.7',
       'tqdm>=4.62.0',
     ],
     classifiers=[

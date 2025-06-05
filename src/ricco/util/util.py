@@ -389,6 +389,23 @@ def re_fast(pattern, string, warning=True):
       return ls[0]
 
 
+def re_multi(compiles: list, string):
+  """
+  根据多个正则表达式提取匹配到的所有值
+
+  Args:
+    compiles: 经过re.compile 处理过后的正则表达式组成的列表
+    string: 要提取的字符串
+  """
+  res = []
+  if not isinstance(string, str):
+    return res
+  for pattern in compiles:
+    ls = pattern.findall(string)
+    res.extend(ls)
+  return list(set(res))
+
+
 @check_null()
 def rstrip_d0(x):
   """删除末尾的‘.0’,并转为str格式，适用于对手机号等场景，如：'130.0' -> '130'"""
@@ -406,6 +423,22 @@ def fix_str(x: str) -> (str, None):
     if x == '':
       return
   return x
+
+
+def fix2str(s: str) -> str:
+  """
+  修复字符串中的换行符和多余的空格：
+    - 连续多个换行符或空格，替换为一个空格
+    - 删除字符串两端的换行符或空格
+    - 空值：返回空白字符串
+    - 非字符串：返回str()后的值
+  """
+  if is_empty(s):
+    return ''
+  s = str(s).replace('\t', ' ').replace('\n', ' ')
+  while '  ' in s:
+    s = s.replace('  ', ' ')
+  return s.strip()
 
 
 def interchange_dict(dic: dict) -> dict:
@@ -485,7 +518,7 @@ def is_hex(string) -> bool:
   return False
 
 
-def isinstance_in_list(values: list, types: (str, list)) -> bool:
+def isinstances(values: list, types: (str, list)) -> bool:
   """
   检查列表内的元素类型是否全部满足多个类型之一
 
@@ -533,11 +566,3 @@ def check_diff(ls1: list, ls2: list):
   print(f'左侧特有元素：{res1}')
   print(f'\n右侧特有元素：{res2}')
   print(f'\n模糊配对结果：{fuzz_pair(res1, res2)}')
-
-
-def fix_sql(s):
-  """移除SQL语句中的换行符和多余的空格"""
-  s = s.replace('\t', ' ').replace('\n', ' ')
-  while '  ' in s:
-    s = s.replace('  ', ' ')
-  return s.strip()

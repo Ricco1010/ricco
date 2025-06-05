@@ -2,9 +2,12 @@ import logging
 import re
 
 from ..base import ensure_list
+from ..base import is_empty
+from ..resource.patterns import industry_addr_compiles
 from .decorator import check_null
 from .util import drop_repeat
 from .util import get_shortest_element
+from .util import re_fast
 
 
 def extract_city(string: str, na=None):
@@ -216,3 +219,46 @@ def is_repeated(string, min_length: int = 1):
       if substring * (n // i) == string:
         return True
   return False
+
+
+def remove_control_chars(text):
+  """删除特殊字符"""
+  text = re.sub(r'[\x00-\x1F\x7F]', ' ', text)
+  text = text.replace('"', '').replace("'", '').replace('\\', '')
+  return text.strip()
+
+
+def has_chinese(text):
+  """检查字符串是否包含至少一个中文字符"""
+  return bool(re.search(r'[\u4e00-\u9fa5]', text))
+
+
+def format_industry_addr(addr: str):
+  """
+  产业地址清洗代码，
+  该部分地址主要用于Geocoding，清洗到“xx路xx号即可”，
+  过于详细的地址会导致Geocoding的准确率下降，过长的地址也会导致准确率下降
+  """
+  if is_empty(addr):
+    return
+  addr = remove_control_chars(str(addr))
+  if not has_chinese(addr):
+    return
+  for pattern in industry_addr_compiles():
+    res = pattern.findall(addr)
+    if res:
+      return res[0]
+  # 一般写字楼能匹配到对应的楼层
+  patterns2 = [
+    r'(.*?)\d+[层楼]',
+    r'(.*?)[一二三四五六七八九十百千万]+[层楼]',
+  ]
+  for p in patterns2:
+    res = re_fast(p, addr)
+    if res:
+      addr = res
+  # 最后按照号去拆分
+  res = re_fast(r'(.*?)\d+号', addr)
+  if res:
+    addr = res
+  return addr

@@ -1,7 +1,11 @@
+import re
+from functools import lru_cache
+
+
 class Pattern:
   # 身份证号
   ID_number_15 = r'^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$'
-  ID_number = '^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$'
+  ID_number = r'^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$'
 
   # 护照
   passport = r'^[a-zA-Z0-9]{5,17}$'
@@ -42,4 +46,25 @@ class AddressPattern:
     '(?:内蒙古自治区|内蒙古)([\\u4e00-\\u9fa5]{2,6}?旗)',
     '[市|盟]([\\u4e00-\\u9fa5]{2,6}?旗)',
     '^[\\u4e00-\\u9fa5]{2,6}?旗',
+  ]
+
+
+@lru_cache()
+def city_region_compiles():
+  return [
+    re.compile(i) for i in AddressPattern.cities + AddressPattern.regions
+  ]
+
+
+@lru_cache()
+def industry_addr_compiles():
+  patterns = [
+    r'.*?[路弄道街巷段]-?\d+-?\d?号',
+    r'.*?[路弄道街巷段][零一二三四五六七八九十百千万]+号',
+    r'(.*?)[a-zA-Z0-9]+(?:座|区|幢|栋|号楼|单元)',
+    r'(.*?)[一二三四五六七八九十百千万]+(?:座|区|幢|栋|号楼|单元)',
+    r'.{8,}(?:大厦|大楼|小区|村|广场|园区|办公楼|公寓|产业园|中心)(?![路弄道街巷段])',
+  ]
+  return [
+    re.compile(i) for i in patterns
   ]

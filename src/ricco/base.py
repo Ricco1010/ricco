@@ -55,7 +55,7 @@ def not_empty(x) -> bool:
   return not is_empty(x)
 
 
-def second_to_dhms(second) -> tuple:
+def second_to_dhms(second: int) -> tuple:
   """将秒转为天、时、分、秒"""
   d = int(second // 86400)
   second = second % 86400
@@ -70,7 +70,7 @@ def second_to_dhms(second) -> tuple:
   return d, h, m, second
 
 
-def second_to_desc(second) -> str:
+def second_to_desc(second: (int, float)) -> str:
   """
   将秒转为时间描述
 

@@ -181,6 +181,7 @@ def read_csv(file_path: str,
              nrows: int = None,
              **kwargs):
   """读取csv文件，基于 `pd.read_csv`，加入编码尝试"""
+  errors = []
   _max_grid()
   encodings = [encoding] if encoding else ['utf-8', 'gbk', 'utf-8-sig']
   for encode in encodings:
@@ -188,9 +189,9 @@ def read_csv(file_path: str,
       return pd.read_csv(
           file_path, engine='python', dtype=dtype, usecols=columns,
           nrows=nrows, encoding=encode, **kwargs)
-    except UnicodeDecodeError:
-      pass
-  raise Exception(f'使用encoding{encodings}均无法读取文件，请指定')
+    except UnicodeDecodeError as e:
+      errors.append(e)
+  raise Exception(f'使用encoding{encodings}均无法读取文件，请指定, 错误信息：{errors}')
 
 
 def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:

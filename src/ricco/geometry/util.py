@@ -2,6 +2,7 @@ import re
 import sys
 import warnings
 from ast import literal_eval
+from functools import lru_cache
 from itertools import groupby
 
 import geojson
@@ -10,9 +11,7 @@ import pandas as pd
 from shapely import wkb
 from shapely import wkt
 from shapely.errors import GeometryTypeError
-from shapely.errors import ShapelyDeprecationWarning
-from shapely.errors import WKBReadingError
-from shapely.errors import WKTReadingError
+from shapely.errors import ShapelyError
 from shapely.geometry import GeometryCollection
 from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
@@ -34,9 +33,7 @@ from ..util.decorator import check_shapely
 from ..util.decorator import check_str
 from ..util.district import norm_city_name
 from ..util.util import is_hex
-from ..util.util import isinstance_in_list
-
-warnings.simplefilter('ignore', category=ShapelyDeprecationWarning)
+from ..util.util import isinstances
 
 GEOM_FORMATS = ('wkb', 'wkt', 'shapely', 'geojson')
 
@@ -100,6 +97,7 @@ def lng_from_city(city: str):
   return 113.0
 
 
+@lru_cache()
 def get_epsg(city: str):
   """根据城市查询epsg代码，用于投影"""
   return epsg_from_lnglat(lng_from_city(city))
@@ -119,7 +117,7 @@ def wkb_loads(x: str, hex=True):
   """将文本形式的WKB转换为Shapely几何对象"""
   try:
     return wkb.loads(x, hex=hex)
-  except (AttributeError, WKBReadingError) as e:
+  except (AttributeError, ShapelyError) as e:
     warnings.warn(f'wkb.loads失败：【{x}】, 【{e}】')
 
 
@@ -134,7 +132,7 @@ def wkt_loads(x: str):
   """将文本形式的WKT转换为Shapely几何对象"""
   try:
     return wkt.loads(x)
-  except (AttributeError, WKTReadingError, TypeError) as e:
+  except (AttributeError, ShapelyError, TypeError) as e:
     warnings.warn(f'wkt.loads失败：【{x}】, 【{e}】')
 
 
@@ -146,21 +144,28 @@ def wkt_dumps(x: BaseGeometry):
 
 @check_null()
 def geojson_loads(x: (str, dict), warning=True):
-  """geojson文本形式转为shapely几个对象"""
+  """geojson文本形式转为shapely几何对象"""
+
+  def _dict2shapely(_json: dict):
+    """将字典转为shapely对象"""
+    if _json.get('type') in ('FeatureCollection', 'featurecollection'):
+      return unary_union([shape(i['geometry']) for i in _json['features']])
+    return shape(_json)
+
   from simplejson.errors import JSONDecodeError
   _shape_e = (AttributeError, GeometryTypeError)
   _x = x
   if isinstance(x, str):
     try:
-      return shape(geojson.loads(x))
+      return _dict2shapely(geojson.loads(x))
     except (*_shape_e, JSONDecodeError):
       try:
-        return shape(literal_eval(x))
+        return _dict2shapely(literal_eval(x))
       except (*_shape_e, ValueError, SyntaxError):
         pass
   if isinstance(x, dict):
     try:
-      return shape(x)
+      return _dict2shapely(x)
     except _shape_e:
       pass
   if warning:
@@ -191,7 +196,7 @@ def is_wkb(x, na=False) -> bool:
   try:
     wkb.loads(x, hex=True)
     return True
-  except WKBReadingError:
+  except ShapelyError:
     return False
 
 
@@ -204,7 +209,7 @@ def is_wkt(x, na=False) -> bool:
   try:
     wkt.loads(x)
     return True
-  except WKTReadingError:
+  except ShapelyError:
     return False
 
 
@@ -316,7 +321,7 @@ def is_valid_lnglat(lng, lat):
 def auto_loads(x) -> BaseGeometry:
   """自动识别地理格式并转换为shapely格式"""
   geom_format = infer_geom_format(x)
-  assert geom_format in GEOM_FORMATS, '未知的地理格式'
+  assert geom_format in GEOM_FORMATS, f'未知的地理格式:{x}'
   if geom_format == 'shapely':
     return x
   return getattr(sys.modules[__name__], f'{geom_format}_loads')(x)
@@ -336,12 +341,17 @@ def ensure_lnglat(lnglat) -> tuple:
   if is_empty(lnglat):
     return np.nan, np.nan
   if isinstance(lnglat, (list, tuple)):
-    assert isinstance_in_list(lnglat, (float, int)), '数据类型错误，经度和纬度都应该为数值型'
-    assert is_valid_lnglat(*lnglat), '经纬度超出范围'
+    for i in lnglat:
+      if is_empty(i):
+        return np.nan, np.nan
+    assert isinstances(
+        lnglat, (float, int)
+    ), f'数据类型错误，经度和纬度都应该为数值型:{lnglat}'
+    assert is_valid_lnglat(*lnglat), f'经纬度超出范围:{lnglat}'
     return tuple(lnglat)
   if geom := auto_loads(lnglat):
     return geom.centroid.x, geom.centroid.y
-  raise ValueError('未知的地理类型')
+  raise ValueError(f'未知的地理类型:{lnglat}')
 
 
 def distance(

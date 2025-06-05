@@ -1,10 +1,14 @@
 import datetime as dt
+import logging
 import re
 import warnings
+from datetime import date as type_date
 from datetime import datetime
 from datetime import timedelta
 from functools import wraps
 
+from dateutil.parser import ParserError
+from dateutil.parser import parse
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
@@ -26,38 +30,60 @@ def to_str(func):
 
 
 @check_str
-def infer_format(string):
+def infer_format(string) -> str:
   """自动判断日期格式"""
   mapping = {
-    # sep: 年月日
-    '^\d{4}年([1-9]|0[1-9]|1[0-2])月([1-9]|0[1-9]|[12][0-9]|3[01])日([1-9]|0[1-9]|1[0-9]|2[04])时$': '%Y年%m月%d日%H时',
-    '^\d{4}年([1-9]|0[1-9]|1[0-2])月([1-9]|0[1-9]|[12][0-9]|3[01])日$': '%Y年%m月%d日',
-    '^\d{4}年([1-9]|0[1-9]|1[0-2])月$': '%Y年%m月',
-    '^\d{4}年$': '%Y年',
-    # sep: -
-    '^\d{4}-([1-9]|0[1-9]|1[0-2])-([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y-%m-%d',
-    '^\d{4}-([1-9]|0[1-9]|1[0-2])$': '%Y-%m',
-    # sep: /
-    '^\d{4}/([1-9]|0[1-9]|1[0-2])/([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y/%m',
-    '^\d{4}/([1-9]|0[1-9]|1[0-2])$': '%Y/%m/%d',
     # sep: .
-    '^\d{4}\.([1-9]|0[1-9]|1[0-2])\.([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y.%m.%d',
-    '^\d{4}\.([1-9]|0[1-9]|1[0-2])$': '%Y.%m',
+    r'^\d{4}\.([1-9]|0[1-9]|1[0-2])\.([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y.%m.%d',
+    r'^\d{4}\.([1-9]|0[1-9]|1[0-2])$': '%Y.%m',
+    # sep: -
+    r'^\d{4}-([1-9]|0[1-9]|1[0-2])-([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y-%m-%d',
+    r'^\d{4}-([1-9]|0[1-9]|1[0-2])$': '%Y-%m',
+    # sep: /
+    r'^\d{4}/([1-9]|0[1-9]|1[0-2])/([1-9]|0[1-9]|[12][0-9]|3[01])$': '%Y/%m/%d',
+    r'^\d{4}/([1-9]|0[1-9]|1[0-2])$': '%Y/%m',
+    # sep: 年月日
+    r'^\d{4}年([1-9]|0[1-9]|1[0-2])月([1-9]|0[1-9]|[12][0-9]|3[01])日([1-9]|0[1-9]|1[0-9]|2[04])时$': '%Y年%m月%d日%H时',
+    r'^\d{4}年([1-9]|0[1-9]|1[0-2])月([1-9]|0[1-9]|[12][0-9]|3[01])日$': '%Y年%m月%d日',
+    r'^\d{4}年([1-9]|0[1-9]|1[0-2])月$': '%Y年%m月',
+    r'^\d{4}年$': '%Y年',
   }
   for _pattern, _format in mapping.items():
     if re.match(_pattern, string):
       return _format
+  return 'unknown'
 
 
-@check_str
 def auto2date(string, errors='ignore'):
   """自动检查格式并输出日期"""
-  if string == '':
-    return
 
-  if _format := infer_format(string):
-    return pd.to_datetime(string, format=_format, errors=errors)
-  return pd.to_datetime(string, errors=errors)
+  def _if_error(_errors):
+    if _errors == 'raise':
+      raise ValueError(f'无法识别的日期格式："{string}"')
+    if _errors == 'ignore':
+      logging.warning(f'无法识别的日期格式："{string}"')
+
+  assert errors in ('ignore', 'raise'), 'errors参数错误，可选参数为ignore或raise'
+  # 输入为日期格式时，直接返回
+  if isinstance(string, (datetime, type_date)):
+    return string
+  # 输入不是字符串或长度低于六位，返回空值或报错
+  if not isinstance(string, str) or len(string) < 6:
+    return _if_error(errors)
+  try:
+    # 使用dateutil 解析日期
+    return parse(string, default=datetime(9999, 1, 1, 0, 0, 0, 0))
+  except ParserError:
+    try:
+      # 使用pandas解析日期
+      return pd.to_datetime(string).to_pydatetime()
+    except ParserError:
+      # 使用自定义infer_format判断日期格式
+      _format = infer_format(string)
+      if _format != 'unknown':
+        return datetime.strptime(string, _format)
+  # 最后无法转换的，返回空值或报错
+  return _if_error(errors)
 
 
 def is_valid_date(string, na=False):
@@ -84,7 +110,7 @@ def excel2date(dates, date_type='str'):
 
   dates = str(dates)
 
-  if re.match('^\d{4,5}$', dates):
+  if re.match(r'^\d{4,5}$', dates):
     from xlrd import xldate_as_datetime
     _date = xldate_as_datetime(int(dates), 0)
     if date_type in ('date', 'datetime'):

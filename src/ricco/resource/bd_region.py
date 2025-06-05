@@ -50,18 +50,48 @@ def get_bd_region(start_level='区县') -> pd.DataFrame:
 
 
 @lru_cache()
-def cities():
-  """城市列表，按照长度排序"""
+def cities_full():
+  """城市全称列表，按照长度排序"""
   ls = get_bd_region()['城市名称'].unique().tolist()
   ls = [i for i in ls if not_empty(i)]
   return sorted(ls, key=lambda x: len(x), reverse=True)
 
 
 @lru_cache()
-def regions():
-  """区县列表，按照长度排序"""
+def cities_short():
+  """城市简称列表，按照长度排序"""
+  ls = get_bd_region()['城市简称'].unique().tolist()
+  ls = [i for i in ls if not_empty(i)]
+  return sorted(ls, key=lambda x: len(x), reverse=True)
+
+
+@lru_cache()
+def cities_all():
+  """全部城市（全程+简称）列表"""
+  ls = [*cities_full(), *cities_short()]
+  return sorted(ls, key=lambda x: len(x), reverse=True)
+
+
+@lru_cache()
+def regions_full():
+  """区县全称列表，按照长度排序"""
   ls = get_bd_region()['区县名称'].unique().tolist()
   ls = [i for i in ls if not_empty(i) and i not in EX]
+  return sorted(ls, key=lambda x: len(x), reverse=True)
+
+
+@lru_cache()
+def regions_short():
+  """区县简称列表，按照长度排序"""
+  ls = get_bd_region()['区县简称'].unique().tolist()
+  ls = [i for i in ls if not_empty(i)]
+  return sorted(ls, key=lambda x: len(x), reverse=True)
+
+
+@lru_cache()
+def regions_all():
+  """全部区县（全程+简称）列表"""
+  ls = [*regions_full(), *regions_short()]
   return sorted(ls, key=lambda x: len(x), reverse=True)
 
 

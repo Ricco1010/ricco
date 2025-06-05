@@ -8,7 +8,7 @@ from ricco.util.util import get_shortest_element
 from ricco.util.util import house_type_format
 from ricco.util.util import interchange_dict
 from ricco.util.util import is_digit
-from ricco.util.util import isinstance_in_list
+from ricco.util.util import isinstances
 from ricco.util.util import list2dict
 from ricco.util.util import pinyin
 from ricco.util.util import relstrip
@@ -168,6 +168,6 @@ def test_drop_repeat_element():
 
 
 def test_isinstance_in_list():
-  assert isinstance_in_list([1, 2, 3], int) is True
-  assert isinstance_in_list([1, 2, '3'], int) is False
-  assert isinstance_in_list([1, 2, 3], (int, str)) is True
+  assert isinstances([1, 2, 3], int) is True
+  assert isinstances([1, 2, '3'], int) is False
+  assert isinstances([1, 2, 3], (int, str)) is True
