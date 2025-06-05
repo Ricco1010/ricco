@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>索引 &mdash; ricco 1.6.1 文档</title>
+  <title>索引 &mdash; ricco 1.7.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=d3a3ce8d"></script>
+        <script src="_static/documentation_options.js?v=5e27660d"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -187,11 +187,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data_reporter.html#ricco.etl.data_reporter.DataReporter.basic">basic() （ricco.etl.data_reporter.DataReporter 方法）</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="coord_trans.html#ricco.geometry.coord_trans.SRS.bd09">bd09（ricco.geometry.coord_trans.SRS 属性）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.df.buffer">buffer()（在 ricco.geometry.df 模块中）</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="util.html#ricco.util.district.build_automaton">build_automaton()（在 ricco.util.district 模块中）</a>
+</li>
+      <li><a href="util.html#ricco.util.district.build_city">build_city()（在 ricco.util.district 模块中）</a>
+</li>
+      <li><a href="util.html#ricco.util.district.build_region">build_region()（在 ricco.util.district 模块中）</a>
 </li>
   </ul></td>
 </tr></table>
@@ -357,10 +363,10 @@
 </li>
       <li><a href="etl.html#ricco.etl.entropy.entropy">entropy()（在 ricco.etl.entropy 模块中）</a>
 </li>
-      <li><a href="etl.html#ricco.etl.entropy.EntropyClass">EntropyClass（ricco.etl.entropy 中的类）</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="etl.html#ricco.etl.entropy.EntropyClass">EntropyClass（ricco.etl.entropy 中的类）</a>
+</li>
       <li><a href="geometry.html#ricco.geometry.util.epsg_from_lnglat">epsg_from_lnglat()（在 ricco.geometry.util 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.util.eval_">eval_()（在 ricco.util.util 模块中）</a>
@@ -387,8 +393,6 @@
 </li>
       <li><a href="util.html#ricco.util.util.extract_num">extract_num()（在 ricco.util.util 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.district.extract_possible_region">extract_possible_region()（在 ricco.util.district 模块中）</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -409,23 +413,29 @@
 </li>
       <li><a href="geometry.html#ricco.geometry.util.filter_polygon_from_collection">filter_polygon_from_collection()（在 ricco.geometry.util 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.dt.DT.first_day_of_this_month">first_day_of_this_month（ricco.util.dt.DT 属性）</a>
+      <li><a href="util.html#ricco.util.district.find_cities">find_cities()（在 ricco.util.district 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.dt.DT2.first_day_of_this_month">first_day_of_this_month（ricco.util.dt.DT2 属性）</a>
+      <li><a href="util.html#ricco.util.district.find_regions">find_regions()（在 ricco.util.district 模块中）</a>
+</li>
+      <li><a href="util.html#ricco.util.dt.DT.first_day_of_this_month">first_day_of_this_month（ricco.util.dt.DT 属性）</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="util.html#ricco.util.dt.DT2.first_day_of_this_month">first_day_of_this_month（ricco.util.dt.DT2 属性）</a>
+</li>
       <li><a href="util.html#ricco.util.util.first_notnull_value">first_notnull_value()（在 ricco.util.util 模块中）</a>
 </li>
-      <li><a href="etl.html#ricco.etl.transformer.fix_null">fix_null()（在 ricco.etl.transformer 模块中）</a>
+      <li><a href="util.html#ricco.util.util.fix2str">fix2str()（在 ricco.util.util 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.util.fix_sql">fix_sql()（在 ricco.util.util 模块中）</a>
+      <li><a href="etl.html#ricco.etl.transformer.fix_null">fix_null()（在 ricco.etl.transformer 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.util.fix_str">fix_str()（在 ricco.util.util 模块中）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.topology.fix_topology">fix_topology()（在 ricco.geometry.topology 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.os.fn">fn()（在 ricco.util.os 模块中）</a>
+</li>
+      <li><a href="util.html#ricco.util.strings.format_industry_addr">format_industry_addr()（在 ricco.util.strings 模块中）</a>
 </li>
       <li><a href="etl.html#ricco.etl.transformer.fuzz_df">fuzz_df()（在 ricco.etl.transformer 模块中）</a>
 </li>
@@ -475,15 +485,15 @@
 </li>
       <li><a href="util.html#ricco.util.district.get_city_id_by_name">get_city_id_by_name()（在 ricco.util.district 模块中）</a>
 </li>
-      <li><a href="util.html#ricco.util.util.get_city_id_by_name">get_city_id_by_name()（在 ricco.util.util 模块中）</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="util.html#ricco.util.district.get_city_list">get_city_list()（在 ricco.util.district 模块中）</a>
+      <li><a href="util.html#ricco.util.util.get_city_id_by_name">get_city_id_by_name()（在 ricco.util.util 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.district.District.get_city_name_by_id">get_city_name_by_id()（ricco.util.district.District 静态方法）</a>
 </li>
       <li><a href="util.html#ricco.util.district.get_city_name_by_id">get_city_name_by_id()（在 ricco.util.district 模块中）</a>
+</li>
+      <li><a href="etl.html#ricco.etl.file.get_dst_dir">get_dst_dir()（在 ricco.etl.file 模块中）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.util.get_epsg">get_epsg()（在 ricco.geometry.util 模块中）</a>
 </li>
@@ -500,8 +510,6 @@
       <li><a href="geometry.html#ricco.geometry.df.get_neighbors">get_neighbors()（在 ricco.geometry.df 模块中）</a>
 </li>
       <li><a href="geometry.html#ricco.geometry.df.get_projection_xy">get_projection_xy()（在 ricco.geometry.df 模块中）</a>
-</li>
-      <li><a href="util.html#ricco.util.district.get_region_list">get_region_list()（在 ricco.util.district 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.util.get_shortest_element">get_shortest_element()（在 ricco.util.util 模块中）</a>
 </li>
@@ -522,6 +530,10 @@
 
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="util.html#ricco.util.strings.has_chinese">has_chinese()（在 ricco.util.strings 模块中）</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="util.html#ricco.util.util.house_type_format">house_type_format()（在 ricco.util.util 模块中）</a>
 </li>
@@ -591,7 +603,7 @@
 </li>
       <li><a href="fs.html#ricco.fs.sftp.SFTP.isfile">isfile() （ricco.fs.sftp.SFTP 方法）</a>
 </li>
-      <li><a href="util.html#ricco.util.util.isinstance_in_list">isinstance_in_list()（在 ricco.util.util 模块中）</a>
+      <li><a href="util.html#ricco.util.util.isinstances">isinstances()（在 ricco.util.util 模块中）</a>
 </li>
   </ul></td>
 </tr></table>
@@ -840,6 +852,8 @@
 </li>
       <li><a href="util.html#ricco.util.util.re_fast">re_fast()（在 ricco.util.util 模块中）</a>
 </li>
+      <li><a href="util.html#ricco.util.util.re_multi">re_multi()（在 ricco.util.util 模块中）</a>
+</li>
       <li><a href="etl.html#ricco.etl.extract.read_all_sheets">read_all_sheets()（在 ricco.etl.extract 模块中）</a>
 </li>
       <li><a href="etl.html#ricco.etl.extract.read_csv">read_csv()（在 ricco.etl.extract 模块中）</a>
@@ -865,6 +879,8 @@
       <li><a href="util.html#ricco.util.district.region_short_city_mapping">region_short_city_mapping()（在 ricco.util.district 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.util.relstrip">relstrip()（在 ricco.util.util 模块中）</a>
+</li>
+      <li><a href="util.html#ricco.util.strings.remove_control_chars">remove_control_chars()（在 ricco.util.strings 模块中）</a>
 </li>
       <li><a href="util.html#ricco.util.os.remove_ds_store">remove_ds_store()（在 ricco.util.os 模块中）</a>
 </li>
