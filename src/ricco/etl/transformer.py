@@ -13,6 +13,7 @@ from pandas.tseries.offsets import MonthEnd
 
 from ..base import ensure_list
 from ..base import is_empty
+from ..base import to_datetime
 from ..util.assertion import assert_not_null
 from ..util.assertion import assert_series_unique
 from ..util.decorator import check_null
@@ -146,11 +147,11 @@ def convert_date(df: pd.DataFrame,
   assert mode in ('first', 'last'), "可选参数为first or last"
   columns = ensure_list(columns)
   for c in columns:
-    df[c] = pd.to_datetime(df[c])
+    df[c] = to_datetime(df[c])
     if mode == 'first':
       df[c] = df[c].apply(lambda x: x.replace(day=1))
     else:
-      df[c] = pd.to_datetime(df[c], format="%Y%m") + MonthEnd(1)
+      df[c] = to_datetime(df[c], format='%Y%m') + MonthEnd(1)
     df[c] = df[c].apply(trans)
   return df
 
@@ -510,7 +511,7 @@ def rolling_by_month(df, c_date, c_group, months: int, agg: dict):
     agg: 聚合函数，如：{'金额': 'sum'}
   """
   df = df.copy()
-  df[c_date] = pd.to_datetime(df[c_date])
+  df[c_date] = to_datetime(df[c_date])
   # 起始日期为最小日期加上窗口时间
   date_start = df[c_date].min() + relativedelta(months=months)
   date_end = df[c_date].max()

@@ -1,5 +1,6 @@
 import pandas as pd
 
+from ..base import to_datetime
 from ..util.util import is_digit
 from .transformer import round_by_columns
 
@@ -101,7 +102,7 @@ def describe_auto(df: pd.DataFrame, col: str):
     return describe_series(df, col)
   if df[col].dtype not in (float, int):
     try:
-      df[col] = pd.to_datetime(df[col])
+      df[col] = to_datetime(df[col])
     except ValueError:
       pass
   if df[col].dtype == 'datetime64[ns]':
@@ -117,6 +118,6 @@ def suspect_series_type(df: pd.DataFrame, col: str):
   if _r <= (rates := digit_num / length) < 1:
     return f'"{col}"列有超过{int(rates * 100)}%的值为"数值型"'
 
-  date_num = df[pd.to_datetime(df[col], errors='coerce').notna()].shape[0]
+  date_num = df[to_datetime(df[col], errors='coerce').notna()].shape[0]
   if _r <= (rates := date_num / length) < 1:
     return f' {col} 列有超过{int(rates * 100)}%的值为"日期格式"'

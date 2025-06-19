@@ -35,7 +35,9 @@ def rdf(
     info: bool = False,
     dtype=None,
     columns: (list, str) = None,
+    only: (list, str) = None,
     nrows: int = None,
+    limit: int = None,
     recursive: bool = True,
     access_key=None,
     secret_key=None,
@@ -53,7 +55,9 @@ def rdf(
     info: 是否打印数据集情况（shape & columns）
     dtype: 指定读取列的类型
     columns: 指定读取的列名
+    only: 同columns，columns优先
     nrows: 指定读取的行数
+    limit: 同nrows，nrows优先
     recursive: 是否循环遍历更深层级的文件夹，默认为True，仅当路径为文件夹时生效
     access_key: 阿里云OSS访问密钥
     secret_key: 阿里云OSS访问密钥
@@ -68,6 +72,9 @@ def rdf(
     # 此部分为递归，注意避免无限递归
     return rdf_by_dir(file_path, columns=columns, info=info,
                       recursive=recursive, encoding=encoding)
+
+  columns = columns or only
+  nrows = nrows or limit
 
   if columns:
     columns = ensure_list(columns)
@@ -191,7 +198,8 @@ def read_csv(file_path: str,
           nrows=nrows, encoding=encode, **kwargs)
     except UnicodeDecodeError as e:
       errors.append(e)
-  raise Exception(f'使用encoding{encodings}均无法读取文件，请指定, 错误信息：{errors}')
+  raise Exception(
+    f'使用encoding{encodings}均无法读取文件，请指定, 错误信息：{errors}')
 
 
 def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:
