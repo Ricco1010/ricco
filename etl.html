@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>数据读取、处理与保存 &mdash; ricco 1.7.0 文档</title>
+  <title>数据读取、处理与保存 &mdash; ricco 2.0.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5e27660d"></script>
+        <script src="_static/documentation_options.js?v=b15d7ad8"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -260,7 +260,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.extract.rdf">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_key=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key=None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.extract.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_contains:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only:</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'str'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrows:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_key=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key=None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.extract.rdf" title="Link to this definition"></a></dt>
 <dd><p>常用文件读取函数，支持
 .csv/.xlsx/.xls/.shp/.parquet/.pickle/.feather/.kml/.ovkml/
 .geojson/.shp/.json等</p>
@@ -274,7 +274,9 @@
 <li><p><strong>info</strong> – 是否打印数据集情况（shape &amp; columns）</p></li>
 <li><p><strong>dtype</strong> – 指定读取列的类型</p></li>
 <li><p><strong>columns</strong> – 指定读取的列名</p></li>
+<li><p><strong>only</strong> – 同columns，columns优先</p></li>
 <li><p><strong>nrows</strong> – 指定读取的行数</p></li>
+<li><p><strong>limit</strong> – 同nrows，nrows优先</p></li>
 <li><p><strong>recursive</strong> – 是否循环遍历更深层级的文件夹，默认为True，仅当路径为文件夹时生效</p></li>
 <li><p><strong>access_key</strong> – 阿里云OSS访问密钥</p></li>
 <li><p><strong>secret_key</strong> – 阿里云OSS访问密钥</p></li>

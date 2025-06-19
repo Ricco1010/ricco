@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geocoding &mdash; ricco 1.7.0 文档</title>
+  <title>Geocoding &mdash; ricco 2.0.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5e27660d"></script>
+        <script src="_static/documentation_options.js?v=b15d7ad8"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,6 +63,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_address"><code class="docutils literal notranslate"><span class="pre">geocode_best_address()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_poi"><code class="docutils literal notranslate"><span class="pre">geocode_best_poi()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.geocode.geocode_df"><code class="docutils literal notranslate"><span class="pre">geocode_df()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.parallel.geocode_parallel"><code class="docutils literal notranslate"><span class="pre">geocode_parallel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ricco.geocode.parallel.make_request"><code class="docutils literal notranslate"><span class="pre">make_request()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="coord_trans.html">坐标转换</a></li>
@@ -210,6 +212,42 @@
 <li><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best" title="ricco.geocode.geocode.geocode_best"><code class="xref py py-func docutils literal notranslate"><span class="pre">ricco.geocode.geocode.geocode_best()</span></code></a></p></li>
 </ul>
 </div>
+</dd></dl>
+
+<p id="module-ricco.geocode.parallel"><strong>Functions:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.parallel.geocode_parallel" title="ricco.geocode.parallel.geocode_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_parallel</span></code></a>(df, c_address, city, key, ...)</p></td>
+<td><p>并行Geocode请求主函数</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.parallel.make_request" title="ricco.geocode.parallel.make_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_request</span></code></a>(address, city, key, source, ...)</p></td>
+<td><p>发送单个请求的函数</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.geocode.parallel.geocode_parallel">
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.parallel.</span></span><span class="sig-name descname"><span class="pre">geocode_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_address:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qps:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.parallel.geocode_parallel" title="Link to this definition"></a></dt>
+<dd><p>并行Geocode请求主函数</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – 要进行geocoding的Dataframe</p></li>
+<li><p><strong>c_address</strong> – 地址列</p></li>
+<li><p><strong>city</strong> – 城市或城市列，字符串-城市，列表-城市列的字段名</p></li>
+<li><p><strong>key</strong> – geocoding服务提供商的key</p></li>
+<li><p><strong>source</strong> – geocoding服务提供商，baidu/amap/baidu_poi/amap_poi</p></li>
+<li><p><strong>qps</strong> – 并发数</p></li>
+<li><p><strong>workers</strong> – Geocoding时使用的worker数量</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.geocode.parallel.make_request">
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.parallel.</span></span><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.parallel.make_request" title="Link to this definition"></a></dt>
+<dd><p>发送单个请求的函数</p>
 </dd></dl>
 
 </section>
