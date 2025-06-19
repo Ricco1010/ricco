@@ -1,4 +1,4 @@
-__version__ = '1.7.0'
+__version__ = '2.0.0'
 
 from .base import ensure_list
 from .base import is_empty

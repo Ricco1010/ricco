@@ -12,9 +12,9 @@ def standard_e(df: pd.DataFrame, columns: list):
     mmin = df[c].min()
     mmax = df[c].max()
     if mmin == mmax:
-      df.loc[:, c] = None
+      df[c] = None
     else:
-      df.loc[:, c] = (df[c] - mmin) / (mmax - mmin)
+      df[c] = (df[c] - mmin) / (mmax - mmin)
   return df
 
 
@@ -26,9 +26,9 @@ def standard_e_neg(df: pd.DataFrame, columns: list):
     mmin = df[c].min()
     mmax = df[c].max()
     if mmin == mmax:
-      df.loc[:, c] = None
+      df[c] = None
     else:
-      df.loc[:, c] = (mmax - df[c]) / (mmax - mmin)
+      df[c] = (mmax - df[c]) / (mmax - mmin)
   return df
 
 
@@ -37,7 +37,7 @@ def pvalue(df: pd.DataFrame, columns: list):
   df = df.copy()
   columns = ensure_list(columns)
   for c in columns:
-    df.loc[:, c] = df[c] / df[c].sum(axis=0)
+    df[c] = df[c] / df[c].sum(axis=0)
   return df
 
 
@@ -49,7 +49,7 @@ def gevalue(df: pd.DataFrame, columns: list):
   for c in columns:
     df[c] = np.where(df[c] > 0, np.log(df[c]) * df[c], 0)
     j_sum = df[c].sum(axis=0)
-    df.loc[:, c] = 1 - (-1 / np.log(n)) * j_sum
+    df[c] = 1 - (-1 / np.log(n)) * j_sum
   return df
 
 
@@ -59,7 +59,7 @@ def wvalue(df, columns: list):
   columns = ensure_list(columns)
   df_sum = df[columns].sum(axis=1)
   for c in columns:
-    df.loc[:, c] = df[c] / df_sum
+    df[c] = df[c] / df_sum
   return df
 
 

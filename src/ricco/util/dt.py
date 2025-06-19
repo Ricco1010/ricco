@@ -9,9 +9,10 @@ from functools import wraps
 
 from dateutil.parser import ParserError
 from dateutil.parser import parse
-import pandas as pd
 from dateutil.relativedelta import relativedelta
+from pandas._libs.tslibs.parsing import DateParseError
 
+from ..base import to_datetime
 from .decorator import check_null
 from .decorator import check_str
 
@@ -76,8 +77,8 @@ def auto2date(string, errors='ignore'):
   except ParserError:
     try:
       # 使用pandas解析日期
-      return pd.to_datetime(string).to_pydatetime()
-    except ParserError:
+      return to_datetime(string, format='mixed').to_pydatetime()
+    except (DateParseError, ParserError):
       # 使用自定义infer_format判断日期格式
       _format = infer_format(string)
       if _format != 'unknown':

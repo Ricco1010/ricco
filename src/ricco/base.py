@@ -122,3 +122,12 @@ def agg_parser(agg: dict) -> list:
     for func in functions:
       res.append([c, func, f'{c}_{func}'])
   return res
+
+
+def to_datetime(x, format=None, *args, **kwargs):
+  """兼容pandas1和2的pd.to_datatime方法"""
+  if pd.__version__ >= '2':
+    format = format or 'mixed'
+  elif format in ('mixed', 'ISO8601'):
+    format = None
+  return pd.to_datetime(x, format=format, *args, **kwargs)

@@ -1,3 +1,4 @@
+import os
 import re
 import warnings
 
@@ -26,8 +27,12 @@ class MapUrls:
 
 
 class MapKeys:
-  amap = '7c14855824549a84c543e48990239f3d'  # noqa
-  baidu = '9Fy1lMHbwpr07WVBFPLw9vpntGUSOUMN'  # noqa
+  amap = os.environ.get(
+      'AMAP_KEY',
+      default='7c14855824549a84c543e48990239f3d')  # noqa
+  baidu = os.environ.get(
+      'BAIDU_KEY',
+      default='9Fy1lMHbwpr07WVBFPLw9vpntGUSOUMN')  # noqa
 
 
 def gcj2xx(lnglat, srs):

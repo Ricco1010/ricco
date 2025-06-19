@@ -1,6 +1,7 @@
 import pandas as pd
 
 from ..base import ensure_list
+from ..base import to_datetime
 from ..util.decorator import print_doc
 from ..util.docx import Docx
 from .extract import rdf
@@ -45,7 +46,7 @@ class DataReporter(Docx):
     for c in self.only:
       if self.df[c].dtype not in (float, int, 'datetime64[ns]'):
         try:
-          self.df[c] = pd.to_datetime(self.df[c])
+          self.df[c] = to_datetime(self.df[c])
         except Exception:
           pass
 
