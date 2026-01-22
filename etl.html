@@ -74,6 +74,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ricco.etl.transformer">数据处理（Transform）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.change_detail"><code class="docutils literal notranslate"><span class="pre">change_detail()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.columns_contrast"><code class="docutils literal notranslate"><span class="pre">columns_contrast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.convert_date"><code class="docutils literal notranslate"><span class="pre">convert_date()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ricco.etl.transformer.convert_to_float"><code class="docutils literal notranslate"><span class="pre">convert_to_float()</span></code></a></li>
@@ -410,86 +411,100 @@
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.columns_contrast" title="ricco.etl.transformer.columns_contrast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">columns_contrast</span></code></a>(df_left, df_right[, n_rows])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.change_detail" title="ricco.etl.transformer.change_detail"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_detail</span></code></a>(df_left, df_right, c_key[, ...])</p></td>
+<td><p>对比两个dataframe，并返回对比结果 :param df_left: 左边的dataframe :param df_right: 右边的dataframe :param c_key: 主键 :param columns: 需要对比的列，不传则对比所有列 :param suffixes: 左右dataframe的列后缀</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.columns_contrast" title="ricco.etl.transformer.columns_contrast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">columns_contrast</span></code></a>(df_left, df_right[, n_rows])</p></td>
 <td><p>对比两个Dataframe的列，同名的列会放在一起</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.convert_date" title="ricco.etl.transformer.convert_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_date</span></code></a>(df, columns[, mode])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.convert_date" title="ricco.etl.transformer.convert_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_date</span></code></a>(df, columns[, mode])</p></td>
 <td><p>将日期转为当月的第一天或最后一天</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.convert_to_float" title="ricco.etl.transformer.convert_to_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_float</span></code></a>(df, columns[, rex_method])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.convert_to_float" title="ricco.etl.transformer.convert_to_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_float</span></code></a>(df, columns[, rex_method])</p></td>
 <td><p>提取字符串中的数值信息并转为float类型</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.create_columns" title="ricco.etl.transformer.create_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_columns</span></code></a>(df, columns[, value])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.create_columns" title="ricco.etl.transformer.create_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_columns</span></code></a>(df, columns[, value])</p></td>
 <td><p>创建新的列，默认为空</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.df_iter" title="ricco.etl.transformer.df_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_iter</span></code></a>(df, *[, chunksize, parts])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.df_iter" title="ricco.etl.transformer.df_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_iter</span></code></a>(df, *[, chunksize, parts])</p></td>
 <td><p>DataFrame切片生成器</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.dict2df" title="ricco.etl.transformer.dict2df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict2df</span></code></a>(data[, c_key, c_value, as_index])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.dict2df" title="ricco.etl.transformer.dict2df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict2df</span></code></a>(data[, c_key, c_value, as_index])</p></td>
 <td><p>将字典转为dataframe</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.drop_by_df" title="ricco.etl.transformer.drop_by_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_by_df</span></code></a>(df, df_deleted)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.drop_by_df" title="ricco.etl.transformer.drop_by_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_by_df</span></code></a>(df, df_deleted)</p></td>
 <td><p>根据一个df_deleted中的数据从df中删除</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.expand_dict" title="ricco.etl.transformer.expand_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_dict</span></code></a>(df, c_src)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.expand_dict" title="ricco.etl.transformer.expand_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_dict</span></code></a>(df, c_src)</p></td>
 <td><p>展开字典为多列</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.expand_dict_silent" title="ricco.etl.transformer.expand_dict_silent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_dict_silent</span></code></a>(df, c_src)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.expand_dict_silent" title="ricco.etl.transformer.expand_dict_silent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_dict_silent</span></code></a>(df, c_src)</p></td>
 <td><p>展开字典为多列</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.expand_graph" title="ricco.etl.transformer.expand_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_graph</span></code></a>(df, start_level[, c_key, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.expand_graph" title="ricco.etl.transformer.expand_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_graph</span></code></a>(df, start_level[, c_key, ...])</p></td>
 <td><p>将图数据展开为宽表</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.fillna_by_adding" title="ricco.etl.transformer.fillna_by_adding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fillna_by_adding</span></code></a>(df, col)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.fillna_by_adding" title="ricco.etl.transformer.fillna_by_adding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fillna_by_adding</span></code></a>(df, col)</p></td>
 <td><p>以自增的方式填充空值</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.filter_by_df" title="ricco.etl.transformer.filter_by_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_df</span></code></a>(df, df_sizer[, reverse])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.filter_by_df" title="ricco.etl.transformer.filter_by_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_df</span></code></a>(df, df_sizer[, reverse])</p></td>
 <td><p>从df中筛选出满足df_size的数据</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.fix_null" title="ricco.etl.transformer.fix_null"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_null</span></code></a>(df[, columns])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.fix_null" title="ricco.etl.transformer.fix_null"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_null</span></code></a>(df[, columns])</p></td>
 <td><p>将None/NaN/NaT等都替换为None</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.fuzz_df" title="ricco.etl.transformer.fuzz_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_df</span></code></a>(df, col, target_series[, c_dst, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.fuzz_df" title="ricco.etl.transformer.fuzz_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzz_df</span></code></a>(df, col, target_series[, c_dst, ...])</p></td>
 <td><p>模糊匹配。为DataFrame中的某一列从某个集合中模糊匹配匹配相似度最高的元素</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.is_changed" title="ricco.etl.transformer.is_changed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_changed</span></code></a>(df_old, df_new[, key_cols, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.is_changed" title="ricco.etl.transformer.is_changed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_changed</span></code></a>(df_old, df_new[, key_cols, ...])</p></td>
 <td><p>判断新旧数据集中的每一条数据是否变化</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.keep_best_unique" title="ricco.etl.transformer.keep_best_unique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keep_best_unique</span></code></a>(df, subset[, value_cols])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.keep_best_unique" title="ricco.etl.transformer.keep_best_unique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keep_best_unique</span></code></a>(df, subset[, value_cols])</p></td>
 <td><p>优化的去重函数，为保证数据的完整性，去重时优先去除指定列中的空值</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.merge_dfs" title="ricco.etl.transformer.merge_dfs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_dfs</span></code></a>(dfs, on, how)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.merge_dfs" title="ricco.etl.transformer.merge_dfs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_dfs</span></code></a>(dfs, on, how)</p></td>
 <td><p>合并多个dataframe</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.null_if_in" title="ricco.etl.transformer.null_if_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">null_if_in</span></code></a>(df, columns, values)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.null_if_in" title="ricco.etl.transformer.null_if_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">null_if_in</span></code></a>(df, columns, values)</p></td>
 <td><p>如果列的值正好在values中定义的数组中，则将该列值设置为None</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.rolling_by_month" title="ricco.etl.transformer.rolling_by_month"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_by_month</span></code></a>(df, c_date, c_group, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.rolling_by_month" title="ricco.etl.transformer.rolling_by_month"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_by_month</span></code></a>(df, c_date, c_group, ...)</p></td>
 <td><p>按照日期进行滚动聚合，比如：分组对某个项目计算近6个月的成交面积</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.round_by_columns" title="ricco.etl.transformer.round_by_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_by_columns</span></code></a>(df, columns)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.round_by_columns" title="ricco.etl.transformer.round_by_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_by_columns</span></code></a>(df, columns)</p></td>
 <td><p>对整列进行四舍五入，默认绝对值大于1的数值保留两位小数，小于1 的保留4位</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.shift_data" title="ricco.etl.transformer.shift_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_data</span></code></a>(df, c_date, c_group, c_value[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.shift_data" title="ricco.etl.transformer.shift_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_data</span></code></a>(df, c_date, c_group, c_value[, ...])</p></td>
 <td><p>环比计算</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_list_to_row" title="ricco.etl.transformer.split_list_to_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_list_to_row</span></code></a>(df, column)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_list_to_row" title="ricco.etl.transformer.split_list_to_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_list_to_row</span></code></a>(df, column)</p></td>
 <td><p>将列表列中列表的元素拆成多行</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_to_rows" title="ricco.etl.transformer.split_to_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_to_rows</span></code></a>(df, column[, delimiter])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.split_to_rows" title="ricco.etl.transformer.split_to_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_to_rows</span></code></a>(df, column[, delimiter])</p></td>
 <td><p>含有多值的列分拆成多行</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.table2dict" title="ricco.etl.transformer.table2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table2dict</span></code></a>(df[, key_col, value_col, orient])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.table2dict" title="ricco.etl.transformer.table2dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table2dict</span></code></a>(df[, key_col, value_col, orient])</p></td>
 <td><p>DataFrame转字典</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.update_df" title="ricco.etl.transformer.update_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_df</span></code></a>(df, new_df[, on, overwrite, errors])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.update_df" title="ricco.etl.transformer.update_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_df</span></code></a>(df, new_df[, on, overwrite, errors])</p></td>
 <td><p>根据某一列更新dataframe里的数据</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.etl.transformer.wrap_dict" title="ricco.etl.transformer.wrap_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap_dict</span></code></a>(df[, c_srcs, c_dst])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.etl.transformer.wrap_dict" title="ricco.etl.transformer.wrap_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap_dict</span></code></a>(df[, c_srcs, c_dst])</p></td>
 <td><p>将指定的多列合并成一个字典列 :param df: 要处理的数据集 :param c_srcs: 需要包装成字典的多列, 如果不指定，则wrap所有的列 :param c_dst: 处理后的数据存储的列名称，默认为 'extra'</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ricco.etl.transformer.change_detail">
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">change_detail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('_left',</span> <span class="pre">'_right')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.change_detail" title="Link to this definition"></a></dt>
+<dd><p>对比两个dataframe，并返回对比结果
+:param df_left: 左边的dataframe
+:param df_right: 右边的dataframe
+:param c_key: 主键
+:param columns: 需要对比的列，不传则对比所有列
+:param suffixes: 左右dataframe的列后缀</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.columns_contrast">
 <span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">columns_contrast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.etl.transformer.columns_contrast" title="Link to this definition"></a></dt>
@@ -775,7 +790,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.etl.transformer.update_df">
-<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">update_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.update_df" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.etl.transformer.</span></span><span class="sig-name descname"><span class="pre">update_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors:</span> <span class="pre">~typing.Literal['ignore'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'raise']</span> <span class="pre">=</span> <span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#ricco.etl.transformer.update_df" title="Link to this definition"></a></dt>
 <dd><p>根据某一列更新dataframe里的数据</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
@@ -783,18 +798,12 @@
 <li><p><strong>df</strong> – 待升级的数据集</p></li>
 <li><p><strong>new_df</strong> – 用于更新的DataFrame</p></li>
 <li><p><strong>on</strong> – （可选参数）用于判断更新哪些行的列</p></li>
-<li><p><strong>overwrite</strong> – <p>（可选参数）控制如何处理原DataFrame在重叠位置上 <strong>非空</strong> 的值，默认为True</p>
-<ul>
-<li><p>True: 默认值；使用 <cite>other</cite> DataFrame中的值覆盖原DataFrame中相应位置的值.</p></li>
-<li><p>False: 只更新原DataFrame中重叠位置数据为 <em>空</em> 的值.</p></li>
-</ul>
-</p></li>
-<li><p><strong>errors</strong> – <p>（可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为 ‘ignore’</p>
-<ul>
-<li><p>’ignore’: 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，使用other中的值替换df中的值。</p></li>
-<li><p>’raise’: target和other都在同一位置包含非NA数据将抛出ValueError异常（’Data overlaps’）。</p></li>
-</ul>
-</p></li>
+<li><p><strong>overwrite</strong> – （可选参数）控制如何处理原DataFrame在重叠位置上 <strong>非空</strong> 的值，默认为True
+* True: 默认值；使用 <cite>other</cite> DataFrame中的值覆盖原DataFrame中相应位置的值.
+* False: 只更新原DataFrame中重叠位置数据为 <em>空</em> 的值.</p></li>
+<li><p><strong>errors</strong> – （可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为 ‘ignore’
+* ‘ignore’: 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，使用other中的值替换df中的值。
+* ‘raise’: target和other都在同一位置包含非NA数据将抛出ValueError异常（’Data overlaps’）。</p></li>
 </ul>
 </dd>
 </dl>
