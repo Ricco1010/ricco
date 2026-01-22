@@ -4,7 +4,7 @@ import warnings
 from datetime import datetime
 from functools import reduce
 from itertools import product
-from typing import List
+from typing import List, Literal
 
 import numpy as np
 import pandas as pd
@@ -13,6 +13,7 @@ from pandas.tseries.offsets import MonthEnd
 
 from ..base import ensure_list
 from ..base import is_empty
+from ..base import not_empty
 from ..base import to_datetime
 from ..util.assertion import assert_not_null
 from ..util.assertion import assert_series_unique
@@ -50,9 +51,9 @@ def keep_best_unique(df: pd.DataFrame,
   value_cols = ensure_list(value_cols)
 
   return df.sort_values(
-      value_cols, na_position='first'
+    value_cols, na_position='first'
   ).drop_duplicates(
-      subset, keep='last'
+    subset, keep='last'
   ).sort_index()
 
 
@@ -102,7 +103,7 @@ def update_df(df: pd.DataFrame,
               new_df: pd.DataFrame,
               on: (str, list) = None,
               overwrite: bool = True,
-              errors: str = 'ignore') -> pd.DataFrame:
+              errors: Literal['ignore', 'raise'] = 'ignore') -> pd.DataFrame:
   """
   根据某一列更新dataframe里的数据
 
@@ -111,11 +112,9 @@ def update_df(df: pd.DataFrame,
     new_df: 用于更新的DataFrame
     on: （可选参数）用于判断更新哪些行的列
     overwrite : （可选参数）控制如何处理原DataFrame在重叠位置上 **非空** 的值，默认为True
-
       * True: 默认值；使用 `other` DataFrame中的值覆盖原DataFrame中相应位置的值.
       * False: 只更新原DataFrame中重叠位置数据为 *空* 的值.
     errors: （可选参数）控制如何处理两个DataFrame同一位置都有值的行为，默认为 'ignore'
-
       * 'ignore': 默认值；DataFrame类型 df和other在同一个cell位置都是非NA值，使用other中的值替换df中的值。
       * 'raise': target和other都在同一位置包含非NA数据将抛出ValueError异常（'Data overlaps'）。
   """
@@ -182,9 +181,9 @@ def fuzz_df(df: pd.DataFrame,
   _df[[
     c_dst, 'normal_score', 'partial_score', 'weight_score'
   ]] = _df.parallel_apply(
-      lambda r: fuzz_match(r[col], target_series, valid_score=valid_score),
-      result_type='expand',
-      axis=1)
+    lambda r: fuzz_match(r[col], target_series, valid_score=valid_score),
+    result_type='expand',
+    axis=1)
   return df.merge(_df, on=col, how='left')
 
 
@@ -225,7 +224,7 @@ def filter_by_df(df: pd.DataFrame,
   df_sizer = df_sizer.drop_duplicates()
   cond = or_(*[
     and_(
-        *[_is_eq(df[c], df_sizer[c][i]) for c in df_sizer]
+      *[_is_eq(df[c], df_sizer[c][i]) for c in df_sizer]
     ) for i in df_sizer.index
   ])
   if reverse:
@@ -241,7 +240,7 @@ def drop_by_df(df: pd.DataFrame, df_deleted: pd.DataFrame) -> pd.DataFrame:
 
   return df[~or_(*[
     and_(
-        *[_is_eq(df[c], df_deleted[c][i]) for c in df_deleted]
+      *[_is_eq(df[c], df_deleted[c][i]) for c in df_deleted]
     ) for i in df_deleted.index
   ])]
 
@@ -266,8 +265,8 @@ def wrap_dict(df: pd.DataFrame, c_srcs: list = None, c_dst: str = 'extra'):
 def expand_dict(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
   df_extra = pd.json_normalize(
-      df[c_src].apply(lambda x: {} if pd.isna(x) else x),
-      max_level=0, errors='ignore',
+    df[c_src].apply(lambda x: {} if pd.isna(x) else x),
+    max_level=0, errors='ignore',
   )
   df_extra.index = df.index
   return pd.concat([df.drop(columns=[c_src]), df_extra], axis=1)
@@ -277,8 +276,8 @@ def expand_dict(df: pd.DataFrame, c_src: str):
 def expand_dict_silent(df: pd.DataFrame, c_src: str):
   """展开字典为多列"""
   logging.warning(
-      DeprecationWarning,
-      'expand_dict_silent is deprecated, use expand_dict instead'
+    DeprecationWarning,
+    'expand_dict_silent is deprecated, use expand_dict instead'
   )
   return expand_dict(df, c_src)
 
@@ -340,19 +339,19 @@ def is_changed(df_old: pd.DataFrame,
   df_new = df_new.copy()
   df_new[c_res] = 'Changed'
   df_temp = df_old[[*key_cols, *value_cols]].merge(
-      df_new[[*key_cols, *value_cols, c_res]],
-      how='left',
-      on=key_cols)
+    df_new[[*key_cols, *value_cols, c_res]],
+    how='left',
+    on=key_cols)
   # 合并后为空的为 NotFound
   df_temp[c_res] = df_temp[c_res].fillna('NotFound')
 
   # 对比每一个值，如果每一列的每一个值都相同，则认为是没有变化
   cond = and_(
-      *[
-        (df_temp[f'{c}_x'] == df_temp[f'{c}_y']) |
-        (df_temp[f'{c}_x'].isna() & df_temp[f'{c}_y'].isna())
-        for c in value_cols
-      ]
+    *[
+      (df_temp[f'{c}_x'] == df_temp[f'{c}_y']) |
+      (df_temp[f'{c}_x'].isna() & df_temp[f'{c}_y'].isna())
+      for c in value_cols
+    ]
   )
   df_temp.loc[cond, c_res] = 'NotChange'
   df_temp = df_temp[[*key_cols, c_res]]
@@ -433,7 +432,7 @@ def expand_graph(df: pd.DataFrame,
   asserts(graph_df, c_id=c_key, c_type=c_level_type,
           c_parent_id=c_parent_key)
   graph_df[c_level_type] = graph_df[c_level_type].apply(
-      lambda lp: f'{lp}_{c_key}'
+    lambda lp: f'{lp}_{c_key}'
   )
   # 事先将Dataframe转为字典，提高查询性能
   graph_dict = get_graph_dict(graph_df=graph_df, c_key=c_key,
@@ -445,9 +444,9 @@ def expand_graph(df: pd.DataFrame,
   df = df[[c_key]].reset_index(drop=True)
   # 将索引列逐个传入查询
   df['extra'] = df[c_key].progress_apply(
-      lambda x: query_from_graph(
-          key=x, graph_data=graph_dict, c_key=c_key,
-          c_level_type=c_level_type, c_parent_key=c_parent_key)
+    lambda x: query_from_graph(
+      key=x, graph_data=graph_dict, c_key=c_key,
+      c_level_type=c_level_type, c_parent_key=c_parent_key)
   )
   # 展开最终结果
   df = expand_dict(df, 'extra')
@@ -558,8 +557,8 @@ def merge_dfs(dfs: List[pd.DataFrame], on, how):
     how: 以何种方式进行合并，同pd.merge
   """
   return reduce(
-      lambda left, right: pd.merge(left, right, on=on, how=how),
-      dfs
+    lambda left, right: pd.merge(left, right, on=on, how=how),
+    dfs
   )
 
 
@@ -593,3 +592,49 @@ def shift_data(
     )
     del df[f'{c}_1']
   return df
+
+
+def change_detail(df_left, df_right, c_key, columns=None, suffixes=("_left", "_right")):
+  """
+  对比两个dataframe，并返回对比结果
+  Args:
+    df_left: 左边的dataframe
+    df_right: 右边的dataframe
+    c_key: 主键
+    columns: 需要对比的列，不传则对比所有列
+    suffixes: 左右dataframe的列后缀
+  """
+
+  def is_change(x, y):
+    if is_empty(x) and is_empty(y):
+      return False
+    if not_empty(x) and not_empty(y):
+      return False if x == y else True
+    return True
+
+  if not columns:
+    columns = [c for c in df_left.columns.tolist(
+    ) if c in df_right.columns.tolist()]
+    assert c_key in columns, f'数据集中缺少"{c_key}"字段'
+  else:
+    columns = [c_key, *columns]
+  ll, rr = suffixes
+  df_left = df_left[columns]
+  df_right = df_right[columns]
+  df_s = df_left.merge(df_right, how="outer",
+                       on=c_key, suffixes=suffixes)
+  # 字段对比
+  for c in columns:
+    if c == c_key:
+      continue
+    df_s[f"{c}_ischange"] = df_s.apply(
+      lambda r: 1 if is_change(r[f"{c}{ll}"], r[f"{c}{rr}"]) else 0, axis=1
+    )
+  # 字段排序
+  cols_new = [c_key]
+  for c in columns:
+    if c == c_key:
+      continue
+    cols_new.extend([f"{c}{ll}", f"{c}{rr}", f"{c}_ischange"])
+  df_s = df_s[cols_new]
+  return df_s
