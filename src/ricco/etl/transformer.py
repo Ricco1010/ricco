@@ -597,6 +597,7 @@ def shift_data(
 def change_detail(df_left, df_right, c_key, columns=None, suffixes=("_left", "_right")):
   """
   对比两个dataframe，并返回对比结果
+
   Args:
     df_left: 左边的dataframe
     df_right: 右边的dataframe
@@ -638,3 +639,22 @@ def change_detail(df_left, df_right, c_key, columns=None, suffixes=("_left", "_r
     cols_new.extend([f"{c}{ll}", f"{c}{rr}", f"{c}_ischange"])
   df_s = df_s[cols_new]
   return df_s
+
+
+def drop_duplicates_by_order(df, c_key, col, order: list):
+  """
+  根据指定列的值的顺序去重
+
+  Args:
+    df: 输入的dataframe
+    c_key: 主键
+    col: 需要去重的列
+    order: 指定列的值的顺序
+  """
+  df = df.copy()
+  _dtype = df[col].dtype
+  df[col] = pd.Categorical(df[col], categories=order, ordered=True)
+  df = df.sort_values(by=col)
+  df = df.drop_duplicates(subset=c_key, keep='first', ignore_index=True)
+  df[col] = df[col].astype(_dtype)
+  return df
