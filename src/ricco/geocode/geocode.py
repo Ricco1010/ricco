@@ -2,6 +2,7 @@ import logging
 import uuid
 import warnings
 from functools import lru_cache
+from typing import Union
 
 import pandas as pd
 from tqdm import tqdm
@@ -22,9 +23,9 @@ def geocode(*,
             address,
             city,
             source,
-            srs='wgs84',
-            key_baidu=None,
-            key_amap=None):
+            key_baidu,
+            key_amap,
+            srs='wgs84'):
   """
   对单个地址进行地理编码的方法汇总，返回经纬度坐标，可通过参数选择geocoding方法
 
@@ -33,10 +34,16 @@ def geocode(*,
     city: 城市
     source: 接口选择。baidu/amap：百度或高德的地理编码接口，baidu_poi/amap_poi：百度或高德的地点检索接口
     srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-    key_baidu: 百度接口的key，公共key失效后可自行传入
-    key_amap: 高德接口的key，公共key失效后可自行传入
+    key_baidu: 百度接口的key
+    key_amap: 高德接口的key
   """
   assert source in ('baidu', 'baidu_poi', 'amap', 'amap_poi')
+  if source in ('baidu', 'baidu_poi'):
+    if not key_baidu:
+      raise ValueError('使用百度接口时，key_baidu参数不能为空')
+  if source in ('amap', 'amap_poi'):
+    if not key_amap:
+      raise ValueError('使用高德接口时，key_amap参数不能为空')
   if source == 'baidu':
     return get_address_baidu(address=address, city=city, srs=srs, key=key_baidu)
   if source == 'baidu_poi':
@@ -51,11 +58,11 @@ def geocode(*,
 def geocode_best_poi(
     address,
     city,
+    key_baidu,
+    key_amap,
     sig=80,
     address_geocode=False,
-    srs='wgs84',
-    key_baidu=None,
-    key_amap=None):
+    srs='wgs84'):
   """
   获取最优的地点检索结果
 
@@ -65,8 +72,8 @@ def geocode_best_poi(
     sig: 解析结果相似度，默认为80，范围0-100
     address_geocode: 是否使用地理编码补全，默认False
     srs: 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84
-    key_baidu: 百度接口的key，公共key失效后可自行传入
-    key_amap: 高德接口的key，公共key失效后可自行传入
+    key_baidu: 百度接口的key
+    key_amap: 高德接口的key
   """
   try:
     ar = get_place_amap(address, city, srs=srs, key=key_amap)
@@ -86,8 +93,7 @@ def geocode_best_poi(
 
 
 @check_null(default_rv=DEFAULT_RES)
-def geocode_best_address(address, city, srs='wgs84', key_baidu=None,
-                         key_amap=None):
+def geocode_best_address(address, city, key_baidu, key_amap, srs='wgs84'):
   """获取最优的地理编码结果"""
   try:
     br = get_address_baidu(address, city, srs=srs, key=key_baidu)
@@ -104,10 +110,11 @@ def geocode_best(
     address,
     city,
     address_type: str,
+    key_baidu,
+    key_amap,
     sig: int = 80,
     srs: str = 'wgs84',
-    address_geocode: bool = False,
-    **kwargs):
+    address_geocode: bool = False):
   """
   获取最优的geocoding结果
 
@@ -118,21 +125,27 @@ def geocode_best(
     sig: 得分
     srs: 坐标系
     address_geocode: 是否使用地址编码进行补充
-    **kwargs:
+    key_baidu: 百度接口的key
+    key_amap: 高德接口的key
   """
   assert address_type in ('poi', 'address'), 'address_type可选参数为poi或address'
   if address_type == 'poi':
     return geocode_best_poi(
         address, city, sig=sig, address_geocode=address_geocode, srs=srs,
-        **kwargs
+        key_baidu=key_baidu, key_amap=key_amap
     )
-  return geocode_best_address(address, city, srs=srs, **kwargs)
+  return geocode_best_address(
+      address, city, srs=srs,
+      key_baidu=key_baidu, key_amap=key_amap
+  )
 
 
 def geocode_df(df: pd.DataFrame,
                by: str,
-               city: (str, list),
+               city: Union[str, list],
                address_type: str,
+               key_baidu,
+               key_amap,
                sig: int = 80,
                address_geocode: bool = False,
                with_detail: bool = True,
@@ -140,8 +153,7 @@ def geocode_df(df: pd.DataFrame,
                c_lng='lng',
                c_lat='lat',
                ignore_existing: bool = True,
-               progress_bar: bool = True,
-               **kwargs):
+               progress_bar: bool = True):
   """
   基于dataframe进行geocoding
 
@@ -157,8 +169,8 @@ def geocode_df(df: pd.DataFrame,
     c_lng: 经度列名，默认为 'lng'
     c_lat: 纬度列名，默认为 'lat'
     ignore_existing: 是否忽略已经存在经纬的行，默认为 TRUE，即保持原有的经纬度不变
-    key_baidu: 百度接口的key，公共key失效后可自行传入
-    key_amap: 高德接口的key，公共key失效后可自行传入
+    key_baidu: 百度接口的key
+    key_amap: 高德接口的key
     progress_bar: 是否显示进度条，默认为TRUE
 
   See Also:
@@ -193,7 +205,7 @@ def geocode_df(df: pd.DataFrame,
     rv = geocode_best(
         address=_data[2], city=_data[1], sig=sig,
         address_type=address_type, address_geocode=address_geocode,
-        srs=srs, **kwargs
+        srs=srs, key_baidu=key_baidu, key_amap=key_amap
     )
     rv[c_lng] = rv['lng']
     rv[c_lat] = rv['lat']

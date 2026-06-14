@@ -1,15 +1,12 @@
 import requests
 
 from ..util.decorator import check_null
-from .util import MapKeys
 from .util import MapUrls
 
 
 @check_null()
-def request_amap_addr(address, city, key=None):
+def request_amap_addr(address, city, key):
   """高德地图-地理编码"""
-  if key is None:
-    key = MapKeys.amap
   url = f'{MapUrls.amap}?address={address}&city={city}&key={key}'
   js = requests.get(url).json()
   # 超过并发限制的重新请求
@@ -19,10 +16,8 @@ def request_amap_addr(address, city, key=None):
 
 
 @check_null()
-def request_amap_place(address, city, key=None):
+def request_amap_place(address, city, key):
   """高德地图-地点检索"""
-  if key is None:
-    key = MapKeys.amap
   url = f'{MapUrls.amap_poi}?keywords={address}&city={city}&key={key}'
   js = requests.get(url).json()
   # 超过并发限制的重新请求
@@ -32,10 +27,8 @@ def request_amap_place(address, city, key=None):
 
 
 @check_null()
-def request_baidu_addr(address, city, key=None):
+def request_baidu_addr(address, city, key):
   """百度地图-地理编码"""
-  if key is None:
-    key = MapKeys.baidu
   url = f'{MapUrls.baidu}?city={city}&address={address}&output=json&ak={key}&ret_coordtype=gcj02ll'
   js = requests.get(url).json()
   # 超过并发限制的重新请求
@@ -45,10 +38,8 @@ def request_baidu_addr(address, city, key=None):
 
 
 @check_null()
-def request_baidu_place(address, city, key=None):
+def request_baidu_place(address, city, key):
   """百度地图-地点检索"""
-  if key is None:
-    key = MapKeys.baidu
   url = f'{MapUrls.baidu_poi}?query={address}&region={city}&city_limit=true&output=json&ak={key}&ret_coordtype=gcj02ll'
   js = requests.get(url).json()
   # 超过并发限制的重新请求
