@@ -2,6 +2,7 @@ import datetime as dt
 import logging
 import re
 import warnings
+from typing import Union
 from datetime import date as type_date
 from datetime import datetime
 from datetime import timedelta
@@ -137,7 +138,7 @@ class DT:
   """
 
   def __init__(self,
-               date: (str, dt.date, dt.datetime) = None,
+               date: Union[str, dt.date, dt.datetime] = None,
                format='%Y-%m-%d',
                dst_format=None):
     warnings.warn('DT2在版本0.5.38及更新版本中可以使用，详情见util.dt.DT2',
@@ -226,7 +227,7 @@ class DT:
 
 class DT2:
   def __init__(self,
-               date: (str, dt.date, dt.datetime) = None,
+               date: Union[str, dt.date, dt.datetime] = None,
                date_format='%Y-%m-%d'):
     """
     DT日期类

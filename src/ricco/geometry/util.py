@@ -1,6 +1,7 @@
 import re
 import sys
 import warnings
+from typing import Union
 from ast import literal_eval
 from functools import lru_cache
 from itertools import groupby
@@ -103,7 +104,7 @@ def get_epsg(city: str):
   return epsg_from_lnglat(lng_from_city(city))
 
 
-def _projection_lnglat(lnglat: (tuple, list), crs_from, crs_to):
+def _projection_lnglat(lnglat: Union[tuple, list], crs_from, crs_to):
   """对经纬度进行投影"""
   from pyproj import Transformer
   if any([is_empty(i) for i in lnglat]):
@@ -143,7 +144,7 @@ def wkt_dumps(x: BaseGeometry):
 
 
 @check_null()
-def geojson_loads(x: (str, dict), warning=True):
+def geojson_loads(x: Union[str, dict], warning=True):
   """geojson文本形式转为shapely几何对象"""
 
   def _dict2shapely(_json: dict):
@@ -237,7 +238,7 @@ def _infer_geom_format(x):
 
 
 @check_null(default_rv='unknown')
-def infer_geom_format(series: (str, list, tuple, pd.Series, BaseGeometry)):
+def infer_geom_format(series: Union[str, list, tuple, pd.Series, BaseGeometry]):
   """推断geometry格式"""
   assert isinstance(series, (str, list, tuple, pd.Series, BaseGeometry))
   if isinstance(series, (list, tuple, pd.Series)):
@@ -355,11 +356,11 @@ def ensure_lnglat(lnglat) -> tuple:
 
 
 def distance(
-    p1: (tuple, str),
-    p2: (tuple, str),
+    p1: Union[tuple, str],
+    p2: Union[tuple, str],
     city: str = None,
     epsg_from: int = 4326,
-    epsg_to: (str, int) = None):
+    epsg_to: Union[str, int] = None):
   """
   计算两个点（经度，纬度）之间的距离，单位：米
 
@@ -415,7 +416,7 @@ def text2lnglats(text: str, point_sep: str, lnglat_sep: str):
   return [i for i, _ in groupby(res)]
 
 
-def deg_to_decimal(x: (str, list, tuple)):
+def deg_to_decimal(x: Union[str, list, tuple]):
   """
   将度分秒格式的经纬度转为小数
 

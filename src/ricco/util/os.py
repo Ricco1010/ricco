@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+from typing import Union
 import time
 import warnings
 import zipfile
@@ -154,7 +155,7 @@ def remove_ds_store(dir_path):
 
 
 def dir_iter(dir_path,
-             exts: (list, str) = None,
+                  exts: Union[list, str] = None,
              abspath=False,
              recursive=False,
              ignore_hidden_files=True):
@@ -187,7 +188,7 @@ def dir_iter(dir_path,
 
 
 def dir_iter_list(dir_path,
-                  exts: (list, str) = None,
+             exts: Union[list, str] = None,
                   abspath=False,
                   recursive=False,
                   reverse=False):

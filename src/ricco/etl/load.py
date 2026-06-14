@@ -1,6 +1,7 @@
 import csv
 import os
 import warnings
+from typing import Union
 from tempfile import NamedTemporaryFile
 
 import pandas as pd
@@ -19,7 +20,7 @@ from . import ALL_EXTS
 from .transformer import df_iter
 
 
-def to_csv_by_line(data: (list, dict), filepath: str):
+def to_csv_by_line(data: Union[list, dict], filepath: str):
   """
   逐行写入csv文件
 
@@ -119,7 +120,7 @@ def to_file(
     to_parquet(df, filepath, index=index)
   if ex in ('.xlsx', '.xls'):
     _check_excel(df, ex).to_excel(filepath, index=index)
-  if ex == 'json':
+  if ex == '.json':
     df.to_json(filepath, orient='records')
   if ex in ('.shp', '.geojson'):
     df = auto2shapely(df)

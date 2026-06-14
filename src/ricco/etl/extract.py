@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import sys
+from typing import Union
 from tempfile import NamedTemporaryFile
 
 import geopandas as gpd
@@ -34,8 +35,8 @@ def rdf(
     encoding: str = None,
     info: bool = False,
     dtype=None,
-    columns: (list, str) = None,
-    only: (list, str) = None,
+    columns: Union[list, str] = None,
+    only: Union[list, str] = None,
     nrows: int = None,
     limit: int = None,
     recursive: bool = True,
@@ -128,7 +129,7 @@ def rdxls(
     sheet_name=0,
     sheet_contains: str = None,
     dtype=None,
-    columns: (list, str) = None,
+    columns: Union[list, str] = None,
     nrows: int = None
 ) -> pd.DataFrame:
   """
@@ -184,7 +185,7 @@ def read_csv(file_path: str,
              *,
              encoding: str = None,
              dtype=None,
-             columns: (list, str) = None,
+    columns: Union[list, str] = None,
              nrows: int = None,
              **kwargs):
   """读取csv文件，基于 `pd.read_csv`，加入编码尝试"""
@@ -220,7 +221,7 @@ def read_line_json(file_path, encoding='utf-8') -> pd.DataFrame:
 
 def rdf_by_dir(
     dir_path, exts=None, ignore_index=True, recursive=False,
-    columns: (list, str) = None, info=False,
+    columns: Union[list, str] = None, info=False,
     sign_data_from: bool = False, col_data_from: str = '__data_from',
     encoding: str = None
 ) -> pd.DataFrame:

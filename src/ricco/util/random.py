@@ -1,5 +1,6 @@
 import datetime
 import random
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -45,8 +46,8 @@ def random_by_prob(mapping: dict):
 
 def ramdom_lnglat(
     df: pd.DataFrame,
-    lng_range: (tuple, list) = (72, 138),
-    lat_range: (tuple, list) = (0, 56),
+    lng_range: Union[tuple, list] = (72, 138),
+    lat_range: Union[tuple, list] = (0, 56),
 ):
   """
   随机生成经纬度
