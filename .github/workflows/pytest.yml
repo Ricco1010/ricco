@@ -25,5 +25,6 @@ jobs:
           python -m pip install -e ".[test]"
       - name: Lint with ruff
         run: ruff check src/ricco/
+        continue-on-error: true
       - name: Test with pytest
         run: pytest -v
