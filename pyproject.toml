@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ricco"
+dynamic = ["version"]
+description = "A handy ETL & GEOM kit"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10,<3.14"
+authors = [
+    {name = "Ricco Wang", email = "wyk_0610@163.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "fiona",
+    "rapidfuzz>=3.0",
+    "geojson>=2.5",
+    "geopandas>=0.10",
+    "kml2geojson",
+    "numpy>=1.24",
+    "openpyxl",
+    "pandarallel>=1.6.5",
+    "pandas>=1.5,<3",
+    "pyarrow",
+    "pyahocorasick>=2",
+    "pyproj",
+    "python-dateutil",
+    "pypinyin",
+    "python-docx",
+    "requests>=2.20",
+    "scikit-learn",
+    "shapely>=1.8",
+    "simplejson",
+    "tqdm>=4.0",
+    "xlrd",
+]
+
+[project.optional-dependencies]
+test = [
+    "pylint",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff",
+]
+docs = [
+    "autodocsumm",
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-rtd-theme",
+]
+dev = [
+    "bump2version",
+    "devpi",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ricco1010/ricco"
+
+[tool.setuptools.dynamic]
+version = {attr = "ricco.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ricco = ["resource/*.csv", "resource/*.txt"]
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E111", "E114"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = ["test", "ricco"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -35,6 +35,9 @@ venv/
 #vim
 .ropeproject
 
+# mimocode
+.mimocode/
+
 #testfile
 .develop_file/
 .develop_file
