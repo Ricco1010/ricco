@@ -1,28 +1,26 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="zh-CN" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FileSystem工具集 &mdash; ricco 2.0.1 文档</title>
+  <title>FileSystem工具集 &mdash; ricco 3.0.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=a39b46c2"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
-        <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=cd91d057"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
@@ -119,12 +117,12 @@
            <div itemprop="articleBody">
              
   <section id="filesystem">
-<h1>FileSystem工具集<a class="headerlink" href="#filesystem" title="Link to this heading"></a></h1>
+<h1>FileSystem工具集<a class="headerlink" href="#filesystem" title="链接到此标题。"></a></h1>
 <section id="oss">
-<h2>OSS<a class="headerlink" href="#oss" title="Link to this heading"></a></h2>
+<h2>OSS<a class="headerlink" href="#oss" title="链接到此标题。"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.fs.oss.</span></span><span class="sig-name descname"><span class="pre">OssUtils</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ricco.fs.oss.</span></span><span class="sig-name descname"><span class="pre">OssUtils</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="仅关键字参数分隔符 (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils" title="链接到此定义。"></a></dt>
 <dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p><strong>Methods:</strong></p>
 <table class="autosummary longtable docutils align-default">
@@ -157,19 +155,19 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.abspath">
-<span class="sig-name descname"><span class="pre">abspath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.abspath" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">abspath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.abspath" title="链接到此定义。"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.dir_iter">
-<span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.dir_iter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.dir_iter" title="链接到此定义。"></a></dt>
 <dd><p>遍历目录下的文件</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dir_path</strong> – 目录路径，如不指定则遍历实例化时指定的work_path</p></li>
-<li><p><strong>exts</strong> – 文件后缀</p></li>
-<li><p><strong>recursive</strong> – 是否递归遍历</p></li>
+<li><p><strong>dir_path</strong> -- 目录路径，如不指定则遍历实例化时指定的work_path</p></li>
+<li><p><strong>exts</strong> -- 文件后缀</p></li>
+<li><p><strong>recursive</strong> -- 是否递归遍历</p></li>
 </ul>
 </dd>
 </dl>
@@ -177,13 +175,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.download">
-<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_remote</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.download" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_remote</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="仅关键字参数分隔符 (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.download" title="链接到此定义。"></a></dt>
 <dd><p>从oss中下载文件</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path_remote</strong> – oss路径及文件名</p></li>
-<li><p><strong>path_local</strong> – 本地文件路径，若不指定则下载为work_path下的同名文件</p></li>
+<li><p><strong>path_remote</strong> -- oss路径及文件名</p></li>
+<li><p><strong>path_local</strong> -- 本地文件路径，若不指定则下载为work_path下的同名文件</p></li>
 </ul>
 </dd>
 </dl>
@@ -191,37 +189,37 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.exist">
-<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.exist" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.exist" title="链接到此定义。"></a></dt>
 <dd><p>判断文件是否存在</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.mkdir">
-<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.mkdir" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.mkdir" title="链接到此定义。"></a></dt>
 <dd><p>创建目录</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.object_path">
-<span class="sig-name descname"><span class="pre">object_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.object_path" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">object_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.object_path" title="链接到此定义。"></a></dt>
 <dd><p>将文件路径转为oss2的输入路径，即Bucket之后的路径</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.rm">
-<span class="sig-name descname"><span class="pre">rm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.rm" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.rm" title="链接到此定义。"></a></dt>
 <dd><p>删除文件或目录</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.oss.OssUtils.upload">
-<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.upload" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="仅关键字参数分隔符 (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.oss.OssUtils.upload" title="链接到此定义。"></a></dt>
 <dd><p>上传文件到oss中</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path_local</strong> – 本地文件路径</p></li>
-<li><p><strong>path_remote</strong> – oss路径及文件名，若不指定则上传为work_path下的同名文件</p></li>
+<li><p><strong>path_local</strong> -- 本地文件路径</p></li>
+<li><p><strong>path_remote</strong> -- oss路径及文件名，若不指定则上传为work_path下的同名文件</p></li>
 </ul>
 </dd>
 </dl>
@@ -231,10 +229,10 @@
 
 </section>
 <section id="sftp">
-<h2>SFTP<a class="headerlink" href="#sftp" title="Link to this heading"></a></h2>
+<h2>SFTP<a class="headerlink" href="#sftp" title="链接到此标题。"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ricco.fs.sftp.</span></span><span class="sig-name descname"><span class="pre">SFTP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ricco.fs.sftp.</span></span><span class="sig-name descname"><span class="pre">SFTP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="仅关键字参数分隔符 (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP" title="链接到此定义。"></a></dt>
 <dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p><strong>Methods:</strong></p>
 <table class="autosummary longtable docutils align-default">
@@ -269,43 +267,43 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.chdir">
-<span class="sig-name descname"><span class="pre">chdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.chdir" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">chdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.chdir" title="链接到此定义。"></a></dt>
 <dd><p>切换工作目录</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.dir_iter">
-<span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.dir_iter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dir_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.dir_iter" title="链接到此定义。"></a></dt>
 <dd><p>遍历目录，返回所有文件路径</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.download">
-<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.download" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.download" title="链接到此定义。"></a></dt>
 <dd><p>下载单个文件或整个目录</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.isdir">
-<span class="sig-name descname"><span class="pre">isdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.isdir" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">isdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.isdir" title="链接到此定义。"></a></dt>
 <dd><p>判断是否为目录</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.isfile">
-<span class="sig-name descname"><span class="pre">isfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.isfile" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">isfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.isfile" title="链接到此定义。"></a></dt>
 <dd><p>判断是否为文件</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.listdir">
-<span class="sig-name descname"><span class="pre">listdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.listdir" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">listdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.fs.sftp.SFTP.listdir" title="链接到此定义。"></a></dt>
 <dd><p>列出目录下的所有文件和子目录，返回列表</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ricco.fs.sftp.SFTP.workdir">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">workdir</span></span><a class="headerlink" href="#ricco.fs.sftp.SFTP.workdir" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">workdir</span></span><a class="headerlink" href="#ricco.fs.sftp.SFTP.workdir" title="链接到此定义。"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -1,28 +1,26 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="zh-CN" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geocoding &mdash; ricco 2.0.1 文档</title>
+  <title>Geocoding &mdash; ricco 3.0.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=a39b46c2"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
-        <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=cd91d057"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
@@ -99,40 +97,40 @@
            <div itemprop="articleBody">
              
   <section id="module-ricco.geocode.geocode">
-<span id="geocoding"></span><h1>Geocoding<a class="headerlink" href="#module-ricco.geocode.geocode" title="Link to this heading"></a></h1>
+<span id="geocoding"></span><h1>Geocoding<a class="headerlink" href="#module-ricco.geocode.geocode" title="链接到此标题。"></a></h1>
 <p><strong>Functions:</strong></p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode" title="ricco.geocode.geocode.geocode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode</span></code></a>(*, address, city, source[, srs, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode" title="ricco.geocode.geocode.geocode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode</span></code></a>(*, address, city, source, key_baidu, ...)</p></td>
 <td><p>对单个地址进行地理编码的方法汇总，返回经纬度坐标，可通过参数选择geocoding方法</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best" title="ricco.geocode.geocode.geocode_best"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best</span></code></a>(address, city, address_type[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best" title="ricco.geocode.geocode.geocode_best"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best</span></code></a>(address, city, address_type, ...)</p></td>
 <td><p>获取最优的geocoding结果</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_address" title="ricco.geocode.geocode.geocode_best_address"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best_address</span></code></a>(address, city[, srs, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_address" title="ricco.geocode.geocode.geocode_best_address"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best_address</span></code></a>(address, city, ...[, srs])</p></td>
 <td><p>获取最优的地理编码结果</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_poi" title="ricco.geocode.geocode.geocode_best_poi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best_poi</span></code></a>(address, city[, sig, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_best_poi" title="ricco.geocode.geocode.geocode_best_poi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_best_poi</span></code></a>(address, city, key_baidu, ...)</p></td>
 <td><p>获取最优的地点检索结果</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_df" title="ricco.geocode.geocode.geocode_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_df</span></code></a>(df, by, city, address_type[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ricco.geocode.geocode.geocode_df" title="ricco.geocode.geocode.geocode_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocode_df</span></code></a>(df, by, city, address_type, ...)</p></td>
 <td><p>基于dataframe进行geocoding</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="仅关键字参数分隔符 (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode" title="链接到此定义。"></a></dt>
 <dd><p>对单个地址进行地理编码的方法汇总，返回经纬度坐标，可通过参数选择geocoding方法</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> – 地址或项目名称关键词</p></li>
-<li><p><strong>city</strong> – 城市</p></li>
-<li><p><strong>source</strong> – 接口选择。baidu/amap：百度或高德的地理编码接口，baidu_poi/amap_poi：百度或高德的地点检索接口</p></li>
-<li><p><strong>srs</strong> – 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
-<li><p><strong>key_baidu</strong> – 百度接口的key，公共key失效后可自行传入</p></li>
-<li><p><strong>key_amap</strong> – 高德接口的key，公共key失效后可自行传入</p></li>
+<li><p><strong>address</strong> -- 地址或项目名称关键词</p></li>
+<li><p><strong>city</strong> -- 城市</p></li>
+<li><p><strong>source</strong> -- 接口选择。baidu/amap：百度或高德的地理编码接口，baidu_poi/amap_poi：百度或高德的地点检索接口</p></li>
+<li><p><strong>srs</strong> -- 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
+<li><p><strong>key_baidu</strong> -- 百度接口的key</p></li>
+<li><p><strong>key_amap</strong> -- 高德接口的key</p></li>
 </ul>
 </dd>
 </dl>
@@ -140,18 +138,19 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_best">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_best</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_best" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_best</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_best" title="链接到此定义。"></a></dt>
 <dd><p>获取最优的geocoding结果</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> – 地址</p></li>
-<li><p><strong>city</strong> – 城市</p></li>
-<li><p><strong>address_type</strong> – ‘poi’ 或 ‘address’，不同的地理类型对应不同的接口，精确度不同</p></li>
-<li><p><strong>sig</strong> – 得分</p></li>
-<li><p><strong>srs</strong> – 坐标系</p></li>
-<li><p><strong>address_geocode</strong> – 是否使用地址编码进行补充</p></li>
-<li><p><strong>**kwargs</strong> – </p></li>
+<li><p><strong>address</strong> -- 地址</p></li>
+<li><p><strong>city</strong> -- 城市</p></li>
+<li><p><strong>address_type</strong> -- 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同</p></li>
+<li><p><strong>sig</strong> -- 得分</p></li>
+<li><p><strong>srs</strong> -- 坐标系</p></li>
+<li><p><strong>address_geocode</strong> -- 是否使用地址编码进行补充</p></li>
+<li><p><strong>key_baidu</strong> -- 百度接口的key</p></li>
+<li><p><strong>key_amap</strong> -- 高德接口的key</p></li>
 </ul>
 </dd>
 </dl>
@@ -159,24 +158,24 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_best_address">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_best_address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_best_address" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_best_address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_best_address" title="链接到此定义。"></a></dt>
 <dd><p>获取最优的地理编码结果</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_best_poi">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_best_poi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_best_poi" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_best_poi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wgs84'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_best_poi" title="链接到此定义。"></a></dt>
 <dd><p>获取最优的地点检索结果</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> – POI名称</p></li>
-<li><p><strong>city</strong> – 城市</p></li>
-<li><p><strong>sig</strong> – 解析结果相似度，默认为80，范围0-100</p></li>
-<li><p><strong>address_geocode</strong> – 是否使用地理编码补全，默认False</p></li>
-<li><p><strong>srs</strong> – 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
-<li><p><strong>key_baidu</strong> – 百度接口的key，公共key失效后可自行传入</p></li>
-<li><p><strong>key_amap</strong> – 高德接口的key，公共key失效后可自行传入</p></li>
+<li><p><strong>address</strong> -- POI名称</p></li>
+<li><p><strong>city</strong> -- 城市</p></li>
+<li><p><strong>sig</strong> -- 解析结果相似度，默认为80，范围0-100</p></li>
+<li><p><strong>address_geocode</strong> -- 是否使用地理编码补全，默认False</p></li>
+<li><p><strong>srs</strong> -- 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
+<li><p><strong>key_baidu</strong> -- 百度接口的key</p></li>
+<li><p><strong>key_amap</strong> -- 高德接口的key</p></li>
 </ul>
 </dd>
 </dl>
@@ -184,25 +183,25 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.geocode.geocode_df">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_detail:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng='lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat='lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_existing:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_df" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.geocode.</span></span><span class="sig-name descname"><span class="pre">geocode_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_baidu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_amap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_geocode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'wgs84'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lng'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_existing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.geocode.geocode_df" title="链接到此定义。"></a></dt>
 <dd><p>基于dataframe进行geocoding</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – 数据集</p></li>
-<li><p><strong>by</strong> – 地址或名称列</p></li>
-<li><p><strong>city</strong> – 城市，如为list表示城市列，如[‘城市’]；如为str表示全部使用该城市,如 “上海”</p></li>
-<li><p><strong>address_type</strong> – ‘poi’ 或 ‘address’，不同的地理类型对应不同的接口，精确度不同</p></li>
-<li><p><strong>sig</strong> – 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效</p></li>
-<li><p><strong>address_geocode</strong> – poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效</p></li>
-<li><p><strong>with_detail</strong> – 是否返回详情信息，包括返回值、得分、接口来源等</p></li>
-<li><p><strong>srs</strong> – 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
-<li><p><strong>c_lng</strong> – 经度列名，默认为 ‘lng’</p></li>
-<li><p><strong>c_lat</strong> – 纬度列名，默认为 ‘lat’</p></li>
-<li><p><strong>ignore_existing</strong> – 是否忽略已经存在经纬的行，默认为 TRUE，即保持原有的经纬度不变</p></li>
-<li><p><strong>key_baidu</strong> – 百度接口的key，公共key失效后可自行传入</p></li>
-<li><p><strong>key_amap</strong> – 高德接口的key，公共key失效后可自行传入</p></li>
-<li><p><strong>progress_bar</strong> – 是否显示进度条，默认为TRUE</p></li>
+<li><p><strong>df</strong> -- 数据集</p></li>
+<li><p><strong>by</strong> -- 地址或名称列</p></li>
+<li><p><strong>city</strong> -- 城市，如为list表示城市列，如['城市']；如为str表示全部使用该城市,如 &quot;上海&quot;</p></li>
+<li><p><strong>address_type</strong> -- 'poi' 或 'address'，不同的地理类型对应不同的接口，精确度不同</p></li>
+<li><p><strong>sig</strong> -- 解析结果相似度，默认为80，范围为0-100，仅当address_type为poi时生效</p></li>
+<li><p><strong>address_geocode</strong> -- poi解析时是否使用地理编码补全，默认False，仅当address_type为poi时生效</p></li>
+<li><p><strong>with_detail</strong> -- 是否返回详情信息，包括返回值、得分、接口来源等</p></li>
+<li><p><strong>srs</strong> -- 返回的坐标系，可选wgs84, bd09, gcj02，默认wgs84</p></li>
+<li><p><strong>c_lng</strong> -- 经度列名，默认为 'lng'</p></li>
+<li><p><strong>c_lat</strong> -- 纬度列名，默认为 'lat'</p></li>
+<li><p><strong>ignore_existing</strong> -- 是否忽略已经存在经纬的行，默认为 TRUE，即保持原有的经纬度不变</p></li>
+<li><p><strong>key_baidu</strong> -- 百度接口的key</p></li>
+<li><p><strong>key_amap</strong> -- 高德接口的key</p></li>
+<li><p><strong>progress_bar</strong> -- 是否显示进度条，默认为TRUE</p></li>
 </ul>
 </dd>
 </dl>
@@ -227,18 +226,18 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.parallel.geocode_parallel">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.parallel.</span></span><span class="sig-name descname"><span class="pre">geocode_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_address:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'list'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qps:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.parallel.geocode_parallel" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.parallel.</span></span><span class="sig-name descname"><span class="pre">geocode_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.parallel.geocode_parallel" title="链接到此定义。"></a></dt>
 <dd><p>并行Geocode请求主函数</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – 要进行geocoding的Dataframe</p></li>
-<li><p><strong>c_address</strong> – 地址列</p></li>
-<li><p><strong>city</strong> – 城市或城市列，字符串-城市，列表-城市列的字段名</p></li>
-<li><p><strong>key</strong> – geocoding服务提供商的key</p></li>
-<li><p><strong>source</strong> – geocoding服务提供商，baidu/amap/baidu_poi/amap_poi</p></li>
-<li><p><strong>qps</strong> – 并发数</p></li>
-<li><p><strong>workers</strong> – Geocoding时使用的worker数量</p></li>
+<li><p><strong>df</strong> -- 要进行geocoding的Dataframe</p></li>
+<li><p><strong>c_address</strong> -- 地址列</p></li>
+<li><p><strong>city</strong> -- 城市或城市列，字符串-城市，列表-城市列的字段名</p></li>
+<li><p><strong>key</strong> -- geocoding服务提供商的key</p></li>
+<li><p><strong>source</strong> -- geocoding服务提供商，baidu/amap/baidu_poi/amap_poi</p></li>
+<li><p><strong>qps</strong> -- 并发数</p></li>
+<li><p><strong>workers</strong> -- Geocoding时使用的worker数量</p></li>
 </ul>
 </dd>
 </dl>
@@ -246,7 +245,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ricco.geocode.parallel.make_request">
-<span class="sig-prename descclassname"><span class="pre">ricco.geocode.parallel.</span></span><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.parallel.make_request" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ricco.geocode.parallel.</span></span><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ricco.geocode.parallel.make_request" title="链接到此定义。"></a></dt>
 <dd><p>发送单个请求的函数</p>
 </dd></dl>
 
