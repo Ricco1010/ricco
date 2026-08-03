@@ -2,7 +2,6 @@ import csv
 import os
 import shutil
 
-import fiona
 import pandas as pd
 from shapely.geometry import shape
 from tqdm import tqdm
@@ -317,6 +316,7 @@ def gdb2csv(
     geom_format='wkb',
     log=True):
   """gdb文件转换为csv文件"""
+  import fiona
   if not output_path:
     output_path = f'{dir_path}.csv'
   if log:

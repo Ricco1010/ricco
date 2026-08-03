@@ -1,5 +1,3 @@
-from typing import Union
-
 import pandas as pd
 
 from ..base import ensure_list
@@ -22,7 +20,7 @@ class DataReporter(Docx):
   """
 
   def __init__(
-      self, data: Union[str, pd.DataFrame],
+      self, data: str | pd.DataFrame,
       only: list = None,
       exclude: list = None):
     self.set_default_style()

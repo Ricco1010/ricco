@@ -8,11 +8,11 @@ from ast import literal_eval
 from datetime import datetime
 from itertools import chain
 from itertools import groupby
-from typing import Iterable, Union
+from collections.abc import Iterable
 
 import numpy as np
 import pandas as pd
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 from ..base import ensure_list
 from ..base import is_empty
@@ -208,8 +208,8 @@ def house_type_format(x):
 
 
 @check_null()
-def segment(x: Union[int, float],
-            gap: Union[list, tuple, set, float, int],
+def segment(x: int | float,
+            gap: list | tuple | set | float | int,
             sep: str = '-',
             unit: str = '',
             bottom: str = '以下',
@@ -251,14 +251,14 @@ def segment(x: Union[int, float],
       return f'{int(x / gap) * gap - gap}{sep}{int(x / gap) * gap}{unit}'
 
 
-def to_str_list(series: Union[list, pd.Series, tuple]) -> list:
+def to_str_list(series: list | pd.Series | tuple) -> list:
   """将列表中的元素保留为字符串、唯一、非空"""
   return list(set([str(i) for i in series if not_empty(i)]))
 
 
 @check_null(default_rv=(None, None, None, None))
 def fuzz_match(string: str,
-               string_set: Union[list, pd.Series, tuple],
+               string_set: list | pd.Series | tuple,
                fix_string_set: bool = False,
                valid_score: int = 0):
   """
@@ -416,7 +416,7 @@ def rstrip_d0(x):
 
 
 @check_null()
-def fix_str(x: str) -> Union[str, None]:
+def fix_str(x: str) -> str | None:
   """将字符串两端的空格及换行符删除，如果为空白字符串则返回空值"""
   if isinstance(x, str):
     x = x.strip()
@@ -487,7 +487,7 @@ def to_bool(x,
 
 
 def is_unique_series(df: pd.DataFrame,
-                     key_cols: Union[str, list] = None,
+                     key_cols: str | list = None,
                      ignore_na=False):
   """判断Dataframe中的某一列或某几列的组合是否唯一"""
   df = df.copy()
@@ -518,7 +518,7 @@ def is_hex(string) -> bool:
   return False
 
 
-def isinstances(values: list, types: Union[str, list]) -> bool:
+def isinstances(values: list, types: str | list) -> bool:
   """
   检查列表内的元素类型是否全部满足多个类型之一
 
@@ -530,7 +530,7 @@ def isinstances(values: list, types: Union[str, list]) -> bool:
   return all([isinstance(v, types) for v in values])
 
 
-def drop_repeat(x: Union[list, tuple]):
+def drop_repeat(x: list | tuple):
   """
   删除列表中连续重复的元素
 

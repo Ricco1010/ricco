@@ -1,7 +1,6 @@
 import csv
 import os
 import warnings
-from typing import Union
 from tempfile import NamedTemporaryFile
 
 import pandas as pd
@@ -20,7 +19,7 @@ from . import ALL_EXTS
 from .transformer import df_iter
 
 
-def to_csv_by_line(data: Union[list, dict], filepath: str):
+def to_csv_by_line(data: list | dict, filepath: str):
   """
   逐行写入csv文件
 

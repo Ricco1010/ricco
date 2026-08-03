@@ -64,7 +64,7 @@ def fix_city(string):
 
 
 def rv_score(city, address, rv):
-  from fuzzywuzzy import fuzz
+  from rapidfuzz import fuzz
   if not all([address, rv]):
     return -1
   city = fix_address(city)

@@ -2,7 +2,6 @@ import logging
 import uuid
 import warnings
 from functools import lru_cache
-from typing import Union
 
 import pandas as pd
 from tqdm import tqdm
@@ -142,7 +141,7 @@ def geocode_best(
 
 def geocode_df(df: pd.DataFrame,
                by: str,
-               city: Union[str, list],
+               city: str | list,
                address_type: str,
                key_baidu,
                key_amap,

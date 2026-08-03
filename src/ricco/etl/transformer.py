@@ -4,7 +4,7 @@ import warnings
 from datetime import datetime
 from functools import reduce
 from itertools import product
-from typing import List, Literal, Union
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -33,8 +33,8 @@ from .graph import query_from_graph
 
 
 def keep_best_unique(df: pd.DataFrame,
-                     subset: Union[list, str],
-                     value_cols: Union[str, list] = None
+                     subset: list | str,
+                     value_cols: str | list = None
                      ) -> pd.DataFrame:
   """
   优化的去重函数，为保证数据的完整性，去重时优先去除指定列中的空值
@@ -59,7 +59,7 @@ def keep_best_unique(df: pd.DataFrame,
 
 def table2dict(df: pd.DataFrame,
                key_col: str = None,
-               value_col: Union[str, list] = None,
+               value_col: str | list = None,
                orient: str = 'dict') -> dict:
   """
   DataFrame转字典
@@ -101,7 +101,7 @@ def round_by_columns(df, columns: list):
 
 def update_df(df: pd.DataFrame,
               new_df: pd.DataFrame,
-               on: Union[str, list] = None,
+               on: str | list = None,
               overwrite: bool = True,
               errors: Literal['ignore', 'raise'] = 'ignore') -> pd.DataFrame:
   """
@@ -128,7 +128,7 @@ def update_df(df: pd.DataFrame,
 
 
 def convert_date(df: pd.DataFrame,
-                 columns: Union[str, list],
+                 columns: str | list,
                  mode: str = 'first') -> pd.DataFrame:
   """
   将日期转为当月的第一天或最后一天
@@ -159,7 +159,7 @@ def convert_date(df: pd.DataFrame,
 @process_multi
 def fuzz_df(df: pd.DataFrame,
             col: str,
-            target_series: Union[list, pd.Series],
+            target_series: list | pd.Series,
             c_dst: str = None,
             valid_score=60) -> pd.DataFrame:
   """
@@ -188,7 +188,7 @@ def fuzz_df(df: pd.DataFrame,
 
 
 def convert_to_float(df: pd.DataFrame,
-                     columns: Union[list, str],
+                     columns: list | str,
                      rex_method: str = 'mean') -> pd.DataFrame:
   """
   提取字符串中的数值信息并转为float类型
@@ -314,8 +314,8 @@ def dict2df(data: dict, c_key='key', c_value='value', as_index=False):
 @timer()
 def is_changed(df_old: pd.DataFrame,
                df_new: pd.DataFrame,
-               key_cols: Union[str, list] = None,
-               value_cols: Union[str, list] = None,
+               key_cols: str | list = None,
+               value_cols: str | list = None,
                c_res: str = 'is_changed') -> pd.DataFrame:
   """
   判断新旧数据集中的每一条数据是否变化
@@ -460,7 +460,7 @@ def expand_graph(df: pd.DataFrame,
   return df
 
 
-def null_if_in(df, columns: Union[str, list], values: list):
+def null_if_in(df, columns: str | list, values: list):
   """
   如果列的值正好在values中定义的数组中，则将该列值设置为None
 
@@ -476,7 +476,7 @@ def null_if_in(df, columns: Union[str, list], values: list):
   return df
 
 
-def fix_null(df: pd.DataFrame, columns: Union[str, list] = None):
+def fix_null(df: pd.DataFrame, columns: str | list = None):
   """将None/NaN/NaT等都替换为None"""
   if not columns:
     columns = df.columns
@@ -547,7 +547,7 @@ def columns_contrast(df_left, df_right, n_rows=None):
   return df[cols_sorted]
 
 
-def merge_dfs(dfs: List[pd.DataFrame], on, how):
+def merge_dfs(dfs: list[pd.DataFrame], on, how):
   """
   合并多个dataframe
 
@@ -565,8 +565,8 @@ def merge_dfs(dfs: List[pd.DataFrame], on, how):
 def shift_data(
     df,
     c_date: str,
-    c_group: Union[str, list],
-    c_value: Union[str, list],
+    c_group: str | list,
+    c_value: str | list,
     subfix: str = '_环比',
     shift: int = 1
 ):

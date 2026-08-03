@@ -1,7 +1,6 @@
 import logging
 import warnings
 from datetime import datetime
-from typing import Union
 
 import pandas as pd
 from shapely.geometry.base import BaseGeometry
@@ -71,7 +70,7 @@ def second_to_dhms(second: int) -> tuple:
   return d, h, m, second
 
 
-def second_to_desc(second: Union[int, float]) -> str:
+def second_to_desc(second: int | float) -> str:
   """
   将秒转为时间描述
 

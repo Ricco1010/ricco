@@ -1,6 +1,5 @@
 from functools import cached_property
 from functools import lru_cache
-from typing import Union
 
 import ahocorasick
 
@@ -170,7 +169,7 @@ def get_city_id_by_name(name: str, warning=True):
 
 
 @lru_cache()
-def get_city_name_by_id(city_id: Union[str, int], full=False, warning=False):
+def get_city_name_by_id(city_id: str | int, full=False, warning=False):
   """根据城市id获取城市名称"""
   if isinstance(city_id, (int, float)):
     city_id = str(int(city_id))

@@ -1,5 +1,4 @@
 import os
-from typing import Union
 
 import pandas as pd
 
@@ -65,7 +64,7 @@ class Docx:
     """添加普通段落"""
     self.doc.add_paragraph(text)
 
-  def add_paragraph_color(self, text: str, rgb: Union[list, tuple]):
+  def add_paragraph_color(self, text: str, rgb: list | tuple):
     """添加自定义颜色的段落"""
     from docx.shared import RGBColor
 
