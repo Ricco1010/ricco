@@ -26,7 +26,7 @@ def make_request(address, city, key, source, workers, qps):
 def geocode_parallel(
     df: pd.DataFrame,
     c_address: str,
-    city: (str, list),
+    city: str | list,
     key: str,
     source: str,
     qps: int = 30,

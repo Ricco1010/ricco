@@ -26,15 +26,6 @@ class MapUrls:
   mdt = 'https://geocode.idatatlas.com/geocode'
 
 
-class MapKeys:
-  amap = os.environ.get(
-      'AMAP_KEY',
-      default='7c14855824549a84c543e48990239f3d')  # noqa
-  baidu = os.environ.get(
-      'BAIDU_KEY',
-      default='9Fy1lMHbwpr07WVBFPLw9vpntGUSOUMN')  # noqa
-
-
 def gcj2xx(lnglat, srs):
   assert srs in ('wgs84', 'bd09', 'gcj02'), '可选参数为bd09,wgs84,gcj02'
   if srs == 'wgs84':
@@ -73,7 +64,7 @@ def fix_city(string):
 
 
 def rv_score(city, address, rv):
-  from fuzzywuzzy import fuzz
+  from rapidfuzz import fuzz
   if not all([address, rv]):
     return -1
   city = fix_address(city)

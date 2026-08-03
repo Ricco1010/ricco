@@ -131,8 +131,8 @@ _fn_mapping = {
 }
 
 
-def _coord_transform(lng: float, lat: float, from_srs: (SRS, str),
-                     to_srs: (SRS, str)):
+def _coord_transform(lng: float, lat: float, from_srs: SRS | str,
+                     to_srs: SRS | str):
   """
   坐标系转换
 
@@ -169,7 +169,7 @@ def coord_transform_geojson(obj: dict, from_srs: SRS, to_srs: SRS):
 
 
 @check_null()
-def _coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
+def _coord_transform_geometry(geo: BaseGeometry | BaseMultipartGeometry,
                               from_srs: SRS,
                               to_srs: SRS):
   """
@@ -189,8 +189,8 @@ def _coord_transform_geometry(geo: (BaseGeometry, BaseMultipartGeometry),
 
 
 def coord_trans_x2y(df,
-                    srs_from: (SRS, str),
-                    srs_to: (SRS, str),
+                    srs_from: SRS | str,
+                    srs_to: SRS | str,
                     c_lng: str = 'lng',
                     c_lat: str = 'lat'):
   """
@@ -213,8 +213,8 @@ def coord_trans_x2y(df,
 
 
 def coord_trans_geom(df,
-                     srs_from: (SRS, str),
-                     srs_to: (SRS, str),
+                     srs_from: SRS | str,
+                     srs_to: SRS | str,
                      c_geometry: str = 'geometry',
                      geometry_format=None):
   """
@@ -243,8 +243,8 @@ def coord_trans_geom(df,
 
 
 def coord_transformer(df,
-                      srs_from: (SRS, str),
-                      srs_to: (SRS, str),
+                      srs_from: SRS | str,
+                      srs_to: SRS | str,
                       c_lng: str = 'lng',
                       c_lat: str = 'lat',
                       c_geometry: str = 'geometry',

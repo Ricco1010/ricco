@@ -1,16 +1,33 @@
-import numpy as np
+import re
+from datetime import datetime
 
+import numpy as np
+import pandas as pd
+
+from ricco.util.util import and_
+from ricco.util.util import diff
 from ricco.util.util import drop_repeat
 from ricco.util.util import eval_
 from ricco.util.util import extract_num
+from ricco.util.util import first_notnull_value
+from ricco.util.util import fix2str
 from ricco.util.util import fix_str
+from ricco.util.util import fuzz_match
 from ricco.util.util import get_shortest_element
+from ricco.util.util import get_uuid
 from ricco.util.util import house_type_format
 from ricco.util.util import interchange_dict
 from ricco.util.util import is_digit
+from ricco.util.util import is_hex
+from ricco.util.util import is_valid_uuid
 from ricco.util.util import isinstances
 from ricco.util.util import list2dict
+from ricco.util.util import or_
+from ricco.util.util import per2float
+from ricco.util.util import physical_age
 from ricco.util.util import pinyin
+from ricco.util.util import re_fast
+from ricco.util.util import re_multi
 from ricco.util.util import relstrip
 from ricco.util.util import remove_null_in_dict
 from ricco.util.util import rerstrip
@@ -19,6 +36,8 @@ from ricco.util.util import segment
 from ricco.util.util import sort_by_list
 from ricco.util.util import to_bool
 from ricco.util.util import to_float
+from ricco.util.util import to_json_string
+from ricco.util.util import to_str_list
 from ricco.util.util import union_list_v2
 from ricco.util.util import union_str_v2
 
@@ -171,3 +190,101 @@ def test_isinstance_in_list():
   assert isinstances([1, 2, 3], int) is True
   assert isinstances([1, 2, '3'], int) is False
   assert isinstances([1, 2, 3], (int, str)) is True
+
+
+def test_to_json_string():
+  assert to_json_string('[1, 2, 3]') == '[1, 2, 3]'
+  assert '"a"' in to_json_string("{'a': 1}")
+  assert to_json_string([1, 2]) == '[1, 2]'
+  result = to_json_string({'a': 1})
+  assert '"a"' in result
+
+
+def test_and_or():
+  df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+  assert and_(df['a'] > 1, df['b'] > 4).tolist() == [False, True, True]
+  assert or_(df['a'] > 1, df['b'] > 4).tolist() == [False, True, True]
+
+
+def test_physical_age():
+  bday = datetime(1990, 6, 15)
+  assert physical_age(bday, datetime(2020, 6, 14)) == 29
+  assert physical_age(bday, datetime(2020, 6, 15)) == 30
+  assert physical_age(bday, datetime(2020, 7, 1)) == 30
+
+
+def test_first_notnull_value():
+  assert first_notnull_value([None, None, 'a', 'b']) == 'a'
+  assert first_notnull_value([0, 1, 2]) == 0
+
+
+def test_is_valid_uuid():
+  valid = '550e8400-e29b-41d4-a716-446655440000'
+  assert is_valid_uuid(valid) is True
+  assert is_valid_uuid('not-a-uuid') is False
+  assert is_valid_uuid(None) is False
+  assert is_valid_uuid('') is False
+
+
+def test_get_uuid():
+  valid = '550e8400-e29b-41d4-a716-446655440000'
+  assert get_uuid(valid) == valid
+  result = get_uuid('bad')
+  assert is_valid_uuid(str(result)) is True
+  assert get_uuid(None) is not None
+
+
+def test_per2float():
+  assert per2float('50%') == 0.5
+  assert per2float('100%') == 1.0
+  assert per2float('3.14') == 3.14
+  assert per2float(None) is np.nan
+
+
+def test_to_str_list():
+  result = to_str_list([1, 2, 2, 3, None])
+  assert set(result) == {'1', '2', '3'}
+  assert to_str_list([]) == []
+
+
+def test_fuzz_match():
+  result = fuzz_match('上海', ['上海市', '北京', '广州市'])
+  assert result[0] == '上海市'
+  assert result[1] >= 80
+
+
+def test_re_fast():
+  assert re_fast(r'\d+', 'abc123def') == '123'
+  assert re_fast(r'(\d+)', 'abc123def') == '123'
+  assert re_fast(r'\d+', 'no digits') is None
+
+
+def test_re_multi():
+  p1 = re.compile(r'\d+')
+  p2 = re.compile(r'[a-z]+')
+  result = re_multi([p1, p2], 'abc123def456')
+  assert '123' in result
+  assert '456' in result
+
+
+def test_fix2str():
+  assert fix2str('  hello  ') == 'hello'
+  assert fix2str('hello\n\nworld') == 'hello world'
+  assert fix2str('a\tb') == 'a b'
+  assert fix2str(None) == ''
+  assert fix2str(123) == '123'
+
+
+def test_is_hex():
+  assert is_hex('abc123') is True
+  assert is_hex('ABC123') is True
+  assert is_hex('xyz') is False
+  assert is_hex(None) is False
+  assert is_hex('') is False
+
+
+def test_diff():
+  a, b = diff([1, 2, 3], [3, 4, 5])
+  assert set(a) == {1, 2}
+  assert set(b) == {4, 5}
+  assert diff([], [1]) == ([], [1])

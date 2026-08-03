@@ -32,7 +32,7 @@ def get_graph_dict(
 
 def query_from_graph(
     key,
-    graph_data: (pd.DataFrame, dict),
+    graph_data: pd.DataFrame | dict,
     c_key='id',
     c_level_type='level_type',
     c_parent_key='parent_id',

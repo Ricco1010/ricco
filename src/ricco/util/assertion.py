@@ -55,7 +55,7 @@ def assert_not_null(df: pd.DataFrame,
 
 def assert_values_in(df: pd.DataFrame,
                      col: str,
-                     enums: (dict, list),
+                     enums: dict | list,
                      skip_if_not_exists: bool = True):
   """
   检查Dataframe中某一列的值是否在指定的值的范围内
@@ -80,7 +80,7 @@ def assert_values_in(df: pd.DataFrame,
 
 
 def assert_series_unique(df: pd.DataFrame,
-                         columns: (str, list) = '名称',
+                         columns: str | list = '名称',
                          text: str = '',
                          ignore_na=False):
   """
@@ -121,7 +121,7 @@ def assert_series_not_like(df: pd.DataFrame, col: str, pattern):
   assert not rv, f'异常的"{col}": {rv}'
 
 
-def assert_subset(values: (list, set, tuple), superset: (list, set, tuple)):
+def assert_subset(values: list | set | tuple, superset: list | set | tuple):
   """检查values是否是superset的子集"""
   res = [i for i in values if i not in superset]
   assert not res, f'{res}不在指定的集合中'

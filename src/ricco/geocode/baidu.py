@@ -13,7 +13,7 @@ from .util import rv_score
 
 
 @check_null()
-def address_json(address: str, city: str, key=None):
+def address_json(address: str, city: str, key):
   """百度地理编码接口"""
   js = request_baidu_addr(address, city, key)
   error_baidu(js)
@@ -22,7 +22,7 @@ def address_json(address: str, city: str, key=None):
 
 
 @check_null()
-def place_json(address: str, city: str, key=None):
+def place_json(address: str, city: str, key):
   """百度地点检索接口"""
   js = request_baidu_place(address, city, key)
   error_baidu(js)
@@ -37,7 +37,7 @@ def get_baidu(*,
               source,
               disable_cache=False,
               with_detail=True,
-              key=None):
+              key):
   """MC geocode服务"""
   assert source in ('baidu', 'baidu_poi')
   req = request_mdt(
@@ -56,7 +56,11 @@ def get_baidu(*,
 
 
 @check_null(default_rv=DEFAULT_RES)
-def get_address_baidu(address: str, city: str, srs='wgs84', key=None) -> dict:
+def get_address_baidu(address: str, city: str, srs='wgs84',
+                      key: str = None) -> dict:
+  """百度地理编码"""
+  if key is None:
+    raise ValueError('key参数不能为空，请提供百度API Key')
   result = DEFAULT_RES.copy()
   source = 'baidu'
   city = fix_city(city)
@@ -80,7 +84,11 @@ def get_address_baidu(address: str, city: str, srs='wgs84', key=None) -> dict:
 
 
 @check_null(default_rv=DEFAULT_RES)
-def get_place_baidu(address: str, city: str, srs='wgs84', key=None) -> dict:
+def get_place_baidu(address: str, city: str, srs='wgs84',
+                    key: str = None) -> dict:
+  """百度地点检索"""
+  if key is None:
+    raise ValueError('key参数不能为空，请提供百度API Key')
   result = DEFAULT_RES.copy()
   source = 'baidu_poi'
   city = fix_city(city)

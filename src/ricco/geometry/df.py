@@ -1,7 +1,5 @@
 import sys
 import warnings
-from typing import List
-from typing import Union
 
 import geopandas as gpd
 import numpy as np
@@ -287,7 +285,7 @@ def auto2shapely(df, geometry='geometry') -> gpd.GeoDataFrame:
     raise KeyError(f'未找到{geometry}或lng/lat列')
 
 
-def shapely2x(df: (gpd.GeoDataFrame, pd.DataFrame),
+def shapely2x(df: gpd.GeoDataFrame | pd.DataFrame,
               geometry_format: str,
               geometry='geometry'):
   """
@@ -329,8 +327,8 @@ def auto2x(df, geometry_format: str, geometry='geometry'):
 
 
 def norm_geometry(df,
-                  c_lng='lat',
-                  c_lat='lng',
+                  c_lng='lng',
+                  c_lat='lat',
                   c_geometry='geometry',
                   geometry_format='wkb'):
   """确保Dataframe中有lng/lat/geometry列"""
@@ -483,7 +481,7 @@ def ensure_lnglat(df, lng='lng', lat='lat', geometry='geometry'):
 def mark_tags_v2(
     df: pd.DataFrame,
     polygon_df: pd.DataFrame,
-    c_tags: (list, str) = None,
+    c_tags: list | str = None,
     col_list=None,
     *,
     predicate='intersects',
@@ -602,7 +600,7 @@ def nearest_kdtree(
     c_min_distance: str = 'min_distance',
     agg: dict = None,
     limit: int = None,
-    r: (int, float) = None,
+    r: int | float = None,
     keep_origin: bool = False,
     leaf_size: int = 2,
     epsg: int = None,
@@ -670,10 +668,10 @@ def nearest_kdtree(
 
 
 def get_neighbors(
-    df: (pd.DataFrame, gpd.GeoDataFrame),
+    df: pd.DataFrame | gpd.GeoDataFrame,
     key_col: str,
     res_type='dict',
-) -> (dict, pd.DataFrame):
+) -> dict | pd.DataFrame:
   """
   获取数据集中每个点的邻居面(相邻标准：至少有一个点相同且不重叠)
 
@@ -734,7 +732,7 @@ def get_area(
 
 
 def buffer(df: pd.DataFrame,
-           radius: Union[int, float],
+           radius: int | float,
            city: str = None,
            geo_type: str = 'point',
            geometry: str = 'geometry',
@@ -775,7 +773,7 @@ def buffer(df: pd.DataFrame,
 
 def spatial_agg(df: pd.DataFrame,
                 polygon_df: pd.DataFrame,
-                by: Union[str, List[str]],
+                by: str | list[str],
                 agg: dict,
                 c_polygon_geometry: str = 'geometry') -> pd.DataFrame:
   """

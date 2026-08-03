@@ -20,7 +20,7 @@ class DataReporter(Docx):
   """
 
   def __init__(
-      self, data: (str, pd.DataFrame),
+      self, data: str | pd.DataFrame,
       only: list = None,
       exclude: list = None):
     self.set_default_style()
